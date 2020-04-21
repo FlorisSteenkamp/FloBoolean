@@ -1,0 +1,33 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+>
+    <path 
+        class="shape"
+        d=" M 100, 100
+            L 200, 100
+            L 200, 200
+            L 100, 200
+            Z"
+    />
+</svg>
+
+<!--
+[
+    [
+        {
+            "centroid": [
+                150,
+                150
+            ],
+            "area": 10000,
+            "bounds": {
+                "minX": 100,
+                "minY": 100,
+                "maxX": 200,
+                "maxY": 200
+            }
+        }
+    ]
+]
+-->
