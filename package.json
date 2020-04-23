@@ -16,13 +16,13 @@
         "url": "git+https://github.com/FlorisSteenkamp/FloBoolean.git"
     },
     "dependencies": {
-        "flo-bezier3": "^2.0.0",
-        "flo-memoize": "^0.1.2",
-        "flo-poly": "^4.0.0",
-        "flo-numerical": "^1.0.1",
-        "flo-vector2d": "^2.0.0",
+        "flo-bezier3": "^2.0.1",
         "flo-draw": "^1.0.0",
-        "flo-gauss-quadrature": "^1.0.1"
+        "flo-gauss-quadrature": "^1.0.1",
+        "flo-memoize": "^0.1.2",
+        "flo-numerical": "^1.0.1",
+        "flo-poly": "^4.0.0",
+        "flo-vector2d": "^2.0.0"
     },
     "devDependencies": {
         "@istanbuljs/nyc-config-typescript": "^1.0.1",
