@@ -9,11 +9,7 @@ const complete_loop_1 = require("./complete-loop");
  * @param parent
  * @param loop
  */
-function completePath(expMax, initialOut, takenLoops, takenOuts, parent) {
-    // Each loop generated will give rise to one componentLoop. 
-    initialOut.parent = parent;
-    initialOut.windingNum = parent.windingNum + initialOut.orientation;
-    initialOut.children = new Set();
+function completePath(expMax, initialOut, takenLoops, takenOuts) {
     let outStack = [initialOut];
     while (outStack.length) {
         let out = outStack.pop();

@@ -69,7 +69,7 @@ function simplifyPaths(
     addDebugInfo1(bezierLoops);
     bezierLoops.sort(orderLoopAscendingByMinY);
 
-    let loops = bezierLoops.map(loop => loopFromBeziers(loop));
+    let loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));
     let { extremes } = getContainers(loops, containerDim, expMax);
 
     let root = createRootInOut();
@@ -85,12 +85,17 @@ function simplifyPaths(
         let container = extremes.get(loop)[0].container;
         if (!container.inOuts.length) { continue; }
 
+        let initialOut = getOutermostInAndOut(container);
+        // Each loop generated will give rise to one componentLoop. 
+        initialOut.parent = parent;
+        initialOut.windingNum = parent.windingNum + initialOut.orientation;
+        initialOut.children = new Set();
+
         completePath(
             expMax,
             getOutermostInAndOut(container),
             takenLoops, 
-            takenOuts,
-            parent
+            takenOuts
         );
     }
 

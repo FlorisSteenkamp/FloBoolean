@@ -18,9 +18,9 @@ function isPoint(ps) {
 /**
  * @param beziers A pre-ordered array of bezier curves to add initially.
  */
-function loopFromBeziers(beziers = []) {
+function loopFromBeziers(beziers = [], idx) {
     let curves = [];
-    let loop = { beziers, curves };
+    let loop = { beziers, curves, idx };
     if (!beziers.length) {
         return loop;
     }

@@ -8,9 +8,11 @@ interface Loop {
     curves: Curve[];
     /** A pre-ordered array of bezier curves to add initially.*/
     beziers: number[][][];
+    /** A reference to the loop */
+    idx?: number;
 }
 /**
  * @param beziers A pre-ordered array of bezier curves to add initially.
  */
-declare function loopFromBeziers(beziers?: number[][][]): Loop;
+declare function loopFromBeziers(beziers?: number[][][], idx?: number): Loop;
 export { Loop, loopFromBeziers };

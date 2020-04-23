@@ -46,7 +46,7 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
     bezierLoops = normalize_loop_1.normalizeLoops(bezierLoops, maxBitLength, expMax, false, true);
     addDebugInfo1(bezierLoops);
     bezierLoops.sort(order_loop_ascending_by_min_y_1.orderLoopAscendingByMinY);
-    let loops = bezierLoops.map(loop => loop_1.loopFromBeziers(loop));
+    let loops = bezierLoops.map((loop, i) => loop_1.loopFromBeziers(loop, i));
     let { extremes } = get_containers_1.getContainers(loops, containerDim, expMax);
     let root = createRootInOut();
     let takenLoops = new Set();
@@ -61,7 +61,12 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
         if (!container.inOuts.length) {
             continue;
         }
-        complete_path_1.completePath(expMax, get_outermost_in_and_out_1.getOutermostInAndOut(container), takenLoops, takenOuts, parent);
+        let initialOut = get_outermost_in_and_out_1.getOutermostInAndOut(container);
+        // Each loop generated will give rise to one componentLoop. 
+        initialOut.parent = parent;
+        initialOut.windingNum = parent.windingNum + initialOut.orientation;
+        initialOut.children = new Set();
+        complete_path_1.completePath(expMax, get_outermost_in_and_out_1.getOutermostInAndOut(container), takenLoops, takenOuts);
     }
     let loopTrees = split_loop_trees_1.splitLoopTrees(root);
     let outSets = loopTrees.map(get_loops_from_tree_1.getLoopsFromTree);

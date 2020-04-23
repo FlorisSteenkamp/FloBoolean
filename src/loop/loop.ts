@@ -11,6 +11,8 @@ interface Loop {
     curves: Curve[];
     /** A pre-ordered array of bezier curves to add initially.*/
     beziers: number[][][];
+    /** A reference to the loop */
+    idx?: number;
 }
 
 
@@ -39,10 +41,10 @@ function isPoint(ps: number[][]): boolean {
 /**
  * @param beziers A pre-ordered array of bezier curves to add initially.
  */
-function loopFromBeziers(beziers: number[][][] = []) {
+function loopFromBeziers(beziers: number[][][] = [], idx?: number) {
     let curves: Curve[] = [];
 
-    let loop: Loop = { beziers, curves };
+    let loop: Loop = { beziers, curves, idx };
 
     if (!beziers.length) { return loop; }
 

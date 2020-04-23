@@ -73,15 +73,12 @@ exports.getCurvesIntersections = getCurvesIntersections;
  * @param curveB
  */
 function checkEndpoints(curveA, curveB) {
-    let _x_s = [];
-    //let swapped = false;
     if (curveB.next === curveA) {
         if (curveA.next === curveB) {
             // if this is a very simple loop with only 2 beziers in it
             return undefined;
         }
         // else swap the curves to make the algorithm simpler
-        //swapped = true;
         [curveA, curveB] = [curveB, curveA];
     }
     // At this point A-->B (curveA's next === curveB)
@@ -89,20 +86,20 @@ function checkEndpoints(curveA, curveB) {
     let psA = curveA.ps;
     let psB = curveB.ps;
     // Is last point of curveB on curveA?
-    if (isPointOnBezier(psA, psB[psB.length - 1])) {
-        let xPair = flo_bezier3_2.getOtherTs(psA, psB, [flo_poly_1.createRootExact(1)])[0];
-        if (!xPair) {
+    if (flo_bezier3_2.isPointOnBezierExtension(psA, psB[psB.length - 1])) {
+        // Check if they are in same k family (this *is* necessary for two curves
+        // in same k-family joined end to end, e.g. ---A--->|---B---> in which
+        // case )
+        let xPairs = flo_bezier3_2.getOtherTs(psA, psB, [flo_poly_1.createRootExact(1)]);
+        if (xPairs === undefined || xPairs.length === 0) {
             return undefined;
         }
+        let xPair = xPairs[0];
         return [[
                 { x: xPair[0], curve: curveA },
                 make_simple_x_1.makeSimpleX(1, curveB, 1)
             ]];
     }
-}
-function isPointOnBezier(ps, p) {
-    // TODO - isPointOnBezierExtension not same as isPointOnBezier ???
-    return flo_bezier3_2.isPointOnBezierExtension(ps, p);
 }
 function getLineLineIntersections(curveA, curveB, expMax) {
     let psA = curveA.ps;

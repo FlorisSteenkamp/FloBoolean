@@ -17,10 +17,9 @@ function getIntersection(curveA, curveB, expMax, isANextB) {
         // the curves are in the same k-family
         // some reasonable error bound -> to be fine-tuned, but cannot
         // break the algorithm (unless its too small), only make it run slower.
-        let errBound = Math.pow(2, (expMax - 48));
+        let errBound = Math.pow(2, (expMax - 47));
         let riPairs = flo_bezier3_1.getEndpointIntersections(ps1, ps2, errBound);
         for (let riPair of riPairs) {
-            //let p1 = evalDeCasteljau(ps1, mid(riPair[0]));
             let p1 = flo_bezier3_1.evalDeCasteljau(ps1, riPair[0].tS);
             let box = [
                 [p1[0] - errBound, p1[1] - errBound],
@@ -30,18 +29,23 @@ function getIntersection(curveA, curveB, expMax, isANextB) {
             let ri2 = { x: { ri: riPair[1], kind: 5, box }, curve: curveB }; // exact overlap endpoint
             xs.push([ri1, ri2]);
         }
+        return xs;
     }
-    else {
-        if (isANextB) {
-            // we are not interested in zero t values (they are interface points)
-            ts2 = ts2.filter(t => t.tS > 0);
-        }
-        let xPairs = flo_bezier3_1.getOtherTs(ps1, ps2, ts2);
-        for (let xPair of xPairs) {
-            let x1 = { x: xPair[0], curve: curveA };
-            let x2 = { x: xPair[1], curve: curveB };
-            xs.push([x1, x2]);
-        }
+    if (isANextB) {
+        // we are not interested in zero t values (they are interface points)
+        ts2 = ts2.filter(t => t.tS > 0);
+    }
+    if (ts2.length === 0) {
+        return [];
+    }
+    let xPairs = flo_bezier3_1.getOtherTs(ps1, ps2, ts2);
+    if (xPairs === undefined || xPairs.length === 0) {
+        return [];
+    }
+    for (let xPair of xPairs) {
+        let x1 = { x: xPair[0], curve: curveA };
+        let x2 = { x: xPair[1], curve: curveB };
+        xs.push([x1, x2]);
     }
     return xs;
 }

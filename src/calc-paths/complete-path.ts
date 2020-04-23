@@ -16,13 +16,7 @@ function completePath(
         expMax     : number,
         initialOut : InOut,
         takenLoops : Set<Loop>,
-        takenOuts  : Set<InOut>,
-        parent     : InOut) {
-
-    // Each loop generated will give rise to one componentLoop. 
-    initialOut.parent = parent;
-    initialOut.windingNum = parent.windingNum + initialOut.orientation;
-    initialOut.children = new Set();
+        takenOuts  : Set<InOut>) {
 
     let outStack = [initialOut];
 

@@ -97,16 +97,12 @@ function checkEndpoints(
         curveA: Curve, 
         curveB: Curve): _X_[][] {
 
-    let _x_s: _X_[][] = [];
-
-    //let swapped = false;
     if (curveB.next === curveA) {
         if (curveA.next === curveB) {
             // if this is a very simple loop with only 2 beziers in it
             return undefined; 
         }
         // else swap the curves to make the algorithm simpler
-        //swapped = true;
         [curveA, curveB] = [curveB, curveA];
     }
 
@@ -117,20 +113,19 @@ function checkEndpoints(
     let psB = curveB.ps;
 
     // Is last point of curveB on curveA?
-    if (isPointOnBezier(psA, psB[psB.length-1])) {
-        let xPair = getOtherTs(psA, psB, [createRootExact(1)])[0];
-        if (!xPair) { return undefined; }
+    if (isPointOnBezierExtension(psA, psB[psB.length-1])) {
+        // Check if they are in same k family (this *is* necessary for two curves
+        // in same k-family joined end to end, e.g. ---A--->|---B---> in which
+        // case )
+
+        let xPairs = getOtherTs(psA, psB, [createRootExact(1)]);
+        if (xPairs === undefined || xPairs.length === 0) { return undefined; }
+        let xPair = xPairs[0];
         return [[
             { x: xPair[0], curve: curveA },
             makeSimpleX(1, curveB, 1)
         ]];
     }
-}
-
-
-function isPointOnBezier(ps: number[][], p: number[]) {
-    // TODO - isPointOnBezierExtension not same as isPointOnBezier ???
-    return isPointOnBezierExtension(ps, p);
 }
 
 

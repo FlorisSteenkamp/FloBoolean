@@ -8,5 +8,5 @@ import { Loop } from '../loop/loop';
  * @param parent
  * @param loop
  */
-declare function completePath(expMax: number, initialOut: InOut, takenLoops: Set<Loop>, takenOuts: Set<InOut>, parent: InOut): void;
+declare function completePath(expMax: number, initialOut: InOut, takenLoops: Set<Loop>, takenOuts: Set<InOut>): void;
 export { completePath };
