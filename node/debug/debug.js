@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.enableDebugForBooleanOp = void 0;
 const draw_elem_1 = require("./draw-elem/draw-elem");
 /**
  * Returns a new debug object by spreading boolean operation debug information

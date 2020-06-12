@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.generateRandomPoints = void 0;
 const flo_poly_1 = require("flo-poly");
 /**
  * Returns a specified number of random integer-coordinate points within a given

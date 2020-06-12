@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PathState = void 0;
 /** @hidden */
 class PathState {
     constructor() {

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getPathsFromSvgPathElem = void 0;
 const get_paths_from_str_1 = require("./get-paths-from-str");
 /** @hidden */
 function getPathsFromSvgPathElem(elem) {

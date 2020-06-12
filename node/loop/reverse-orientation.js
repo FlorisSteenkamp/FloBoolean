@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.reverseOrientation = void 0;
 const flo_bezier3_1 = require("flo-bezier3");
 const loop_1 = require("./loop");
 /**

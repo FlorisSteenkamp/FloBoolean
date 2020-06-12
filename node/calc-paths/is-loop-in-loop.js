@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.isLoopInLoop = void 0;
 const flo_poly_1 = require("flo-poly");
 const flo_bezier3_1 = require("flo-bezier3");
 const flo_vector2d_1 = require("flo-vector2d");
@@ -109,7 +110,8 @@ function getAxisAlignedRayLoopIntersections(loop, p, dir) {
             offset = [-x, 0];
             axis = 1;
         }
-        let translatedPs = flo_bezier3_1.translate(offset, ps);
+        //let translatedPs = translate(offset, ps);
+        let translatedPs = ps.map(flo_vector2d_1.translate(offset));
         let poly = f(translatedPs);
         //let ev = evalDeCasteljau(translatedPs);
         let ts_ = flo_poly_1.allRoots(poly, 0 - DELTA, 1 + DELTA);

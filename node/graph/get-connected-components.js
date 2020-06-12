@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.addEdges = exports.getConnectedComponents = exports.addEdge = void 0;
 function addEdges(graph, edges) {
     for (let i = 0; i < edges.length; i++) {
         let edge = edges[i];

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.fixBezierByPointSpacing = void 0;
 const flo_bezier3_1 = require("flo-bezier3");
 const are_all_points_different_1 = require("./are-all-points-different");
 // TODO - consider importing only specific functions from flo-vector2d

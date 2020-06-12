@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.doConvexPolygonsIntersect = void 0;
 /**
  * Adapted from https://stackoverflow.com/a/12414951/2010061.
  * Returns true if there is any intersection between the 2 polygons, false otherwise

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getLoopsFromTree = void 0;
 /**
  * Returns an array of LoopTrees from the given LoopTree where each returned
  * LoopTree is one of the nodes of the tree. Nodes with winding number absolute

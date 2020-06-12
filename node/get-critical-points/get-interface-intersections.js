@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getInterfaceIntersections = void 0;
 const make_simple_x_1 = require("./make-simple-x");
 function getInterfaceIntersections(loops) {
     /** all one-sided Xs from */

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.drawLooseBoundingBox = void 0;
 const flo_draw_1 = require("flo-draw");
 /** @hidden */
 function drawLooseBoundingBox(g, box, classes = 'thin5 brown nofill', delay = 0) {

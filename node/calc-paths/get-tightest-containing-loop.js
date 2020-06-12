@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getTightestContainingLoop = void 0;
 const is_loop_in_loop_1 = require("./is-loop-in-loop");
 /**
  * @param root

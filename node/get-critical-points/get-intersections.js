@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getIntersections = void 0;
 const flo_bezier3_1 = require("flo-bezier3");
 const sweep_line_1 = require("../sweep-line/sweep-line");
 const get_curves_intersections_1 = require("./get-curves-intersections");

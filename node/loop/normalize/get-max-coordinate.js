@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getMaxCoordinate = void 0;
 const flo_memoize_1 = require("flo-memoize");
 /**
  * Returns the maximum control point coordinate value (x or y) within any loop.

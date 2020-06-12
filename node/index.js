@@ -1,13 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.beziersToSvgPathStr = exports.getPathsFromStr = exports.getLoopArea = exports.enableDebugForBooleanOp = exports.simplifyPaths = void 0;
 const simplify_paths_1 = require("./calc-paths/simplify-paths");
-exports.simplifyPaths = simplify_paths_1.simplifyPaths;
+Object.defineProperty(exports, "simplifyPaths", { enumerable: true, get: function () { return simplify_paths_1.simplifyPaths; } });
 const get_loop_area_1 = require("./loop/get-loop-area");
-exports.getLoopArea = get_loop_area_1.getLoopArea;
+Object.defineProperty(exports, "getLoopArea", { enumerable: true, get: function () { return get_loop_area_1.getLoopArea; } });
 const debug_1 = require("./debug/debug");
-exports.enableDebugForBooleanOp = debug_1.enableDebugForBooleanOp;
+Object.defineProperty(exports, "enableDebugForBooleanOp", { enumerable: true, get: function () { return debug_1.enableDebugForBooleanOp; } });
 const get_paths_from_str_1 = require("./svg/get-paths-from-str");
-exports.getPathsFromStr = get_paths_from_str_1.getPathsFromStr;
+Object.defineProperty(exports, "getPathsFromStr", { enumerable: true, get: function () { return get_paths_from_str_1.getPathsFromStr; } });
 const beziers_to_svg_path_str_1 = require("./svg/beziers-to-svg-path-str");
-exports.beziersToSvgPathStr = beziers_to_svg_path_str_1.beziersToSvgPathStr;
+Object.defineProperty(exports, "beziersToSvgPathStr", { enumerable: true, get: function () { return beziers_to_svg_path_str_1.beziersToSvgPathStr; } });
 //# sourceMappingURL=index.js.map

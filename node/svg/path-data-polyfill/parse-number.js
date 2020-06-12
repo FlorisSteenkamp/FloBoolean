@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.parseNumber = void 0;
 /**
  * @hidden
  * Parse a number from an SVG path. This very closely follows genericParseNumber(...) from

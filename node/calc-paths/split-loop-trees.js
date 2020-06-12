@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.splitLoopTrees = void 0;
 /**
  * Take the forest of trees, create a new root making it a tree and snip
  * branches such that each branch determines a new set of loops each

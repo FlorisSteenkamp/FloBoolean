@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.toGrid = void 0;
 const flo_numerical_1 = require("flo-numerical");
 /**
  * Sends a onto a fixed-spacing grid with 2**significantFigures divisions. Each

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getMinY = void 0;
 const flo_bezier3_1 = require("flo-bezier3");
 const flo_memoize_1 = require("flo-memoize");
 /**

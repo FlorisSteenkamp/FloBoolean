@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.sweepLine = void 0;
 const EVENT_LEFT = -1;
 const EVENT_RIGHT = +1;
 /**

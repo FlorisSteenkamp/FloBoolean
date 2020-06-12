@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getOutermostInAndOut = void 0;
 /**
  * Get initial an intersection for the given loop. The loop must be such that
  * an extreme point on the loop forms part of an outermost loop that is outside

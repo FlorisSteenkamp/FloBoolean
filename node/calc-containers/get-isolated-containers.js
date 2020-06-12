@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getIsolatedComponents = void 0;
 /**
  * @param containers all containers
  * @param connectedContainers

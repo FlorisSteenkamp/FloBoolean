@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.setIntersectionNextValues = void 0;
 /**
  * Set each intersection on the given original loop's next and prev value
  * @param loops

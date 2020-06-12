@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getBeziersFromRawPaths = void 0;
 const path_state_1 = require("./path-state");
 const z_1 = require("./path-segment/z");
 const c_1 = require("./path-segment/c");

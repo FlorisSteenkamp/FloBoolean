@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getPathsFromStr = void 0;
 const get_beziers_from_raw_paths_1 = require("./get-beziers-from-raw-paths");
 const parse_path_data_string_1 = require("./path-data-polyfill/parse-path-data-string");
 /**

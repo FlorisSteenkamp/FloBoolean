@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.compareOrderedInOut = void 0;
 const flo_poly_1 = require("flo-poly");
 const flo_numerical_1 = require("flo-numerical");
 const abs = Math.abs;

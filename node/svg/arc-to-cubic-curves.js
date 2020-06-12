@@ -2,6 +2,7 @@
 // TODO - a work in progress - currently using a different (less accurate?) 
 // function.
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.arcToCubicCurves = void 0;
 /**
  * @hidden
  * Get an array of corresponding cubic bezier curve parameters for given arc

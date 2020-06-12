@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.simplifyPaths = void 0;
 const complete_path_1 = require("./complete-path");
 const get_tightest_containing_loop_1 = require("./get-tightest-containing-loop");
 const order_loop_ascending_by_min_y_1 = require("./order-loop-ascending-by-min-y");

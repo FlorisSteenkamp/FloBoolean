@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.fixBeziers = void 0;
 const to_grid_1 = require("./to-grid");
 const flo_bezier3_1 = require("flo-bezier3");
 const fix_bezier_by_point_spacing_1 = require("./fix-bezier-by-point-spacing");

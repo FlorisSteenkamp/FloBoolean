@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.normalizeLoops = void 0;
 const flo_numerical_1 = require("flo-numerical");
 const fix_beziers_1 = require("./fix-beziers");
 const to_grid_1 = require("./to-grid");

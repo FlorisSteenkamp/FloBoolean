@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.drawLoop = void 0;
 // TODO - finish
 function drawLoop(g, loop) {
     /*

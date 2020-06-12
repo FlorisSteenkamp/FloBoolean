@@ -3,6 +3,7 @@
 // arc (easily approximated by a cubic bezier) and apply transformations as 
 // required
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.arcToCubicCurves = void 0;
 /**
  * @hidden
  * Get an array of corresponding cubic bezier curve parameters for given arc

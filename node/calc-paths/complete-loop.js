@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.completeLoop = void 0;
 const get_next_exit_1 = require("./get-next-exit");
 const get_beziers_to_next_container_1 = require("./get-beziers-to-next-container");
 const flo_bezier3_1 = require("flo-bezier3");

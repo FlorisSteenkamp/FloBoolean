@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.circleToCubicBeziers = void 0;
 const C = 0.551915024494;
 /**
  *

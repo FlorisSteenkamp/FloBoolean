@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getMaxContainerDim = void 0;
 function getMaxContainerDim(containers) {
     let maxDim = Number.NEGATIVE_INFINITY;
     for (let container of containers) {

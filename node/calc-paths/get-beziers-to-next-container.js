@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getBeziersToNextContainer = void 0;
 const flo_bezier3_1 = require("flo-bezier3");
 const container_1 = require("../container");
 function getBeziersToNextContainer(expMax, out) {

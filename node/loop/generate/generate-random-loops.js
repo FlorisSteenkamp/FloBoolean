@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.generateRandomLoops = void 0;
 const flo_poly_1 = require("flo-poly");
 const flo_bezier3_1 = require("flo-bezier3");
 const generate_random_points_1 = require("./generate-random-points");

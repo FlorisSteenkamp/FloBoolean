@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.completePath = void 0;
 const complete_loop_1 = require("./complete-loop");
 /**
  * Completes the path of a disjoint set of loops, i.e. this function is called

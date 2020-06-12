@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.simplifyBounds = void 0;
 /** Used in tests only - not used in algorithm */
 function simplifyBounds(bounds) {
     return {

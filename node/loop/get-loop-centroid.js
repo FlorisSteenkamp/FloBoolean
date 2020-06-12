@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getLoopCentroid = void 0;
 const flo_bezier3_1 = require("flo-bezier3");
 const flo_gauss_quadrature_1 = require("flo-gauss-quadrature");
 const flo_poly_1 = require("flo-poly");

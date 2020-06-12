@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.drawIntersection = void 0;
 const draw_circle_percent_1 = require("./draw-circle-percent");
 function drawIntersection(g, x) {
     return [draw_circle_percent_1.drawCirclePercent(g, x.x.box[0], 0.7, 'purple thin5 nofill')];

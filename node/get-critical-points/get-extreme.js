@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getExtreme = void 0;
 const get_min_y_1 = require("../loop/get-min-y");
 const make_simple_x_1 = require("./make-simple-x");
 /**

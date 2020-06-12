@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getCurvesIntersections = void 0;
 const flo_numerical_1 = require("flo-numerical");
 const flo_vector2d_1 = require("flo-vector2d");
 const flo_bezier3_1 = require("flo-bezier3");

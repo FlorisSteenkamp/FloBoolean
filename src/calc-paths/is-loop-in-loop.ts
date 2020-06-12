@@ -1,9 +1,9 @@
 
 import { flatCoefficients, allRoots } from 'flo-poly';
 import { 
-    getBoundingBox, getX, getY, tangent, translate, getBounds, evalDeCasteljau
+    getBoundingBox, getX, getY, tangent, getBounds, evalDeCasteljau
 } from 'flo-bezier3';
-import { toUnitVector } from 'flo-vector2d';
+import { toUnitVector, translate } from 'flo-vector2d';
 
 
 // TODO - remove delta by basing isLoopInLoop on a solid numerical analytic 
@@ -145,7 +145,8 @@ function getAxisAlignedRayLoopIntersections(
             axis = 1;
         }
 
-        let translatedPs = translate(offset, ps);
+        //let translatedPs = translate(offset, ps);
+        let translatedPs = ps.map(translate(offset));
         let poly = f(translatedPs); 
         //let ev = evalDeCasteljau(translatedPs);
         let ts_ = allRoots(poly,0-DELTA,1+DELTA);

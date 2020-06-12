@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.drawElemFunctions = void 0;
 const draw_min_y_1 = require("./draw-min-y");
 const draw_loop_1 = require("./draw-loop");
 const draw_loops_1 = require("./draw-loops");

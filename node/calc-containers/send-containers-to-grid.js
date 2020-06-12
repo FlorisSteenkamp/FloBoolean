@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.sendContainersToGrid = void 0;
 const to_grid_1 = require("../loop/normalize/to-grid");
 /**
  * Returns the containers from the given containers by sending their boxes to a

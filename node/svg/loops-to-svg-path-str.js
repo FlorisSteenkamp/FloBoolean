@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.loopsToSvgPathStr = void 0;
 const beziers_to_svg_path_str_1 = require("./beziers-to-svg-path-str");
 /**
  * Returns an SVG path string representation of the given bezier loops.

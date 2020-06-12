@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.loopFromBeziers = void 0;
 function isPoint(ps) {
     if (ps.length === 2) {
         return (ps[0][0] === ps[1][0] && ps[0][1] === ps[1][1] // p[0] === p[1]

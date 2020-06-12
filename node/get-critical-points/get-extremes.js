@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getExtremes = void 0;
 const get_extreme_1 = require("./get-extreme");
 // TODO - include all interface points close to the extreme - they are the only
 // important interface points - or are they??
