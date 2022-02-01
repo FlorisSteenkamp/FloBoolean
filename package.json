@@ -45,6 +45,6 @@
         "build": "npm run build-browser && npm run build-node",
         "build-node": "rimraf node && tsc",
         "build-browser": "rimraf browser && webpack",
-        "test": "nyc mocha"
+        "test": "mocha"
     }
 }

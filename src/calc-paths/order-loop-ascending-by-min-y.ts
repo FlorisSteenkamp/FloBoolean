@@ -1,5 +1,4 @@
-
-import { getBounds } from "flo-bezier3";
+import { getBounds_ } from "../get-bounds-";
 
 
 /**
@@ -20,7 +19,7 @@ function orderLoopAscendingByMinY(
 function getMinY(pss: number[][][]) {	
     let minY = Number.POSITIVE_INFINITY;
     for (let ps of pss) {
-        let y = getBounds(ps).box[0][1];
+        let y = getBounds_(ps).box[0][1];
         if (y < minY) { minY = y; }
 	}
 

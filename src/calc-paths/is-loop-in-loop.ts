@@ -1,9 +1,8 @@
-
 import { flatCoefficients, allRoots } from 'flo-poly';
-import { 
-    getBoundingBox, getX, getY, tangent, getBounds, evalDeCasteljau
-} from 'flo-bezier3';
+import { getXY, tangent, evalDeCasteljau } from 'flo-bezier3';
 import { toUnitVector, translate } from 'flo-vector2d';
+import { getBoundingBox_ } from '../get-bounding-box-';
+import { getBounds_ } from '../get-bounds-';
 
 
 // TODO - remove delta by basing isLoopInLoop on a solid numerical analytic 
@@ -87,7 +86,7 @@ function isLoopNotInLoop(loop1: number[][][], loop2: number[][][]) {
 
 
 function getLoopBounds(pss: number[][][]) {
-    let bounds = pss.map(ps => getBounds(ps))
+    let bounds = pss.map(ps => getBounds_(ps))
     return {
 		minX: Math.min(...bounds.map(bound => bound.box[0][0])),
         maxX: Math.max(...bounds.map(bound => bound.box[1][0])),
@@ -101,6 +100,8 @@ function getLoopBounds(pss: number[][][]) {
  * @param p The point where the horizontal ray starts
  * @param toLeft The ray to the left of this point (else right)
  * @param loop A loop of curves
+ * 
+ * @internal
  */
 function getAxisAlignedRayLoopIntersections(
         loop: number[][][], p: number[], dir: Dir) {
@@ -114,7 +115,7 @@ function getAxisAlignedRayLoopIntersections(
         //------------------------------------------------------/
         //---- Check if ray intersects bezier bounding box -----/
         //------------------------------------------------------/
-        let [[minX,minY],[maxX,maxY]] = getBoundingBox(ps);
+        let [[minX,minY],[maxX,maxY]] = getBoundingBox_(ps);
         let notIntersecting = 
             ((dir === 'left' || dir === 'right') && (minY > y || maxY < y)) ||
             ((dir === 'up'   || dir === 'down' ) && (minX > x || maxX < x));
@@ -136,11 +137,13 @@ function getAxisAlignedRayLoopIntersections(
         let axis;
         let dirIsDecreasing = (dir === 'left' || dir === 'up');
         if (dir === 'left' || dir === 'right') {
-            f = getY;
+            //f = getY;
+            f = (ps: number[][]) => getXY(ps)[1];
             offset = [0,-y];
             axis = 0;
         } else {
-            f = getX;
+            //f = getX;
+            f = (ps: number[][]) => getXY(ps)[0];
             offset = [-x,0];
             axis = 1;
         }

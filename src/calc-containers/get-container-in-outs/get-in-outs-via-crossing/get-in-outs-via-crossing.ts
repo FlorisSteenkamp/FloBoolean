@@ -1,4 +1,3 @@
-
 import { Container } from "../../../container";
 import { InOut } from "../../../in-out";
 import { getIntervalBox, getHodograph, evalDeCasteljau } from "flo-bezier3";

@@ -44,11 +44,13 @@ function enableDebugForBooleanOp(debugOn: boolean) {
     let debug: Debug = (window as any)._debug_;
 
     debug = { 
-        ...debug, 
+        ...debug,
         generated: { 
-            ...debug?.generated,
+            //...debug?.generated,
+            ...(!debug ? {} : !debug.generated ? {} : debug.generated),
             elems: { 
-                ...debug?.generated?.elems,
+                //...debug?.generated?.elems,
+                ...(!debug ? {} : !debug.generated ? {} : !debug.generated.elems ? {} : debug.generated.elems),
                 minY         : [],
                 loop         : [],
                 loops        : [],
@@ -60,15 +62,18 @@ function enableDebugForBooleanOp(debugOn: boolean) {
                 boundingHull_     : []
             },
             timing: {
-                ...debug?.generated?.timing,
+                //...debug?.generated?.timing,
+                ...(!debug ? {} : !debug.generated ? {} : !debug.generated.timing ? {} : debug.generated.timing),
                 normalize     : 0,
                 simplifyPaths : 0,
             }
         },
         fs: {
-            ...debug?.fs,
+            //...debug?.fs,
+            ...(!debug ? {} : !debug.fs ? {} : debug.fs),
             drawElem: {
-                ...debug?.fs?.drawElem,
+                //...debug?.fs?.drawElem,
+                ...(!debug ? {} : !debug.fs ? {} : !debug.fs.drawElem ? {} : debug.fs.drawElem),
                 ...drawElemFunctions
             }
         }

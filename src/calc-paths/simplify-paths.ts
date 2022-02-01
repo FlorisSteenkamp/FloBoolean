@@ -15,12 +15,14 @@ import { Loop, loopFromBeziers } from '../loop/loop';
 import { normalizeLoops } from '../loop/normalize/normalize-loop';
 import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate';
 import { getLoopArea } from '../loop/get-loop-area';
-import { getBoundingBox, getBoundingBoxTight, getBoundingHull } from 'flo-bezier3';
+import { getBoundingHull, getBoundingBoxTight } from 'flo-bezier3';
 import { loopsToSvgPathStr } from '../svg/loops-to-svg-path-str';
+
 // the imports below is used in the test cases - see code below
 import { getLoopCentroid } from '../loop/get-loop-centroid';
 import { simplifyBounds } from '../loop/simplify-bounds';
 import { getLoopBounds } from '../loop/get-loop-bounds';
+import { getBoundingBox_ } from '../get-bounding-box-';
 
 
 /**
@@ -37,6 +39,13 @@ import { getLoopBounds } from '../loop/get-loop-bounds';
 function simplifyPaths(
         bezierLoops: number[][][][],
         maxCoordinate?: number): Loop[][] {
+
+
+    let timingStart: number;
+    if (typeof _debug_ !== 'undefined') {
+        timingStart = performance.now();
+    }
+
 
     /** 
      * All bezier coordinates will be truncated to this (bit-aligned) bitlength.
@@ -127,6 +136,11 @@ function simplifyPaths(
 
     addDebugInfo2(loopss_);
 
+    if (typeof _debug_ !== 'undefined') {
+        const timing = _debug_.generated.timing;
+        timing.simplifyPaths = performance.now() - timingStart;
+    }
+
     return loopss_;
 }
 
@@ -181,7 +195,7 @@ function addDebugInfo1(loops: number[][][][]) {
     }
     for (let loop of loops) {
         for (let bez of loop) {
-            let lbb   = getBoundingBox(bez);
+            let lbb   = getBoundingBox_(bez);
             let tbb   = getBoundingBoxTight(bez);
             let bhull = getBoundingHull(bez);
             _debug_.generated.elems.bezier_          .push(bez);

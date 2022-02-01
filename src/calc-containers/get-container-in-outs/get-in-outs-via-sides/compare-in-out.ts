@@ -42,13 +42,15 @@ function compareOrderedInOut(
     if (!xA.compensated) { // else the root is already compensated once
         xA.compensated = 1;  // compensate once - in future we can compensate more times if necessary
         // there should be only 1 root in the 4u interval
-        xA.riExp = refineK1(xA.ri.tS, xA.getPsExact)[0];
+        // TODO - getPExact called too often - cache it!
+        xA.riExp = refineK1(xA.ri, xA.getPExact())[0];
     }
 
     if (!xB.compensated) { // else the root is already compensated once
         xB.compensated = 1;  // compensate once - in future we can compensate more times if necessary
         // there should be only 1 root in the 4u interval
-        xB.riExp = refineK1(xB.ri.tS, xB.getPsExact)[0];
+        // TODO - getPExact called too often - cache it!
+        xB.riExp = refineK1(xB.ri, xB.getPExact())[0];
     }
 
     //console.log('compensated')

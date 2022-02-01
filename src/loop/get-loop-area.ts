@@ -1,7 +1,7 @@
 
-import { getX, getY, getDx, getDy } from "flo-bezier3";
+import { getXY, getDxy } from "flo-bezier3";
 import { gaussQuadrature } from 'flo-gauss-quadrature';
-import { multiply, add, negate, evaluate } from 'flo-poly';
+import { multiply, add, negate, Horner as evaluatePoly } from 'flo-poly';
 import { Loop } from "./loop";
 
 
@@ -14,18 +14,16 @@ function getLoopArea(loop: Loop) {
     for (let curve of loop.curves) {
         let ps = curve.ps;
 
-        let x = getX(ps);
-        let y = getY(ps);
-        let dx = getDx(ps);
-        let dy = getDy(ps);
+        let [x,y] = getXY(ps);
+        let [dx,dy] = getDxy(ps);
 
         // xy' named as xy_
-        let xy_ = multiply(x, dy);
-        let yx_ = negate(multiply(y, dx));
+        let xdy = multiply(x, dy);
+        let ydx = negate(multiply(y, dx));
 
-        let poly = add(xy_, yx_);
-        let f = evaluate(poly);
-
+        let poly = add(xdy, ydx);
+        let f = (x: number) => evaluatePoly(poly, x);
+        // TODO - why not calculate directly (it's just a poly)?😳
         let area = gaussQuadrature(f, [0,1], 16);
 
         totalArea += area;

@@ -1,9 +1,8 @@
-
-import { X, getIntersectionCoeffs, getIntervalBoxQuad } from "flo-bezier3";
+import { X, getIntersectionCoeffs, getIntervalBoxDd } from "flo-bezier3";
 import { Container } from "../../../container";
 import { _X_ } from "../../../x";
 import { Curve } from "../../../curve/curve";
-import { allRootsMultiWithErrBounds, refineK1, RootInterval, rootIntervalToExp } from "flo-poly";
+import { allRootsCertified, refineK1, RootInterval, rootIntervalToExp } from "flo-poly";
 import { RootIntervalExp } from "flo-poly";
 import { OrderedInOut } from "./ordered-in-out";
 import { areBoxesIntersectingQuad } from "../../../sweep-line/are-boxes-intersecting";
@@ -123,14 +122,16 @@ function getXInOuts(container: Container) {
 /** 
  * Get zero times compensated roots and exact coefficents 
  */
-function getXs0(ps1: number[][], ps2: number[][]) {
+function getXs0(
+        ps1: number[][], ps2: number[][]): { ris: RootIntervalExp[]; getPExact: () => number[][]; } {
+            
     let _coeffs = getIntersectionCoeffs(ps1, ps2);
     if (_coeffs === undefined) { return undefined; }
-    let { coeffs, errBound, getPsExact } = _coeffs;
-    let ris = allRootsMultiWithErrBounds(coeffs, errBound, getPsExact);
+    let { coeffs, errBound, getPExact } = _coeffs;
+    let ris = allRootsCertified(coeffs, 0, 1, errBound, getPExact);
     if (ris.length === 0) { return undefined; }
 
-    return { ris: ris.map(rootIntervalToExp), getPsExact };
+    return { ris: ris.map(rootIntervalToExp), getPExact };
 }
 
 
@@ -157,11 +158,23 @@ function getTs(
 
     let xs0Side = getXs0(ps, side);
     if (xs0Side === undefined) { return []; }
-    let { ris: risSide, getPsExact: getPsExactSide } = xs0Side;
+    let { ris: risSide, getPExact: getPExactSide } = xs0Side;
+    //let exactSide = getPExactSide();
+    let exactSide: number[][] = undefined;  // lazy loaded
+    let getPExactSide_ = () => {
+        exactSide = exactSide || getPExactSide();
+        return exactSide;
+    }
 
     let xs0Ps = getXs0(side, ps);
     if (xs0Ps === undefined) { return []; }
-    let { ris: risPs, getPsExact: getPsExactPs } = xs0Ps;
+    let { ris: risPs, getPExact: getPExactPs } = xs0Ps;
+    //let exactPs = getPExactPs();
+    let exactPs: number[][] = undefined;  // lazy loaded
+    let getPExactPs_ = () => {
+        exactPs = exactPs || getPExactPs();
+        return exactPs;
+    }
 
     
     //---- Make sure no boxesPs overlap. 
@@ -173,14 +186,14 @@ function getTs(
 
     let maxIter: number;
 
-    // currently we only go up to once compensated (quad precision roots)
+    // currently we only go up to once compensated (double-double precision roots)
     maxIter = 1;  
     /** number of compensations for ps */
     let cPs = 0;
     let boxesPs: number[][][][];
     loop: while (true && cPs < maxIter) {
         // update boxes to new tighter versions
-        boxesPs = risPs.map(ri => getIntervalBoxQuad(ps, [ri.tS, ri.tE]));
+        boxesPs = risPs.map(ri => getIntervalBoxDd(ps, [ri.tS, ri.tE]));
         for (let i=0; i<risPs.length; i++) {
             let boxPsI = boxesPs[i];
             for (let j=i+1; j<risPs.length; j++) {
@@ -189,7 +202,14 @@ function getTs(
                 if (areBoxesIntersectingQuad(true)(boxPsI, boxPsJ)) {
                     let _risPs: RootIntervalExp[] = [];
                     for (let riPs of risPs) {
-                        _risPs.push(...refineK1(riPs.tS[1], getPsExactPs));
+                        // TODO - below we're converting riPs (using getXs0) to RootIntervalExp and below back to 
+                        // RootInterval again - not necessary - fix
+                        _risPs.push(
+                            ...refineK1(
+                                { tS: riPs.tS[1], tE: riPs.tE[1], multiplicity: riPs.multiplicity }, 
+                                getPExactPs_()
+                            )
+                        );
                     }
                     risPs = _risPs;
                     cPs++;
@@ -209,7 +229,7 @@ function getTs(
     let cSide = 0;
     let boxesSide: number[][][][];
     loop: while (true && cSide < maxIter) {
-        boxesSide = risSide.map(ri => getIntervalBoxQuad(side, [ri.tS, ri.tE]));
+        boxesSide = risSide.map(ri => getIntervalBoxDd(side, [ri.tS, ri.tE]));
         for (let i=0; i<risSide.length; i++) {
             let boxSideI = boxesSide[i];
             for (let j=i+1; j<risSide.length; j++) {
@@ -217,7 +237,12 @@ function getTs(
                 if (areBoxesIntersectingQuad(true)(boxSideI, boxSideJ)) {
                     let _risSide: RootIntervalExp[] = [];
                     for (let riSide of risSide) {
-                        _risSide.push(...refineK1(riSide.tS[1], getPsExactSide));
+                        _risSide.push(
+                            ...refineK1(
+                                { tS: riSide.tS[1], tE: riSide.tE[1], multiplicity: riSide.multiplicity }, 
+                                getPExactSide_()
+                            )
+                        );
                     }
                     risSide = _risSide;
                     cSide++;
@@ -243,7 +268,7 @@ function getTs(
                     compensated: cPs,
                     ri: rootIntervalToDouble(risPs[i]),
                     riExp: cPs ? risPs[i] : undefined,
-                    getPsExact: cPs ? undefined : getPsExactPs,
+                    getPExact: cPs ? undefined : getPExactPs,
                     kind: 1,
                     box: boxExpToBox(boxPs)
                 };
@@ -251,7 +276,7 @@ function getTs(
                     compensated: cSide,
                     ri: rootIntervalToDouble(risSide[j]),
                     riExp: cSide ? risSide[j] : undefined,
-                    getPsExact: cSide ? undefined : getPsExactSide,
+                    getPExact: cSide ? undefined : getPExactSide,
                     kind: 1,
                     box: boxExpToBox(boxSide)
                 }

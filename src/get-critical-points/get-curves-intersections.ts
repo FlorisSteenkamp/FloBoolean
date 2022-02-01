@@ -1,7 +1,6 @@
-
 import { orient2d } from 'flo-numerical';
 import { squaredDistanceBetween } from 'flo-vector2d';
-import { getBoundingBox, getBoundingHull, inversion1_BL52_1ULP } from "flo-bezier3";
+import { getBoundingHull, inversion01Precise } from "flo-bezier3";
 import { isPointOnBezierExtension, getOtherTs } from "flo-bezier3";
 import { Curve } from "../curve/curve";
 import { areBoxesIntersecting } from "../sweep-line/are-boxes-intersecting";
@@ -10,6 +9,7 @@ import { getIntersection } from './get-intersection';
 import { _X_ } from '../x';
 import { createRootExact } from 'flo-poly';
 import { makeSimpleX } from './make-simple-x';
+import { getBoundingBox_ } from '../get-bounding-box-';
 
 
 /** function that returns true if *open* axis aligned boxes intersect, false otherwise */
@@ -42,8 +42,8 @@ function getCurvesIntersections(expMax: number) {
 
         // check open bounding boxes
         let aabbsIntersectOpen = areBoxesIntersectingOpen(
-            getBoundingBox(psA),
-            getBoundingBox(psB)
+            getBoundingBox_(psA),
+            getBoundingBox_(psB)
         );
         if (!aabbsIntersectOpen) {
             return checkEndpoints(curveA, curveB);
@@ -69,8 +69,8 @@ function getCurvesIntersections(expMax: number) {
 
     // check closed bounding boxes
     let possiblyIntersecting = areBoxesIntersectingClosed(
-        getBoundingBox(psA),
-        getBoundingBox(psB)
+        getBoundingBox_(psA),
+        getBoundingBox_(psB)
     );
     if (!possiblyIntersecting) { return undefined; }
 
@@ -86,9 +86,9 @@ function getCurvesIntersections(expMax: number) {
 
 /**
  * Returns an un-ordered pair of intersections (excluding interface intersections,
- * in which case undefined is returned) between curveA and curveB.
- * * **precondition**: curveA.next === curveB || curveB.next === curveA
- * * **precondition**: every intersection will be at an endpoint of at least
+ * in which case `undefined` is returned) between curveA and curveB.
+ * * **precondition:** curveA.next === curveB || curveB.next === curveA
+ * * **precondition:** every intersection will be at an endpoint of at least
  * one of the curves
  * @param curveA 
  * @param curveB 
@@ -137,8 +137,8 @@ function getLineLineIntersections(
     let psA = curveA.ps;
     let psB = curveB.ps;
     
-    let bbA = getBoundingBox(psA);
-    let bbB = getBoundingBox(psB);
+    let bbA = getBoundingBox_(psA);
+    let bbB = getBoundingBox_(psB);
     
     if (curveA.next !== curveB && curveB.next !== curveA) {
         // the two lines are not connected at their endpoints
@@ -178,9 +178,9 @@ function getLineLineIntersections(
 
     let tPair: number[];
     if (lenCurve1 > lenCurve2) {
-        tPair = [inversion1_BL52_1ULP(psA, psB[1]), 1];
+        tPair = [inversion01Precise(psA, psB[1]), 1];
     } else {
-        tPair = [0, inversion1_BL52_1ULP(psB, psA[0])];
+        tPair = [0, inversion01Precise(psB, psA[0])];
     }
     return [[
         makeSimpleX(1, curveA, 5),  // exact overlap endpoint
@@ -193,24 +193,3 @@ function getLineLineIntersections(
 
 
 export { getCurvesIntersections }
-
-
-
-
-
-
-
-
-
-
-
-// tight bounding boxes
-/*
-let bbTightA = getBoundingBoxTight(psA);
-let bbTightB = getBoundingBoxTight(psB);
-possiblyIntersecting = 
-    doConvexPolygonsIntersect(bbTightA, bbTightB, closed);
-    //doConvexPolygonsIntersect(bbTightA, bbTightB, false);
-//if (!possiblyIntersecting) { return false; }
-if (!possiblyIntersecting) { return checkEndpoints(curveA, curveB); }
-*/

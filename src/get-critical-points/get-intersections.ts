@@ -1,10 +1,9 @@
-
-import { getBoundingBox } from 'flo-bezier3';
 import { _X_ } from '../x';
 import { Loop } from '../loop/loop';
 import { Curve } from '../curve/curve';
 import { sweepLine } from '../sweep-line/sweep-line';
 import { getCurvesIntersections } from './get-curves-intersections';
+import { getBoundingBox_ } from '../get-bounding-box-';
 
 
 /**
@@ -24,8 +23,8 @@ function getIntersections(
     // Filter curves so that we eliminate those that can definitely not intersect
     let _xs = sweepLine(
         curves, 
-        curve => getBoundingBox(curve.ps)[0][0],
-        curve => getBoundingBox(curve.ps)[1][0],
+        curve => getBoundingBox_(curve.ps)[0][0],
+        curve => getBoundingBox_(curve.ps)[1][0],
         getCurvesIntersections(expMax)
     );
 

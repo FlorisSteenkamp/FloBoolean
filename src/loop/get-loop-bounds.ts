@@ -1,9 +1,8 @@
-
-import { getBounds, evaluate } from 'flo-bezier3';
 import { memoize } from 'flo-memoize';
 import { Loop } from './loop';
 import { Curve } from '../curve/curve';
 import { PointOnShape, IPointOnShape } from '../point-on-shape/point-on-shape';
+import { getBounds_ } from '../get-bounds-';
 
 
 const INF = Number.POSITIVE_INFINITY;
@@ -35,7 +34,7 @@ let getLoopBounds = memoize(function(loop: Loop): {
 	
 	loop.curves.forEach(function(curve: Curve): void {			
 		let ps = curve.ps; 
-		let bounds = getBounds(ps);
+		let bounds = getBounds_(ps);
 		
 		
 		{	
