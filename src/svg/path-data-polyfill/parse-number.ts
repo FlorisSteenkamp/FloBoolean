@@ -1,5 +1,4 @@
-
-import { Source } from './source';
+import { Source } from './source.js';
 
 
 /**
@@ -9,7 +8,7 @@ import { Source } from './source';
  * Spec: http://www.w3.org/TR/SVG11/single-page.html#paths-PathDataBNF
  * @param source 
  */
-function parseNumber(source: Source) {
+function parseNumber(source: Source): number {
     var exponent   = 0;
     var integer    = 0;
     var frac       = 1;
@@ -35,8 +34,7 @@ function parseNumber(source: Source) {
             source._string[source._currentIndex] !== "."
         )
     ) {
-        // The first character of a number must be one of [0-9+-.].
-        return null;
+        throw new Error('The first character of a number must be one of [0-9+-.].');
     }
 
     // Read the integer part, build right-to-left.
@@ -65,13 +63,12 @@ function parseNumber(source: Source) {
     if (source._currentIndex < source._endIndex && source._string[source._currentIndex] === ".") {
         source._currentIndex += 1;
 
-        // There must be a least one digit following the .
         if (
             source._currentIndex >= source._endIndex ||
             source._string[source._currentIndex] < "0" ||
             source._string[source._currentIndex] > "9"
         ) {
-            return null;
+            throw new Error('There must be a least one digit following the .')
         }
 
         while (
@@ -102,13 +99,12 @@ function parseNumber(source: Source) {
             expsign = -1;
         }
 
-        // There must be an exponent.
         if (
             source._currentIndex >= source._endIndex ||
             source._string[source._currentIndex] < "0" ||
             source._string[source._currentIndex] > "9"
         ) {
-            return null;
+            throw new Error('There must be an exponent.')
         }
 
         while (
@@ -130,7 +126,7 @@ function parseNumber(source: Source) {
     }
 
     if (startIndex === source._currentIndex) {
-        return null;
+        throw new Error('Internal error: startIndex === source._currentIndex');
     }
 
     source._skipOptionalSpacesOrDelimiter();

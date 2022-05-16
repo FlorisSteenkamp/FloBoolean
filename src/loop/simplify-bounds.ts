@@ -1,5 +1,4 @@
-
-import { IPointOnShape } from "../point-on-shape/point-on-shape";
+import { IPointOnShape } from "../point-on-shape/point-on-shape.js";
 
 
 /** Used in tests only - not used in algorithm */

@@ -1,6 +1,5 @@
-
-import { Curve } from '../curve/curve';
 import { evalDeCasteljau } from 'flo-bezier3';
+import { Curve } from '../curve/curve.js';
 
 
 interface IPointOnShape {
@@ -29,7 +28,7 @@ class PointOnShape implements IPointOnShape {
 
 
     // Cache
-    private p_ : number[] = undefined;
+    private p_ : number[] | undefined = undefined;
     /**
      * The planar point coordinates of this [[PointOnShape]].
      */

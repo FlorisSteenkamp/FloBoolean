@@ -1,5 +1,4 @@
-
-import { beziersToSvgPathStr } from "./beziers-to-svg-path-str";
+import { beziersToSvgPathStr } from "./beziers-to-svg-path-str.js";
 
 
 /**

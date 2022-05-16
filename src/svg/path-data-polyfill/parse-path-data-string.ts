@@ -1,5 +1,4 @@
-
-import { Source } from './source';
+import { Source } from './source.js';
 
 
 /**
@@ -7,21 +6,17 @@ import { Source } from './source';
  * @param string 
  */
 function parsePathDataString(string: string) {
-    if (!string.length) return [];
+    if (!string.length) { return []; }
 
     let source = new Source(string);
     let pathData = [];
 
-    if (!source.initialCommandIsMoveTo()) { return []; }
+    if (!source.initialCommandIsMoveTo()) { 
+        throw new Error('Path must start with m or M'); 
+    }
 
     while (source.hasMoreData()) {
-        let pathSeg = source.parseSegment();
-
-        if (pathSeg === null) {
-            break;
-        } else {
-            pathData.push(pathSeg);
-        }
+        pathData.push(source.parseSegment());
     }
 
     return pathData;

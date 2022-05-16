@@ -1,33 +1,23 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBeziersFromRawPaths = void 0;
-const path_state_1 = require("./path-state");
-const z_1 = require("./path-segment/z");
-const c_1 = require("./path-segment/c");
-const s_1 = require("./path-segment/s");
-const l_1 = require("./path-segment/l");
-const h_1 = require("./path-segment/h");
-const v_1 = require("./path-segment/v");
-const q_1 = require("./path-segment/q");
-const t_1 = require("./path-segment/t");
-const a_1 = require("./path-segment/a");
+import { PathState } from './path-state.js';
+import { z } from './path-segment/z.js';
+import { c } from './path-segment/c.js';
+import { s } from './path-segment/s.js';
+import { l } from './path-segment/l.js';
+import { h } from './path-segment/h.js';
+import { v } from './path-segment/v.js';
+import { q } from './path-segment/q.js';
+import { t } from './path-segment/t.js';
+import { a } from './path-segment/a.js';
 const pathFs = {
     //a, // elliptical arc
-    c: c_1.c,
-    h: // cubic bezier
-    h_1.h,
-    l: // horizontal line
-    l_1.l,
-    q: // line
-    q_1.q,
-    s: // quadratic bezier
-    s_1.s,
-    t: // cubic bezier (smooth)
-    t_1.t,
-    v: // quadratic bezier (smooth)
-    v_1.v,
-    z: // vertical line
-    z_1.z // close path
+    c,
+    h,
+    l,
+    q,
+    s,
+    t,
+    v,
+    z // close path
 };
 /**
  * Returns order 1, 2 and 3 beziers from the given SVG DOM element. If a path
@@ -42,10 +32,10 @@ function getBeziersFromRawPaths(paths) {
     if (paths[0].type.toLowerCase() !== 'm') {
         throw new Error('Invalid SVG - every new path must start with an M or m.');
     }
-    let s = new path_state_1.PathState();
+    let s = new PathState();
     let beziersArrays = [];
     let beziers = [];
-    let prevType;
+    let prevType = undefined;
     for (let i = 0; i < paths.length; i++) {
         let pathSeg = paths[i];
         let type = pathSeg.type.toLowerCase();
@@ -70,7 +60,7 @@ function getBeziersFromRawPaths(paths) {
                 // This is a subpath, close as if the previous command was a 
                 // Z or z.
                 if (prevType !== 'z') {
-                    beziers.push(z_1.z(s));
+                    beziers.push(z(s));
                 }
                 // Start new path
                 beziersArrays.push(beziers);
@@ -81,7 +71,7 @@ function getBeziersFromRawPaths(paths) {
             continue;
         }
         if (type === 'a') {
-            beziers.push(...a_1.a(s));
+            beziers.push(...a(s));
         }
         else {
             let f = pathFs[type];
@@ -94,15 +84,15 @@ function getBeziersFromRawPaths(paths) {
         }
         prevType = type;
     }
-    if (beziers.length) {
+    if (beziers.length > 0) {
         // This is a subpath, close as if the previous command was a Z or z.
         if (prevType !== 'z') {
-            beziers.push(z_1.z(s));
+            beziers.push(z(s));
         }
         // Start new path
         beziersArrays.push(beziers);
     }
     return beziersArrays;
 }
-exports.getBeziersFromRawPaths = getBeziersFromRawPaths;
+export { getBeziersFromRawPaths };
 //# sourceMappingURL=get-beziers-from-raw-paths.js.map

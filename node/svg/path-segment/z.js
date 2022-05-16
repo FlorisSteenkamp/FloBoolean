@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.z = void 0;
 /**
  * @hidden
  * Z and z: (from www.w3.org)
@@ -20,5 +17,5 @@ function z(s) {
     s.prev2ndQuadraticControlPoint = undefined;
     return ps;
 }
-exports.z = z;
+export { z };
 //# sourceMappingURL=z.js.map

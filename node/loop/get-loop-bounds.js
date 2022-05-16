@@ -1,14 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLoopBounds = void 0;
-const flo_bezier3_1 = require("flo-bezier3");
-const flo_memoize_1 = require("flo-memoize");
-const point_on_shape_1 = require("../point-on-shape/point-on-shape");
+import { memoize } from 'flo-memoize';
+import { PointOnShape } from '../point-on-shape/point-on-shape.js';
+import { getBounds_ } from '../get-bounds-.js';
 const INF = Number.POSITIVE_INFINITY;
 /**
  * Returns the bounds of the given loop - used in tests only.
  */
-let getLoopBounds = flo_memoize_1.memoize(function (loop) {
+let getLoopBounds = memoize(function (loop) {
     let extremes = [
         [
             { bezier: undefined, t: undefined, val: INF },
@@ -21,7 +18,7 @@ let getLoopBounds = flo_memoize_1.memoize(function (loop) {
     ];
     loop.curves.forEach(function (curve) {
         let ps = curve.ps;
-        let bounds = flo_bezier3_1.getBounds(ps);
+        let bounds = getBounds_(ps);
         {
             {
                 let v = bounds.box[0][0];
@@ -72,11 +69,11 @@ let getLoopBounds = flo_memoize_1.memoize(function (loop) {
         }
     });
     return {
-        minX: new point_on_shape_1.PointOnShape(extremes[0][0].bezier, extremes[0][0].t),
-        minY: new point_on_shape_1.PointOnShape(extremes[0][1].bezier, extremes[0][1].t),
-        maxX: new point_on_shape_1.PointOnShape(extremes[1][0].bezier, extremes[1][0].t),
-        maxY: new point_on_shape_1.PointOnShape(extremes[1][1].bezier, extremes[1][1].t)
+        minX: new PointOnShape(extremes[0][0].bezier, extremes[0][0].t),
+        minY: new PointOnShape(extremes[0][1].bezier, extremes[0][1].t),
+        maxX: new PointOnShape(extremes[1][0].bezier, extremes[1][0].t),
+        maxY: new PointOnShape(extremes[1][1].bezier, extremes[1][1].t)
     };
 });
-exports.getLoopBounds = getLoopBounds;
+export { getLoopBounds };
 //# sourceMappingURL=get-loop-bounds.js.map

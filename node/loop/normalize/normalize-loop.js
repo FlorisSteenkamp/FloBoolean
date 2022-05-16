@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.normalizeLoops = void 0;
-const flo_numerical_1 = require("flo-numerical");
-const fix_beziers_1 = require("./fix-beziers");
-const to_grid_1 = require("./to-grid");
+import { bitLength } from 'big-float-ts';
+import { fixBeziers } from "./fix-beziers.js";
+import { toGrid } from './to-grid.js';
 /**
  * Returns new loops from the given loops by aligning the 53-bit double
  * precision coordinates to 46-bit coordinates. This speeds up the algorithm
@@ -22,12 +19,14 @@ const to_grid_1 = require("./to-grid");
  *   are seperated. (this prevents infinite curvature at the endpoints, etc).
  *   (this condition is not necessary for this algorithm but may help algorithms
  *    down the line that needs such guarantees)
- * @param loop
+ * @param bezierLoops
  * @param maxBitLength
  * @param expMax
+ * @param doScramble
+ * @param doSendToGrid
  */
 function normalizeLoops(bezierLoops, maxBitLength, expMax, doScramble = false, doSendToGrid = true) {
-    let fixBeziers_ = fix_beziers_1.fixBeziers(expMax, maxBitLength, doSendToGrid);
+    let fixBeziers_ = fixBeziers(expMax, maxBitLength, doSendToGrid);
     let loops = bezierLoops.slice();
     // just for testing purposes
     loops = doScramble ? scrambleLoops(loops, maxBitLength, expMax, 1) : loops;
@@ -35,7 +34,6 @@ function normalizeLoops(bezierLoops, maxBitLength, expMax, doScramble = false, d
     loops = loops.filter(loop => loop.length > 0);
     return loops;
 }
-exports.normalizeLoops = normalizeLoops;
 /** Just for testing purposes - not used in the actual algorithm */
 function scrambleLoops(loops, maxBitLength, expMax, mult = 0.02) {
     let loops_ = [];
@@ -53,8 +51,8 @@ function scrambleLoops(loops, maxBitLength, expMax, mult = 0.02) {
                         break;
                     }
                     c_ = (c + Math.random()) * (1 + ((Math.random() - 0.7) * mult));
-                    c_ = to_grid_1.toGrid(c_, expMax, maxBitLength);
-                    let bl = flo_numerical_1.bitLength(c_);
+                    c_ = toGrid(c_, expMax, maxBitLength);
+                    let bl = bitLength(c_);
                     if (bl > mbl) {
                         mbl = bl;
                         mblc = c_;
@@ -68,4 +66,5 @@ function scrambleLoops(loops, maxBitLength, expMax, mult = 0.02) {
     }
     return loops_;
 }
+export { normalizeLoops };
 //# sourceMappingURL=normalize-loop.js.map

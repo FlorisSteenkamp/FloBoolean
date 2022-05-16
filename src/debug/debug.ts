@@ -1,6 +1,5 @@
-
-import { drawElemFunctions, TDrawElemFunctions } from './draw-elem/draw-elem';
-import { IDebugElems } from './debug-elem-types';
+import { drawElemFunctions, TDrawElemFunctions } from './draw-elem/draw-elem.js';
+import { IDebugElems } from './debug-elem-types.js';
 
 
 type GeneratedElems = { [T in keyof IDebugElems]: IDebugElems[T][] };
@@ -46,33 +45,30 @@ function enableDebugForBooleanOp(debugOn: boolean) {
     debug = { 
         ...debug,
         generated: { 
-            //...debug?.generated,
             ...(!debug ? {} : !debug.generated ? {} : debug.generated),
             elems: { 
-                //...debug?.generated?.elems,
                 ...(!debug ? {} : !debug.generated ? {} : !debug.generated.elems ? {} : debug.generated.elems),
                 minY         : [],
                 loop         : [],
+                loopPre      : [],
+                loopsPre     : [],
                 loops        : [],
                 intersection : [],
                 container    : [],
                 bezier_      : [],
                 looseBoundingBox_ : [],
                 tightBoundingBox_ : [],
-                boundingHull_     : []
+                boundingHull_     : [],
             },
             timing: {
-                //...debug?.generated?.timing,
                 ...(!debug ? {} : !debug.generated ? {} : !debug.generated.timing ? {} : debug.generated.timing),
                 normalize     : 0,
                 simplifyPaths : 0,
             }
         },
         fs: {
-            //...debug?.fs,
             ...(!debug ? {} : !debug.fs ? {} : debug.fs),
             drawElem: {
-                //...debug?.fs?.drawElem,
                 ...(!debug ? {} : !debug.fs ? {} : !debug.fs.drawElem ? {} : debug.fs.drawElem),
                 ...drawElemFunctions
             }

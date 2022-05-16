@@ -1,6 +1,6 @@
-import { Container } from "../container";
-import { _X_ } from "../x";
-import { Loop } from "../loop/loop";
+import { Container } from "../container.js";
+import { _X_ } from "../-x-.js";
+import { Loop } from "../loop/loop.js";
 /**
  *
  * @param containerDim

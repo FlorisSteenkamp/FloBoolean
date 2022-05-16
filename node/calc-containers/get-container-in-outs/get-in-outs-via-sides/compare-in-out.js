@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.compareOrderedInOut = void 0;
-const flo_poly_1 = require("flo-poly");
-const flo_numerical_1 = require("flo-numerical");
+import { refineK1 } from "flo-poly";
+import { eCompare } from "big-float-ts";
 const abs = Math.abs;
 // TODO - memoize (probably at some deeper level)
 /**
@@ -32,17 +29,19 @@ function compareOrderedInOut(inOutA, inOutB) {
     if (!xA.compensated) { // else the root is already compensated once
         xA.compensated = 1; // compensate once - in future we can compensate more times if necessary
         // there should be only 1 root in the 4u interval
-        xA.riExp = flo_poly_1.refineK1(xA.ri.tS, xA.getPsExact)[0];
+        // TODO - getPExact called too often - cache it!
+        xA.riExp = refineK1(xA.ri, xA.getPExact())[0];
     }
     if (!xB.compensated) { // else the root is already compensated once
         xB.compensated = 1; // compensate once - in future we can compensate more times if necessary
         // there should be only 1 root in the 4u interval
-        xB.riExp = flo_poly_1.refineK1(xB.ri.tS, xB.getPsExact)[0];
+        // TODO - getPExact called too often - cache it!
+        xB.riExp = refineK1(xB.ri, xB.getPExact())[0];
     }
     //console.log('compensated')
     //console.log('xA', expEst(xA.riExp.tS), ' - ', expEst(xA.riExp.tE));
     //console.log('xB', expEst(xB.riExp.tS), ' - ', expEst(xB.riExp.tE));
-    res = flo_numerical_1.compare(xA.riExp.tS, xB.riExp.tS);
+    res = eCompare(xA.riExp.tS, xB.riExp.tS);
     if (res !== 0) {
         return res;
     }
@@ -61,5 +60,9 @@ function compareOrderedInOut(inOutA, inOutB) {
         ? inOutA.inOut.idx - inOutB.inOut.idx
         : inOutB.inOut.idx - inOutA.inOut.idx;
 }
-exports.compareOrderedInOut = compareOrderedInOut;
+/** temp for testing */
+//function expEst(t: number[]) {
+//    return estimate(t.slice(0, t.length-1));
+//}
+export { compareOrderedInOut };
 //# sourceMappingURL=compare-in-out.js.map

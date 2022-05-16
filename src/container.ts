@@ -1,6 +1,5 @@
-
-import { _X_ } from "./x";
-import { InOut } from "./in-out";
+import { _X_ } from "./-x-.js";
+import { InOut } from "./in-out.js";
 
 
 /**

@@ -1,13 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.fixBeziers = void 0;
-const to_grid_1 = require("./to-grid");
-const flo_bezier3_1 = require("flo-bezier3");
-const fix_bezier_by_point_spacing_1 = require("./fix-bezier-by-point-spacing");
+import { isSelfOverlapping } from "flo-bezier3";
+import { toGrid } from "./to-grid.js";
+import { fixBezierByPointSpacing } from "./fix-bezier-by-point-spacing.js";
 function sendToGrid(expMax, maxBitLength) {
     return (p) => [
-        to_grid_1.toGrid(p[0], expMax, maxBitLength),
-        to_grid_1.toGrid(p[1], expMax, maxBitLength)
+        toGrid(p[0], expMax, maxBitLength),
+        toGrid(p[1], expMax, maxBitLength)
     ];
 }
 function sendToGridNoop(p) { return p; }
@@ -22,7 +19,7 @@ function sendToGridNoop(p) { return p; }
  */
 function fixBeziers(expMax, maxBitLength, doSendToGrid = true) {
     /** The actual control point grid spacing */
-    let gridSpacing = Math.pow(2, expMax) * Math.pow(2, (-maxBitLength));
+    let gridSpacing = 2 ** expMax * 2 ** (-maxBitLength);
     let sendToGrid_ = doSendToGrid
         ? sendToGrid(expMax, maxBitLength)
         : sendToGridNoop;
@@ -41,12 +38,12 @@ function fixBeziers(expMax, maxBitLength, doSendToGrid = true) {
             // Align to grid before doing any further checks
             ps = ps.map(p => sendToGrid_(p));
             // Check if ps degenerates into a self-overlapping line
-            if (flo_bezier3_1.isSelfOverlapping(ps)) {
+            if (isSelfOverlapping(ps)) {
                 // Change into a line with endponts that of the original bezier
                 ps = [ps[0], ps[ps.length - 1]];
             }
-            ps = fix_bezier_by_point_spacing_1.fixBezierByPointSpacing(ps, gridSpacing, sendToGrid_);
-            if (ps) {
+            ps = fixBezierByPointSpacing(ps, gridSpacing, sendToGrid_);
+            if (ps !== undefined) {
                 newPss.push(ps);
             }
         }
@@ -60,5 +57,5 @@ function fixBeziers(expMax, maxBitLength, doSendToGrid = true) {
         return newPss;
     };
 }
-exports.fixBeziers = fixBeziers;
+export { fixBeziers };
 //# sourceMappingURL=fix-beziers.js.map

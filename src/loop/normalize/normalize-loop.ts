@@ -1,7 +1,6 @@
-
-import { bitLength } from 'flo-numerical';
-import { fixBeziers } from "./fix-beziers";
-import { toGrid } from './to-grid';
+import { bitLength } from 'big-float-ts';
+import { fixBeziers } from "./fix-beziers.js";
+import { toGrid } from './to-grid.js';
 
 
 /**
@@ -22,9 +21,11 @@ import { toGrid } from './to-grid';
  *   are seperated. (this prevents infinite curvature at the endpoints, etc).
  *   (this condition is not necessary for this algorithm but may help algorithms
  *    down the line that needs such guarantees)
- * @param loop 
+ * @param bezierLoops
  * @param maxBitLength
  * @param expMax
+ * @param doScramble
+ * @param doSendToGrid
  */
 function normalizeLoops(
         bezierLoops: number[][][][],
@@ -60,7 +61,7 @@ function scrambleLoops(
                 let c_ = 0;
                 let ii = 0;
                 let bl = 0;
-                let mblc;
+                let mblc: number;
                 let mbl = 0;
                 while (true) {
                     if (++ii > 10) { break; }
@@ -72,7 +73,7 @@ function scrambleLoops(
                         mblc = c_;
                     }
                 }
-                return mblc;
+                return mblc!;
             }));
             loop_.push(bez_);
         }

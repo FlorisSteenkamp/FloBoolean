@@ -1,7 +1,6 @@
-
-import { getYBoundsTight } from 'flo-bezier3';
+ import { getYBoundsTight } from 'flo-bezier3';
 import { memoize } from 'flo-memoize';
-import { Loop } from './loop';
+import { Loop } from './loop.js';
 
 
 /** 
@@ -9,6 +8,7 @@ import { Loop } from './loop';
  */
 let getMinY = memoize(function getMinY(loop: Loop)/*: number[][]*/ {
 	let curves = loop.curves;
+
 
 	let bestY = getYBoundsTight(curves[0].ps).minY;
 	let bestCurve = curves[0];

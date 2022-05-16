@@ -1,4 +1,4 @@
-import { OrderedInOut } from "./ordered-in-out";
+import { OrderedInOut } from "./ordered-in-out.js";
 /**
  *
  * @param inOutA

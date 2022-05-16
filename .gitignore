@@ -1,7 +1,8 @@
+c.bat
 npm-debug.log
 papers
 node_modules
-c.bat
 todo.txt
 coverage/
 *.py
+notes.txt

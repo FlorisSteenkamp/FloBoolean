@@ -1,37 +1,39 @@
-
 declare var _debug_: Debug; 
 
-import { Debug } from '../debug/debug';
-import { completePath } from './complete-path';
-import { getTightestContainingLoop } from './get-tightest-containing-loop';
-import { orderLoopAscendingByMinY } from './order-loop-ascending-by-min-y';
-import { splitLoopTrees } from './split-loop-trees';
-import { getLoopsFromTree } from './get-loops-from-tree';
-import { getContainers } from '../calc-containers/get-containers';
-import { InOut } from '../in-out';
-import { getOutermostInAndOut } from './get-outermost-in-and-out';
-import { reverseOrientation } from '../loop/reverse-orientation';
-import { Loop, loopFromBeziers } from '../loop/loop';
-import { normalizeLoops } from '../loop/normalize/normalize-loop';
-import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate';
-import { getLoopArea } from '../loop/get-loop-area';
 import { getBoundingHull, getBoundingBoxTight } from 'flo-bezier3';
-import { loopsToSvgPathStr } from '../svg/loops-to-svg-path-str';
+import { Debug } from '../debug/debug.js';
+import { completePath } from './complete-path.js';
+import { getTightestContainingLoop } from './get-tightest-containing-loop.js';
+import { orderLoopAscendingByMinY } from './order-loop-ascending-by-min-y.js';
+import { splitLoopTrees } from './split-loop-trees.js';
+import { getLoopsFromTree } from './get-loops-from-tree.js';
+import { getContainers } from '../calc-containers/get-containers.js';
+import { InOut } from '../in-out.js';
+import { getOutermostInAndOut } from './get-outermost-in-and-out.js';
+import { reverseOrientation } from '../loop/reverse-orientation.js';
+import { Loop, loopFromBeziers } from '../loop/loop.js';
+import { normalizeLoops } from '../loop/normalize/normalize-loop.js';
+import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate.js';
+import { getLoopArea } from '../loop/get-loop-area.js';
+import { loopsToSvgPathStr } from '../svg/loops-to-svg-path-str.js';
 
 // the imports below is used in the test cases - see code below
-import { getLoopCentroid } from '../loop/get-loop-centroid';
-import { simplifyBounds } from '../loop/simplify-bounds';
-import { getLoopBounds } from '../loop/get-loop-bounds';
-import { getBoundingBox_ } from '../get-bounding-box-';
+import { getLoopCentroid } from '../loop/get-loop-centroid.js';
+import { simplifyBounds } from '../loop/simplify-bounds.js';
+import { getLoopBounds } from '../loop/get-loop-bounds.js';
+import { getBoundingBox_ } from '../get-bounding-box-.js';
 
 
 /**
  * Uses the algorithm of Lavanya Subramaniam: PARTITION OF A NON-SIMPLE POLYGON 
  * INTO SIMPLE POLYGONS; 
+ * 
  * see http://www.cis.southalabama.edu/~hain/general/Theses/Subramaniam_thesis.pdf 
  * but modified to use bezier curves (as opposed to polygons) and to additionally 
  * take care of paths with multiple subpaths, i.e. such as disjoint nested paths.
+ * 
  * Also takes care of all special cases.
+ * 
  * @param loops an array of possibly intersecting paths
  * @param maxCoordinate optional - if not provided, it will be calculated - a
  * wrong value could cause the algorithm to fail
@@ -45,7 +47,6 @@ function simplifyPaths(
     if (typeof _debug_ !== 'undefined') {
         timingStart = performance.now();
     }
-
 
     /** 
      * All bezier coordinates will be truncated to this (bit-aligned) bitlength.
@@ -78,6 +79,8 @@ function simplifyPaths(
     addDebugInfo1(bezierLoops);
     bezierLoops.sort(orderLoopAscendingByMinY);
 
+    // console.log(bezierLoops);
+
     let loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));
     let { extremes } = getContainers(loops, containerDim, expMax);
 
@@ -85,19 +88,22 @@ function simplifyPaths(
     let takenLoops: Set<Loop> = new Set();
     let takenOuts: Set<InOut> = new Set(); // Taken intersections
 
+    // throw 'a';
+    // debugger;
+    
     for (let loop of loops) {
         if (takenLoops.has(loop)) { continue; }
         takenLoops.add(loop);
 
         let parent = getTightestContainingLoop(root, loop);
 
-        let container = extremes.get(loop)[0].container;
+        let container = extremes.get(loop)![0].container!;
         if (!container.inOuts.length) { continue; }
 
         let initialOut = getOutermostInAndOut(container);
         // Each loop generated will give rise to one componentLoop. 
         initialOut.parent = parent;
-        initialOut.windingNum = parent.windingNum + initialOut.orientation;
+        initialOut.windingNum = parent.windingNum! + initialOut.orientation!;
         initialOut.children = new Set();
 
         completePath(
@@ -112,7 +118,7 @@ function simplifyPaths(
     let outSets = loopTrees.map(getLoopsFromTree);
 
     let loopss = outSets.map(
-        outSet => outSet.map(out => loopFromOut(out, outSet[0].orientation))
+        outSet => outSet.map(out => loopFromOut(out, outSet[0].orientation!))
     );
 
     /** 
@@ -138,7 +144,7 @@ function simplifyPaths(
 
     if (typeof _debug_ !== 'undefined') {
         const timing = _debug_.generated.timing;
-        timing.simplifyPaths = performance.now() - timingStart;
+        timing.simplifyPaths = performance.now() - timingStart!;
     }
 
     return loopss_;
@@ -162,43 +168,29 @@ function addDebugInfo2(loopss: Loop[][]) {
         _debug_.generated.elems.loops.push(loops);
         //console.log(loopsToSvgPathStr(loops.map(loop => loop.beziers)));
     }
-
-    // below is used for test generation purposes
-    if (typeof document === 'undefined') { return; }
-
-    // Don't delete below commented lines - it is for creating test cases.
-    //let g = document.getElementsByTagName('g')[0];
-    //let invariants = loopss.map(loops => {
-    //    return loops.map(loop => {
-    //        let centroid = getLoopCentroid(loop);
-    //        let area     = getLoopArea(loop);
-    //        let bounds   = simplifyBounds(getLoopBounds(loop));
-    //        //drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 0);
-    //        return { centroid, area, bounds };
-    //    });
-    //});
-    //console.log(JSON.stringify(invariants, undefined, '    '));
 }
 
 
 function addDebugInfo1(loops: number[][][][]) {
     if (typeof _debug_ === 'undefined') { return; }
 
-    //for (let loop of loops) { console.log(beziersToSvgPathStr(loop.beziers)); }
-
+    // Modifies the displayed SVG to reflect changes caused by `normalizeLoops`.
     if (typeof document !== 'undefined') { 
-        //let pathStr = loopsToSvgPathStr(loops.map(loop => loop.beziers)); 
         let pathStr = loopsToSvgPathStr(loops); 
         let $svg = document.getElementsByClassName('shape')[0]; 
         $svg.setAttributeNS(null, 'd', pathStr); 
-        //console.log(pathStr); 
     }
+
+    
     for (let loop of loops) {
-        for (let bez of loop) {
-            let lbb   = getBoundingBox_(bez);
-            let tbb   = getBoundingBoxTight(bez);
-            let bhull = getBoundingHull(bez);
-            _debug_.generated.elems.bezier_          .push(bez);
+        _debug_.generated.elems.loopPre.push(...loops);
+        _debug_.generated.elems.loopsPre.push(loops);
+
+        for (let ps of loop) {
+            let lbb   = getBoundingBox_(ps);
+            let tbb   = getBoundingBoxTight(ps);
+            let bhull = getBoundingHull(ps)!;
+            _debug_.generated.elems.bezier_          .push(ps);
             _debug_.generated.elems.looseBoundingBox_.push(lbb);
             _debug_.generated.elems.tightBoundingBox_.push(tbb);
             _debug_.generated.elems.boundingHull_    .push(bhull);
@@ -209,14 +201,14 @@ function addDebugInfo1(loops: number[][][][]) {
 
 function createRootInOut(): InOut {
     return {
-        dir: undefined,
+        dir: undefined!,
         idx: 0,
         parent: undefined,
         children: new Set(),
         windingNum: 0,
-        p: undefined,
+        p: undefined!,
         _x_: undefined,
-        container: undefined
+        container: undefined!
     };
 }
 

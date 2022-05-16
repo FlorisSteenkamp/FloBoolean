@@ -1,4 +1,4 @@
-import { Container } from "../../../container";
+import { Container } from "../../../container.js";
 /**
  * Returns the incoming / outgoing curves (as InOuts) for the given container
  * using an extremely small rectangle around the intersections.
@@ -7,7 +7,7 @@ import { Container } from "../../../container";
  * @param ioIdx
  */
 declare function getInOutsViaSides(container: Container, ioIdx: number): {
-    inOuts: import("../../../in-out").InOut[];
+    inOuts: import("../../../in-out.js").InOut[];
     ioIdx: number;
 };
 export { getInOutsViaSides };

@@ -1,5 +1,5 @@
-import { _X_ } from "./x";
-import { Container } from "./container";
+import { _X_ } from "./-x-.js";
+import { Container } from "./container.js";
 interface InOut {
     /** direction, in (-1) or out (+1) */
     dir: -1 | 1;

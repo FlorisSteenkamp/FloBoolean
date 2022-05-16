@@ -1,6 +1,5 @@
-
-import { InOut } from "../in-out";
-import { containerIsBasic } from "../container";
+import { InOut } from "../in-out.js";
+import { containerIsBasic } from "../container.js";
 
 
 /**
@@ -21,15 +20,15 @@ function getNextExit(
         additionalOutsToCheck
     );
 
-    let additionalBezier: number[][] = undefined;
+    let additionalBezier: number[][] | undefined = undefined;
     let fromCount = 0;
     let toCount = 1;
     let next = in_;
     let outToUse = undefined;
     do {
         next = originalOut.orientation === +1
-            ? next.nextAround
-            : next.prevAround;
+            ? next.nextAround!
+            : next.prevAround!;
 
         if (next === in_) { break; }
         fromCount = toCount;
@@ -48,16 +47,16 @@ function getNextExit(
         } else {
             // else we are rotating on the outside of the loop
             if (fromCount === 1 && toCount === 0) {
-                markOutForChecking_(next, +1, originalOut.parent);
+                markOutForChecking_(next, +1, originalOut.parent!);
             } else if (fromCount === 0 && toCount === -1) {
-                markOutForChecking_(next, -1, originalOut.parent);
+                markOutForChecking_(next, -1, originalOut.parent!);
             }
         }
     } while (true)
 
     if (!containerIsBasic(expMax, in_.container)) {
         // if there is multiple intersection pairs then add an additional bezier
-        additionalBezier = [in_.p, outToUse.p];
+        additionalBezier = [in_.p, outToUse!.p];
     }
     
     return { out_: outToUse, additionalBezier };
@@ -71,9 +70,9 @@ function markOutForChecking(
             
     return (out: InOut, parity: number, parent: InOut) => {
         if (!takenOuts.has(out) && !out.orientation) {
-            out.orientation = parity * originalOut.orientation;
+            out.orientation = parity * originalOut.orientation!;
             out.parent = parent;
-            out.windingNum = parent.windingNum + out.orientation;
+            out.windingNum = parent.windingNum! + out.orientation;
             additionalOutsToCheck.push(out);
         }
     }

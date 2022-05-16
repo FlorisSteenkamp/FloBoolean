@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.beziersToSvgPathStr = void 0;
 /**
  * Returns an SVG path string representation of the given bezier loop.
  * @param beziers An array of bezier curves each given as an array of
@@ -39,5 +36,5 @@ function beziersToSvgPathStr(beziers) {
     }
     return str + ' z' + '\n';
 }
-exports.beziersToSvgPathStr = beziersToSvgPathStr;
+export { beziersToSvgPathStr };
 //# sourceMappingURL=beziers-to-svg-path-str.js.map

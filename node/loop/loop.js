@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.loopFromBeziers = void 0;
 function isPoint(ps) {
     if (ps.length === 2) {
         return (ps[0][0] === ps[1][0] && ps[0][1] === ps[1][1] // p[0] === p[1]
@@ -25,7 +22,7 @@ function loopFromBeziers(beziers = [], idx) {
     if (!beziers.length) {
         return loop;
     }
-    let prev;
+    let prev = undefined;
     let j = 0;
     for (let i = 0; i < beziers.length; i++) {
         if (isPoint(beziers[i])) {
@@ -34,7 +31,7 @@ function loopFromBeziers(beziers = [], idx) {
         let curve = {
             loop,
             ps: beziers[i],
-            prev,
+            prev: prev,
             next: undefined,
             idx: j
         };
@@ -53,5 +50,5 @@ function loopFromBeziers(beziers = [], idx) {
     lastCurve.ps[lastCurve.ps.length - 1] = curves[0].ps[0];
     return loop;
 }
-exports.loopFromBeziers = loopFromBeziers;
+export { loopFromBeziers };
 //# sourceMappingURL=loop.js.map

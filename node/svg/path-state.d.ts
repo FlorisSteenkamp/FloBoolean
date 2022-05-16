@@ -1,10 +1,10 @@
 /** @hidden */
 declare class PathState {
-    initialPoint: number[];
+    initialPoint: number[] | undefined;
     p: number[];
-    vals: number[];
-    prev2ndCubicControlPoint: number[];
-    prev2ndQuadraticControlPoint: number[];
+    vals: number[] | undefined;
+    prev2ndCubicControlPoint: number[] | undefined;
+    prev2ndQuadraticControlPoint: number[] | undefined;
     constructor();
 }
 export { PathState };

@@ -1,14 +1,14 @@
- 
-import { getXY, getDxy } from "flo-bezier3";
-import { gaussQuadrature } from 'flo-gauss-quadrature';
-import { Horner as evaluatePoly } from 'flo-poly';
-import { Loop } from "./loop";
-import { getLoopArea } from "./get-loop-area";
+import { toPowerBasis, toPowerBasis_1stDerivative } from "flo-bezier3";
+import { Horner, multiply, integrate } from 'flo-poly';
+import { Loop } from "./loop.js";
+import { getLoopArea } from "./get-loop-area.js";
 
 
 /** 
  * Returns the approximate centroid of the given loop
+ * 
  * * **precondition**: loop must be a jordan curve (i.e. closed and simple)
+ * 
  * see https://sites.math.washington.edu/~king/coursedir/m324a10/as/centroid-green.pdf
  */
 function getLoopCentroid(loop: Loop) {
@@ -19,11 +19,14 @@ function getLoopCentroid(loop: Loop) {
     for (let curve of loop.curves) {
         let ps = curve.ps;
 
-        let [x,y] = getXY(ps);
-        let [dx,dy] = getDxy(ps);
+        let [x,y] = toPowerBasis(ps);
+        let [dx,dy] = toPowerBasis_1stDerivative(ps);
 
-        let _x = gaussQuadrature(evaluateIntergral([x,x,dy]), [0,1], 16);
-        let _y = gaussQuadrature(evaluateIntergral([y,y,dx]), [0,1], 16);
+        const polyX = integrate(multiply(multiply(x, x), dy), 0);
+        const polyY = integrate(multiply(multiply(y, y), dx), 0);
+
+        let _x = Horner(polyX, 1);
+        let _y = Horner(polyY, 1);
 
         cx += _x;
         cy += _y;
@@ -32,14 +35,6 @@ function getLoopCentroid(loop: Loop) {
     let a = 1/(2*A);
 
     return [-a*cx, a*cy];
-}
-
-
-function evaluateIntergral(polys: number[][]) {
-    return (t: number) =>
-        evaluatePoly(polys[0], t) * 
-        evaluatePoly(polys[1], t) * 
-        evaluatePoly(polys[2], t);
 }
 
 

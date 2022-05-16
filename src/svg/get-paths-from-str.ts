@@ -1,6 +1,5 @@
-
-import { getBeziersFromRawPaths } from './get-beziers-from-raw-paths';
-import { parsePathDataString } from './path-data-polyfill/parse-path-data-string';
+import { getBeziersFromRawPaths } from './get-beziers-from-raw-paths.js';
+import { parsePathDataString } from './path-data-polyfill/parse-path-data-string.js';
 
 
 /**
@@ -10,7 +9,7 @@ import { parsePathDataString } from './path-data-polyfill/parse-path-data-string
  * loop) since an SVG path may have sub-paths.
  * @param str The SVG path string, e.g. 'M1 1 C 5 1 5 2 4 2 C 3 3 1 3 1 1 z'
  */
-function getPathsFromStr(str: string) {
+function getPathsFromStr(str: string): number[][][][] {
     return getBeziersFromRawPaths(
         parsePathDataString(str)
     );

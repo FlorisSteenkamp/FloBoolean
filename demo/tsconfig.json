@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "charset": "utf8",
+        "strict": true, 
+        "module": "es2020",
+        "target": "es2020",
+        // "declaration": true,
+        "noEmitOnError": false,
+        "noEmit": false,
+        "sourceMap": true,
+        "outDir": "node",
+        "moduleResolution": "node",
+        "jsx": "react"
+    },
+    "include": [
+        "src/app.tsx"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

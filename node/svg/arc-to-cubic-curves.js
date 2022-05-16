@@ -1,8 +1,5 @@
-"use strict";
 // TODO - a work in progress - currently using a different (less accurate?) 
 // function.
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.arcToCubicCurves = void 0;
 /**
  * @hidden
  * Get an array of corresponding cubic bezier curve parameters for given arc
@@ -22,7 +19,6 @@ rotationAngle, largeArcFlag, sweepFlag, pE) {
             pE
         ]];
 }
-exports.arcToCubicCurves = arcToCubicCurves;
 /**
  * @param x
  * @param y
@@ -39,4 +35,5 @@ function rotate(x, y, angleRad) {
 function degToRad(degrees) {
     return (Math.PI * degrees) / 180;
 }
+export { arcToCubicCurves };
 //# sourceMappingURL=arc-to-cubic-curves.js.map

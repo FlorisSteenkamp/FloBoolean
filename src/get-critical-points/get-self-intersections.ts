@@ -1,7 +1,6 @@
-
 import { bezierSelfIntersection, getIntervalBox } from 'flo-bezier3';
-import { _X_ } from '../x';
-import { Loop } from '../loop/loop';
+import { _X_ } from '../-x-.js';
+import { Loop } from '../loop/loop.js';
 
 
 const eps = Number.EPSILON;
@@ -17,10 +16,11 @@ function getSelfIntersections(loops: Loop[]): _X_[][] {
         for (let curve of loop.curves) {
             let ps = curve.ps;
             let ts = bezierSelfIntersection(ps);
-            if (ts === undefined) { continue; }  // there is no self-intersection
+            // if (ts === undefined) { continue; }  // there is no self-intersection
+            if (ts.length === 0) { continue; }
 
             // if a cusp (or extremely close to it)
-            let kind: 0|1|2|3|4|5 = ts[0] === ts[1] 
+            let kind: 0|1|2|3|4|5|6 = ts[0] === ts[1] 
                 ? 3/*cusp*/
                 : 2/*self-intersection*/;
                 

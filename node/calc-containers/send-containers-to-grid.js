@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendContainersToGrid = void 0;
-const to_grid_1 = require("../loop/normalize/to-grid");
+import { toGrid } from "../loop/normalize/to-grid.js";
 /**
  * Returns the containers from the given containers by sending their boxes to a
  * grid with a smaller bitlength.
@@ -21,11 +18,11 @@ function sendContainersToGrid(containers, expMax, containerDim) {
     let containers_ = containers.map(container => {
         let box = container.box;
         box = box.map(p => p.map(c => {
-            return to_grid_1.toGrid(c, expMax, expMax - expContainerAdj);
+            return toGrid(c, expMax, expMax - expContainerAdj);
         }));
-        return Object.assign(Object.assign({}, container), { box });
+        return { ...container, box };
     });
     return containers_;
 }
-exports.sendContainersToGrid = sendContainersToGrid;
+export { sendContainersToGrid };
 //# sourceMappingURL=send-containers-to-grid.js.map

@@ -1,29 +1,21 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.parsePathDataString = void 0;
-const source_1 = require("./source");
+import { Source } from './source.js';
 /**
  * @hidden
  * @param string
  */
 function parsePathDataString(string) {
-    if (!string.length)
-        return [];
-    let source = new source_1.Source(string);
-    let pathData = [];
-    if (!source.initialCommandIsMoveTo()) {
+    if (!string.length) {
         return [];
     }
+    let source = new Source(string);
+    let pathData = [];
+    if (!source.initialCommandIsMoveTo()) {
+        throw new Error('Path must start with m or M');
+    }
     while (source.hasMoreData()) {
-        let pathSeg = source.parseSegment();
-        if (pathSeg === null) {
-            break;
-        }
-        else {
-            pathData.push(pathSeg);
-        }
+        pathData.push(source.parseSegment());
     }
     return pathData;
 }
-exports.parsePathDataString = parsePathDataString;
+export { parsePathDataString };
 //# sourceMappingURL=parse-path-data-string.js.map

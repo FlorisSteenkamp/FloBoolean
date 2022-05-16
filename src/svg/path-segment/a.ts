@@ -1,6 +1,5 @@
-
-import { PathState } from "../path-state";
-import { arcToCubicCurves } from "../arc-to-cubic-curves";
+import { PathState } from "../path-state.js";
+import { arcToCubicCurves } from "../arc-to-cubic-curves.js";
 
 
 /** 
@@ -23,12 +22,12 @@ function a(s: PathState): number[][][] {
     
     let curves = arcToCubicCurves(
         s.p, 
-        s.vals[0], 
-        s.vals[1], 
-        s.vals[2], 
-        s.vals[3],
-        s.vals[4], 
-        [s.vals[5], s.vals[6]]
+        s.vals![0], 
+        s.vals![1], 
+        s.vals![2], 
+        s.vals![3],
+        s.vals![4], 
+        [s.vals![5], s.vals![6]]
     );
 
     let lastPs = curves[curves.length-1];

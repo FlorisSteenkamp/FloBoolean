@@ -1,5 +1,4 @@
-
-import { PathState } from '../path-state';
+import { PathState } from '../path-state.js';
 
 
 /** 
@@ -12,10 +11,10 @@ import { PathState } from '../path-state';
  * to current subpath's initial point. Since the Z and z commands take no 
  * parameters, they have an identical effect.
  */
-function z(s: PathState) {
+function z(s: PathState): number[][] {
     let ps = [
         s.p,
-        s.initialPoint
+        s.initialPoint!
     ];
 
     s.prev2ndCubicControlPoint = undefined;

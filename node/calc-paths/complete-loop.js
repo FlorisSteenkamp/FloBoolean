@@ -1,14 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.completeLoop = void 0;
-const get_next_exit_1 = require("./get-next-exit");
-const get_beziers_to_next_container_1 = require("./get-beziers-to-next-container");
-const flo_bezier3_1 = require("flo-bezier3");
+import { closestPointOnBezierCertified, fromTo } from 'flo-bezier3';
+import { mid } from 'flo-poly';
+import { getNextExit } from './get-next-exit.js';
+import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
 /**
  * Completes a loop for a specific intersection point entry curve.
+ * @param expMax
  * @param takenOuts
  * @param out
- * @param g
  */
 function completeLoop(expMax, takenOuts, out) {
     let additionalOutsToCheck = [];
@@ -16,9 +14,10 @@ function completeLoop(expMax, takenOuts, out) {
     // Move immediately to the outgoing start of the loop
     let out_ = out;
     let additionalBezier;
+    let ii = 0; // TODO - remove
     do {
         takenOuts.add(out_); // Mark this intersection as taken
-        let { beziers: additionalBeziers, in_, inBez } = get_beziers_to_next_container_1.getBeziersToNextContainer(expMax, out_);
+        let { beziers: additionalBeziers, in_, inBez } = getBeziersToNextContainer(expMax, out_);
         // TODO - it will probably better to remove additionalBeziers and just
         // connect the endpoints of adjacent beziers - even if we had near
         // exact coordinates (think quad or better precision) of intersections
@@ -28,18 +27,18 @@ function completeLoop(expMax, takenOuts, out) {
         // additionalBeziers whose length is about a trillionth of the max
         // coordinate of loops
         beziers.push(...additionalBeziers);
-        ({ out_, additionalBezier } = get_next_exit_1.getNextExit(expMax, in_, out, additionalOutsToCheck, takenOuts));
+        ({ out_, additionalBezier } = getNextExit(expMax, in_, out, additionalOutsToCheck, takenOuts));
         if (additionalBezier) {
-            let t = flo_bezier3_1.closestPointOnBezierPrecise(inBez, additionalBezier[0]).t;
-            let inBez_ = flo_bezier3_1.fromTo(inBez)(0, t);
+            let t = mid(closestPointOnBezierCertified(inBez, additionalBezier[0])[0].ri);
+            let inBez_ = fromTo(inBez, 0, t);
             beziers.push(inBez_);
             beziers.push(additionalBezier);
         }
         else {
             beziers.push(inBez);
         }
-    } while (out_ !== out);
+    } while (out_ !== out /* && ii++ < 100*/);
     return { beziers, additionalOutsToCheck };
 }
-exports.completeLoop = completeLoop;
+export { completeLoop };
 //# sourceMappingURL=complete-loop.js.map

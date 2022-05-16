@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.t = void 0;
 /**
  * @hidden
  * T and t: (from www.w3.org)
@@ -17,19 +14,15 @@ exports.t = void 0;
  * final (x,y) coordinate pair used in the polybézier.
  */
 function t(s) {
-    let p = [undefined, undefined];
-    if (s.prev2ndQuadraticControlPoint) {
-        p[0] = (s.p[0] - s.prev2ndQuadraticControlPoint[0]) + s.p[0];
-        p[1] = (s.p[1] - s.prev2ndQuadraticControlPoint[1]) + s.p[1];
-    }
-    else {
-        p = s.p;
-    }
+    let p = s.prev2ndQuadraticControlPoint
+        ? [(s.p[0] - s.prev2ndQuadraticControlPoint[0]) + s.p[0],
+            (s.p[1] - s.prev2ndQuadraticControlPoint[1]) + s.p[1]]
+        : s.p;
     let QP1 = p;
     let QP2 = [s.vals[0], s.vals[1]];
     s.prev2ndCubicControlPoint = undefined;
     s.prev2ndQuadraticControlPoint = QP1;
     return [s.p, QP1, QP2];
 }
-exports.t = t;
+export { t };
 //# sourceMappingURL=t.js.map

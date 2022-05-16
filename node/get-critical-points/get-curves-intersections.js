@@ -1,22 +1,16 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCurvesIntersections = void 0;
-const flo_numerical_1 = require("flo-numerical");
-const flo_vector2d_1 = require("flo-vector2d");
-const flo_bezier3_1 = require("flo-bezier3");
-const flo_bezier3_2 = require("flo-bezier3");
-const are_boxes_intersecting_1 = require("../sweep-line/are-boxes-intersecting");
-const do_convex_polygons_intersect_1 = require("../geometry/do-convex-polygons-intersect");
-const get_intersection_1 = require("./get-intersection");
-const flo_poly_1 = require("flo-poly");
-const make_simple_x_1 = require("./make-simple-x");
-/** function that returns true if *open* axis aligned boxes intersect, false otherwise */
-let areBoxesIntersectingOpen = are_boxes_intersecting_1.areBoxesIntersecting(false);
-/** function that returns true if *closed* axis aligned boxes intersect, false otherwise */
-let areBoxesIntersectingClosed = are_boxes_intersecting_1.areBoxesIntersecting(true);
+import { orient2d } from 'big-float-ts';
+import { createRootExact, mid } from 'flo-poly';
+import { squaredDistanceBetween } from 'flo-vector2d';
+import { isPointOnBezierExtension, getBoundingHull, closestPointOnBezierCertified, areBoxesIntersecting } from "flo-bezier3";
+import { getOtherTs } from './get-other-t.js';
+import { doConvexPolygonsIntersect } from "../geometry/do-convex-polygons-intersect.js";
+import { getIntersection } from './get-intersection.js';
+import { makeSimpleX } from './make-simple-x.js';
+import { getBoundingBox_ } from '../get-bounding-box-.js';
 /**
- * Returns the pairs of intersection t values between the curves. Interface
+ * Returns the pairs of intersection `t` values between the curves. Interface
  * intersections may not be returned - they should already be caught.
+ *
  * @param curveA
  * @param curveB
  */
@@ -31,45 +25,46 @@ function getCurvesIntersections(expMax) {
             // curves are connected at endpoints
             // closed bounding boxes are guaranteed to intersect - don't check
             // check open bounding boxes
-            let aabbsIntersectOpen = areBoxesIntersectingOpen(flo_bezier3_1.getBoundingBox(psA), flo_bezier3_1.getBoundingBox(psB));
+            let aabbsIntersectOpen = areBoxesIntersecting(false, getBoundingBox_(psA), getBoundingBox_(psB));
             if (!aabbsIntersectOpen) {
                 return checkEndpoints(curveA, curveB);
             }
             // check open bounding hulls
-            let bbHullA = flo_bezier3_1.getBoundingHull(psA);
-            let bbHullB = flo_bezier3_1.getBoundingHull(psB);
-            let hullsIntersectOpen = do_convex_polygons_intersect_1.doConvexPolygonsIntersect(bbHullA, bbHullB, false);
+            let bbHullA = getBoundingHull(psA);
+            let bbHullB = getBoundingHull(psB);
+            let hullsIntersectOpen = doConvexPolygonsIntersect(bbHullA, bbHullB, false);
             if (!hullsIntersectOpen) {
                 return checkEndpoints(curveA, curveB);
             }
             // neither aabbs nor hulls can split the curves
             return curveB.next === curveA
-                ? get_intersection_1.getIntersection(curveB, curveA, expMax, true) // B-->A
-                : get_intersection_1.getIntersection(curveA, curveB, expMax, true); // A-->B
+                ? getIntersection(curveB, curveA, expMax, true) // B-->A
+                : getIntersection(curveA, curveB, expMax, true); // A-->B
         }
         // curves are not connected at endpoints
         // check closed bounding boxes
-        let possiblyIntersecting = areBoxesIntersectingClosed(flo_bezier3_1.getBoundingBox(psA), flo_bezier3_1.getBoundingBox(psB));
+        let possiblyIntersecting = areBoxesIntersecting(true, getBoundingBox_(psA), getBoundingBox_(psB));
         if (!possiblyIntersecting) {
             return undefined;
         }
         // check closed bounding hulls
-        let bbHullA = flo_bezier3_1.getBoundingHull(psA);
-        let bbHullB = flo_bezier3_1.getBoundingHull(psB);
-        possiblyIntersecting = do_convex_polygons_intersect_1.doConvexPolygonsIntersect(bbHullA, bbHullB, true);
+        let bbHullA = getBoundingHull(psA);
+        let bbHullB = getBoundingHull(psB);
+        possiblyIntersecting = doConvexPolygonsIntersect(bbHullA, bbHullB, true);
         if (!possiblyIntersecting) {
             return undefined;
         }
-        return get_intersection_1.getIntersection(curveA, curveB, expMax, false);
+        return getIntersection(curveA, curveB, expMax, false);
     };
 }
-exports.getCurvesIntersections = getCurvesIntersections;
 /**
  * Returns an un-ordered pair of intersections (excluding interface intersections,
- * in which case undefined is returned) between curveA and curveB.
- * * **precondition**: curveA.next === curveB || curveB.next === curveA
- * * **precondition**: every intersection will be at an endpoint of at least
+ * in which case `undefined` is returned) between curveA and curveB.
+ *
+ * * **precondition:** curveA.next === curveB || curveB.next === curveA
+ * * **precondition:** every intersection will be at an endpoint of at least
  * one of the curves
+ *
  * @param curveA
  * @param curveB
  */
@@ -86,31 +81,32 @@ function checkEndpoints(curveA, curveB) {
     // There is thus an intersection at curveA(t=1) and curveB(t=0)
     let psA = curveA.ps;
     let psB = curveB.ps;
-    // Is last point of curveB on curveA?
-    if (flo_bezier3_2.isPointOnBezierExtension(psA, psB[psB.length - 1])) {
+    // Is last point (i.e. at `t` === 1) of curveB on curveA?
+    // if (isPointOnBezierExtension(psA, psB[psB.length-1])) {
+    if (isPointOnBezierExtension(psA, psB[psB.length - 1].map(c => [c]))) {
         // Check if they are in same k family (this *is* necessary for two curves
         // in same k-family joined end to end, e.g. ---A--->|---B---> in which
-        // case )
-        let xPairs = flo_bezier3_2.getOtherTs(psA, psB, [flo_poly_1.createRootExact(1)]);
+        // case ...)
+        let xPairs = getOtherTs(psA, psB, [createRootExact(1)]);
         if (xPairs === undefined || xPairs.length === 0) {
             return undefined;
         }
         let xPair = xPairs[0];
         return [[
                 { x: xPair[0], curve: curveA },
-                make_simple_x_1.makeSimpleX(1, curveB, 1)
+                makeSimpleX(1, curveB, 1)
             ]];
     }
 }
 function getLineLineIntersections(curveA, curveB, expMax) {
     let psA = curveA.ps;
     let psB = curveB.ps;
-    let bbA = flo_bezier3_1.getBoundingBox(psA);
-    let bbB = flo_bezier3_1.getBoundingBox(psB);
+    let bbA = getBoundingBox_(psA);
+    let bbB = getBoundingBox_(psB);
     if (curveA.next !== curveB && curveB.next !== curveA) {
         // the two lines are not connected at their endpoints
-        if (areBoxesIntersectingClosed(bbA, bbB)) {
-            let xs = get_intersection_1.getIntersection(curveA, curveB, expMax, false);
+        if (areBoxesIntersecting(true, bbA, bbB)) {
+            let xs = getIntersection(curveA, curveB, expMax, false);
             return xs.length ? xs : undefined;
         }
         return undefined;
@@ -121,7 +117,7 @@ function getLineLineIntersections(curveA, curveB, expMax) {
         [curveA, curveB] = [curveB, curveA];
         [psA, psB] = [psB, psA];
     }
-    let orientation = flo_numerical_1.orient2d(psA[0], psA[1], psB[1]);
+    let orientation = orient2d(psA[0], psA[1], psB[1]);
     if (orientation !== 0) {
         // they cannot intersect
         return undefined;
@@ -129,37 +125,32 @@ function getLineLineIntersections(curveA, curveB, expMax) {
     // they are in the same k family - they can either go in the
     // same direction or go back on top of each other
     // if going in same direction
-    if (!areBoxesIntersectingOpen(bbA, bbB)) {
+    if (!areBoxesIntersecting(false, bbA, bbB)) {
         // they cannot intersect
         return undefined;
     }
     // it is a line going back on itself 
     // - return endpoint intersections
-    let lenCurve1 = flo_vector2d_1.squaredDistanceBetween(psA[0], psA[1]);
-    let lenCurve2 = flo_vector2d_1.squaredDistanceBetween(psB[0], psB[1]);
+    let lenCurve1 = squaredDistanceBetween(psA[0], psA[1]);
+    let lenCurve2 = squaredDistanceBetween(psB[0], psB[1]);
     let tPair;
     if (lenCurve1 > lenCurve2) {
-        tPair = [flo_bezier3_1.inversion1_BL52_1ULP(psA, psB[1]), 1];
+        // tPair = [inversion01Precise(psA, psB[1]), 1];
+        const t0 = mid(closestPointOnBezierCertified(psA, psB[1])[0].ri);
+        tPair = [t0, 1];
     }
     else {
-        tPair = [0, flo_bezier3_1.inversion1_BL52_1ULP(psB, psA[0])];
+        // tPair = [0, inversion01Precise(psB, psA[0])];
+        const t1 = mid(closestPointOnBezierCertified(psB, psA[0])[0].ri);
+        tPair = [0, t1];
     }
     return [[
-            make_simple_x_1.makeSimpleX(1, curveA, 5),
-            make_simple_x_1.makeSimpleX(0, curveB, 5),
+            makeSimpleX(1, curveA, 5),
+            makeSimpleX(0, curveB, 5), // exact overlap endpoint
         ], [
-            make_simple_x_1.makeSimpleX(tPair[0], curveA, 5),
-            make_simple_x_1.makeSimpleX(tPair[1], curveB, 5) // exact overlap endpoint
+            makeSimpleX(tPair[0], curveA, 5),
+            makeSimpleX(tPair[1], curveB, 5) // exact overlap endpoint
         ]];
 }
-// tight bounding boxes
-/*
-let bbTightA = getBoundingBoxTight(psA);
-let bbTightB = getBoundingBoxTight(psB);
-possiblyIntersecting =
-    doConvexPolygonsIntersect(bbTightA, bbTightB, closed);
-    //doConvexPolygonsIntersect(bbTightA, bbTightB, false);
-//if (!possiblyIntersecting) { return false; }
-if (!possiblyIntersecting) { return checkEndpoints(curveA, curveB); }
-*/ 
+export { getCurvesIntersections };
 //# sourceMappingURL=get-curves-intersections.js.map

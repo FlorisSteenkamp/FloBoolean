@@ -1,12 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMaxCoordinate = void 0;
-const flo_memoize_1 = require("flo-memoize");
+import { memoize } from "flo-memoize";
 /**
  * Returns the maximum control point coordinate value (x or y) within any loop.
  * @param loops The array of loops
  */
-let getMaxCoordinate = flo_memoize_1.memoize((loops) => {
+let getMaxCoordinate = memoize((loops) => {
     let max = 0;
     for (let loop of loops) {
         for (let ps of loop) {
@@ -22,5 +19,5 @@ let getMaxCoordinate = flo_memoize_1.memoize((loops) => {
     }
     return max;
 });
-exports.getMaxCoordinate = getMaxCoordinate;
+export { getMaxCoordinate };
 //# sourceMappingURL=get-max-coordinate.js.map

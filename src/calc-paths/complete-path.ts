@@ -1,7 +1,6 @@
-
-import { completeLoop } from './complete-loop';
-import { InOut } from '../in-out';
-import { Loop } from '../loop/loop';
+import { completeLoop } from './complete-loop.js';
+import { InOut } from '../in-out.js';
+import { Loop } from '../loop/loop.js';
 
 
 /**
@@ -21,8 +20,8 @@ function completePath(
     let outStack = [initialOut];
 
     while (outStack.length) {
-        let out = outStack.pop();
-        takenLoops.add(out._x_.curve.loop);
+        let out = outStack.pop()!;
+        takenLoops.add(out!._x_!.curve.loop);
 
         if (takenOuts.has(out)) { continue; }
 
@@ -31,8 +30,8 @@ function completePath(
             completeLoop(expMax, takenOuts, out);
             
         out.beziers = beziers;
-        out.parent.children = out.parent.children || new Set();
-        out.parent.children.add(out);
+        out.parent!.children = out.parent!.children || new Set();
+        out.parent!.children.add(out);
 
         outStack.push(...additionalOutsToCheck);
     }

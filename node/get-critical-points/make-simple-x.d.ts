@@ -1,5 +1,5 @@
-import { Curve } from "../curve/curve";
-import { _X_ } from "../x";
+import { Curve } from "../curve/curve.js";
+import { type _X_ } from "../-x-.js";
 /**
  *
  * @param t

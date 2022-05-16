@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInterfaceIntersections = void 0;
-const make_simple_x_1 = require("./make-simple-x");
+import { makeSimpleX } from "./make-simple-x.js";
 function getInterfaceIntersections(loops) {
     /** all one-sided Xs from */
     let xs = [];
@@ -9,12 +6,12 @@ function getInterfaceIntersections(loops) {
     for (let loop of loops) {
         for (let curve of loop.curves) {
             xs.push([
-                make_simple_x_1.makeSimpleX(1, curve, 4),
-                make_simple_x_1.makeSimpleX(0, curve.next, 4),
+                makeSimpleX(1, curve, 4),
+                makeSimpleX(0, curve.next, 4), // interface
             ]);
         }
     }
     return xs;
 }
-exports.getInterfaceIntersections = getInterfaceIntersections;
+export { getInterfaceIntersections };
 //# sourceMappingURL=get-interface-intersections.js.map

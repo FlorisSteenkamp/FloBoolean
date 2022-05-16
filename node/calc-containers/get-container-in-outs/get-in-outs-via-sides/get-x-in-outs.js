@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getXInOuts = void 0;
-const flo_bezier3_1 = require("flo-bezier3");
-const flo_poly_1 = require("flo-poly");
-const are_boxes_intersecting_1 = require("../../../sweep-line/are-boxes-intersecting");
-const flo_numerical_1 = require("flo-numerical");
+import { eEstimate } from "big-float-ts";
+import { allRootsCertified, refineK1, rootIntervalToExp } from "flo-poly";
+import { getCoeffsBezBez, getIntervalBoxDd } from "flo-bezier3";
+import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting.js";
 function midBox(_x_) {
     return [
         (_x_.x.box[0][0] + _x_.x.box[1][0]) / 2,
@@ -36,7 +33,7 @@ function getXInOuts(container) {
                     x: psX,
                     side: i,
                     sideX,
-                    curve: undefined,
+                    curve: undefined, // unused
                 });
             }
         }
@@ -48,7 +45,7 @@ function getXInOuts(container) {
         xs.sort((xA, xB) => xA.x.ri.tS - xB.x.ri.tS);
         let ins = [];
         let outs = [];
-        let prevX;
+        let prevX = undefined;
         /** true if the prevX was a proper X, false if it was a SideX */
         let prevWasX = undefined;
         for (let x of xs) {
@@ -93,26 +90,26 @@ function getXInOuts(container) {
         return { ins, outs, ioIdx };
     };
 }
-exports.getXInOuts = getXInOuts;
 /**
  * Get zero times compensated roots and exact coefficents
  */
 function getXs0(ps1, ps2) {
-    let _coeffs = flo_bezier3_1.getIntersectionCoeffs(ps1, ps2);
+    // let _coeffs = getIntersectionCoeffs(ps1, ps2);
+    let _coeffs = getCoeffsBezBez(ps1, ps2);
     if (_coeffs === undefined) {
         return undefined;
     }
-    let { coeffs, errBound, getPsExact } = _coeffs;
-    let ris = flo_poly_1.allRootsMultiWithErrBounds(coeffs, errBound, getPsExact);
+    let { coeffs, errBound, getPExact } = _coeffs;
+    let ris = allRootsCertified(coeffs, 0, 1, errBound, getPExact);
     if (ris.length === 0) {
         return undefined;
     }
-    return { ris: ris.map(flo_poly_1.rootIntervalToExp), getPsExact };
+    return { ris: ris.map(rootIntervalToExp), getPExact };
 }
 function rootIntervalToDouble(ri) {
     return {
-        tS: flo_numerical_1.estimate(ri.tS),
-        tE: flo_numerical_1.estimate(ri.tE),
+        tS: eEstimate(ri.tS),
+        tE: eEstimate(ri.tE),
         multiplicity: ri.multiplicity
     };
 }
@@ -129,12 +126,24 @@ function getTs(ps, side) {
     if (xs0Side === undefined) {
         return [];
     }
-    let { ris: risSide, getPsExact: getPsExactSide } = xs0Side;
+    let { ris: risSide, getPExact: getPExactSide } = xs0Side;
+    //let exactSide = getPExactSide();
+    let exactSide = undefined; // lazy loaded
+    let getPExactSide_ = () => {
+        exactSide = exactSide || getPExactSide();
+        return exactSide;
+    };
     let xs0Ps = getXs0(side, ps);
     if (xs0Ps === undefined) {
         return [];
     }
-    let { ris: risPs, getPsExact: getPsExactPs } = xs0Ps;
+    let { ris: risPs, getPExact: getPExactPs } = xs0Ps;
+    //let exactPs = getPExactPs();
+    let exactPs = undefined; // lazy loaded
+    let getPExactPs_ = () => {
+        exactPs = exactPs || getPExactPs();
+        return exactPs;
+    };
     //---- Make sure no boxesPs overlap. 
     // If any two boxes do operlap we cannot match the t value of a ps box to 
     // that of a side box, else we can definitively match them.
@@ -142,22 +151,24 @@ function getTs(ps, side) {
     // It is assumed (as a precondition) the code is such that a multiple 
     // intersection is node possible here
     let maxIter;
-    // currently we only go up to once compensated (quad precision roots)
+    // currently we only go up to once compensated (double-double precision roots)
     maxIter = 1;
     /** number of compensations for ps */
     let cPs = 0;
-    let boxesPs;
+    let boxesPs = undefined;
     loop: while (true && cPs < maxIter) {
         // update boxes to new tighter versions
-        boxesPs = risPs.map(ri => flo_bezier3_1.getIntervalBoxQuad(ps, [ri.tS, ri.tE]));
+        boxesPs = risPs.map(ri => getIntervalBoxDd(ps, [ri.tS, ri.tE]));
         for (let i = 0; i < risPs.length; i++) {
             let boxPsI = boxesPs[i];
             for (let j = i + 1; j < risPs.length; j++) {
                 let boxPsJ = boxesPs[j];
-                if (are_boxes_intersecting_1.areBoxesIntersectingQuad(true)(boxPsI, boxPsJ)) {
+                if (areBoxesIntersectingDd(true)(boxPsI, boxPsJ)) {
                     let _risPs = [];
                     for (let riPs of risPs) {
-                        _risPs.push(...flo_poly_1.refineK1(riPs.tS[1], getPsExactPs));
+                        // TODO - below we're converting riPs (using getXs0) to RootIntervalExp and below back to 
+                        // RootInterval again - not necessary - fix
+                        _risPs.push(...refineK1({ tS: riPs.tS[1], tE: riPs.tE[1], multiplicity: riPs.multiplicity }, getPExactPs_()));
                     }
                     risPs = _risPs;
                     cPs++;
@@ -173,17 +184,17 @@ function getTs(ps, side) {
     maxIter = 1;
     /** number of compensations for sides */
     let cSide = 0;
-    let boxesSide;
+    let boxesSide = undefined;
     loop: while (true && cSide < maxIter) {
-        boxesSide = risSide.map(ri => flo_bezier3_1.getIntervalBoxQuad(side, [ri.tS, ri.tE]));
+        boxesSide = risSide.map(ri => getIntervalBoxDd(side, [ri.tS, ri.tE]));
         for (let i = 0; i < risSide.length; i++) {
             let boxSideI = boxesSide[i];
             for (let j = i + 1; j < risSide.length; j++) {
                 let boxSideJ = boxesSide[j];
-                if (are_boxes_intersecting_1.areBoxesIntersectingQuad(true)(boxSideI, boxSideJ)) {
+                if (areBoxesIntersectingDd(true)(boxSideI, boxSideJ)) {
                     let _risSide = [];
                     for (let riSide of risSide) {
-                        _risSide.push(...flo_poly_1.refineK1(riSide.tS[1], getPsExactSide));
+                        _risSide.push(...refineK1({ tS: riSide.tS[1], tE: riSide.tE[1], multiplicity: riSide.multiplicity }, getPExactSide_()));
                     }
                     risSide = _risSide;
                     cSide++;
@@ -201,12 +212,12 @@ function getTs(ps, side) {
             // TODO - investigate if below commented code would improve algorithm
             //let box = intersectBoxes(boxPs,boxSide);
             //if (box !== undefined) {
-            if (are_boxes_intersecting_1.areBoxesIntersectingQuad(true)(boxPs, boxSide)) {
+            if (areBoxesIntersectingDd(true)(boxPs, boxSide)) {
                 let psX = {
                     compensated: cPs,
                     ri: rootIntervalToDouble(risPs[i]),
                     riExp: cPs ? risPs[i] : undefined,
-                    getPsExact: cPs ? undefined : getPsExactPs,
+                    getPExact: cPs ? undefined : getPExactPs,
                     kind: 1,
                     box: boxExpToBox(boxPs)
                 };
@@ -214,7 +225,7 @@ function getTs(ps, side) {
                     compensated: cSide,
                     ri: rootIntervalToDouble(risSide[j]),
                     riExp: cSide ? risSide[j] : undefined,
-                    getPsExact: cSide ? undefined : getPsExactSide,
+                    getPExact: cSide ? undefined : getPExactSide,
                     kind: 1,
                     box: boxExpToBox(boxSide)
                 };
@@ -228,6 +239,7 @@ function getTs(ps, side) {
  * Converts a box with expansion coordinates into one with double coordinates.
  */
 function boxExpToBox(boxExp) {
-    return boxExp.map(p => p.map(c => flo_numerical_1.estimate(c)));
+    return boxExp.map(p => p.map(eEstimate));
 }
+export { getXInOuts };
 //# sourceMappingURL=get-x-in-outs.js.map

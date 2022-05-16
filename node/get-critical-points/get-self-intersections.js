@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSelfIntersections = void 0;
-const flo_bezier3_1 = require("flo-bezier3");
+import { bezierSelfIntersection, getIntervalBox } from 'flo-bezier3';
 const eps = Number.EPSILON;
 /**
  * @param loops
@@ -11,10 +8,11 @@ function getSelfIntersections(loops) {
     for (let loop of loops) {
         for (let curve of loop.curves) {
             let ps = curve.ps;
-            let ts = flo_bezier3_1.bezierSelfIntersection(ps);
-            if (ts === undefined) {
+            let ts = bezierSelfIntersection(ps);
+            // if (ts === undefined) { continue; }  // there is no self-intersection
+            if (ts.length === 0) {
                 continue;
-            } // there is no self-intersection
+            }
             // if a cusp (or extremely close to it)
             let kind = ts[0] === ts[1]
                 ? 3 /*cusp*/
@@ -24,8 +22,8 @@ function getSelfIntersections(loops) {
             let t0E = ts[0] + eps;
             let t1S = ts[1] - eps;
             let t1E = ts[1] + eps;
-            let box0 = flo_bezier3_1.getIntervalBox(ps, [t0S, t0E]); // ts are within 1 upls accurate
-            let box1 = flo_bezier3_1.getIntervalBox(ps, [t1S, t1E]); // ts are within 1 upls accurate
+            let box0 = getIntervalBox(ps, [t0S, t0E]); // ts are within 1 upls accurate
+            let box1 = getIntervalBox(ps, [t1S, t1E]); // ts are within 1 upls accurate
             xs.push([
                 // TODO - multiplicity relevant??
                 { x: { ri: { tS: t0S, tE: t0E, multiplicity: 1 }, box: box0, kind }, curve },
@@ -35,5 +33,5 @@ function getSelfIntersections(loops) {
     }
     return xs;
 }
-exports.getSelfIntersections = getSelfIntersections;
+export { getSelfIntersections };
 //# sourceMappingURL=get-self-intersections.js.map

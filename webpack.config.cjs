@@ -1,6 +1,6 @@
 const path = require('path');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
-const ResolveTypeScriptPlugin = require("resolve-typescript-plugin").default;
+const ResolveTypeScriptPlugin = require("resolve-typescript-plugin");
 
 
 ////////////////////////////////
@@ -8,18 +8,21 @@ const library = 'FloBoolean';
 ////////////////////////////////
 
 
+const extensions = [
+    '.js', '.mjs', '.cjs', 
+    '.jsx', '.cjsx', '.mjsx'
+];
+
+
 const config_Basic = {
-    mode: 'production',
-    // mode: 'development',
+    // mode: 'production',
+    mode: 'development',
     entry: './src/index.ts',
     resolve: {
-        extensions: [
-            '.js', '.mjs', '.cjs', 
-            '.jsx', '.cjsx', '.mjsx'
-        ],
-        plugins: [new ResolveTypeScriptPlugin({
-            includeNodeModules: false
-        })]
+        extensions,
+        plugins: [
+            new ResolveTypeScriptPlugin({includeNodeModules: false})
+        ]
     },
     module: {
         rules: [

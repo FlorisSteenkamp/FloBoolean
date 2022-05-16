@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNextExit = void 0;
-const container_1 = require("../container");
+import { containerIsBasic } from "../container.js";
 /**
  *
  * @param in_ the in for which the next exit should be found
@@ -46,13 +43,12 @@ function getNextExit(expMax, in_, originalOut, additionalOutsToCheck, takenOuts)
             }
         }
     } while (true);
-    if (!container_1.containerIsBasic(expMax, in_.container)) {
+    if (!containerIsBasic(expMax, in_.container)) {
         // if there is multiple intersection pairs then add an additional bezier
         additionalBezier = [in_.p, outToUse.p];
     }
     return { out_: outToUse, additionalBezier };
 }
-exports.getNextExit = getNextExit;
 function markOutForChecking(originalOut, takenOuts, additionalOutsToCheck) {
     return (out, parity, parent) => {
         if (!takenOuts.has(out) && !out.orientation) {
@@ -63,4 +59,5 @@ function markOutForChecking(originalOut, takenOuts, additionalOutsToCheck) {
         }
     };
 }
+export { getNextExit };
 //# sourceMappingURL=get-next-exit.js.map

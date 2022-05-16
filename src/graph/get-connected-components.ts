@@ -1,5 +1,4 @@
-
-import { IntersectionResult } from '../sweep-line/sweep-line';
+import { IntersectionResult } from '../sweep-line/sweep-line.js';
 
 
 /** 
@@ -48,7 +47,7 @@ function DFSUtil<T>(
     component.push(v);
 
     // Recur for all the vertices adjacent to this vertex 
-    let list = graph.get(v);
+    let list = graph.get(v)!;
     for (let i=0; i<list.length; i++) { 
         let x = list[i];
         if (!visited.has(x)) {

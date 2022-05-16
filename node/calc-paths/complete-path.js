@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.completePath = void 0;
-const complete_loop_1 = require("./complete-loop");
+import { completeLoop } from './complete-loop.js';
 /**
  * Completes the path of a disjoint set of loops, i.e. this function is called
  * for each disjoint set of paths.
@@ -19,12 +16,12 @@ function completePath(expMax, initialOut, takenLoops, takenOuts) {
             continue;
         }
         out.children = new Set();
-        let { beziers, additionalOutsToCheck } = complete_loop_1.completeLoop(expMax, takenOuts, out);
+        let { beziers, additionalOutsToCheck } = completeLoop(expMax, takenOuts, out);
         out.beziers = beziers;
         out.parent.children = out.parent.children || new Set();
         out.parent.children.add(out);
         outStack.push(...additionalOutsToCheck);
     }
 }
-exports.completePath = completePath;
+export { completePath };
 //# sourceMappingURL=complete-path.js.map

@@ -1,7 +1,6 @@
-
-import { Container } from "../../container";
-import { getInOutsViaSides } from "./get-in-outs-via-sides/get-in-outs-via-sides";
-import { getInOutsViaCrossing } from "./get-in-outs-via-crossing/get-in-outs-via-crossing";
+import { Container } from "../../container.js";
+import { getInOutsViaSides } from "./get-in-outs-via-sides/get-in-outs-via-sides.js";
+import { getInOutsViaCrossing } from "./get-in-outs-via-crossing/get-in-outs-via-crossing.js";
 
 
 /**
@@ -13,7 +12,7 @@ function getContainerInOuts(
         container: Container, 
         ioIdx: number) {
 
-    // We check one X for each curve with an intersection within this container
+    // We check one _X_ for each curve with an intersection within this container
     let xs = container.xs;
 
     // Check nature of Xs. If Xs is the very common case where two curves cross

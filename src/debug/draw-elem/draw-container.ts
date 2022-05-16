@@ -1,6 +1,5 @@
-
 import { drawFs } from 'flo-draw';
-import { Container } from '../../container';
+import { Container } from '../../container.js';
 
 
 function drawContainer(g: SVGGElement, container: Container, classes?: string, delay = 0) {
@@ -19,7 +18,8 @@ function drawContainer(g: SVGGElement, container: Container, classes?: string, d
     let $texts: SVGTextElement[] = [];
     let inOuts = container.inOuts;
     for (let i=0; i< inOuts.length; i++) {
-        let inOut = inOuts[i];        
+        let inOut = inOuts[i];
+        // console.log(inOut)
         let C = 3;
         let p = inOut.p.slice();
         //if (inOut.order) {

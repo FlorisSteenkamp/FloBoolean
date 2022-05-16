@@ -1,8 +1,7 @@
-
-import { Loop } from "../loop/loop";
-import { getMinY } from "../loop/get-min-y";
-import { _X_ } from "../x";
-import { makeSimpleX } from "./make-simple-x";
+import { Loop } from "../loop/loop.js";
+import { getMinY } from "../loop/get-min-y.js";
+import { _X_ } from "../-x-.js";
+import { makeSimpleX } from "./make-simple-x.js";
 
 
 /**
@@ -31,8 +30,22 @@ function getExtreme(loop: Loop): _X_[] {
     return [
         // TODO - should multiplicity be undefined in these cases?
         // TODO - do we need 2 intersections???
-        { x: { ri: { tS: ts[0], tE: ts[1], multiplicity: 1 }, kind: 0, box: y.box }, curve },  // extreme
-        { x: { ri: { tS: ts[0], tE: ts[1], multiplicity: 1 }, kind: 0, box: y.box }, curve }   // extreme
+        { 
+            x: { 
+                ri: { tS: ts[0], tE: ts[1], multiplicity: 1 }, 
+                kind: 0, 
+                box: y.box
+            }, 
+            curve 
+        },  // extreme
+        { 
+            x: { 
+                ri: { tS: ts[0], tE: ts[1], multiplicity: 1 },
+                kind: 0,
+                box: y.box
+            },
+            curve 
+        }   // extreme
     ]
 }
 

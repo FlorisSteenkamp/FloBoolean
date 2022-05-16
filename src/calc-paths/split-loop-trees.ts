@@ -1,5 +1,4 @@
-
-import { InOut } from "../in-out";
+import { InOut } from "../in-out.js";
 
 
 /**
@@ -14,7 +13,7 @@ function splitLoopTrees(root: InOut) {
     let stack: InOut[] = [root];
 
     while (stack.length) {
-        let tree = stack.pop();
+        let tree = stack.pop()!;
 
         tree.children = tree.children || new Set();
         for (let child of tree.children) {

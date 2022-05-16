@@ -1,5 +1,4 @@
-
-import { reduceSignificand } from "flo-numerical";
+import { reduceSignificand } from "big-float-ts";
 
 
 /**

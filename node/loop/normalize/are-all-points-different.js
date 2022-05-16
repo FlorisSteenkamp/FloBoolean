@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.areAllPointsDifferent = void 0;
 /**
  * Returns true if all points in the given array are different, false otherwise.
  * @param ps An array of points.
@@ -15,5 +12,5 @@ function areAllPointsDifferent(ps) {
     }
     return true;
 }
-exports.areAllPointsDifferent = areAllPointsDifferent;
+export { areAllPointsDifferent };
 //# sourceMappingURL=are-all-points-different.js.map

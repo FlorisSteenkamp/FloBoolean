@@ -1,8 +1,8 @@
 import { memoize } from 'flo-memoize';
-import { Loop } from './loop';
-import { Curve } from '../curve/curve';
-import { PointOnShape, IPointOnShape } from '../point-on-shape/point-on-shape';
-import { getBounds_ } from '../get-bounds-';
+import { Loop } from './loop.js';
+import { Curve } from '../curve/curve.js';
+import { PointOnShape, IPointOnShape } from '../point-on-shape/point-on-shape.js';
+import { getBounds_ } from '../get-bounds-.js';
 
 
 const INF = Number.POSITIVE_INFINITY;
@@ -23,12 +23,12 @@ let getLoopBounds = memoize(function(loop: Loop): {
 		val: number 
 	}[][] = [
 		[
-			{ bezier: undefined, t: undefined, val: INF}, 
-			{ bezier: undefined, t: undefined, val: INF}
+			{ bezier: undefined!, t: undefined!, val: INF}, 
+			{ bezier: undefined!, t: undefined!, val: INF}
 		], 
 		[
-			{ bezier: undefined, t: undefined, val: -INF}, 
-			{ bezier: undefined, t: undefined, val: -INF}
+			{ bezier: undefined!, t: undefined!, val: -INF}, 
+			{ bezier: undefined!, t: undefined!, val: -INF}
 		]
 	];
 	

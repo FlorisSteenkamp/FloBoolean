@@ -1,23 +1,22 @@
-
 declare var _debug_: Debug; 
 
-import { Debug } from '../debug/debug';
-import { Container } from "../container";
-import { areContainersIntersecting } from "./are-containers-intersecting";
-import { TGraph, addEdges, getConnectedComponents } from "../graph/get-connected-components";
-import { getIsolatedComponents } from "./get-isolated-containers";
-import { mergeContainers } from "./merge-containers";
-import { _X_ } from "../x";
-import { getContainerInOuts } from "./get-container-in-outs/get-container-in-outs";
-import { getIntersections } from "../get-critical-points/get-intersections";
-import { setIntersectionNextValues } from "../get-critical-points/set-intersection-next-values";
-import { Loop } from "../loop/loop";
-import { sweepLine } from "../sweep-line/sweep-line";
-import { getSelfIntersections } from '../get-critical-points/get-self-intersections';
-import { InOut } from '../in-out';
-import { getInterfaceIntersections } from '../get-critical-points/get-interface-intersections';
-import { getExtremes } from '../get-critical-points/get-extremes';
-import { sendContainersToGrid } from './send-containers-to-grid';
+import { Debug } from '../debug/debug.js';
+import { Container } from "../container.js";
+import { areContainersIntersecting } from "./are-containers-intersecting.js";
+import { TGraph, addEdges, getConnectedComponents } from "../graph/get-connected-components.js";
+import { getIsolatedComponents } from "./get-isolated-containers.js";
+import { mergeContainers } from "./merge-containers.js";
+import { _X_ } from "../-x-.js";
+import { getContainerInOuts } from "./get-container-in-outs/get-container-in-outs.js";
+import { getIntersections } from "../get-critical-points/get-intersections.js";
+import { setIntersectionNextValues } from "../get-critical-points/set-intersection-next-values.js";
+import { Loop } from "../loop/loop.js";
+import { sweepLine } from "../sweep-line/sweep-line.js";
+import { getSelfIntersections } from '../get-critical-points/get-self-intersections.js';
+import { InOut } from '../in-out.js';
+import { getInterfaceIntersections } from '../get-critical-points/get-interface-intersections.js';
+import { getExtremes } from '../get-critical-points/get-extremes.js';
+import { sendContainersToGrid } from './send-containers-to-grid.js';
 
 
 /**
@@ -36,7 +35,14 @@ function getContainers(
     let xs2 = getSelfIntersections(loops);
     let xs3 = getInterfaceIntersections(loops);
     let { extremes, xs: xs4 } = getExtremes(loops);
+
     let xPairs = [...xs1, ...xs2, ...xs3, ...xs4];
+
+    //console.log('general  ', xs1);
+    //console.log('self     ', xs2);
+    //console.log('interface', xs3);
+    //console.log('topmost  ', xs4);
+
 
     if (typeof _debug_ !== 'undefined') { 
         for (let xPair of xs1) { _debug_.generated.elems.intersection.push(...xPair); }
@@ -46,20 +52,17 @@ function getContainers(
         for (let xPair of xs4) { _debug_.generated.elems.intersection.push(...xPair); }
     }
 
-    //console.log('general  ', xs1);
-    //console.log('self     ', xs2);
-    //console.log('interface', xs3);
-    //console.log('topmost  ', xs4);
-
     // initialize the containers with one of the one-sided intersections
+    // console.log(xPairs)
+
     let containers: Container[] = xPairs.map(xPair => ({
         xs: xPair,
         box: [
             // TODO xs[0].box -> combine xs[0] and xs[1] boxes
-            [xPair[0].x.box[0][0]-containerDim, xPair[0].x.box[0][1]-containerDim],
-            [xPair[0].x.box[1][0]+containerDim, xPair[0].x.box[1][1]+containerDim]
+            [xPair[0].x.box[0][0] - containerDim, xPair[0].x.box[0][1] - containerDim],
+            [xPair[0].x.box[1][0] + containerDim, xPair[0].x.box[1][1] + containerDim]
         ],
-        inOuts: undefined // to be set later
+        inOuts: undefined! // to be set later
     }));
 
 
@@ -119,15 +122,15 @@ function getContainers(
         for (let out of container.inOuts) {
             if (out.dir === -1) { continue; }
 
-            let x = out._x_;
-            // move to next 'in' X
+            let _x_ = out._x_;
+            // move to next 'in' _X_
             while (true) {
-                x = x.next;
-                if (x.in_) { 
+                _x_ = _x_!.next;
+                if (_x_!.in_) { 
                     break;
                 }
             }
-            out.next = x.in_;
+            out.next = _x_!.in_;
             out.idx = out.next.idx;
         }
     }
@@ -167,7 +170,7 @@ function filterContainers(containers: Container[]) {
 
         for (let x of container.xs) {
             if (x.x.kind !== 4) { 
-                // include container if any X is not an interface
+                // include container if any _X_ is not an interface
                 return true; 
             }
         }

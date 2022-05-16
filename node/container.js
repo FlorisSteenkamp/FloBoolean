@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.containerIsBasic = void 0;
 /**
  * Returns true if the container is basic, i.e. contains only 1 interface
  * intersection or contains only 1 general, extreme or loop intersection
@@ -15,5 +12,5 @@ function containerIsBasic(expMax, container) {
     }
     return false;
 }
-exports.containerIsBasic = containerIsBasic;
+export { containerIsBasic };
 //# sourceMappingURL=container.js.map

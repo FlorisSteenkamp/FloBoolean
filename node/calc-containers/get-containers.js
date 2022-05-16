@@ -1,31 +1,32 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getContainers = void 0;
-const are_containers_intersecting_1 = require("./are-containers-intersecting");
-const get_connected_components_1 = require("../graph/get-connected-components");
-const get_isolated_containers_1 = require("./get-isolated-containers");
-const merge_containers_1 = require("./merge-containers");
-const get_container_in_outs_1 = require("./get-container-in-outs/get-container-in-outs");
-const get_intersections_1 = require("../get-critical-points/get-intersections");
-const set_intersection_next_values_1 = require("../get-critical-points/set-intersection-next-values");
-const sweep_line_1 = require("../sweep-line/sweep-line");
-const get_self_intersections_1 = require("../get-critical-points/get-self-intersections");
-const get_interface_intersections_1 = require("../get-critical-points/get-interface-intersections");
-const get_extremes_1 = require("../get-critical-points/get-extremes");
-const send_containers_to_grid_1 = require("./send-containers-to-grid");
+import { areContainersIntersecting } from "./are-containers-intersecting.js";
+import { addEdges, getConnectedComponents } from "../graph/get-connected-components.js";
+import { getIsolatedComponents } from "./get-isolated-containers.js";
+import { mergeContainers } from "./merge-containers.js";
+import { getContainerInOuts } from "./get-container-in-outs/get-container-in-outs.js";
+import { getIntersections } from "../get-critical-points/get-intersections.js";
+import { setIntersectionNextValues } from "../get-critical-points/set-intersection-next-values.js";
+import { sweepLine } from "../sweep-line/sweep-line.js";
+import { getSelfIntersections } from '../get-critical-points/get-self-intersections.js';
+import { getInterfaceIntersections } from '../get-critical-points/get-interface-intersections.js';
+import { getExtremes } from '../get-critical-points/get-extremes.js';
+import { sendContainersToGrid } from './send-containers-to-grid.js';
 /**
  *
  * @param containerDim
  */
 function getContainers(loops, containerDim, expMax) {
     //let t0 = performance.now();
-    let xs1 = get_intersections_1.getIntersections(loops, expMax);
+    let xs1 = getIntersections(loops, expMax);
     //let t1 = performance.now();
     //console.log("intersections took " + ((t1 - t0)).toFixed(3) + " milliseconds.");
-    let xs2 = get_self_intersections_1.getSelfIntersections(loops);
-    let xs3 = get_interface_intersections_1.getInterfaceIntersections(loops);
-    let { extremes, xs: xs4 } = get_extremes_1.getExtremes(loops);
+    let xs2 = getSelfIntersections(loops);
+    let xs3 = getInterfaceIntersections(loops);
+    let { extremes, xs: xs4 } = getExtremes(loops);
     let xPairs = [...xs1, ...xs2, ...xs3, ...xs4];
+    //console.log('general  ', xs1);
+    //console.log('self     ', xs2);
+    //console.log('interface', xs3);
+    //console.log('topmost  ', xs4);
     if (typeof _debug_ !== 'undefined') {
         for (let xPair of xs1) {
             _debug_.generated.elems.intersection.push(...xPair);
@@ -41,11 +42,8 @@ function getContainers(loops, containerDim, expMax) {
             _debug_.generated.elems.intersection.push(...xPair);
         }
     }
-    //console.log('general  ', xs1);
-    //console.log('self     ', xs2);
-    //console.log('interface', xs3);
-    //console.log('topmost  ', xs4);
     // initialize the containers with one of the one-sided intersections
+    // console.log(xPairs)
     let containers = xPairs.map(xPair => ({
         xs: xPair,
         box: [
@@ -58,22 +56,22 @@ function getContainers(loops, containerDim, expMax) {
     // iterate, combining containers that overlap on each iteration 
     while (true) {
         /** container intersections as an array of Container pairs */
-        let is = sweep_line_1.sweepLine(containers, getLeftMost, getRightMost, are_containers_intersecting_1.areContainersIntersecting);
+        let is = sweepLine(containers, getLeftMost, getRightMost, areContainersIntersecting);
         // if there are no more intersections between containers we're done
         if (!is.length) {
             break;
         }
         let graph = new Map();
-        get_connected_components_1.addEdges(graph, is);
-        let connectedContainers = get_connected_components_1.getConnectedComponents(graph);
-        let isolatedContainers = get_isolated_containers_1.getIsolatedComponents(containers, connectedContainers);
+        addEdges(graph, is);
+        let connectedContainers = getConnectedComponents(graph);
+        let isolatedContainers = getIsolatedComponents(containers, connectedContainers);
         containers = [
-            ...merge_containers_1.mergeContainers(connectedContainers),
+            ...mergeContainers(connectedContainers),
             ...isolatedContainers
         ];
     }
     containers = filterContainers(containers);
-    containers = send_containers_to_grid_1.sendContainersToGrid(containers, expMax, containerDim);
+    containers = sendContainersToGrid(containers, expMax, containerDim);
     if (typeof _debug_ !== 'undefined') {
         _debug_.generated.elems.container = containers;
     }
@@ -87,27 +85,27 @@ function getContainers(loops, containerDim, expMax) {
             x.container = container;
         }
         let inOuts;
-        ({ inOuts, ioIdx } = get_container_in_outs_1.getContainerInOuts(container, ioIdx));
+        ({ inOuts, ioIdx } = getContainerInOuts(container, ioIdx));
         container.inOuts = inOuts;
     }
     // remove xs not belonging to a container (caused by filterContainers)
     xPairs = xPairs.filter(x => x[0].container);
-    set_intersection_next_values_1.setIntersectionNextValues(xPairs);
+    setIntersectionNextValues(xPairs);
     // Connect container ins and outs
     for (let container of containers) {
         for (let out of container.inOuts) {
             if (out.dir === -1) {
                 continue;
             }
-            let x = out._x_;
-            // move to next 'in' X
+            let _x_ = out._x_;
+            // move to next 'in' _X_
             while (true) {
-                x = x.next;
-                if (x.in_) {
+                _x_ = _x_.next;
+                if (_x_.in_) {
                     break;
                 }
             }
-            out.next = x.in_;
+            out.next = _x_.in_;
             out.idx = out.next.idx;
         }
     }
@@ -124,7 +122,6 @@ function getContainers(loops, containerDim, expMax) {
     }
     return { extremes, containers };
 }
-exports.getContainers = getContainers;
 /**
  * Returns the containers that is the given containers filtered so that those
  * having only interface intersections or only a single (giben as a pair) even
@@ -143,7 +140,7 @@ function filterContainers(containers) {
         }
         for (let x of container.xs) {
             if (x.x.kind !== 4) {
-                // include container if any X is not an interface
+                // include container if any _X_ is not an interface
                 return true;
             }
         }
@@ -157,4 +154,5 @@ function getLeftMost(container) {
 function getRightMost(container) {
     return container.box[1][0];
 }
+export { getContainers };
 //# sourceMappingURL=get-containers.js.map

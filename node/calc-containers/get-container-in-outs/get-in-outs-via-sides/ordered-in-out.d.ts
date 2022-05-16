@@ -1,5 +1,5 @@
-import { InOut } from "../../../in-out";
-import { X } from "flo-bezier3";
+import { X } from "../../../x.js";
+import { InOut } from "../../../in-out.js";
 interface OrderedInOut {
     inOut: InOut;
     /**

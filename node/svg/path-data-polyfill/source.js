@@ -1,11 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Source = void 0;
-const parse_number_1 = require("./parse-number");
+import { parseNumber } from './parse-number.js';
 /** @hidden */
 const COMMAND_MAP = {
-    "Z": "Z", "M": "M", "L": "L", "C": "C", "Q": "Q", "A": "A", "H": "H", "V": "V", "S": "S", "T": "T",
-    "z": "Z", "m": "m", "l": "l", "c": "c", "q": "q", "a": "a", "h": "h", "v": "v", "s": "s", "t": "t"
+    Z: "Z", M: "M", L: "L", C: "C", Q: "Q", A: "A", H: "H", V: "V", S: "S", T: "T",
+    z: "Z", m: "m", l: "l", c: "c", q: "q", a: "a", h: "h", v: "v", s: "s", t: "t"
 };
 /** @hidden */
 class Source {
@@ -13,19 +10,19 @@ class Source {
         this._string = string;
         this._currentIndex = 0;
         this._endIndex = this._string.length;
-        this._prevCommand = null;
+        this._prevCommand = undefined;
         this._skipOptionalSpaces();
     }
     parseSegment() {
         var char = this._string[this._currentIndex];
-        var command = COMMAND_MAP[char] ? COMMAND_MAP[char] : null;
-        if (command === null) {
-            // Possibly an implicit command. Not allowed if this is the first command.
-            if (this._prevCommand === null) {
-                return null;
+        var command = COMMAND_MAP[char];
+        if (command === undefined) {
+            if (this._prevCommand === undefined) {
+                throw new Error('Implicit command not allowed for first commands.');
             }
             // Check for remaining coordinates in the current command.
-            if ((char === "+" || char === "-" || char === "." || (char >= "0" && char <= "9")) && this._prevCommand !== "Z") {
+            if ((char === "+" || char === "-" || char === "." || (char >= "0" && char <= "9")) &&
+                this._prevCommand !== "Z") {
                 if (this._prevCommand === "M") {
                     command = "L";
                 }
@@ -37,55 +34,51 @@ class Source {
                 }
             }
             else {
-                command = null;
-            }
-            if (command === null) {
-                return null;
+                throw new Error('Remaining coordinates not found for implicit command');
             }
         }
         else {
             this._currentIndex += 1;
         }
         this._prevCommand = command;
-        var values = null;
+        var values = undefined;
         var cmd = command.toUpperCase();
         if (cmd === "H" || cmd === "V") {
-            values = [parse_number_1.parseNumber(this)];
+            values = [parseNumber(this)];
         }
         else if (cmd === "M" || cmd === "L" || cmd === "T") {
-            values = [parse_number_1.parseNumber(this), parse_number_1.parseNumber(this)];
+            values = [parseNumber(this), parseNumber(this)];
         }
         else if (cmd === "S" || cmd === "Q") {
-            values = [parse_number_1.parseNumber(this), parse_number_1.parseNumber(this), parse_number_1.parseNumber(this), parse_number_1.parseNumber(this)];
+            values = [parseNumber(this), parseNumber(this), parseNumber(this), parseNumber(this)];
         }
         else if (cmd === "C") {
             values = [
-                parse_number_1.parseNumber(this),
-                parse_number_1.parseNumber(this),
-                parse_number_1.parseNumber(this),
-                parse_number_1.parseNumber(this),
-                parse_number_1.parseNumber(this),
-                parse_number_1.parseNumber(this)
+                parseNumber(this),
+                parseNumber(this),
+                parseNumber(this),
+                parseNumber(this),
+                parseNumber(this),
+                parseNumber(this)
             ];
         }
         else if (cmd === "A") {
             values = [
-                parse_number_1.parseNumber(this),
-                parse_number_1.parseNumber(this),
-                parse_number_1.parseNumber(this),
+                parseNumber(this),
+                parseNumber(this),
+                parseNumber(this),
                 this._parseArcFlag(),
                 this._parseArcFlag(),
-                parse_number_1.parseNumber(this),
-                parse_number_1.parseNumber(this)
+                parseNumber(this),
+                parseNumber(this)
             ];
         }
         else if (cmd === "Z") {
             this._skipOptionalSpaces();
             values = [];
         }
-        if (values === null || values.indexOf(null) >= 0) {
-            // Unknown command or known command with invalid values
-            return null;
+        if (values === undefined) {
+            throw new Error('Unknown command');
         }
         else {
             return { type: command, values };
@@ -94,17 +87,12 @@ class Source {
     hasMoreData() {
         return this._currentIndex < this._endIndex;
     }
-    peekSegmentType() {
-        var char = this._string[this._currentIndex];
-        return COMMAND_MAP[char] ? COMMAND_MAP[char] : null;
-    }
     initialCommandIsMoveTo() {
         // If the path is empty it is still valid, so return true.
         if (!this.hasMoreData()) {
             return true;
         }
-        var command = this.peekSegmentType();
-        // Path must start with moveTo.
+        var command = COMMAND_MAP[this._string[this._currentIndex]];
         return command === "M" || command === "m";
     }
     _isCurrentSpace() {
@@ -133,10 +121,10 @@ class Source {
     }
     _parseArcFlag() {
         if (this._currentIndex >= this._endIndex) {
-            return null;
+            throw new Error('Unable to parse arc flag');
         }
-        var flag = null;
-        var flagChar = this._string[this._currentIndex];
+        let flag = undefined;
+        let flagChar = this._string[this._currentIndex];
         this._currentIndex += 1;
         if (flagChar === "0") {
             flag = 0;
@@ -145,11 +133,11 @@ class Source {
             flag = 1;
         }
         else {
-            return null;
+            throw new Error('Unable to parse arc flag - arc flag must be 0 or 1');
         }
         this._skipOptionalSpacesOrDelimiter();
         return flag;
     }
 }
-exports.Source = Source;
+export { Source };
 //# sourceMappingURL=source.js.map

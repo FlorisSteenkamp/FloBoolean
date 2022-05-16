@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PointOnShape = void 0;
-const flo_bezier3_1 = require("flo-bezier3");
+import { evalDeCasteljau } from 'flo-bezier3';
 /**
  * Represents a point on the shape boundary.
  */
@@ -22,9 +19,9 @@ class PointOnShape {
      */
     get p() {
         return this.p_ === undefined
-            ? this.p_ = flo_bezier3_1.evalDeCasteljau(this.curve.ps, this.t)
+            ? this.p_ = evalDeCasteljau(this.curve.ps, this.t)
             : this.p_;
     }
 }
-exports.PointOnShape = PointOnShape;
+export { PointOnShape };
 //# sourceMappingURL=point-on-shape.js.map

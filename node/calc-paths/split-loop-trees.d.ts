@@ -1,4 +1,4 @@
-import { InOut } from "../in-out";
+import { InOut } from "../in-out.js";
 /**
  * Take the forest of trees, create a new root making it a tree and snip
  * branches such that each branch determines a new set of loops each

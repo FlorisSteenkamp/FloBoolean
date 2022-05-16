@@ -1,7 +1,6 @@
-
-import { toGrid } from "./to-grid";
 import { isSelfOverlapping } from "flo-bezier3";
-import { fixBezierByPointSpacing } from "./fix-bezier-by-point-spacing";
+import { toGrid } from "./to-grid.js";
+import { fixBezierByPointSpacing } from "./fix-bezier-by-point-spacing.js";
 
 
 function sendToGrid(expMax: number, maxBitLength: number) {
@@ -38,7 +37,7 @@ function fixBeziers(
         let newPss: number[][][] = [];
 
         for (let i=0; i<loop.length; i++) {
-            let ps = loop[i].slice();
+            let ps: number[][] | undefined = loop[i].slice();
 
             // Get endpoint of last good bezier or else the original start point
             let len = newPss.length;
@@ -62,7 +61,7 @@ function fixBeziers(
             
             ps = fixBezierByPointSpacing(ps, gridSpacing, sendToGrid_);
 
-            if (ps) { newPss.push(ps); }
+            if (ps !== undefined) { newPss.push(ps); }
         }
 
         let len = newPss.length;

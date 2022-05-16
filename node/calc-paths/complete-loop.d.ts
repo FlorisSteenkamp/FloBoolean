@@ -1,9 +1,9 @@
-import { InOut } from '../in-out';
+import { InOut } from '../in-out.js';
 /**
  * Completes a loop for a specific intersection point entry curve.
+ * @param expMax
  * @param takenOuts
  * @param out
- * @param g
  */
 declare function completeLoop(expMax: number, takenOuts: Set<InOut>, out: InOut): {
     beziers: number[][][];

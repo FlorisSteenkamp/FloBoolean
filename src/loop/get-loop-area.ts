@@ -1,8 +1,6 @@
-
-import { getXY, getDxy } from "flo-bezier3";
-import { gaussQuadrature } from 'flo-gauss-quadrature';
-import { multiply, add, negate, Horner as evaluatePoly } from 'flo-poly';
-import { Loop } from "./loop";
+import { toPowerBasis, toPowerBasis_1stDerivative } from "flo-bezier3";
+import { multiply, add, negate, Horner, integrate } from 'flo-poly';
+import { Loop } from "./loop.js";
 
 
 /** 
@@ -11,20 +9,17 @@ import { Loop } from "./loop";
  */
 function getLoopArea(loop: Loop) {
     let totalArea = 0;
-    for (let curve of loop.curves) {
-        let ps = curve.ps;
+    for (const curve of loop.curves) {
+        const ps = curve.ps;
 
-        let [x,y] = getXY(ps);
-        let [dx,dy] = getDxy(ps);
+        const [x,y] = toPowerBasis(ps);
+        const [dx,dy] = toPowerBasis_1stDerivative(ps);
 
-        // xy' named as xy_
-        let xdy = multiply(x, dy);
-        let ydx = negate(multiply(y, dx));
+        const xdy = multiply(x, dy);
+        const ydx = negate(multiply(y, dx));
 
-        let poly = add(xdy, ydx);
-        let f = (x: number) => evaluatePoly(poly, x);
-        // TODO - why not calculate directly (it's just a poly)?😳
-        let area = gaussQuadrature(f, [0,1], 16);
+        const poly = integrate(add(xdy, ydx), 0);
+        const area = Horner(poly, 1);
 
         totalArea += area;
     }

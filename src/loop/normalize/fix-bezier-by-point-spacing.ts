@@ -1,10 +1,7 @@
-
-import { lengthSquaredUpperBound, isLine, isCubicReallyQuad, toQuadraticFromCubic } from "flo-bezier3";
-import { areAllPointsDifferent } from "./are-all-points-different";
-// TODO - consider importing only specific functions from flo-vector2d
-// We currently import the entire library since we're importing from index.ts
-// This will reduce file size - at last check it was only 26kB minified though
-import { squaredDistanceBetween, toLength, fromTo, translate } from "flo-vector2d";
+import { squaredDistanceBetween, toLength, fromTo as fromToVect, translate } from "flo-vector2d";
+// import { lengthSquaredUpperBound, isLine, isCubicReallyQuad, toQuadraticFromCubic } from "flo-bezier3";
+import { isReallyPoint, isCubicReallyQuad, cubicToQuadratic, isCollinear } from "flo-bezier3";
+import { areAllPointsDifferent } from "./are-all-points-different.js";
 
 
 /**
@@ -16,10 +13,10 @@ import { squaredDistanceBetween, toLength, fromTo, translate } from "flo-vector2
 function fixBezierByPointSpacing(
         ps: number[][], 
         gridSpacing: number,
-        sendToGrid: (p: number[]) => number[]): number[][] {
+        sendToGrid: (p: number[]) => number[]): number[][] | undefined {
 
     // Early filter - if all points coincide, we're done - degenerate to point
-    if (lengthSquaredUpperBound(ps) === 0) {
+    if (isReallyPoint(ps)) {
         return undefined; // Cannot fix
     }
 
@@ -33,7 +30,8 @@ function fixBezierByPointSpacing(
         if (areAllPointsDifferent(ps)) {
             // but if it s a line masquerading as a quadratic or cubic bezier
             // then make it line
-            return isLine(ps) ? [ps[0], ps[2]] : ps;
+            // return isLine(ps) ? [ps[0], ps[2]] : ps;
+            return isCollinear(ps) ? [ps[0], ps[2]] : ps;
         }
 
         // Is the quadratic bezier overlapping onto itself? 
@@ -151,7 +149,7 @@ function fixBezierByPointSpacing(
                 ps[3]
             ]; // cannot be a line or quad
         } else {
-            let v = toLength(fromTo(ps[1], ps[2]), 2 * gridSpacing);
+            let v = toLength(fromToVect(ps[1], ps[2]), 2 * gridSpacing);
             let p1 = translate(ps[1], v);
             return checkCubicForLineOrQuad([
                 ps[0],
@@ -178,7 +176,7 @@ function fixBezierByPointSpacing(
                 ps[3]
             ]; // cannot be a line or quad
         } else {
-            let v = toLength(fromTo(ps[2], ps[1]), 2 * gridSpacing);
+            let v = toLength(fromToVect(ps[2], ps[1]), 2 * gridSpacing);
             let p2 = translate(ps[2], v);
             return checkCubicForLineOrQuad([
                 ps[0],
@@ -192,10 +190,11 @@ function fixBezierByPointSpacing(
 
 
 function checkCubicForLineOrQuad(ps: number[][]) {
-    return isLine(ps)
+    // return isLine(ps)
+    return isCollinear(ps)
         ? [ps[0], ps[3]]
         : isCubicReallyQuad(ps)
-            ? toQuadraticFromCubic(ps)
+            ? cubicToQuadratic(ps)
             : ps;
 }
 

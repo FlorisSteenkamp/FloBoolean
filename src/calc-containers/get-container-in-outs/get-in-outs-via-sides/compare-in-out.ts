@@ -1,7 +1,6 @@
-
-import { OrderedInOut } from "./ordered-in-out";
 import { refineK1 } from "flo-poly";
-import { compare } from "flo-numerical";
+import { eCompare } from "big-float-ts";
+import { OrderedInOut } from "./ordered-in-out.js";
 
 
 const abs = Math.abs;
@@ -43,21 +42,21 @@ function compareOrderedInOut(
         xA.compensated = 1;  // compensate once - in future we can compensate more times if necessary
         // there should be only 1 root in the 4u interval
         // TODO - getPExact called too often - cache it!
-        xA.riExp = refineK1(xA.ri, xA.getPExact())[0];
+        xA.riExp = refineK1(xA.ri, xA.getPExact!())[0];
     }
 
     if (!xB.compensated) { // else the root is already compensated once
         xB.compensated = 1;  // compensate once - in future we can compensate more times if necessary
         // there should be only 1 root in the 4u interval
         // TODO - getPExact called too often - cache it!
-        xB.riExp = refineK1(xB.ri, xB.getPExact())[0];
+        xB.riExp = refineK1(xB.ri, xB.getPExact!())[0];
     }
 
     //console.log('compensated')
     //console.log('xA', expEst(xA.riExp.tS), ' - ', expEst(xA.riExp.tE));
     //console.log('xB', expEst(xB.riExp.tS), ' - ', expEst(xB.riExp.tE));
 
-    res = compare(xA.riExp.tS, xB.riExp.tS);
+    res = eCompare(xA.riExp!.tS, xB.riExp!.tS);
 
     if (res !== 0) { 
         return res; 
@@ -74,8 +73,8 @@ function compareOrderedInOut(
     // At this stage they are both in or both out
     // We reverse sort the ins in comparison to the outs
     return inOutA.inOut.dir === 1 
-        ? inOutA.inOut.idx - inOutB.inOut.idx
-        : inOutB.inOut.idx - inOutA.inOut.idx;
+        ? inOutA.inOut.idx! - inOutB.inOut.idx!
+        : inOutB.inOut.idx! - inOutA.inOut.idx!;
 }
 
 

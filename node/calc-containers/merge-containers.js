@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.mergeContainers = void 0;
 function mergeContainers(ccs) {
     let containers = [];
     for (let cc of ccs) {
@@ -25,6 +22,7 @@ function mergeContainers(ccs) {
             }
             xs.push(...c.xs);
         }
+        // console.log(minLeft)
         let container = {
             box: [[minLeft, minTop], [maxRight, maxBottom]],
             xs: xs,
@@ -34,5 +32,5 @@ function mergeContainers(ccs) {
     }
     return containers;
 }
-exports.mergeContainers = mergeContainers;
+export { mergeContainers };
 //# sourceMappingURL=merge-containers.js.map

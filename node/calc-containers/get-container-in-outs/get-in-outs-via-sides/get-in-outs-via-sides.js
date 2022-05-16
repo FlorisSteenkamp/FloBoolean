@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInOutsViaSides = void 0;
-const get_x_in_outs_1 = require("./get-x-in-outs");
-const compare_in_out_1 = require("./compare-in-out");
+import { getXInOuts } from "./get-x-in-outs.js";
+import { compareOrderedInOut } from "./compare-in-out.js";
 /**
  * Returns the incoming / outgoing curves (as InOuts) for the given container
  * using an extremely small rectangle around the intersections.
@@ -11,11 +8,11 @@ const compare_in_out_1 = require("./compare-in-out");
  * @param ioIdx
  */
 function getInOutsViaSides(container, ioIdx) {
-    // We check one X for each curve with an intersection within this container
+    // We check one _X_ for each curve with an intersection within this container
     let xs_ = container.xs;
     //console.log(container.xs);
     let inOuts = [];
-    // get a map from each Curve to each X of this container
+    // get a map from each Curve to each _X_ of this container
     let xMap = new Map();
     for (let x of xs_) {
         let curve = x.curve;
@@ -27,7 +24,7 @@ function getInOutsViaSides(container, ioIdx) {
             xs.push(x);
         }
     }
-    let getXInOuts_ = get_x_in_outs_1.getXInOuts(container);
+    let getXInOuts_ = getXInOuts(container);
     for (let entry of xMap) {
         let [curve, xs] = entry;
         let ins;
@@ -36,8 +33,8 @@ function getInOutsViaSides(container, ioIdx) {
         inOuts.push(...ins);
         inOuts.push(...outs);
     }
-    inOuts.sort(compare_in_out_1.compareOrderedInOut);
+    inOuts.sort(compareOrderedInOut);
     return { inOuts: inOuts.map(inOut => inOut.inOut), ioIdx };
 }
-exports.getInOutsViaSides = getInOutsViaSides;
+export { getInOutsViaSides };
 //# sourceMappingURL=get-in-outs-via-sides.js.map

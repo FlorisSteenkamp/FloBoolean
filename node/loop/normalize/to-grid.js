@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.toGrid = void 0;
-const flo_numerical_1 = require("flo-numerical");
+import { reduceSignificand } from "big-float-ts";
 /**
  * Sends a onto a fixed-spacing grid with 2**significantFigures divisions. Each
  * division is 2**maxExp / 2**significantFigures wide.
@@ -20,7 +17,7 @@ function toGrid(a, expMax, significantFigures) {
     if (significantFigures >= 53) {
         return a;
     }
-    return flo_numerical_1.reduceSignificand(a, newSig);
+    return reduceSignificand(a, newSig);
 }
-exports.toGrid = toGrid;
+export { toGrid };
 //# sourceMappingURL=to-grid.js.map

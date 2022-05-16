@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getIsolatedComponents = void 0;
 /**
  * @param containers all containers
  * @param connectedContainers
@@ -21,5 +18,5 @@ function getIsolatedComponents(containers, connectedContainers) {
     }
     return res;
 }
-exports.getIsolatedComponents = getIsolatedComponents;
+export { getIsolatedComponents };
 //# sourceMappingURL=get-isolated-containers.js.map

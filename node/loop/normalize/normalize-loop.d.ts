@@ -16,9 +16,11 @@
  *   are seperated. (this prevents infinite curvature at the endpoints, etc).
  *   (this condition is not necessary for this algorithm but may help algorithms
  *    down the line that needs such guarantees)
- * @param loop
+ * @param bezierLoops
  * @param maxBitLength
  * @param expMax
+ * @param doScramble
+ * @param doSendToGrid
  */
 declare function normalizeLoops(bezierLoops: number[][][][], maxBitLength: number, expMax: number, doScramble?: boolean, doSendToGrid?: boolean): number[][][][];
 export { normalizeLoops };

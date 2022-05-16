@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.loopsToSvgPathStr = void 0;
-const beziers_to_svg_path_str_1 = require("./beziers-to-svg-path-str");
+import { beziersToSvgPathStr } from "./beziers-to-svg-path-str.js";
 /**
  * Returns an SVG path string representation of the given bezier loops.
  * @param loops An array of loops having an array of bezier curves each given as
@@ -10,9 +7,9 @@ const beziers_to_svg_path_str_1 = require("./beziers-to-svg-path-str");
 function loopsToSvgPathStr(loops) {
     let str = '';
     for (let loop of loops) {
-        str = str + beziers_to_svg_path_str_1.beziersToSvgPathStr(loop) + '\n';
+        str = str + beziersToSvgPathStr(loop) + '\n';
     }
     return str;
 }
-exports.loopsToSvgPathStr = loopsToSvgPathStr;
+export { loopsToSvgPathStr };
 //# sourceMappingURL=loops-to-svg-path-str.js.map

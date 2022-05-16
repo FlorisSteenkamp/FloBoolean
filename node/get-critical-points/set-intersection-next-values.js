@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.setIntersectionNextValues = void 0;
 /**
  * Set each intersection on the given original loop's next and prev value
  * @param loops
@@ -40,5 +37,5 @@ function setIntersectionNextValues(xPairs) {
         xs[xs.length - 1].next = xs[0];
     }
 }
-exports.setIntersectionNextValues = setIntersectionNextValues;
+export { setIntersectionNextValues };
 //# sourceMappingURL=set-intersection-next-values.js.map

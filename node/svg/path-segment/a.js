@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.a = void 0;
-const arc_to_cubic_curves_1 = require("../arc-to-cubic-curves");
+import { arcToCubicCurves } from "../arc-to-cubic-curves.js";
 /**
  * @hidden
  * A and a: (from www.w3.org)
@@ -19,10 +16,10 @@ const arc_to_cubic_curves_1 = require("../arc-to-cubic-curves");
 function a(s) {
     s.prev2ndCubicControlPoint = undefined;
     s.prev2ndQuadraticControlPoint = undefined;
-    let curves = arc_to_cubic_curves_1.arcToCubicCurves(s.p, s.vals[0], s.vals[1], s.vals[2], s.vals[3], s.vals[4], [s.vals[5], s.vals[6]]);
+    let curves = arcToCubicCurves(s.p, s.vals[0], s.vals[1], s.vals[2], s.vals[3], s.vals[4], [s.vals[5], s.vals[6]]);
     let lastPs = curves[curves.length - 1];
     s.p = lastPs[lastPs.length - 1]; // Update current point
     return curves;
 }
-exports.a = a;
+export { a };
 //# sourceMappingURL=a.js.map

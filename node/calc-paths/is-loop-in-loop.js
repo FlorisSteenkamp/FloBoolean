@@ -1,9 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLoopInLoop = void 0;
-const flo_poly_1 = require("flo-poly");
-const flo_bezier3_1 = require("flo-bezier3");
-const flo_vector2d_1 = require("flo-vector2d");
+import { flatCoefficients, allRoots } from 'flo-poly';
+import { toPowerBasis, tangent, evalDeCasteljau } from 'flo-bezier3';
+import { toUnitVector, translate } from 'flo-vector2d';
+import { getBoundingBox_ } from '../get-bounding-box-.js';
+import { getBounds_ } from '../get-bounds-.js';
 // TODO - remove delta by basing isLoopInLoop on a solid numerical analytic 
 // basis - isLoopInLoop is the only sub-algorithm left having a DELTA.
 const DELTA = 1e-6;
@@ -12,7 +11,8 @@ const DELTA = 1e-6;
  * boundary.
  *
  * Precondition: the loop is either wholly contained inside the loop or is wholly outside.
- * @param loops
+ * @param loop1
+ * @param loop2
  */
 function isLoopInLoop(loop1, loop2) {
     let i = 0;
@@ -20,17 +20,17 @@ function isLoopInLoop(loop1, loop2) {
     do {
         i++;
         // This gets us a predictable random number between 0 and 1;
-        let rand1 = flo_poly_1.flatCoefficients(1, 0, 1, seed);
+        let rand1 = flatCoefficients(1, 0, 1, seed);
         let t = rand1.p[0];
         seed = rand1.seed; // Get next seed.
         // This gets us a predictable random number roughly between 0 and the 
         // number of curves in the loop.
         let curveCount = loop1.length;
-        let rand2 = flo_poly_1.flatCoefficients(1, 0, curveCount, seed);
+        let rand2 = flatCoefficients(1, 0, curveCount, seed);
         let idx = Math.floor(rand2.p[0]);
         seed = rand2.seed; // Get next seed.
         let ps = loop1[idx];
-        let p = flo_bezier3_1.evalDeCasteljau(ps, t);
+        let p = evalDeCasteljau(ps, t);
         let res = f(loop1, loop2, p);
         if (res !== undefined) {
             return res;
@@ -47,7 +47,6 @@ function isLoopInLoop(loop1, loop2) {
         }
     }
 }
-exports.isLoopInLoop = isLoopInLoop;
 /**
  * Returns true if the first loop is not wholly within the second. The converse
  * is not necessarily true. It is assumed the loops don't intersect.
@@ -61,7 +60,7 @@ function isLoopNotInLoop(loop1, loop2) {
         boundss[0].maxY > boundss[1].maxY);
 }
 function getLoopBounds(pss) {
-    let bounds = pss.map(ps => flo_bezier3_1.getBounds(ps));
+    let bounds = pss.map(ps => getBounds_(ps));
     return {
         minX: Math.min(...bounds.map(bound => bound.box[0][0])),
         maxX: Math.max(...bounds.map(bound => bound.box[1][0])),
@@ -73,6 +72,8 @@ function getLoopBounds(pss) {
  * @param p The point where the horizontal ray starts
  * @param toLeft The ray to the left of this point (else right)
  * @param loop A loop of curves
+ *
+ * @internal
  */
 function getAxisAlignedRayLoopIntersections(loop, p, dir) {
     let [x, y] = p;
@@ -82,7 +83,7 @@ function getAxisAlignedRayLoopIntersections(loop, p, dir) {
         //------------------------------------------------------/
         //---- Check if ray intersects bezier bounding box -----/
         //------------------------------------------------------/
-        let [[minX, minY], [maxX, maxY]] = flo_bezier3_1.getBoundingBox(ps);
+        let [[minX, minY], [maxX, maxY]] = getBoundingBox_(ps);
         let notIntersecting = ((dir === 'left' || dir === 'right') && (minY > y || maxY < y)) ||
             ((dir === 'up' || dir === 'down') && (minX > x || maxX < x));
         notIntersecting = notIntersecting ||
@@ -101,20 +102,22 @@ function getAxisAlignedRayLoopIntersections(loop, p, dir) {
         let axis;
         let dirIsDecreasing = (dir === 'left' || dir === 'up');
         if (dir === 'left' || dir === 'right') {
-            f = flo_bezier3_1.getY;
+            //f = getY;
+            f = (ps) => toPowerBasis(ps)[1];
             offset = [0, -y];
             axis = 0;
         }
         else {
-            f = flo_bezier3_1.getX;
+            //f = getX;
+            f = (ps) => toPowerBasis(ps)[0];
             offset = [-x, 0];
             axis = 1;
         }
         //let translatedPs = translate(offset, ps);
-        let translatedPs = ps.map(flo_vector2d_1.translate(offset));
+        let translatedPs = ps.map(translate(offset));
         let poly = f(translatedPs);
         //let ev = evalDeCasteljau(translatedPs);
-        let ts_ = flo_poly_1.allRoots(poly, 0 - DELTA, 1 + DELTA);
+        let ts_ = allRoots(poly, 0 - DELTA, 1 + DELTA);
         for (let i = 0; i < ts_.length; i++) {
             let t = ts_[i];
             if (Math.abs(t) < DELTA || Math.abs(t - 1) < DELTA) {
@@ -123,7 +126,7 @@ function getAxisAlignedRayLoopIntersections(loop, p, dir) {
                 return undefined;
             }
             //let p_ = ev(t);
-            let p_ = flo_bezier3_1.evalDeCasteljau(translatedPs, t);
+            let p_ = evalDeCasteljau(translatedPs, t);
             if ((dirIsDecreasing && p[axis] >= p_[axis]) ||
                 (!dirIsDecreasing && p[axis] <= p_[axis])) {
                 ts.push(t);
@@ -135,7 +138,7 @@ function getAxisAlignedRayLoopIntersections(loop, p, dir) {
         // We only care if there were 1 or 3 intersections.
         if (ts.length === 1 || ts.length === 3) {
             for (let t of ts) {
-                let tan = flo_vector2d_1.toUnitVector(flo_bezier3_1.tangent(ps, t));
+                let tan = toUnitVector(tangent(ps, t));
                 if (((dir === 'left' || dir === 'right') && Math.abs(tan[1]) < DELTA) ||
                     ((dir === 'down' || dir === 'up') && Math.abs(tan[0]) < DELTA)) {
                     // We don't know the exact number of intersections due to
@@ -148,4 +151,5 @@ function getAxisAlignedRayLoopIntersections(loop, p, dir) {
     }
     return count;
 }
+export { isLoopInLoop };
 //# sourceMappingURL=is-loop-in-loop.js.map

@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.drawCirclePercent = void 0;
 function drawCirclePercent(g, center, radiusPercent, classes) {
     const XMLNS = 'http://www.w3.org/2000/svg';
     let $circle = document.createElementNS(XMLNS, 'circle');
@@ -11,5 +8,5 @@ function drawCirclePercent(g, center, radiusPercent, classes) {
     g.appendChild($circle);
     return $circle;
 }
-exports.drawCirclePercent = drawCirclePercent;
+export { drawCirclePercent };
 //# sourceMappingURL=draw-circle-percent.js.map

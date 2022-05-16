@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseNumber = void 0;
 /**
  * @hidden
  * Parse a number from an SVG path. This very closely follows genericParseNumber(...) from
@@ -28,8 +25,7 @@ function parseNumber(source) {
     if (source._currentIndex === source._endIndex ||
         ((source._string[source._currentIndex] < "0" || source._string[source._currentIndex] > "9") &&
             source._string[source._currentIndex] !== ".")) {
-        // The first character of a number must be one of [0-9+-.].
-        return null;
+        throw new Error('The first character of a number must be one of [0-9+-.].');
     }
     // Read the integer part, build right-to-left.
     var startIntPartIndex = source._currentIndex;
@@ -50,11 +46,10 @@ function parseNumber(source) {
     // Read the decimals.
     if (source._currentIndex < source._endIndex && source._string[source._currentIndex] === ".") {
         source._currentIndex += 1;
-        // There must be a least one digit following the .
         if (source._currentIndex >= source._endIndex ||
             source._string[source._currentIndex] < "0" ||
             source._string[source._currentIndex] > "9") {
-            return null;
+            throw new Error('There must be a least one digit following the .');
         }
         while (source._currentIndex < source._endIndex &&
             source._string[source._currentIndex] >= "0" &&
@@ -78,11 +73,10 @@ function parseNumber(source) {
             source._currentIndex += 1;
             expsign = -1;
         }
-        // There must be an exponent.
         if (source._currentIndex >= source._endIndex ||
             source._string[source._currentIndex] < "0" ||
             source._string[source._currentIndex] > "9") {
-            return null;
+            throw new Error('There must be an exponent.');
         }
         while (source._currentIndex < source._endIndex &&
             source._string[source._currentIndex] >= "0" &&
@@ -98,10 +92,10 @@ function parseNumber(source) {
         number *= Math.pow(10, expsign * exponent);
     }
     if (startIndex === source._currentIndex) {
-        return null;
+        throw new Error('Internal error: startIndex === source._currentIndex');
     }
     source._skipOptionalSpacesOrDelimiter();
     return number;
 }
-exports.parseNumber = parseNumber;
+export { parseNumber };
 //# sourceMappingURL=parse-number.js.map

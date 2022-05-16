@@ -1,5 +1,4 @@
-
-import { Curve } from '../curve/curve';
+import { Curve } from '../curve/curve.js';
     
 
 /**
@@ -41,14 +40,17 @@ function isPoint(ps: number[][]): boolean {
 /**
  * @param beziers A pre-ordered array of bezier curves to add initially.
  */
-function loopFromBeziers(beziers: number[][][] = [], idx?: number) {
+function loopFromBeziers(
+        beziers: number[][][] = [], 
+        idx?: number) {
+
     let curves: Curve[] = [];
 
     let loop: Loop = { beziers, curves, idx };
 
     if (!beziers.length) { return loop; }
 
-    let prev: Curve;
+    let prev: Curve | undefined = undefined;
     
     let j = 0;
     for (let i=0; i<beziers.length; i++) {
@@ -58,8 +60,8 @@ function loopFromBeziers(beziers: number[][][] = [], idx?: number) {
         let curve: Curve = {
             loop,
             ps: beziers[i],
-            prev,
-            next: undefined,
+            prev: prev!,
+            next: undefined!,
             idx: j
         };
 

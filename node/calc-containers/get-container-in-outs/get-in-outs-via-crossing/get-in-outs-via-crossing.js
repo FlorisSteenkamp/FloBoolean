@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInOutsViaCrossing = void 0;
-const flo_bezier3_1 = require("flo-bezier3");
-const get_in_outs_via_sides_1 = require("../get-in-outs-via-sides/get-in-outs-via-sides");
-const flo_numerical_1 = require("flo-numerical");
+import { orient2d } from "big-float-ts";
+import { getIntervalBox, getHodograph, evalDeCasteljau } from "flo-bezier3";
+import { getInOutsViaSides } from "../get-in-outs-via-sides/get-in-outs-via-sides.js";
 /**
  * Returns the incoming / outgoing curves (as InOuts) for the given container.
  * @param container
@@ -16,7 +13,7 @@ function getInOutsViaCrossing(container, ioIdx) {
     let x2 = xs[1];
     let ps1 = x1.curve.ps;
     let ps2 = x2.curve.ps;
-    let p = flo_bezier3_1.evalDeCasteljau(ps1, x1.x.ri.tS);
+    let p = evalDeCasteljau(ps1, x1.x.ri.tS);
     let t1S = x1.x.ri.tS;
     let t1E = x1.x.ri.tE;
     let t2S = x2.x.ri.tS;
@@ -26,37 +23,37 @@ function getInOutsViaCrossing(container, ioIdx) {
     if (ps1.length === 4 || ps1.length === 3) {
         // cubic => hodograph is a parabola
         // quadratic => hodograph is a line (we still get the box, but in future maybe we can do better)
-        let h1 = flo_bezier3_1.getHodograph(ps1); // <= cubic: 50 bit-aligned => exact, quadratic: 52 bit-aligned => exact
-        v1s = flo_bezier3_1.getIntervalBox(h1, [t1S, t1E]);
+        let h1 = getHodograph(ps1); // <= cubic: 50 bit-aligned => exact, quadratic: 52 bit-aligned => exact
+        v1s = getIntervalBox(h1, [t1S, t1E]);
     }
-    else if (ps1.length === 2) {
+    else /*if (ps1.length === 2)*/ {
         // line => hodograph is a fixed point
-        v1s = flo_bezier3_1.getHodograph(ps1); // <= 52 bit-aligned => exact
+        v1s = getHodograph(ps1); // <= 52 bit-aligned => exact
     }
     if (ps2.length === 4 || ps2.length === 3) {
         // cubic => hodograph is a parabola
         // quadratic => hodograph is a line (we still get the box, but in future maybe we can do better)
-        let h2 = flo_bezier3_1.getHodograph(ps2); // <= cubic: 50 bit-aligned => exact, quadratic: 52 bit-aligned => exact
-        v2s = flo_bezier3_1.getIntervalBox(h2, [t2S, t2E]);
+        let h2 = getHodograph(ps2); // <= cubic: 50 bit-aligned => exact, quadratic: 52 bit-aligned => exact
+        v2s = getIntervalBox(h2, [t2S, t2E]);
     }
-    else if (ps2.length === 2) {
+    else /*if (ps2.length === 2)*/ {
         // line => hodograph is a fixed point
-        v2s = flo_bezier3_1.getHodograph(ps2); // <= 52 bit-aligned => exact
+        v2s = getHodograph(ps2); // <= 52 bit-aligned => exact
     }
     // possible configurations: (up to cyclic permutation)
     // config1: i1 o2 o1 i2 ==== i2 i1 o2 o1 ==== etc.
     // config2: i1 i2 o1 o2 ==== o2 i1 i2 o1 ==== etc.
-    let cSign;
+    let cSign = undefined;
     // TODO - investigate faster method by finding and using the 2 extreme points only
     for (let i = 0; i < v1s.length; i++) {
         for (let j = 0; j < v2s.length; j++) {
             // we use orient2d below since it is completely robust (cross is not)
             //let c = Math.sign(cross(v1s[i],v2s[j]));
-            let c = Math.sign(flo_numerical_1.orient2d(v1s[i], v2s[j], [0, 0]));
+            let c = Math.sign(orient2d(v1s[i], v2s[j], [0, 0]));
             if (c === 0) {
                 // too close to call 
                 // use a more accurate but slower method
-                return get_in_outs_via_sides_1.getInOutsViaSides(container, ioIdx);
+                return getInOutsViaSides(container, ioIdx);
             }
             if (cSign === undefined) {
                 cSign = c;
@@ -65,7 +62,7 @@ function getInOutsViaCrossing(container, ioIdx) {
             if (cSign !== c) {
                 // conflicting results
                 // use a more accurate but slower method
-                return get_in_outs_via_sides_1.getInOutsViaSides(container, ioIdx);
+                return getInOutsViaSides(container, ioIdx);
             }
         }
     }
@@ -90,5 +87,5 @@ function getInOutsViaCrossing(container, ioIdx) {
     }
     return { inOuts, ioIdx };
 }
-exports.getInOutsViaCrossing = getInOutsViaCrossing;
+export { getInOutsViaCrossing };
 //# sourceMappingURL=get-in-outs-via-crossing.js.map

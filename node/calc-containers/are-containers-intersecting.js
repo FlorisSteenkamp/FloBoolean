@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.areContainersIntersecting = void 0;
-const are_boxes_intersecting_1 = require("../sweep-line/are-boxes-intersecting");
+import { areBoxesIntersecting } from "flo-bezier3";
 function areContainersIntersecting(container1, container2) {
-    return are_boxes_intersecting_1.areBoxesIntersecting(true)(container1.box, container2.box);
+    return areBoxesIntersecting(true, container1.box, container2.box);
 }
-exports.areContainersIntersecting = areContainersIntersecting;
+export { areContainersIntersecting };
 //# sourceMappingURL=are-containers-intersecting.js.map

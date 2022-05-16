@@ -1,23 +1,18 @@
 {
     "compilerOptions": {
         "charset": "utf8",
-        "noImplicitAny": true, 
-        "noImplicitThis": true,
-        "alwaysStrict": true,
-        "strictBindCallApply": true,
-        //"esModuleInterop": true,
-        //"strictNullChecks": true,
-        "strictFunctionTypes": true,
-        //"strictPropertyInitialization": true,
-        "module": "commonjs",
-        "target": "es2017",
+        "strict": true, 
+        "module": "es2020",
+        "target": "es2020",
         "declaration": true,
         "noEmitOnError": true,
         "sourceMap": true,
-        "outDir": "node"
+        "outDir": "node",
+        "moduleResolution": "node",
+        "paths": {}
     },
     "include": [
-        "src/**/*.ts"
+        "src/index.ts"
     ],
     "exclude": [
         "node_modules"

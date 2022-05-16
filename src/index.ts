@@ -1,17 +1,14 @@
-
-import { simplifyPaths } from './calc-paths/simplify-paths';
-import { getLoopArea } from './loop/get-loop-area';
-import {
-    Debug,
-    GeneratedElems, 
-    ITiming, 
-    Generated, 
-    IDebugFunctions,
+import { simplifyPaths } from './calc-paths/simplify-paths.js';
+import { getLoopArea } from './loop/get-loop-area.js';
+import { 
+    Debug, GeneratedElems, ITiming, Generated, IDebugFunctions,
     enableDebugForBooleanOp
-} from './debug/debug';
-import { IDebugElems } from './debug/debug-elem-types';
-import { getPathsFromStr } from './svg/get-paths-from-str';
-import { beziersToSvgPathStr } from './svg/beziers-to-svg-path-str';
+} from './debug/debug.js';
+import { IDebugElems } from './debug/debug-elem-types.js';
+import { getPathsFromStr } from './svg/get-paths-from-str.js';
+import { beziersToSvgPathStr } from './svg/beziers-to-svg-path-str.js';
+import { loopFromBeziers, Loop } from './loop/loop.js';
+import { getLoopCentroid } from './loop/get-loop-centroid.js';
 
 
 export { 
@@ -25,5 +22,8 @@ export {
     IDebugElems,
     getLoopArea,
     getPathsFromStr,
-    beziersToSvgPathStr
+    beziersToSvgPathStr,
+    Loop,
+    getLoopCentroid,
+    loopFromBeziers
 }

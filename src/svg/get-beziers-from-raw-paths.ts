@@ -1,15 +1,13 @@
-
-import { PathState  } from './path-state';
-
-import { z } from './path-segment/z';
-import { c } from './path-segment/c';
-import { s } from './path-segment/s';
-import { l } from './path-segment/l';
-import { h } from './path-segment/h';
-import { v } from './path-segment/v';
-import { q } from './path-segment/q';
-import { t } from './path-segment/t';
-import { a } from './path-segment/a';
+import { PathState  } from './path-state.js';
+import { z } from './path-segment/z.js';
+import { c } from './path-segment/c.js';
+import { s } from './path-segment/s.js';
+import { l } from './path-segment/l.js';
+import { h } from './path-segment/h.js';
+import { v } from './path-segment/v.js';
+import { q } from './path-segment/q.js';
+import { t } from './path-segment/t.js';
+import { a } from './path-segment/a.js';
 
 
 const pathFs: { [index:string] : (s: PathState) => number[][] } = { 
@@ -48,7 +46,7 @@ function getBeziersFromRawPaths(paths: { type: string, values: number[] }[]) {
 	let beziersArrays: number[][][][] = [];
 	let beziers: number[][][] = [];
 
-	let prevType: string;
+	let prevType: string | undefined = undefined;
 	for (let i=0; i<paths.length; i++) {
 		let pathSeg = paths[i];
 		
@@ -102,7 +100,7 @@ function getBeziersFromRawPaths(paths: { type: string, values: number[] }[]) {
 	}
 
 
-	if (beziers.length) {
+	if (beziers.length > 0) {
 		// This is a subpath, close as if the previous command was a Z or z.
 		if (prevType !== 'z') {
 			beziers.push(z(s));

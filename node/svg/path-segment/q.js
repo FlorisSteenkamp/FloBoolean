@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.q = void 0;
 /**
  * @hidden
  * Q and q: (from www.w3.org)
@@ -22,5 +19,5 @@ function q(s) {
     let ps = [s.p, QP1, QP2];
     return ps;
 }
-exports.q = q;
+export { q };
 //# sourceMappingURL=q.js.map

@@ -1,8 +1,8 @@
 import { flatCoefficients, allRoots } from 'flo-poly';
-import { getXY, tangent, evalDeCasteljau } from 'flo-bezier3';
+import { toPowerBasis, tangent, evalDeCasteljau } from 'flo-bezier3';
 import { toUnitVector, translate } from 'flo-vector2d';
-import { getBoundingBox_ } from '../get-bounding-box-';
-import { getBounds_ } from '../get-bounds-';
+import { getBoundingBox_ } from '../get-bounding-box-.js';
+import { getBounds_ } from '../get-bounds-.js';
 
 
 // TODO - remove delta by basing isLoopInLoop on a solid numerical analytic 
@@ -22,7 +22,8 @@ type Dir =
  * boundary. 
  * 
  * Precondition: the loop is either wholly contained inside the loop or is wholly outside.
- * @param loops 
+ * @param loop1
+ * @param loop2
  */
 function isLoopInLoop(loop1: number[][][], loop2: number[][][]) {
 
@@ -138,12 +139,12 @@ function getAxisAlignedRayLoopIntersections(
         let dirIsDecreasing = (dir === 'left' || dir === 'up');
         if (dir === 'left' || dir === 'right') {
             //f = getY;
-            f = (ps: number[][]) => getXY(ps)[1];
+            f = (ps: number[][]) => toPowerBasis(ps)[1];
             offset = [0,-y];
             axis = 0;
         } else {
             //f = getX;
-            f = (ps: number[][]) => getXY(ps)[0];
+            f = (ps: number[][]) => toPowerBasis(ps)[0];
             offset = [-x,0];
             axis = 1;
         }

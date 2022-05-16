@@ -1,4 +1,4 @@
-import { Loop } from '../loop/loop';
+import { Loop } from '../loop/loop.js';
 /**
  * Represents a bezier curve on the shape boundary / loop.
  */

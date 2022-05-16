@@ -1,3 +1,3 @@
-import { _X_ } from '../../x';
+import { _X_ } from '../../-x-.js';
 declare function drawIntersection(g: SVGGElement, x: _X_): SVGCircleElement[];
 export { drawIntersection };

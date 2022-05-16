@@ -1,5 +1,4 @@
-
-import { PathState } from "../path-state";
+import { PathState } from "../path-state.js";
 
 
 /**
@@ -19,20 +18,17 @@ import { PathState } from "../path-state";
  * may be specified to draw a polybézier. At the end of the command, the new 
  * current point becomes the final (x,y) coordinate pair used in the polybézier.
  */
-function s(s: PathState) {
-    let p: number[] = [undefined, undefined];
-    if (s.prev2ndCubicControlPoint) {
-        p[0] = (s.p[0] - s.prev2ndCubicControlPoint[0]) + s.p[0]; 
-        p[1] = (s.p[1] - s.prev2ndCubicControlPoint[1]) + s.p[1];
-    } else {
-        p = s.p;
-    }
+function s(s: PathState): number[][] {
+    let p = s.prev2ndCubicControlPoint
+        ? [(s.p[0] - s.prev2ndCubicControlPoint[0]) + s.p[0], 
+           (s.p[1] - s.prev2ndCubicControlPoint[1]) + s.p[1]]
+        : s.p;
 
     let ps = [
         s.p,
         p,
-        [s.vals[0], s.vals[1]],
-        [s.vals[2], s.vals[3]]
+        [s.vals![0], s.vals![1]],
+        [s.vals![2], s.vals![3]]
     ];
     s.prev2ndCubicControlPoint = ps[2];
     s.prev2ndQuadraticControlPoint = undefined;

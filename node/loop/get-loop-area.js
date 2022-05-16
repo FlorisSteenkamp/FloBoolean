@@ -1,30 +1,22 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLoopArea = void 0;
-const flo_bezier3_1 = require("flo-bezier3");
-const flo_gauss_quadrature_1 = require("flo-gauss-quadrature");
-const flo_poly_1 = require("flo-poly");
+import { toPowerBasis, toPowerBasis_1stDerivative } from "flo-bezier3";
+import { multiply, add, negate, Horner, integrate } from 'flo-poly';
 /**
  * Returns the area of the given Loop.
  * * see e.g. https://mathinsight.org/greens_theorem_find_area
  */
 function getLoopArea(loop) {
     let totalArea = 0;
-    for (let curve of loop.curves) {
-        let ps = curve.ps;
-        let x = flo_bezier3_1.getX(ps);
-        let y = flo_bezier3_1.getY(ps);
-        let dx = flo_bezier3_1.getDx(ps);
-        let dy = flo_bezier3_1.getDy(ps);
-        // xy' named as xy_
-        let xy_ = flo_poly_1.multiply(x, dy);
-        let yx_ = flo_poly_1.negate(flo_poly_1.multiply(y, dx));
-        let poly = flo_poly_1.add(xy_, yx_);
-        let f = flo_poly_1.evaluate(poly);
-        let area = flo_gauss_quadrature_1.gaussQuadrature(f, [0, 1], 16);
+    for (const curve of loop.curves) {
+        const ps = curve.ps;
+        const [x, y] = toPowerBasis(ps);
+        const [dx, dy] = toPowerBasis_1stDerivative(ps);
+        const xdy = multiply(x, dy);
+        const ydx = negate(multiply(y, dx));
+        const poly = integrate(add(xdy, ydx), 0);
+        const area = Horner(poly, 1);
         totalArea += area;
     }
     return -totalArea / 2;
 }
-exports.getLoopArea = getLoopArea;
+export { getLoopArea };
 //# sourceMappingURL=get-loop-area.js.map

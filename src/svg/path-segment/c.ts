@@ -1,5 +1,4 @@
-
-import { PathState } from "../path-state";
+import { PathState } from "../path-state.js";
 
 
 /**
@@ -18,12 +17,12 @@ import { PathState } from "../path-state";
  * command, the new current point becomes the final (x,y) 
  * coordinate pair used in the polybézier.
  */
-function c(s: PathState) {
+function c(s: PathState): number[][] {
     let ps = [
         s.p,
-        [s.vals[0], s.vals[1]],
-        [s.vals[2], s.vals[3]],
-        [s.vals[4], s.vals[5]]
+        [s.vals![0], s.vals![1]],
+        [s.vals![2], s.vals![3]],
+        [s.vals![4], s.vals![5]]
     ];
     s.prev2ndCubicControlPoint = ps[2];
     s.prev2ndQuadraticControlPoint = undefined;

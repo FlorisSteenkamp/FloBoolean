@@ -1,5 +1,4 @@
-
-import { PathState } from '../path-state';
+import { PathState } from '../path-state.js';
 
 
 /** 
@@ -14,10 +13,10 @@ import { PathState } from '../path-state';
  * provided (although usually this doesn't make sense). At the end of the 
  * command, the new current point becomes (x, cpy) for the final value of x.
  */	
-function h(s: PathState) {
+function h(s: PathState): number[][] {
     let ps = [
         s.p, 
-        [s.vals[0], s.p[1]]
+        [s.vals![0], s.p[1]]
     ];
     s.prev2ndCubicControlPoint = undefined;
     s.prev2ndQuadraticControlPoint = undefined;

@@ -1,13 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.addEdges = exports.getConnectedComponents = exports.addEdge = void 0;
 function addEdges(graph, edges) {
     for (let i = 0; i < edges.length; i++) {
         let edge = edges[i];
         addEdge(graph, [edge.a, edge.b]);
     }
 }
-exports.addEdges = addEdges;
 /**
  * Adds an edge to an undirected graph.
  */
@@ -26,7 +22,6 @@ function addEdge(graph, vertices) {
     srcList.push(dest);
     destList.push(src);
 }
-exports.addEdge = addEdge;
 function DFSUtil(graph, v, visited, component) {
     // Mark the current node as visited and print it 
     visited.add(v);
@@ -57,5 +52,5 @@ function getConnectedComponents(graph) {
     }
     return components;
 }
-exports.getConnectedComponents = getConnectedComponents;
+export { addEdge, getConnectedComponents, addEdges };
 //# sourceMappingURL=get-connected-components.js.map

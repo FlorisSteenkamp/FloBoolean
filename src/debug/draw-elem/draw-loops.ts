@@ -1,10 +1,18 @@
+import { Loop } from "../../loop/loop.js";
+import { drawLoop } from "./draw-loop.js";
 
-import { Loop } from "../../loop/loop";
 
+function drawLoops(
+        g: SVGGElement, 
+        loops: Loop[]): SVGElement[] {
 
-// TODO - finish
-function drawLoops(g: SVGGElement, loops: Loop[]): SVGElement[] {
-    return [];
+    const $svgs = [];
+
+    for (let loop of loops) {
+        $svgs.push(...drawLoop(g, loop));
+    } 
+
+    return $svgs;
 }
 
 

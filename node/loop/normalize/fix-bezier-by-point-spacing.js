@@ -1,12 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.fixBezierByPointSpacing = void 0;
-const flo_bezier3_1 = require("flo-bezier3");
-const are_all_points_different_1 = require("./are-all-points-different");
-// TODO - consider importing only specific functions from flo-vector2d
-// We currently import the entire library since we're importing from index.ts
-// This will reduce file size - at last check it was only 26kB minified though
-const flo_vector2d_1 = require("flo-vector2d");
+import { squaredDistanceBetween, toLength, fromTo as fromToVect, translate } from "flo-vector2d";
+// import { lengthSquaredUpperBound, isLine, isCubicReallyQuad, toQuadraticFromCubic } from "flo-bezier3";
+import { isReallyPoint, isCubicReallyQuad, cubicToQuadratic, isCollinear } from "flo-bezier3";
+import { areAllPointsDifferent } from "./are-all-points-different.js";
 /**
  * Returns the same bezier if its points are well-spaced, e.g. all points not
  * coincident, etc., else fix it, if possible, and return the fixed bezier,
@@ -15,7 +10,7 @@ const flo_vector2d_1 = require("flo-vector2d");
  */
 function fixBezierByPointSpacing(ps, gridSpacing, sendToGrid) {
     // Early filter - if all points coincide, we're done - degenerate to point
-    if (flo_bezier3_1.lengthSquaredUpperBound(ps) === 0) {
+    if (isReallyPoint(ps)) {
         return undefined; // Cannot fix
     }
     if (ps.length === 2) {
@@ -24,10 +19,11 @@ function fixBezierByPointSpacing(ps, gridSpacing, sendToGrid) {
     }
     if (ps.length === 3) {
         // Early filter - if no points coincide, we're done - well spaced
-        if (are_all_points_different_1.areAllPointsDifferent(ps)) {
+        if (areAllPointsDifferent(ps)) {
             // but if it s a line masquerading as a quadratic or cubic bezier
             // then make it line
-            return flo_bezier3_1.isLine(ps) ? [ps[0], ps[2]] : ps;
+            // return isLine(ps) ? [ps[0], ps[2]] : ps;
+            return isCollinear(ps) ? [ps[0], ps[2]] : ps;
         }
         // Is the quadratic bezier overlapping onto itself? 
         if (arePsEqual(ps[0], ps[2])) {
@@ -45,7 +41,7 @@ function fixBezierByPointSpacing(ps, gridSpacing, sendToGrid) {
     }
     // ---- at this point we must have a cubic
     // Early filter - if no points coincide, we're done - well spaced
-    if (are_all_points_different_1.areAllPointsDifferent(ps)) {
+    if (areAllPointsDifferent(ps)) {
         return checkCubicForLineOrQuad(ps);
     }
     if (arePsEqual(ps[0], ps[3])) {
@@ -115,7 +111,7 @@ function fixBezierByPointSpacing(ps, gridSpacing, sendToGrid) {
         // If squared distance between the points < 4 * gridSpacing just 
         // move them onto each other - this shouldn't affect the overall 
         // accuracy of the algorithm and it ensures the move > gridSpacing.
-        if (flo_vector2d_1.squaredDistanceBetween(ps[1], ps[2]) < 4 * gridSpacing) {
+        if (squaredDistanceBetween(ps[1], ps[2]) < 4 * gridSpacing) {
             return [
                 ps[0],
                 ps[2],
@@ -124,8 +120,8 @@ function fixBezierByPointSpacing(ps, gridSpacing, sendToGrid) {
             ]; // cannot be a line or quad
         }
         else {
-            let v = flo_vector2d_1.toLength(flo_vector2d_1.fromTo(ps[1], ps[2]), 2 * gridSpacing);
-            let p1 = flo_vector2d_1.translate(ps[1], v);
+            let v = toLength(fromToVect(ps[1], ps[2]), 2 * gridSpacing);
+            let p1 = translate(ps[1], v);
             return checkCubicForLineOrQuad([
                 ps[0],
                 sendToGrid(p1),
@@ -140,7 +136,7 @@ function fixBezierByPointSpacing(ps, gridSpacing, sendToGrid) {
         // If squared distance between the points < 4 * gridSpacing just 
         // move them onto each other - this shouldn't affect the overall 
         // accuracy of the algorithm and it ensures the move > gridSpacing.
-        if (flo_vector2d_1.squaredDistanceBetween(ps[2], ps[1]) < 4 * gridSpacing) {
+        if (squaredDistanceBetween(ps[2], ps[1]) < 4 * gridSpacing) {
             return [
                 ps[0],
                 ps[1],
@@ -149,8 +145,8 @@ function fixBezierByPointSpacing(ps, gridSpacing, sendToGrid) {
             ]; // cannot be a line or quad
         }
         else {
-            let v = flo_vector2d_1.toLength(flo_vector2d_1.fromTo(ps[2], ps[1]), 2 * gridSpacing);
-            let p2 = flo_vector2d_1.translate(ps[2], v);
+            let v = toLength(fromToVect(ps[2], ps[1]), 2 * gridSpacing);
+            let p2 = translate(ps[2], v);
             return checkCubicForLineOrQuad([
                 ps[0],
                 ps[1],
@@ -160,16 +156,17 @@ function fixBezierByPointSpacing(ps, gridSpacing, sendToGrid) {
         }
     }
 }
-exports.fixBezierByPointSpacing = fixBezierByPointSpacing;
 function checkCubicForLineOrQuad(ps) {
-    return flo_bezier3_1.isLine(ps)
+    // return isLine(ps)
+    return isCollinear(ps)
         ? [ps[0], ps[3]]
-        : flo_bezier3_1.isCubicReallyQuad(ps)
-            ? flo_bezier3_1.toQuadraticFromCubic(ps)
+        : isCubicReallyQuad(ps)
+            ? cubicToQuadratic(ps)
             : ps;
 }
 /** Returns true if the points are the same */
 function arePsEqual(p1, p2) {
     return p1[0] === p2[0] && p1[1] === p2[1];
 }
+export { fixBezierByPointSpacing };
 //# sourceMappingURL=fix-bezier-by-point-spacing.js.map

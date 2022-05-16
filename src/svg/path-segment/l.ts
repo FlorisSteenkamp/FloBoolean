@@ -1,5 +1,4 @@
-
-import { PathState } from '../path-state';
+import { PathState } from '../path-state.js';
 
 
 /** 
@@ -15,10 +14,10 @@ import { PathState } from '../path-state';
  * polyline. At the end of the command, the new current point is set to the 
  * final set of coordinates provided.
  */	
-function l(s: PathState) {
+function l(s: PathState): number[][] {
     let ps = [
         s.p,
-        s.vals
+        s.vals!
     ];
 
     s.prev2ndCubicControlPoint = undefined;

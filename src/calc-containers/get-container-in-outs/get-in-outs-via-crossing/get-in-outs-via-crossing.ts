@@ -1,8 +1,8 @@
-import { Container } from "../../../container";
-import { InOut } from "../../../in-out";
+import { orient2d } from "big-float-ts";
 import { getIntervalBox, getHodograph, evalDeCasteljau } from "flo-bezier3";
-import { getInOutsViaSides } from "../get-in-outs-via-sides/get-in-outs-via-sides";
-import { orient2d } from "flo-numerical";
+import { Container } from "../../../container.js";
+import { InOut } from "../../../in-out.js";
+import { getInOutsViaSides } from "../get-in-outs-via-sides/get-in-outs-via-sides.js";
 
 
 /**
@@ -37,9 +37,9 @@ function getInOutsViaCrossing(
     if (ps1.length === 4 || ps1.length === 3) {
         // cubic => hodograph is a parabola
         // quadratic => hodograph is a line (we still get the box, but in future maybe we can do better)
-        let h1 = getHodograph(ps1)  // <= cubic: 50 bit-aligned => exact, quadratic: 52 bit-aligned => exact
+        let h1 = getHodograph(ps1);  // <= cubic: 50 bit-aligned => exact, quadratic: 52 bit-aligned => exact
         v1s = getIntervalBox(h1,[t1S,t1E]);
-    } else if (ps1.length === 2) {
+    } else /*if (ps1.length === 2)*/ {
         // line => hodograph is a fixed point
         v1s = getHodograph(ps1)  // <= 52 bit-aligned => exact
     }
@@ -47,9 +47,9 @@ function getInOutsViaCrossing(
     if (ps2.length === 4 || ps2.length === 3) {
         // cubic => hodograph is a parabola
         // quadratic => hodograph is a line (we still get the box, but in future maybe we can do better)
-        let h2 = getHodograph(ps2)  // <= cubic: 50 bit-aligned => exact, quadratic: 52 bit-aligned => exact
+        let h2 = getHodograph(ps2);  // <= cubic: 50 bit-aligned => exact, quadratic: 52 bit-aligned => exact
         v2s = getIntervalBox(h2,[t2S,t2E]);
-    } else if (ps2.length === 2) {
+    } else /*if (ps2.length === 2)*/ {
         // line => hodograph is a fixed point
         v2s = getHodograph(ps2)  // <= 52 bit-aligned => exact
     }
@@ -57,7 +57,7 @@ function getInOutsViaCrossing(
     // possible configurations: (up to cyclic permutation)
     // config1: i1 o2 o1 i2 ==== i2 i1 o2 o1 ==== etc.
     // config2: i1 i2 o1 o2 ==== o2 i1 i2 o1 ==== etc.
-    let cSign: number;
+    let cSign: number | undefined = undefined;
     // TODO - investigate faster method by finding and using the 2 extreme points only
     for (let i=0; i<v1s.length; i++) {
         for (let j=0; j<v2s.length; j++) {
@@ -80,7 +80,7 @@ function getInOutsViaCrossing(
         }
     }
 
-    let config1 = cSign > 0;
+    let config1 = cSign! > 0;
     if (config1) {
         // config1 (the 1st of the 2 possible configurations)
         inOuts.push({ dir: -1, p, _x_: x1, container });

@@ -1,9 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.drawLoops = void 0;
-// TODO - finish
+import { drawLoop } from "./draw-loop.js";
 function drawLoops(g, loops) {
-    return [];
+    const $svgs = [];
+    for (let loop of loops) {
+        $svgs.push(...drawLoop(g, loop));
+    }
+    return $svgs;
 }
-exports.drawLoops = drawLoops;
+export { drawLoops };
 //# sourceMappingURL=draw-loops.js.map

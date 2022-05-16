@@ -1,9 +1,9 @@
-import { _X_ } from '../x';
-import { Loop } from '../loop/loop';
-import { Curve } from '../curve/curve';
-import { sweepLine } from '../sweep-line/sweep-line';
-import { getCurvesIntersections } from './get-curves-intersections';
-import { getBoundingBox_ } from '../get-bounding-box-';
+import { _X_ } from '../-x-.js';
+import { Loop } from '../loop/loop.js';
+import { Curve } from '../curve/curve.js';
+import { sweepLine } from '../sweep-line/sweep-line.js';
+import { getCurvesIntersections } from './get-curves-intersections.js';
+import { getBoundingBox_ } from '../get-bounding-box-.js';
 
 
 /**
@@ -30,7 +30,7 @@ function getIntersections(
 
     let xs: _X_[][] = [];
     for (let _x of _xs) {
-        for (let x of _x.u) {
+        for (let x of _x.u!) {
             xs.push(x);
         }
     }

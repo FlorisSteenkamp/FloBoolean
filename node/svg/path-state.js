@@ -1,10 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PathState = void 0;
 /** @hidden */
 class PathState {
     constructor() {
         this.initialPoint = undefined;
+        this.vals = undefined;
         // Used in conjunction with "S", "s"
         this.prev2ndCubicControlPoint = undefined;
         // Used in conjunction with "T", "t"
@@ -12,5 +10,5 @@ class PathState {
         this.p = [0, 0];
     }
 }
-exports.PathState = PathState;
+export { PathState };
 //# sourceMappingURL=path-state.js.map

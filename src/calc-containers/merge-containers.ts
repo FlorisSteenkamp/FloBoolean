@@ -1,6 +1,5 @@
-
-import { Container } from "../container";
-import { _X_ } from "../x";
+import { Container } from "../container.js";
+import { _X_ } from "../-x-.js";
 
 
 function mergeContainers(ccs: Container[][]) {
@@ -20,10 +19,11 @@ function mergeContainers(ccs: Container[][]) {
             xs.push(...c.xs);
         }
 
+        // console.log(minLeft)
         let container: Container = {
             box: [[minLeft,minTop], [maxRight,maxBottom]],
             xs: xs,
-            inOuts: undefined
+            inOuts: undefined!
         };
 
         containers.push(container);

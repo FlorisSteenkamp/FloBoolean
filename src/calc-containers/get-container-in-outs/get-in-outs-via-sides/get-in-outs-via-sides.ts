@@ -1,10 +1,9 @@
-
-import { Container } from "../../../container";
-import { getXInOuts } from "./get-x-in-outs";
-import { _X_ } from "../../../x";
-import { Curve } from "../../../curve/curve";
-import { compareOrderedInOut } from "./compare-in-out";
-import { OrderedInOut } from "./ordered-in-out";
+import { Container } from "../../../container.js";
+import { getXInOuts } from "./get-x-in-outs.js";
+import { _X_ } from "../../../-x-.js";
+import { Curve } from "../../../curve/curve.js";
+import { compareOrderedInOut } from "./compare-in-out.js";
+import { OrderedInOut } from "./ordered-in-out.js";
 
 
 /**
@@ -18,13 +17,13 @@ function getInOutsViaSides(
         container: Container, 
         ioIdx: number) {
 
-    // We check one X for each curve with an intersection within this container
+    // We check one _X_ for each curve with an intersection within this container
     let xs_ = container.xs;
 
     //console.log(container.xs);
     let inOuts: OrderedInOut[] = [];
 
-    // get a map from each Curve to each X of this container
+    // get a map from each Curve to each _X_ of this container
     let xMap: Map<Curve, _X_[]> = new Map();
     for (let x of xs_) {
         let curve = x.curve;

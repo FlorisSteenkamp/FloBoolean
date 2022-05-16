@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.makeSimpleX = void 0;
-const flo_bezier3_1 = require("flo-bezier3");
+import { evalDeCasteljauWithErr } from "flo-bezier3";
 /**
  *
  * @param t
@@ -23,12 +20,12 @@ function makeSimpleX(t, curve, kind) {
         return { x: { ri: { tS: t, tE: t, multiplicity: 1 }, box, kind }, curve };
     }
     // there will be some error in calculating the point
-    let { p, pE } = flo_bezier3_1.evalDeCasteljauWithErr(ps, t);
+    let { p, pE } = evalDeCasteljauWithErr(ps, t);
     let box = [
         [p[0] - pE[0], p[1] - pE[1]],
         [p[0] + pE[0], p[1] + pE[1]]
     ];
     return { x: { ri: { tS: t, tE: t, multiplicity: 1 }, box, kind }, curve };
 }
-exports.makeSimpleX = makeSimpleX;
+export { makeSimpleX };
 //# sourceMappingURL=make-simple-x.js.map

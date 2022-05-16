@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.orderLoopAscendingByMinY = void 0;
-const flo_bezier3_1 = require("flo-bezier3");
+import { getBounds_ } from "../get-bounds-.js";
 /**
  * Returns < 0 if loopA's topmost point is higher (i.e. smaller) than that of
  * loopB. Using this function in a sort will sort from highest topmost (smallest
@@ -12,15 +9,15 @@ const flo_bezier3_1 = require("flo-bezier3");
 function orderLoopAscendingByMinY(loopA, loopB) {
     return getMinY(loopA) - getMinY(loopB);
 }
-exports.orderLoopAscendingByMinY = orderLoopAscendingByMinY;
 function getMinY(pss) {
     let minY = Number.POSITIVE_INFINITY;
     for (let ps of pss) {
-        let y = flo_bezier3_1.getBounds(ps).box[0][1];
+        let y = getBounds_(ps).box[0][1];
         if (y < minY) {
             minY = y;
         }
     }
     return minY;
 }
+export { orderLoopAscendingByMinY };
 //# sourceMappingURL=order-loop-ascending-by-min-y.js.map

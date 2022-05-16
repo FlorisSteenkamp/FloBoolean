@@ -1,7 +1,5 @@
-
-import { _X_ } from "./x";
-import { Container } from "./container";
-import { Loop } from "./loop/loop";
+import { _X_ } from "./-x-.js";
+import { Container } from "./container.js";
 
 
 interface InOut {
@@ -34,7 +32,6 @@ interface InOut {
     /** +1 or -1 -> Clockwise or anti-clockwise */
     orientation?: number;
     windingNum?: number;
-    //windingNum?: Map<Loop,number>;
     parent?: InOut;
     children?: Set<InOut>;
     beziers?: number[][][]; 

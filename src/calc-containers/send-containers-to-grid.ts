@@ -1,6 +1,5 @@
-
-import { Container } from "../container";
-import { toGrid } from "../loop/normalize/to-grid";
+import { Container } from "../container.js";
+import { toGrid } from "../loop/normalize/to-grid.js";
 
 
 /**

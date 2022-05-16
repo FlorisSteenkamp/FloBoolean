@@ -1,7 +1,7 @@
-import { Container } from "../../../container";
-import { _X_ } from "../../../x";
-import { Curve } from "../../../curve/curve";
-import { OrderedInOut } from "./ordered-in-out";
+import { Container } from "../../../container.js";
+import { _X_ } from "../../../-x-.js";
+import { Curve } from "../../../curve/curve.js";
+import { OrderedInOut } from "./ordered-in-out.js";
 /**
  * * **warning** modifies container.xs[i].in_
  * @param container
