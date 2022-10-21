@@ -1,4 +1,4 @@
-import { _X_ } from "../-x-.js";
+import { __X__ } from "../-x-.js";
 import { Loop } from "../loop/loop.js";
 
 
@@ -7,9 +7,9 @@ import { Loop } from "../loop/loop.js";
  * @param loops 
  * @param xMap 
  */
-function setIntersectionNextValues(xPairs: _X_[][]) {
+function setIntersectionNextValues(xPairs: __X__[][]) {
 
-    let xsByLoop: Map<Loop, _X_[]> = new Map();
+    let xsByLoop: Map<Loop, __X__[]> = new Map();
     for (let xPair of xPairs) {
         for (let x_ of xPair) {
             let loop = x_.curve.loop;

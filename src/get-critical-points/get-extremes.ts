@@ -1,5 +1,5 @@
 import { Loop } from "../loop/loop.js";
-import { _X_ } from "../-x-.js";
+import { __X__ } from "../-x-.js";
 import { getExtreme } from "./get-extreme.js";
 
 
@@ -10,8 +10,8 @@ import { getExtreme } from "./get-extreme.js";
  * @param loops 
  */
 function getExtremes(loops: Loop[]) {
-    let extremes: Map<Loop, _X_[]> = new Map();
-    let xs: _X_[][] = [];
+    let extremes: Map<Loop, __X__[]> = new Map();
+    let xs: __X__[][] = [];
     for (let loop of loops) {
         let xPair = getExtreme(loop);
         xs.push(xPair);

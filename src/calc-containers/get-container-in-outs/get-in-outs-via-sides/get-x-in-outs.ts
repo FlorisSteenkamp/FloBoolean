@@ -3,7 +3,7 @@ import { allRootsCertified, RootIntervalExp, refineK1, RootInterval, rootInterva
 import { getCoeffsBezBez, getIntervalBoxDd } from "flo-bezier3";
 import { Container } from "../../../container.js";
 import { X } from "../../../x.js";
-import { _X_ } from "../../../-x-.js";
+import { __X__ } from "../../../-x-.js";
 import { Curve } from "../../../curve/curve.js";
 import { OrderedInOut } from "./ordered-in-out.js";
 import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting.js";
@@ -14,10 +14,10 @@ type SideX = {
     side: number; 
     sideX: X;
 }
-type WithRI = _X_ & Partial<SideX>;
+type WithRI = __X__ & Partial<SideX>;
 
 
-function midBox(_x_: _X_): number[] {
+function midBox(_x_: __X__): number[] {
     return [
         (_x_.x.box[0][0] + _x_.x.box[1][0])/2,
         (_x_.x.box[0][1] + _x_.x.box[1][1])/2
@@ -39,7 +39,7 @@ function getXInOuts(container: Container) {
         [[right,bottom], [right,top   ]]
     ];
 
-    return (curve: Curve, xs_: _X_[], ioIdx: number) => {
+    return (curve: Curve, xs_: __X__[], ioIdx: number) => {
         // At this point all xs belong to the same curve and container.
 
         // For each of the four sides get the t values closest to the 

@@ -1,5 +1,5 @@
 import { Container } from "../container.js";
-import { _X_ } from "../-x-.js";
+import { __X__ } from "../-x-.js";
 
 
 function mergeContainers(ccs: Container[][]) {
@@ -9,7 +9,7 @@ function mergeContainers(ccs: Container[][]) {
         let minTop = Number.POSITIVE_INFINITY;
         let maxRight = Number.NEGATIVE_INFINITY;
         let maxBottom = Number.NEGATIVE_INFINITY;
-        let xs: _X_[] = [];
+        let xs: __X__[] = [];
         for (let c of cc) {
             let [[left,top], [right,bottom]] = c.box;
             if (left   < minLeft  ) { minLeft   = left;   }

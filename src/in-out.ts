@@ -1,4 +1,4 @@
-import { _X_ } from "./-x-.js";
+import { __X__ } from "./-x-.js";
 import { Container } from "./container.js";
 
 
@@ -14,7 +14,7 @@ interface InOut {
     //order?: [number, number];
     idx?: number;
     /** intersection */
-    _x_?: _X_;
+    _x_?: __X__;
     container: Container;
     /** intersection point with the container box */
     p: number[];

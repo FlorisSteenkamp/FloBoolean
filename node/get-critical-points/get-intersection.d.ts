@@ -1,5 +1,5 @@
 import { Curve } from "../curve/curve.js";
-import { _X_ } from "../-x-.js";
+import { __X__ } from "../-x-.js";
 /**
  *
  * @param curveA
@@ -7,5 +7,5 @@ import { _X_ } from "../-x-.js";
  * @param expMax
  * @param isANextB is curveB the next curve after curveA, i.e. is A's next B
  */
-declare function getIntersection(curveA: Curve, curveB: Curve, expMax: number, isANextB: boolean): _X_[][];
+declare function getIntersection(curveA: Curve, curveB: Curve, expMax: number, isANextB: boolean): __X__[][];
 export { getIntersection };

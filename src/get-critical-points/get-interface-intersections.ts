@@ -1,11 +1,11 @@
 import { Loop } from "../loop/loop.js";
-import { _X_ } from "../-x-.js";
+import { __X__ } from "../-x-.js";
 import { makeSimpleX } from "./make-simple-x.js";
 
 
-function getInterfaceIntersections(loops: Loop[]): _X_[][] {
+function getInterfaceIntersections(loops: Loop[]): __X__[][] {
     /** all one-sided Xs from */
-    let xs: _X_[][] = [];
+    let xs: __X__[][] = [];
 
     // Get interface points
     for (let loop of loops) {

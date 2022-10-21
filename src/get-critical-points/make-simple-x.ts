@@ -1,6 +1,6 @@
 import { evalDeCasteljauWithErr } from "flo-bezier3";
 import { Curve } from "../curve/curve.js";
-import { type _X_ } from "../-x-.js";
+import { type __X__ } from "../-x-.js";
 
 
 /**
@@ -9,7 +9,7 @@ import { type _X_ } from "../-x-.js";
  * @param curve 
  * @param kind 
  */
-function makeSimpleX(t: number, curve: Curve, kind: 0|1|2|3|4|5): _X_ {
+function makeSimpleX(t: number, curve: Curve, kind: 0|1|2|3|4|5): __X__ {
     let ps = curve.ps;
 
     if (t === 0) {

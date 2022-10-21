@@ -4,7 +4,7 @@ import {
     bezierBezierIntersectionBoundless
 } from "flo-bezier3";
 import { Curve } from "../curve/curve.js";
-import { _X_ } from "../-x-.js";
+import { __X__ } from "../-x-.js";
 import { getOtherTs } from './get-other-t.js';
 
 
@@ -19,12 +19,12 @@ function getIntersection(
         curveA: Curve, 
         curveB: Curve, 
         expMax: number,
-        isANextB: boolean): _X_[][] {
+        isANextB: boolean): __X__[][] {
             
     let ps1 = curveA.ps;
     let ps2 = curveB.ps;
 
-    let xs: _X_[][] = [];
+    let xs: __X__[][] = [];
 
     let ris2 = bezierBezierIntersectionBoundless(ps1,ps2);
     if (ris2 === undefined) {
@@ -40,8 +40,8 @@ function getIntersection(
                 [p1[0]-errBound, p1[1]-errBound],
                 [p1[0]+errBound, p1[1]+errBound],
             ];
-            let ri1: _X_ = { x: { ri: xPair.ri1, kind: 5, box }, curve: curveA }; // exact overlap endpoint
-            let ri2: _X_ = { x: { ri: xPair.ri2, kind: 5, box }, curve: curveB }; // exact overlap endpoint
+            let ri1: __X__ = { x: { ri: xPair.ri1, kind: 5, box }, curve: curveA }; // exact overlap endpoint
+            let ri2: __X__ = { x: { ri: xPair.ri2, kind: 5, box }, curve: curveB }; // exact overlap endpoint
 
             xs.push([ri1,ri2]);
         }
@@ -58,8 +58,8 @@ function getIntersection(
     let xPairs = getOtherTs(ps1, ps2, ris2);
     if (xPairs === undefined || xPairs.length === 0) { return []; }
     for (let xPair of xPairs) {
-        let x1: _X_ = { x: xPair[0], curve: curveA };
-        let x2: _X_ = { x: xPair[1], curve: curveB };
+        let x1: __X__ = { x: xPair[0], curve: curveA };
+        let x2: __X__ = { x: xPair[1], curve: curveB };
         xs.push([x1, x2]);
     }
 

@@ -1,6 +1,6 @@
 import { Loop } from "../loop/loop.js";
 import { getMinY } from "../loop/get-min-y.js";
-import { _X_ } from "../-x-.js";
+import { __X__ } from "../-x-.js";
 import { makeSimpleX } from "./make-simple-x.js";
 
 
@@ -8,7 +8,7 @@ import { makeSimpleX } from "./make-simple-x.js";
  * Get an extreme point (point with minimum y value) of the given loop.
  * @param loop 
  */
-function getExtreme(loop: Loop): _X_[] {
+function getExtreme(loop: Loop): __X__[] {
     let { curve, y } = getMinY(loop);
     
     let ts = y.ts;

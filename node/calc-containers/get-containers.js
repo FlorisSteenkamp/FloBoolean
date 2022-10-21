@@ -98,7 +98,7 @@ function getContainers(loops, containerDim, expMax) {
                 continue;
             }
             let _x_ = out._x_;
-            // move to next 'in' _X_
+            // move to next 'in' __X__
             while (true) {
                 _x_ = _x_.next;
                 if (_x_.in_) {
@@ -140,7 +140,7 @@ function filterContainers(containers) {
         }
         for (let x of container.xs) {
             if (x.x.kind !== 4) {
-                // include container if any _X_ is not an interface
+                // include container if any __X__ is not an interface
                 return true;
             }
         }

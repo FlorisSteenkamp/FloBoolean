@@ -8,11 +8,11 @@ import { compareOrderedInOut } from "./compare-in-out.js";
  * @param ioIdx
  */
 function getInOutsViaSides(container, ioIdx) {
-    // We check one _X_ for each curve with an intersection within this container
+    // We check one __X__ for each curve with an intersection within this container
     let xs_ = container.xs;
     //console.log(container.xs);
     let inOuts = [];
-    // get a map from each Curve to each _X_ of this container
+    // get a map from each Curve to each __X__ of this container
     let xMap = new Map();
     for (let x of xs_) {
         let curve = x.curve;

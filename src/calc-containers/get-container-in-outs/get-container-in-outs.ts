@@ -12,7 +12,7 @@ function getContainerInOuts(
         container: Container, 
         ioIdx: number) {
 
-    // We check one _X_ for each curve with an intersection within this container
+    // We check one __X__ for each curve with an intersection within this container
     let xs = container.xs;
 
     // Check nature of Xs. If Xs is the very common case where two curves cross

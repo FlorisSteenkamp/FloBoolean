@@ -1,4 +1,4 @@
-import { _X_ } from "./-x-.js";
+import { __X__ } from "./-x-.js";
 import { InOut } from "./in-out.js";
 /**
  * Representation of a a small rectangular box containing close intersections.
@@ -8,7 +8,7 @@ interface Container {
     /** the box enclosing the intersections */
     box: number[][];
     /** an array of enclosed intersections */
-    xs: _X_[];
+    xs: __X__[];
     /**
      * ordered array of incoming / outgoing curves where the order is
      * anti-clockwise from the top right (minimum y, maximum x) corner

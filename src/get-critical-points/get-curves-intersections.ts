@@ -6,7 +6,7 @@ import { getOtherTs } from './get-other-t.js';
 import { Curve } from "../curve/curve.js";
 import { doConvexPolygonsIntersect } from "../geometry/do-convex-polygons-intersect.js";
 import { getIntersection } from './get-intersection.js';
-import { _X_ } from '../-x-.js';
+import { __X__ } from '../-x-.js';
 import { makeSimpleX } from './make-simple-x.js';
 import { getBoundingBox_ } from '../get-bounding-box-.js';
 
@@ -21,7 +21,7 @@ import { getBoundingBox_ } from '../get-bounding-box-.js';
 function getCurvesIntersections(expMax: number) {
     return (
         curveA: Curve, 
-        curveB: Curve): _X_[][] | undefined => {
+        curveB: Curve): __X__[][] | undefined => {
 
     let psA = curveA.ps;
     let psB = curveB.ps;
@@ -91,7 +91,7 @@ function getCurvesIntersections(expMax: number) {
  */
 function checkEndpoints(
         curveA: Curve, 
-        curveB: Curve): _X_[][] | undefined {
+        curveB: Curve): __X__[][] | undefined {
 
     if (curveB.next === curveA) {
         if (curveA.next === curveB) {
@@ -129,7 +129,7 @@ function checkEndpoints(
 function getLineLineIntersections(
         curveA: Curve, 
         curveB: Curve,
-        expMax: number): _X_[][] | undefined {
+        expMax: number): __X__[][] | undefined {
 
     let psA = curveA.ps;
     let psB = curveB.ps;
