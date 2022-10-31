@@ -165,9 +165,9 @@ function addDebugInfo2(loopss: Loop[][]) {
     }
 
     // Don't delete below commented lines - it is for creating test cases.
-    //if (typeof document === 'undefined') { return; }
-    //let g = document.getElementsByTagName('g')[0];
-    //let invariants = loopss.map(loops => {
+    // if (typeof document === 'undefined') { return; }
+    // let g = document.getElementsByTagName('g')[0];
+    // let invariants = loopss.map(loops => {
     //    return loops.map(loop => {
     //        let centroid = getLoopCentroid(loop);
     //        let area     = getLoopArea(loop);
@@ -175,8 +175,8 @@ function addDebugInfo2(loopss: Loop[][]) {
     //        //drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 0);
     //        return { centroid, area, bounds };
     //    });
-    //});
-    //console.log(JSON.stringify(invariants, undefined, '    '));
+    // });
+    // console.log(JSON.stringify(invariants, undefined, '    '));
 }
 
 

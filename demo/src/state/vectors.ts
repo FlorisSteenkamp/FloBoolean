@@ -2,6 +2,7 @@
 let vectors = [
     'new1',
     'new2',
+    'bold-b',
     'square',
     'multiple-xs-at-min-y',
     'complexish',

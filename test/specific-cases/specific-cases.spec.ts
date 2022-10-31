@@ -23,6 +23,9 @@ describe('specific cases', function() {
     testIt('split-shape-lines', 'split two shapes into two different shapes -> should decompose correctly');
     testIt('tiny-min-y-loop', 'tiny loop at minimum y -> should decompose correctly');
     testIt('complex', 'complex shape -> should decompose correctly');
+    testIt('new1', 'edge case -> should decompose correctly');
+    testIt('new2', 'edge case that caused same bug as bold-b -> should decompose correctly');
+    testIt('bold-b', 'edge case that caused bug -> should decompose correctly');
 
     let bezierLoops: number[][][][];
     let invariants: Invariants[][];

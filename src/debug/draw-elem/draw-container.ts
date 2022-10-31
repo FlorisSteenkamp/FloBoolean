@@ -19,19 +19,10 @@ function drawContainer(g: SVGGElement, container: Container, classes?: string, d
     let inOuts = container.inOuts;
     for (let i=0; i<inOuts.length; i++) {
         let inOut = inOuts[i];
-        // console.log(inOut)
-        let C = 3;
         let p = inOut.p.slice();
-        //if (inOut.order) {
-        //    if (inOut.order[0] === 3) { p[0] += C; }
-        //    if (inOut.order[0] === 0) { p[1] -= C; }
-        //    if (inOut.order[0] === 1) { p[0] -= 2*C; }
-        //    if (inOut.order[0] === 2) { p[1] += 2*C; }
-        //}
 
         let color = inOut.dir === -1 ? 'red' : 'blue';
         let size = scale*(1 + (0.5*i));
-        // $texts.push(...drawFs.text(g, p, i.toString(), 1, color, delay));
         if (inOut.idx !== undefined) {
             $texts.push(...drawFs.text(g, p, inOut.idx!.toString(), scale*8, `thin5 nofill ${color}`, delay));
         }
