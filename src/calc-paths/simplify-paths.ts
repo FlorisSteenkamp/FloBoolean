@@ -79,8 +79,6 @@ function simplifyPaths(
     addDebugInfo1(bezierLoops);
     bezierLoops.sort(orderLoopAscendingByMinY);
 
-    // console.log(bezierLoops);
-
     let loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));
     let { extremes } = getContainers(loops, containerDim, expMax);
 
@@ -88,9 +86,6 @@ function simplifyPaths(
     let takenLoops: Set<Loop> = new Set();
     let takenOuts: Set<InOut> = new Set(); // Taken intersections
 
-    // throw 'a';
-    // debugger;
-    
     for (let loop of loops) {
         if (takenLoops.has(loop)) { continue; }
         takenLoops.add(loop);
@@ -168,6 +163,20 @@ function addDebugInfo2(loopss: Loop[][]) {
         _debug_.generated.elems.loops.push(loops);
         //console.log(loopsToSvgPathStr(loops.map(loop => loop.beziers)));
     }
+
+    // Don't delete below commented lines - it is for creating test cases.
+    //if (typeof document === 'undefined') { return; }
+    //let g = document.getElementsByTagName('g')[0];
+    //let invariants = loopss.map(loops => {
+    //    return loops.map(loop => {
+    //        let centroid = getLoopCentroid(loop);
+    //        let area     = getLoopArea(loop);
+    //        let bounds   = simplifyBounds(getLoopBounds(loop));
+    //        //drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 0);
+    //        return { centroid, area, bounds };
+    //    });
+    //});
+    //console.log(JSON.stringify(invariants, undefined, '    '));
 }
 
 

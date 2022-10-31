@@ -14,19 +14,17 @@ function compareOrderedInOut(
         inOutA: InOut,
         inOutB: InOut): number {
 
-    if (!inOutA.side || !inOutB.side || !inOutA.sideX || !inOutB.sideX) {
-        return 0;
-    }
-
     // First compare side indexes - side indexes are the coursest ordering
-    let res = inOutA.side - inOutB.side;
+    const sideA = inOutA.side!;
+    const sideB = inOutB.side!;
+    let res = sideA - sideB;
     if (res !== 0) { return res; }
 
     // Could not resolve by side indexes (they are the same)
 
     // Compare by side `t` values
-    let xA = inOutA.sideX;
-    let xB = inOutB.sideX;
+    let xA = inOutA.sideX!;
+    let xB = inOutB.sideX!;
     res = xA.ri.tS - xB.ri.tS;
 
     let errBound = 2*4 * Number.EPSILON;  // is factor of 2 necessary?

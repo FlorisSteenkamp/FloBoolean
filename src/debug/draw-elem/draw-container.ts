@@ -33,7 +33,7 @@ function drawContainer(g: SVGGElement, container: Container, classes?: string, d
         let size = scale*(1 + (0.5*i));
         // $texts.push(...drawFs.text(g, p, i.toString(), 1, color, delay));
         if (inOut.idx !== undefined) {
-            $texts.push(...drawFs.text(g, p, inOut.idx!.toString(), 0.1, `thin5 nofill ${color}`, delay));
+            $texts.push(...drawFs.text(g, p, inOut.idx!.toString(), scale*8, `thin5 nofill ${color}`, delay));
         }
         $circles.push(...drawFs.dot(g, inOut.p, size, `thin2 nofill ${color}`, delay)); 
     }
