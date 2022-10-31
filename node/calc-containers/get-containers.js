@@ -10,6 +10,7 @@ import { getSelfIntersections } from '../get-critical-points/get-self-intersecti
 import { getInterfaceIntersections } from '../get-critical-points/get-interface-intersections.js';
 import { getExtremes } from '../get-critical-points/get-extremes.js';
 import { sendContainersToGrid } from './send-containers-to-grid.js';
+import { compareOrderedInOut } from './get-container-in-outs/get-in-outs-via-sides/compare-in-out.js';
 /**
  *
  * @param containerDim
@@ -77,9 +78,8 @@ function getContainers(loops, containerDim, expMax) {
     }
     // Add the other half of the intersections too - all intersections has 
     // exactly one opposite curve intersection (t values come in pairs)
-    // Also, set inOuts on each container, and debugging idx
+    // Also, set inOuts on each container, and `idx`
     let ioIdx = 0;
-    //containers.reverse();  // TODO - REMOVE THIS LINE !!! <---
     for (let container of containers) {
         for (let x of container.xs) {
             x.container = container;
@@ -89,7 +89,7 @@ function getContainers(loops, containerDim, expMax) {
         container.inOuts = inOuts;
     }
     // remove xs not belonging to a container (caused by filterContainers)
-    xPairs = xPairs.filter(x => x[0].container);
+    xPairs = xPairs.filter(x => x[0].container !== undefined);
     setIntersectionNextValues(xPairs);
     // Connect container ins and outs
     for (let container of containers) {
@@ -101,7 +101,7 @@ function getContainers(loops, containerDim, expMax) {
             // move to next 'in' __X__
             while (true) {
                 _x_ = _x_.next;
-                if (_x_.in_) {
+                if (_x_.in_ !== undefined) {
                     break;
                 }
             }
@@ -109,7 +109,10 @@ function getContainers(loops, containerDim, expMax) {
             out.idx = out.next.idx;
         }
     }
-    // set next and prev around container for each inout for each container
+    for (let container of containers) {
+        container.inOuts.sort(compareOrderedInOut);
+    }
+    // set `next` and `prev` around container for each `inOut` for each `container`
     for (let container of containers) {
         let inOuts = container.inOuts;
         let prevInOut = inOuts[inOuts.length - 1];
@@ -124,7 +127,7 @@ function getContainers(loops, containerDim, expMax) {
 }
 /**
  * Returns the containers that is the given containers filtered so that those
- * having only interface intersections or only a single (giben as a pair) even
+ * having only interface intersections or only a single (given as a pair) even
  * multiple intersection are not included.
  * @param containers
  */

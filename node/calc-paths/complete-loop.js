@@ -14,7 +14,6 @@ function completeLoop(expMax, takenOuts, out) {
     // Move immediately to the outgoing start of the loop
     let out_ = out;
     let additionalBezier;
-    let ii = 0; // TODO - remove
     do {
         takenOuts.add(out_); // Mark this intersection as taken
         let { beziers: additionalBeziers, in_, inBez } = getBeziersToNextContainer(expMax, out_);

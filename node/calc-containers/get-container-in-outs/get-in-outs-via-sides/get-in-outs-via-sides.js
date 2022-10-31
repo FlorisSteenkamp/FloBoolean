@@ -1,5 +1,4 @@
 import { getXInOuts } from "./get-x-in-outs.js";
-import { compareOrderedInOut } from "./compare-in-out.js";
 /**
  * Returns the incoming / outgoing curves (as InOuts) for the given container
  * using an extremely small rectangle around the intersections.
@@ -10,7 +9,6 @@ import { compareOrderedInOut } from "./compare-in-out.js";
 function getInOutsViaSides(container, ioIdx) {
     // We check one __X__ for each curve with an intersection within this container
     let xs_ = container.xs;
-    //console.log(container.xs);
     let inOuts = [];
     // get a map from each Curve to each __X__ of this container
     let xMap = new Map();
@@ -33,8 +31,7 @@ function getInOutsViaSides(container, ioIdx) {
         inOuts.push(...ins);
         inOuts.push(...outs);
     }
-    inOuts.sort(compareOrderedInOut);
-    return { inOuts: inOuts.map(inOut => inOut.inOut), ioIdx };
+    return { inOuts: inOuts, ioIdx };
 }
 export { getInOutsViaSides };
 //# sourceMappingURL=get-in-outs-via-sides.js.map

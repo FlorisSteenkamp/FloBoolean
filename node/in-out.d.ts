@@ -1,14 +1,9 @@
 import { __X__ } from "./-x-.js";
 import { Container } from "./container.js";
+import { X } from "./x.js";
 interface InOut {
     /** direction, in (-1) or out (+1) */
     dir: -1 | 1;
-    /**
-     * the ordering around the container (anti-clockwise from bottom right)
-     * where the first number is the 'quadrant' (0 -> right edge, 1 -> top edge,
-     * 2 -> left edge, 3 -> bottom edge) and the second the t value of on the
-     * side
-     */
     idx?: number;
     /** intersection */
     _x_?: __X__;
@@ -27,5 +22,19 @@ interface InOut {
     parent?: InOut;
     children?: Set<InOut>;
     beziers?: number[][][];
+    /**
+     * the ordering around the container (anti-clockwise from bottom right)
+     * where the 'quadrant' (0 -> right edge, 1 -> top edge, 2 -> left edge,
+     * 3 -> bottom edge)
+     */
+    side?: number | undefined;
+    /**
+     * The intersection with the side of the container.
+     *
+     * The root interval of the intersection (`ri`, a pair of double-doubles)
+     * of the side such that when lexographically ordering the ordered pair
+     * [side, sideT] it forms a well-ordering of the InOut.
+     */
+    sideX?: X | undefined;
 }
 export { InOut };

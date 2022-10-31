@@ -1,9 +1,8 @@
-import { OrderedInOut } from "./ordered-in-out.js";
+import { InOut } from "../../../in-out.js";
 /**
  *
  * @param inOutA
  * @param inOutB
  */
-declare function compareOrderedInOut(inOutA: OrderedInOut, inOutB: OrderedInOut): number;
-/** temp for testing */
+declare function compareOrderedInOut(inOutA: InOut, inOutB: InOut): number;
 export { compareOrderedInOut };

@@ -52,15 +52,12 @@ function getXInOuts(container) {
             if (x.side !== undefined) {
                 // it is a sideX
                 if (prevWasX === true) {
-                    //console.log(midBox(x))
                     outs.push({
-                        inOut: {
-                            dir: +1,
-                            p: midBox(x),
-                            _x_: prevX,
-                            container,
-                            idx: ++ioIdx
-                        },
+                        dir: +1,
+                        p: midBox(x),
+                        _x_: prevX,
+                        container,
+                        idx: ++ioIdx,
                         side: x.side,
                         sideX: x.sideX
                     });
@@ -71,17 +68,15 @@ function getXInOuts(container) {
                 // it is a proper X
                 if (prevWasX === false) {
                     ins.push({
-                        inOut: {
-                            dir: -1,
-                            p: midBox(prevX),
-                            _x_: x,
-                            container,
-                            idx: ++ioIdx
-                        },
+                        dir: -1,
+                        p: midBox(prevX),
+                        _x_: x,
+                        container,
+                        idx: ++ioIdx,
                         side: prevX.side,
                         sideX: prevX.sideX
                     });
-                    x.in_ = ins[ins.length - 1].inOut;
+                    x.in_ = ins[ins.length - 1];
                 }
                 prevWasX = true;
             }

@@ -2,6 +2,7 @@ import { getInOutsViaSides } from "./get-in-outs-via-sides/get-in-outs-via-sides
 import { getInOutsViaCrossing } from "./get-in-outs-via-crossing/get-in-outs-via-crossing.js";
 /**
  * * **warning** ioIdx will be modified by this function
+ *
  * @param container
  * @param ioIdx
  */

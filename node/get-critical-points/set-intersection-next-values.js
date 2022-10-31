@@ -1,7 +1,7 @@
 /**
- * Set each intersection on the given original loop's next and prev value
- * @param loops
- * @param xMap
+ * Set each intersection on the given original loop's `next` and `prev` value.
+ *
+ * @param xPairs
  */
 function setIntersectionNextValues(xPairs) {
     let xsByLoop = new Map();
@@ -29,12 +29,12 @@ function setIntersectionNextValues(xPairs) {
             if (res !== 0) {
                 return res;
             }
-            return xA.in_ ? -1 : +1;
+            return xA.in_ !== undefined ? -1 : +1;
         });
-        for (let i = 1; i < xs.length; i++) {
-            xs[i - 1].next = xs[i];
+        const len = xs.length;
+        for (let i = 0; i < len; i++) {
+            xs[i].next = xs[(i + 1) % len];
         }
-        xs[xs.length - 1].next = xs[0];
     }
 }
 export { setIntersectionNextValues };
