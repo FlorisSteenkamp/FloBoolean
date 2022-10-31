@@ -3,9 +3,9 @@ import { Loop } from "../loop/loop.js";
 
 
 /**
- * Set each intersection on the given original loop's next and prev value
- * @param loops 
- * @param xMap 
+ * Set each intersection on the given original loop's `next` and `prev` value.
+ *
+ * @param xPairs
  */
 function setIntersectionNextValues(xPairs: __X__[][]) {
 
@@ -30,13 +30,13 @@ function setIntersectionNextValues(xPairs: __X__[][]) {
             if (res !== 0) { return res; }
             res = xA.x.ri.tS - xB.x.ri.tS;
             if (res !== 0) { return res; }
-            return xA.in_ ? -1 : +1;
+            return xA.in_ !== undefined ? -1 : +1;
         });
 
-        for (let i=1; i<xs.length; i++) {
-            xs[i-1].next = xs[i];
+        const len = xs.length;
+        for (let i=0; i<len; i++) {
+            xs[i].next = xs[(i+1)%len];
         }
-        xs[xs.length-1].next = xs[0];
     }
 }
 

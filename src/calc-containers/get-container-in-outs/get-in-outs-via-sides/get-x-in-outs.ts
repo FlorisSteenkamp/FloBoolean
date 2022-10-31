@@ -5,8 +5,8 @@ import { Container } from "../../../container.js";
 import { X } from "../../../x.js";
 import { __X__ } from "../../../-x-.js";
 import { Curve } from "../../../curve/curve.js";
-import { OrderedInOut } from "./ordered-in-out.js";
 import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting.js";
+import { InOut } from "../../../in-out.js";
 
 
 
@@ -71,8 +71,8 @@ function getXInOuts(container: Container) {
         // compensated intervals)
         xs.sort((xA, xB) => xA.x.ri.tS - xB.x.ri.tS);
 
-        let ins: OrderedInOut[] = [];
-        let outs: OrderedInOut[] = [];
+        let ins: InOut[] = [];
+        let outs: InOut[] = [];
         let prevX: WithRI | undefined = undefined;
         /** true if the prevX was a proper X, false if it was a SideX */
         let prevWasX: boolean | undefined = undefined;
@@ -80,16 +80,13 @@ function getXInOuts(container: Container) {
             if (x.side !== undefined) {
                 // it is a sideX
                 if (prevWasX === true) {
-                    //console.log(midBox(x))
                     outs.push({
-                        inOut: { 
-                            dir: +1, 
-                            p: midBox(x),
-                            _x_: prevX!, 
-                            container, 
-                            idx: ++ioIdx 
-                        },
-                        side: x.side, 
+                        dir: +1, 
+                        p: midBox(x),
+                        _x_: prevX!,
+                        container,
+                        idx: ++ioIdx,
+                        side: x.side,
                         sideX: x.sideX!
                     });
                 }
@@ -98,17 +95,15 @@ function getXInOuts(container: Container) {
                 // it is a proper X
                 if (prevWasX === false) {
                     ins.push({ 
-                        inOut: {
-                            dir: -1, 
-                            p: midBox(prevX!),
-                            _x_: x, 
-                            container, 
-                            idx: ++ioIdx 
-                        },
+                        dir: -1, 
+                        p: midBox(prevX!),
+                        _x_: x,
+                        container,
+                        idx: ++ioIdx,
                         side: prevX!.side!, 
                         sideX: prevX!.sideX!
                     });
-                    x.in_ = ins[ins.length-1].inOut;
+                    x.in_ = ins[ins.length-1];
                 }
                 prevWasX = true;
             }

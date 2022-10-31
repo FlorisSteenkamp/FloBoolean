@@ -12,7 +12,10 @@ import { getInOutsViaSides } from "../get-in-outs-via-sides/get-in-outs-via-side
  */
 function getInOutsViaCrossing(
         container: Container, 
-        ioIdx: number) {
+        ioIdx: number): {
+            inOuts: InOut[];
+            ioIdx: number;
+        } {
 
     let xs = container.xs;
 
@@ -94,7 +97,7 @@ function getInOutsViaCrossing(
         inOuts.push({ dir: -1, p, _x_: x1, container });
         inOuts.push({ dir: -1, p, _x_: x2, container });
         inOuts.push({ dir: +1, p, _x_: x1, container });
-        inOuts.push({ dir: +1, p, _x_: x2, container });        
+        inOuts.push({ dir: +1, p, _x_: x2, container });
         x1.in_ = inOuts[0];
         x2.in_ = inOuts[1];
     }

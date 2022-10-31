@@ -38,10 +38,10 @@ function pairSet_has<T>(
 
     let set: Set<T>;
 
-    set = map.get(vs[0]);
+    set = map.get(vs[0])!;
     let has1 = set && set.has(vs[1]); 
 
-    set = map.get(vs[1]);
+    set = map.get(vs[1])!;
     let has2 = set && set.has(vs[0]); 
 
     return has1 || has2;

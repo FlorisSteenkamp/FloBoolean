@@ -5,7 +5,7 @@ import { Container } from '../../container.js';
 function drawContainer(g: SVGGElement, container: Container, classes?: string, delay = 0) {
     let rect = container.box;
     let xs = container.xs;
-    let scale = 0.025;
+    let scale = 2**0*0.0125;
 
     // intersections
     let $circles: SVGCircleElement[] = [];
@@ -17,7 +17,7 @@ function drawContainer(g: SVGGElement, container: Container, classes?: string, d
     // text showing intersection ordering
     let $texts: SVGTextElement[] = [];
     let inOuts = container.inOuts;
-    for (let i=0; i< inOuts.length; i++) {
+    for (let i=0; i<inOuts.length; i++) {
         let inOut = inOuts[i];
         // console.log(inOut)
         let C = 3;
@@ -30,10 +30,12 @@ function drawContainer(g: SVGGElement, container: Container, classes?: string, d
         //}
 
         let color = inOut.dir === -1 ? 'red' : 'blue';
-        //let size = scale * (inOut.dir === -1 ? 0.75 : 1);
-        let size = scale * (inOut.dir === -1 ? 0.5 : 0.5);
-        //$texts.push(...drawFs.text(g, p, i.toString(), 4, color, delay));
-        $circles.push(...drawFs.dot(g, inOut.p, size, `thin2 ${color}`, delay)); 
+        let size = scale*(1 + (0.5*i));
+        // $texts.push(...drawFs.text(g, p, i.toString(), 1, color, delay));
+        if (inOut.idx !== undefined) {
+            $texts.push(...drawFs.text(g, p, inOut.idx!.toString(), 0.1, `thin5 nofill ${color}`, delay));
+        }
+        $circles.push(...drawFs.dot(g, inOut.p, size, `thin2 nofill ${color}`, delay)); 
     }
 
     // container rect

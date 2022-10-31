@@ -2,8 +2,7 @@ import { Container } from "../../../container.js";
 import { getXInOuts } from "./get-x-in-outs.js";
 import { __X__ } from "../../../-x-.js";
 import { Curve } from "../../../curve/curve.js";
-import { compareOrderedInOut } from "./compare-in-out.js";
-import { OrderedInOut } from "./ordered-in-out.js";
+import { InOut } from "../../../in-out.js";
 
 
 /**
@@ -15,13 +14,15 @@ import { OrderedInOut } from "./ordered-in-out.js";
  */
 function getInOutsViaSides(
         container: Container, 
-        ioIdx: number) {
+        ioIdx: number): {
+            inOuts: InOut[];
+            ioIdx: number;
+        } {
 
     // We check one __X__ for each curve with an intersection within this container
     let xs_ = container.xs;
 
-    //console.log(container.xs);
-    let inOuts: OrderedInOut[] = [];
+    let inOuts: InOut[] = [];
 
     // get a map from each Curve to each __X__ of this container
     let xMap: Map<Curve, __X__[]> = new Map();
@@ -39,17 +40,15 @@ function getInOutsViaSides(
     for (let entry of xMap) {
         let [curve, xs] = entry;
 
-        let ins: OrderedInOut[];
-        let outs: OrderedInOut[];
+        let ins: InOut[];
+        let outs: InOut[];
         ({ ins, outs, ioIdx } = getXInOuts_(curve, xs, ioIdx));
 
         inOuts.push(...ins);
         inOuts.push(...outs);
     }
 
-    inOuts.sort(compareOrderedInOut);
-
-    return { inOuts: inOuts.map(inOut => inOut.inOut), ioIdx };
+    return { inOuts: inOuts, ioIdx };
 }
 
 

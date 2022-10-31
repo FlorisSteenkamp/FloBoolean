@@ -1,5 +1,7 @@
 
 let vectors = [
+    'new1',
+    'new2',
     'square',
     'multiple-xs-at-min-y',
     'complexish',

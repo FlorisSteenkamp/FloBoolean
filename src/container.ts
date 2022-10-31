@@ -15,6 +15,7 @@ interface Container {
      * ordered array of incoming / outgoing curves where the order is 
      * anti-clockwise from the top right (minimum y, maximum x) corner
      */
+    // inOuts: OrderedInOut[];
     inOuts: InOut[];
 }
 
