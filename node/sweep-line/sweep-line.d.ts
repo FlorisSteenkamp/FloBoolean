@@ -1,4 +1,4 @@
-declare type IntersectionResult<T, U> = {
+type IntersectionResult<T, U> = {
     /** the first item checked for possible intersection */
     a: T;
     /** the second item checked for possible intersection */

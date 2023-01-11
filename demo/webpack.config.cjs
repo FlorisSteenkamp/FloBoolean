@@ -8,8 +8,8 @@ const extensions = [
 ];
 
 module.exports = {
-    //mode: 'production',
-    mode: 'development',
+    mode: 'production',
+    // mode: 'development',
     entry: './src/app.tsx',
     resolve: {
         extensions,
