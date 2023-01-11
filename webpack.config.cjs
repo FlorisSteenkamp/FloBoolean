@@ -1,6 +1,7 @@
 const path = require('path');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const ResolveTypeScriptPlugin = require("resolve-typescript-plugin");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 
 ////////////////////////////////
@@ -15,8 +16,8 @@ const extensions = [
 
 
 const config_Basic = {
-    // mode: 'production',
-    mode: 'development',
+    mode: 'production',
+    // mode: 'development',
     entry: './src/index.ts',
     resolve: {
         extensions,
@@ -41,6 +42,7 @@ const config_Basic = {
         builtAt: true
     },
     plugins: [
+        new BundleAnalyzerPlugin({ analyzerPort: 9090 }),
         new CircularDependencyPlugin({
             // exclude detection of files based on a RegExp
             exclude: /node_modules/,
@@ -126,7 +128,7 @@ const config_EsmNoMinify = {
 
 module.exports = [
     config_VarMinify,
-    config_VarNoMinify,
-    config_EsmMinify,
-    config_EsmNoMinify
+    // config_VarNoMinify,
+    // config_EsmMinify,
+    // config_EsmNoMinify
 ];
