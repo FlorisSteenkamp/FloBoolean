@@ -26,8 +26,8 @@ class Source {
 
     
     parseSegment(): { type: string, values: number[] } {
-        var char = this._string[this._currentIndex];
-        var command = COMMAND_MAP[char];
+        const char = this._string[this._currentIndex];
+        let command = COMMAND_MAP[char];
 
         if (command === undefined) {
             if (this._prevCommand === undefined) {
@@ -54,8 +54,8 @@ class Source {
 
         this._prevCommand = command;
 
-        var values: number[] | undefined = undefined;
-        var cmd = command.toUpperCase();
+        let values: number[] | undefined = undefined;
+        const cmd = command.toUpperCase();
 
         if (cmd === "H" || cmd === "V") {
             values = [parseNumber(this)];
@@ -106,14 +106,14 @@ class Source {
             return true;
         }
 
-        var command = COMMAND_MAP[this._string[this._currentIndex]];
+        const command = COMMAND_MAP[this._string[this._currentIndex]];
 
         return command === "M" || command === "m";
     }
 
 
     _isCurrentSpace(): boolean {
-        var char = this._string[this._currentIndex];
+        const char = this._string[this._currentIndex];
         return char <= " " && (char === " " || char === "\n" || char === "\t" || char === "\r" || char === "\f");
     }
 
@@ -153,7 +153,7 @@ class Source {
         }
 
         let flag: number | undefined = undefined;
-        let flagChar = this._string[this._currentIndex];
+        const flagChar = this._string[this._currentIndex];
 
         this._currentIndex += 1;
 

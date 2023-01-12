@@ -5,14 +5,14 @@
  * @param root
  */
 function getLoopsFromTree(root) {
-    let trees = [root];
-    let stack = Array.from(root.children);
+    const trees = [root];
+    const stack = Array.from(root.children);
     while (stack.length) {
-        let tree = stack.pop();
+        const tree = stack.pop();
         if (tree.windingNum === 0) {
             trees.push(tree);
         }
-        for (let child of tree.children) {
+        for (const child of tree.children) {
             stack.push(child);
         }
     }

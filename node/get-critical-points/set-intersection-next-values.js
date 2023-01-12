@@ -4,19 +4,19 @@
  * @param xPairs
  */
 function setIntersectionNextValues(xPairs) {
-    let xsByLoop = new Map();
-    for (let xPair of xPairs) {
-        for (let x_ of xPair) {
-            let loop = x_.curve.loop;
-            let xs_ = xsByLoop.get(loop) || [];
+    const xsByLoop = new Map();
+    for (const xPair of xPairs) {
+        for (const x_ of xPair) {
+            const loop = x_.curve.loop;
+            const xs_ = xsByLoop.get(loop) || [];
             if (!xs_.length) {
                 xsByLoop.set(loop, xs_);
             }
             xs_.push(x_);
         }
     }
-    for (let item of xsByLoop) {
-        let xs = item[1];
+    for (const item of xsByLoop) {
+        const xs = item[1];
         if (!xs || !xs.length) {
             continue;
         }

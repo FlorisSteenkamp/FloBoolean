@@ -20,18 +20,18 @@ function isLoopInLoop(loop1, loop2) {
     do {
         i++;
         // This gets us a predictable random number between 0 and 1;
-        let rand1 = flatCoefficients(1, 0, 1, seed);
-        let t = rand1.p[0];
+        const rand1 = flatCoefficients(1, 0, 1, seed);
+        const t = rand1.p[0];
         seed = rand1.seed; // Get next seed.
         // This gets us a predictable random number roughly between 0 and the 
         // number of curves in the loop.
-        let curveCount = loop1.length;
-        let rand2 = flatCoefficients(1, 0, curveCount, seed);
-        let idx = Math.floor(rand2.p[0]);
+        const curveCount = loop1.length;
+        const rand2 = flatCoefficients(1, 0, curveCount, seed);
+        const idx = Math.floor(rand2.p[0]);
         seed = rand2.seed; // Get next seed.
-        let ps = loop1[idx];
-        let p = evalDeCasteljau(ps, t);
-        let res = f(loop1, loop2, p);
+        const ps = loop1[idx];
+        const p = evalDeCasteljau(ps, t);
+        const res = f(loop1, loop2, p);
         if (res !== undefined) {
             return res;
         }
@@ -41,7 +41,7 @@ function isLoopInLoop(loop1, loop2) {
         if (isLoopNotInLoop(loop1, loop2)) {
             return false;
         }
-        let count = getAxisAlignedRayLoopIntersections(loop2, p, 'left');
+        const count = getAxisAlignedRayLoopIntersections(loop2, p, 'left');
         if (count !== undefined) {
             return count % 2 !== 0;
         }
@@ -53,14 +53,14 @@ function isLoopInLoop(loop1, loop2) {
  * @param loops
  */
 function isLoopNotInLoop(loop1, loop2) {
-    let boundss = [loop1, loop2].map(getLoopBounds);
+    const boundss = [loop1, loop2].map(getLoopBounds);
     return (boundss[0].minX < boundss[1].minX ||
         boundss[0].maxX > boundss[1].maxX ||
         boundss[0].minY < boundss[1].minY ||
         boundss[0].maxY > boundss[1].maxY);
 }
 function getLoopBounds(pss) {
-    let bounds = pss.map(ps => getBounds_(ps));
+    const bounds = pss.map(ps => getBounds_(ps));
     return {
         minX: Math.min(...bounds.map(bound => bound.box[0][0])),
         maxX: Math.max(...bounds.map(bound => bound.box[1][0])),
@@ -76,14 +76,14 @@ function getLoopBounds(pss) {
  * @internal
  */
 function getAxisAlignedRayLoopIntersections(loop, p, dir) {
-    let [x, y] = p;
+    const [x, y] = p;
     let count = 0;
     for (let i = 0; i < loop.length; i++) {
-        let ps = loop[i];
+        const ps = loop[i];
         //------------------------------------------------------/
         //---- Check if ray intersects bezier bounding box -----/
         //------------------------------------------------------/
-        let [[minX, minY], [maxX, maxY]] = getBoundingBox_(ps);
+        const [[minX, minY], [maxX, maxY]] = getBoundingBox_(ps);
         let notIntersecting = ((dir === 'left' || dir === 'right') && (minY > y || maxY < y)) ||
             ((dir === 'up' || dir === 'down') && (minX > x || maxX < x));
         notIntersecting = notIntersecting ||
@@ -96,11 +96,11 @@ function getAxisAlignedRayLoopIntersections(loop, p, dir) {
         //----------- Get intersection ts on bezier ------------/
         //------------------------------------------------------/
         // Get the bezier's x-coordinate power representation.
-        let ts = [];
+        const ts = [];
         let f;
         let offset;
         let axis;
-        let dirIsDecreasing = (dir === 'left' || dir === 'up');
+        const dirIsDecreasing = (dir === 'left' || dir === 'up');
         if (dir === 'left' || dir === 'right') {
             //f = getY;
             f = (ps) => toPowerBasis(ps)[1];
@@ -114,19 +114,19 @@ function getAxisAlignedRayLoopIntersections(loop, p, dir) {
             axis = 1;
         }
         //let translatedPs = translate(offset, ps);
-        let translatedPs = ps.map(translate(offset));
-        let poly = f(translatedPs);
+        const translatedPs = ps.map(translate(offset));
+        const poly = f(translatedPs);
         //let ev = evalDeCasteljau(translatedPs);
-        let ts_ = allRoots(poly, 0 - DELTA, 1 + DELTA);
+        const ts_ = allRoots(poly, 0 - DELTA, 1 + DELTA);
         for (let i = 0; i < ts_.length; i++) {
-            let t = ts_[i];
+            const t = ts_[i];
             if (Math.abs(t) < DELTA || Math.abs(t - 1) < DELTA) {
                 // We don't know the exact number of intersections due to
                 // floating point arithmetic. 
                 return undefined;
             }
             //let p_ = ev(t);
-            let p_ = evalDeCasteljau(translatedPs, t);
+            const p_ = evalDeCasteljau(translatedPs, t);
             if ((dirIsDecreasing && p[axis] >= p_[axis]) ||
                 (!dirIsDecreasing && p[axis] <= p_[axis])) {
                 ts.push(t);
@@ -137,8 +137,8 @@ function getAxisAlignedRayLoopIntersections(loop, p, dir) {
         //------------------------------------------------------/
         // We only care if there were 1 or 3 intersections.
         if (ts.length === 1 || ts.length === 3) {
-            for (let t of ts) {
-                let tan = toUnitVector(tangent(ps, t));
+            for (const t of ts) {
+                const tan = toUnitVector(tangent(ps, t));
                 if (((dir === 'left' || dir === 'right') && Math.abs(tan[1]) < DELTA) ||
                     ((dir === 'down' || dir === 'up') && Math.abs(tan[0]) < DELTA)) {
                     // We don't know the exact number of intersections due to

@@ -6,10 +6,10 @@ import { getExtreme } from "./get-extreme.js";
  * @param loops
  */
 function getExtremes(loops) {
-    let extremes = new Map();
-    let xs = [];
-    for (let loop of loops) {
-        let xPair = getExtreme(loop);
+    const extremes = new Map();
+    const xs = [];
+    for (const loop of loops) {
+        const xPair = getExtreme(loop);
         xs.push(xPair);
         extremes.set(loop, xPair);
     }

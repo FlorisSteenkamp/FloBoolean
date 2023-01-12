@@ -149,8 +149,8 @@ function fixBezierByPointSpacing(
                 ps[3]
             ]; // cannot be a line or quad
         } else {
-            let v = toLength(fromToVect(ps[1], ps[2]), 2 * gridSpacing);
-            let p1 = translate(ps[1], v);
+            const v = toLength(fromToVect(ps[1], ps[2]), 2 * gridSpacing);
+            const p1 = translate(ps[1], v);
             return checkCubicForLineOrQuad([
                 ps[0],
                 sendToGrid(p1),
@@ -176,8 +176,8 @@ function fixBezierByPointSpacing(
                 ps[3]
             ]; // cannot be a line or quad
         } else {
-            let v = toLength(fromToVect(ps[2], ps[1]), 2 * gridSpacing);
-            let p2 = translate(ps[2], v);
+            const v = toLength(fromToVect(ps[2], ps[1]), 2 * gridSpacing);
+            const p2 = translate(ps[2], v);
             return checkCubicForLineOrQuad([
                 ps[0],
                 ps[1],

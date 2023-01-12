@@ -1,4 +1,4 @@
-declare var _debug_: Debug; 
+declare const _debug_: Debug; 
 
 import { Debug } from '../debug/debug.js';
 import { Container } from "../container.js";
@@ -6,7 +6,6 @@ import { areContainersIntersecting } from "./are-containers-intersecting.js";
 import { TGraph, addEdges, getConnectedComponents } from "../graph/get-connected-components.js";
 import { getIsolatedComponents } from "./get-isolated-containers.js";
 import { mergeContainers } from "./merge-containers.js";
-import { __X__ } from "../-x-.js";
 import { getContainerInOuts } from "./get-container-in-outs/get-container-in-outs.js";
 import { getIntersections } from "../get-critical-points/get-intersections.js";
 import { setIntersectionNextValues } from "../get-critical-points/set-intersection-next-values.js";
@@ -29,13 +28,13 @@ function getContainers(
         containerDim: number,
         expMax: number) {
 
-    //let t0 = performance.now();
-    let xs1 = getIntersections(loops, expMax);
-    //let t1 = performance.now();
+    //const t0 = performance.now();
+    const xs1 = getIntersections(loops, expMax);
+    //const t1 = performance.now();
     //console.log("intersections took " + ((t1 - t0)).toFixed(3) + " milliseconds.");
-    let xs2 = getSelfIntersections(loops);
-    let xs3 = getInterfaceIntersections(loops);
-    let { extremes, xs: xs4 } = getExtremes(loops);
+    const xs2 = getSelfIntersections(loops);
+    const xs3 = getInterfaceIntersections(loops);
+    const { extremes, xs: xs4 } = getExtremes(loops);
 
     let xPairs = [...xs1, ...xs2, ...xs3, ...xs4];
 
@@ -46,11 +45,11 @@ function getContainers(
 
 
     if (typeof _debug_ !== 'undefined') { 
-        for (let xPair of xs1) { _debug_.generated.elems.intersection.push(...xPair); }
-        for (let xPair of xs2) { _debug_.generated.elems.intersection.push(...xPair); }
+        for (const xPair of xs1) { _debug_.generated.elems.intersection.push(...xPair); }
+        for (const xPair of xs2) { _debug_.generated.elems.intersection.push(...xPair); }
         // TODO - are interface intersections really necessary?
-        for (let xPair of xs3) { _debug_.generated.elems.intersection.push(...xPair); }
-        for (let xPair of xs4) { _debug_.generated.elems.intersection.push(...xPair); }
+        for (const xPair of xs3) { _debug_.generated.elems.intersection.push(...xPair); }
+        for (const xPair of xs4) { _debug_.generated.elems.intersection.push(...xPair); }
     }
 
     // initialize the containers with one of the one-sided intersections
@@ -70,7 +69,7 @@ function getContainers(
     // iterate, combining containers that overlap on each iteration 
     while (true) {
         /** container intersections as an array of Container pairs */
-        let is = sweepLine(
+        const is = sweepLine(
             containers, 
             getLeftMost, 
             getRightMost, 
@@ -80,11 +79,11 @@ function getContainers(
         // if there are no more intersections between containers we're done
         if (!is.length) { break; }
 
-        let graph: TGraph<Container> = new Map();
+        const graph: TGraph<Container> = new Map();
         addEdges(graph, is);
 
-        let connectedContainers = getConnectedComponents(graph);
-        let isolatedContainers = getIsolatedComponents(
+        const connectedContainers = getConnectedComponents(graph);
+        const isolatedContainers = getIsolatedComponents(
             containers, connectedContainers
         );
 
@@ -104,8 +103,8 @@ function getContainers(
     // exactly one opposite curve intersection (t values come in pairs)
     // Also, set inOuts on each container, and `idx`
     let ioIdx = 0;
-    for (let container of containers) {
-        for (let x of container.xs) {
+    for (const container of containers) {
+        for (const x of container.xs) {
             x.container = container;
         }
         let inOuts: InOut[];
@@ -118,8 +117,8 @@ function getContainers(
     setIntersectionNextValues(xPairs);
 
     // Connect container ins and outs
-    for (let container of containers) {
-        for (let out of container.inOuts) {
+    for (const container of containers) {
+        for (const out of container.inOuts) {
             if (out.dir === -1) { continue; }
 
             let _x_ = out._x_!;
@@ -135,16 +134,16 @@ function getContainers(
         }
     }
 
-    for (let container of containers) {
+    for (const container of containers) {
         container.inOuts.sort(compareOrderedInOut);
     }
 
     // set `next` and `prev` around container for each `inOut` for each `container`
-    for (let container of containers) {
-        let inOuts = container.inOuts;
+    for (const container of containers) {
+        const inOuts = container.inOuts;
         let prevInOut = inOuts[inOuts.length-1];
         for (let i=0; i<inOuts.length; i++) {
-            let inOut = inOuts[i];
+            const inOut = inOuts[i];
             inOut.prevAround = prevInOut;
             prevInOut.nextAround = inOut;
             prevInOut = inOut;
@@ -162,17 +161,17 @@ function getContainers(
  * @param containers 
  */
 function filterContainers(containers: Container[]) {
-    let containers_ = containers.filter(container => {
-        let xs = container.xs;
+    const containers_ = containers.filter(container => {
+        const xs = container.xs;
         if (container.xs.length === 2) {
-            let _x_ = xs[0];
+            const _x_ = xs[0];
             if (_x_.x.kind === 1 && _x_.x.ri.multiplicity%2 === 0) {
                 // multiple even intersection - exclude
                 return false;
             }
         }
 
-        for (let x of container.xs) {
+        for (const x of container.xs) {
             if (x.x.kind !== 4) { 
                 // include container if any __X__ is not an interface
                 return true; 

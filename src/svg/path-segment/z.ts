@@ -12,7 +12,7 @@ import { PathState } from '../path-state.js';
  * parameters, they have an identical effect.
  */
 function z(s: PathState): number[][] {
-    let ps = [
+    const ps = [
         s.p,
         s.initialPoint!
     ];

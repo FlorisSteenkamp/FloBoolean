@@ -11,9 +11,9 @@ import { Container } from '../container.js';
  * @param parent 
  */
 function getOutermostInAndOut(container: Container) {
-    let inOuts = container.inOuts;
-    let firstInOut = inOuts[0];
-    let lastInOut = inOuts[inOuts.length-1];
+    const inOuts = container.inOuts;
+    const firstInOut = inOuts[0];
+    const lastInOut = inOuts[inOuts.length-1];
 
     // set 'loop' direction
     if (firstInOut.dir === 1) { 

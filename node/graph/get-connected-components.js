@@ -1,6 +1,6 @@
 function addEdges(graph, edges) {
     for (let i = 0; i < edges.length; i++) {
-        let edge = edges[i];
+        const edge = edges[i];
         addEdge(graph, [edge.a, edge.b]);
     }
 }
@@ -8,7 +8,7 @@ function addEdges(graph, edges) {
  * Adds an edge to an undirected graph.
  */
 function addEdge(graph, vertices) {
-    let [src, dest] = vertices;
+    const [src, dest] = vertices;
     let srcList = graph.get(src);
     if (!srcList) {
         srcList = [];
@@ -27,9 +27,9 @@ function DFSUtil(graph, v, visited, component) {
     visited.add(v);
     component.push(v);
     // Recur for all the vertices adjacent to this vertex 
-    let list = graph.get(v);
+    const list = graph.get(v);
     for (let i = 0; i < list.length; i++) {
-        let x = list[i];
+        const x = list[i];
         if (!visited.has(x)) {
             DFSUtil(graph, x, visited, component);
         }
@@ -40,10 +40,10 @@ function DFSUtil(graph, v, visited, component) {
  */
 function getConnectedComponents(graph) {
     // Mark all the vertices as not visited 
-    let components = [];
-    let visited = new Set();
-    for (let item of graph) {
-        let node = item[0];
+    const components = [];
+    const visited = new Set();
+    for (const item of graph) {
+        const node = item[0];
         if (!visited.has(node)) {
             // print all reachable vertices from v 
             components.push([]);

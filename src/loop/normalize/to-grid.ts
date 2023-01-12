@@ -14,9 +14,9 @@ function toGrid(
         expMax: number,
         significantFigures: number): number {
 
-    let expA = Math.floor(Math.log2(Math.abs(a)));
-    let expDif = expMax - expA;
-    let newSig = significantFigures - expDif + 1;
+    const expA = Math.floor(Math.log2(Math.abs(a)));
+    const expDif = expMax - expA;
+    const newSig = significantFigures - expDif + 1;
     
     if (newSig <= 0) { return 0; }
     if (significantFigures >= 53) { return a; }

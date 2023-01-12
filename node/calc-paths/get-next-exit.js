@@ -5,7 +5,7 @@ import { containerIsBasic } from "../container.js";
  * @param additionalOutsToCheck
  */
 function getNextExit(expMax, in_, originalOut, additionalOutsToCheck, takenOuts) {
-    let markOutForChecking_ = markOutForChecking(originalOut, takenOuts, additionalOutsToCheck);
+    const markOutForChecking_ = markOutForChecking(originalOut, takenOuts, additionalOutsToCheck);
     let additionalBezier = undefined;
     let fromCount = 0;
     let toCount = 1;

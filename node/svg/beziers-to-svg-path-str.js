@@ -6,7 +6,7 @@
 function beziersToSvgPathStr(beziers) {
     let str = '';
     for (let i = 0; i < beziers.length; i++) {
-        let ps = beziers[i];
+        const ps = beziers[i];
         if (i === 0) {
             str = 'M ' +
                 ps[0][0].toString() + ' ' +

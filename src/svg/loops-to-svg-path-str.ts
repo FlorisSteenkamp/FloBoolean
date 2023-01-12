@@ -10,7 +10,7 @@ function loopsToSvgPathStr(
         loops: number[][][][]) {
 
     let str = '';
-    for (let loop of loops) {
+    for (const loop of loops) {
         str = str + beziersToSvgPathStr(loop) + '\n';
     }
 

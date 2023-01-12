@@ -3,15 +3,15 @@
  * @param connectedContainers
  */
 function getIsolatedComponents(containers, connectedContainers) {
-    let connectedContainers_ = new Set();
-    for (let cs of connectedContainers) {
-        for (let c of cs) {
+    const connectedContainers_ = new Set();
+    for (const cs of connectedContainers) {
+        for (const c of cs) {
             connectedContainers_.add(c);
         }
     }
-    let res = [];
+    const res = [];
     for (let i = 0; i < containers.length; i++) {
-        let container = containers[i];
+        const container = containers[i];
         if (!connectedContainers_.has(container)) {
             res.push(container);
         }

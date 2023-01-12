@@ -20,15 +20,15 @@ function getInOutsViaSides(
         } {
 
     // We check one __X__ for each curve with an intersection within this container
-    let xs_ = container.xs;
+    const xs_ = container.xs;
 
-    let inOuts: InOut[] = [];
+    const inOuts: InOut[] = [];
 
     // get a map from each Curve to each __X__ of this container
-    let xMap: Map<Curve, __X__[]> = new Map();
-    for (let x of xs_) {
-        let curve = x.curve;
-        let xs = xMap.get(curve);
+    const xMap: Map<Curve, __X__[]> = new Map();
+    for (const x of xs_) {
+        const curve = x.curve;
+        const xs = xMap.get(curve);
         if (!xs) { 
             xMap.set(curve, [x]);
         } else {
@@ -36,9 +36,9 @@ function getInOutsViaSides(
         }
     }
 
-    let getXInOuts_ = getXInOuts(container);
-    for (let entry of xMap) {
-        let [curve, xs] = entry;
+    const getXInOuts_ = getXInOuts(container);
+    for (const entry of xMap) {
+        const [curve, xs] = entry;
 
         let ins: InOut[];
         let outs: InOut[];

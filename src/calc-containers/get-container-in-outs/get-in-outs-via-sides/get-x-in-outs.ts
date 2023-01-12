@@ -30,9 +30,9 @@ function midBox(_x_: __X__): number[] {
  * @param container 
  */
 function getXInOuts(container: Container) {
-    let [[left,top], [right,bottom]] = container.box;
+    const [[left,top], [right,bottom]] = container.box;
 
-    let sides = [
+    const sides = [
         [[right,top   ], [left, top   ]],
         [[left, top   ], [left, bottom]],
         [[left, bottom], [right,bottom]],
@@ -45,13 +45,13 @@ function getXInOuts(container: Container) {
         // For each of the four sides get the t values closest to the 
         // intersection t.
 
-        let ps = curve.ps;
+        const ps = curve.ps;
 
-        let xs: WithRI[] = xs_.slice();
+        const xs: WithRI[] = xs_.slice();
         for (let i=0; i<sides.length; i++) {
-            let xs_ = getTs(ps, sides[i]);
+            const xs_ = getTs(ps, sides[i]);
 
-            for (let { psX, sideX } of xs_) {
+            for (const { psX, sideX } of xs_) {
                 xs.push({ 
                     x: psX,
                     side: i, 
@@ -71,12 +71,12 @@ function getXInOuts(container: Container) {
         // compensated intervals)
         xs.sort((xA, xB) => xA.x.ri.tS - xB.x.ri.tS);
 
-        let ins: InOut[] = [];
-        let outs: InOut[] = [];
+        const ins: InOut[] = [];
+        const outs: InOut[] = [];
         let prevX: WithRI | undefined = undefined;
         /** true if the prevX was a proper X, false if it was a SideX */
         let prevWasX: boolean | undefined = undefined;
-        for (let x of xs) {
+        for (const x of xs) {
             if (x.side !== undefined) {
                 // it is a sideX
                 if (prevWasX === true) {
@@ -124,11 +124,11 @@ function getXs0(
             ris: RootIntervalExp[]; 
             getPExact: () => number[][]; } | undefined {
             
-    // let _coeffs = getIntersectionCoeffs(ps1, ps2);
-    let _coeffs = getCoeffsBezBez(ps1, ps2);
+    // const _coeffs = getIntersectionCoeffs(ps1, ps2);
+    const _coeffs = getCoeffsBezBez(ps1, ps2);
     if (_coeffs === undefined) { return undefined; }
-    let { coeffs, errBound, getPExact } = _coeffs;
-    let ris = allRootsCertified(coeffs, 0, 1, errBound, getPExact);
+    const { coeffs, errBound, getPExact } = _coeffs;
+    const ris = allRootsCertified(coeffs, 0, 1, errBound, getPExact);
     if (ris.length === 0) { return undefined; }
 
     return { ris: ris.map(rootIntervalToExp), getPExact };
@@ -156,22 +156,24 @@ function getTs(
         ps: number[][], 
         side: number[][]): { psX: X, sideX: X }[] {
 
-    let xs0Side = getXs0(ps, side);
+    const xs0Side = getXs0(ps, side);
     if (xs0Side === undefined) { return []; }
-    let { ris: risSide, getPExact: getPExactSide } = xs0Side;
-    //let exactSide = getPExactSide();
+    const { getPExact: getPExactSide } = xs0Side;
+    let { ris: risSide } = xs0Side;
+    //const exactSide = getPExactSide();
     let exactSide: number[][] | undefined = undefined;  // lazy loaded
-    let getPExactSide_ = () => {
+    const getPExactSide_ = () => {
         exactSide = exactSide || getPExactSide();
         return exactSide;
     }
 
-    let xs0Ps = getXs0(side, ps);
+    const xs0Ps = getXs0(side, ps);
     if (xs0Ps === undefined) { return []; }
-    let { ris: risPs, getPExact: getPExactPs } = xs0Ps;
-    //let exactPs = getPExactPs();
+    let { ris: risPs } = xs0Ps;
+    const { getPExact: getPExactPs } = xs0Ps;
+    //const exactPs = getPExactPs();
     let exactPs: number[][] | undefined = undefined;  // lazy loaded
-    let getPExactPs_ = () => {
+    const getPExactPs_ = () => {
         exactPs = exactPs || getPExactPs();
         return exactPs;
     }
@@ -195,13 +197,13 @@ function getTs(
         // update boxes to new tighter versions
         boxesPs = risPs.map(ri => getIntervalBoxDd(ps, [ri.tS, ri.tE]));
         for (let i=0; i<risPs.length; i++) {
-            let boxPsI = boxesPs[i];
+            const boxPsI = boxesPs[i];
             for (let j=i+1; j<risPs.length; j++) {
-                let boxPsJ = boxesPs[j];
+                const boxPsJ = boxesPs[j];
 
                 if (areBoxesIntersectingDd(true)(boxPsI, boxPsJ)) {
-                    let _risPs: RootIntervalExp[] = [];
-                    for (let riPs of risPs) {
+                    const _risPs: RootIntervalExp[] = [];
+                    for (const riPs of risPs) {
                         // TODO - below we're converting riPs (using getXs0) to RootIntervalExp and below back to 
                         // RootInterval again - not necessary - fix
                         _risPs.push(
@@ -231,12 +233,12 @@ function getTs(
     loop: while (true && cSide < maxIter) {
         boxesSide = risSide.map(ri => getIntervalBoxDd(side, [ri.tS, ri.tE]));
         for (let i=0; i<risSide.length; i++) {
-            let boxSideI = boxesSide[i];
+            const boxSideI = boxesSide[i];
             for (let j=i+1; j<risSide.length; j++) {
-                let boxSideJ = boxesSide[j];
+                const boxSideJ = boxesSide[j];
                 if (areBoxesIntersectingDd(true)(boxSideI, boxSideJ)) {
-                    let _risSide: RootIntervalExp[] = [];
-                    for (let riSide of risSide) {
+                    const _risSide: RootIntervalExp[] = [];
+                    for (const riSide of risSide) {
                         _risSide.push(
                             ...refineK1(
                                 { tS: riSide.tS[1], tE: riSide.tE[1], multiplicity: riSide.multiplicity }, 
@@ -255,16 +257,16 @@ function getTs(
     }
 
 
-    let xPairs: { psX: X, sideX: X }[] = [];
+    const xPairs: { psX: X, sideX: X }[] = [];
     for (let i=0; i<risPs.length; i++) {
-        let boxPs = boxesPs![i];
+        const boxPs = boxesPs![i];
         for (let j=0; j<risSide.length; j++) {
-            let boxSide = boxesSide![j];
+            const boxSide = boxesSide![j];
             // TODO - investigate if below commented code would improve algorithm
-            //let box = intersectBoxes(boxPs,boxSide);
+            //const box = intersectBoxes(boxPs,boxSide);
             //if (box !== undefined) {
             if (areBoxesIntersectingDd(true)(boxPs, boxSide)) {
-                let psX: X = { 
+                const psX: X = { 
                     compensated: cPs,
                     ri: rootIntervalToDouble(risPs[i]),
                     riExp: cPs ? risPs[i] : undefined,
@@ -272,7 +274,7 @@ function getTs(
                     kind: 1,
                     box: boxExpToBox(boxPs)
                 };
-                let sideX: X = {
+                const sideX: X = {
                     compensated: cSide,
                     ri: rootIntervalToDouble(risSide[j]),
                     riExp: cSide ? risSide[j] : undefined,

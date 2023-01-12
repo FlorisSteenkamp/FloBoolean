@@ -8,9 +8,9 @@
  * @param parent
  */
 function getOutermostInAndOut(container) {
-    let inOuts = container.inOuts;
-    let firstInOut = inOuts[0];
-    let lastInOut = inOuts[inOuts.length - 1];
+    const inOuts = container.inOuts;
+    const firstInOut = inOuts[0];
+    const lastInOut = inOuts[inOuts.length - 1];
     // set 'loop' direction
     if (firstInOut.dir === 1) {
         firstInOut.orientation = -1; // anti-clockwise

@@ -3,15 +3,15 @@ import { __X__ } from "../-x-.js";
 
 
 function mergeContainers(ccs: Container[][]) {
-    let containers: Container[] = [];
-    for (let cc of ccs) {
+    const containers: Container[] = [];
+    for (const cc of ccs) {
         let minLeft = Number.POSITIVE_INFINITY;
         let minTop = Number.POSITIVE_INFINITY;
         let maxRight = Number.NEGATIVE_INFINITY;
         let maxBottom = Number.NEGATIVE_INFINITY;
-        let xs: __X__[] = [];
-        for (let c of cc) {
-            let [[left,top], [right,bottom]] = c.box;
+        const xs: __X__[] = [];
+        for (const c of cc) {
+            const [[left,top], [right,bottom]] = c.box;
             if (left   < minLeft  ) { minLeft   = left;   }
             if (top    < minTop   ) { minTop    = top;    }
             if (right  > maxRight ) { maxRight  = right;  }
@@ -20,7 +20,7 @@ function mergeContainers(ccs: Container[][]) {
         }
 
         // console.log(minLeft)
-        let container: Container = {
+        const container: Container = {
             box: [[minLeft,minTop], [maxRight,maxBottom]],
             xs: xs,
             inOuts: undefined!

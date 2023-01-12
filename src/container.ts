@@ -28,7 +28,7 @@ interface Container {
  * @param container 
  */
 function containerIsBasic(expMax: number, container: Container) {
-    let xs = container.xs;
+    const xs = container.xs;
 
     if (xs.length <= 2) { return true; }
 

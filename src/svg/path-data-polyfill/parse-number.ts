@@ -9,13 +9,13 @@ import { Source } from './source.js';
  * @param source 
  */
 function parseNumber(source: Source): number {
-    var exponent   = 0;
-    var integer    = 0;
-    var frac       = 1;
-    var decimal    = 0;
-    var sign       = 1;
-    var expsign    = 1;
-    var startIndex = source._currentIndex;
+    let exponent   = 0;
+    let integer    = 0;
+    let frac       = 1;
+    let decimal    = 0;
+    let sign       = 1;
+    let expsign    = 1;
+    const startIndex = source._currentIndex;
 
     source._skipOptionalSpaces();
 
@@ -38,7 +38,7 @@ function parseNumber(source: Source): number {
     }
 
     // Read the integer part, build right-to-left.
-    var startIntPartIndex = source._currentIndex;
+    const startIntPartIndex = source._currentIndex;
 
     while (
         source._currentIndex < source._endIndex &&
@@ -49,8 +49,8 @@ function parseNumber(source: Source): number {
     }
 
     if (source._currentIndex !== startIntPartIndex) {
-        var scanIntPartIndex = source._currentIndex - 1;
-        var multiplier = 1;
+        let scanIntPartIndex = source._currentIndex - 1;
+        let multiplier = 1;
 
         while (scanIntPartIndex >= startIntPartIndex) {
             integer += multiplier * (Number(source._string[scanIntPartIndex]) - 0);
@@ -118,7 +118,7 @@ function parseNumber(source: Source): number {
         }
     }
 
-    var number = integer + decimal;
+    let number = integer + decimal;
     number *= sign;
 
     if (exponent) {

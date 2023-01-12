@@ -1,4 +1,4 @@
-declare var _debug_: Debug; 
+declare const _debug_: Debug; 
 
 import { squaredDistanceBetween } from 'flo-vector2d';
 import { Debug } from '../../../src/debug/debug.js';
@@ -20,12 +20,12 @@ function logNearestLoopPre(
     let bestLoop: Loop;
     let bestDistance = Number.POSITIVE_INFINITY;
 
-    let generated = _debug_.generated;
-    let loops = generated.elems.loopPre;
+    const generated = _debug_.generated;
+    const loops = generated.elems.loopPre;
 
-    for (let loop of loops.map(loopFromBeziers)) {
-        let p_ = getLoopCentroid(loop);
-        let d = squaredDistanceBetween(p_, p);
+    for (const loop of loops.map(loopFromBeziers)) {
+        const p_ = getLoopCentroid(loop);
+        const d = squaredDistanceBetween(p_, p);
         if (d < bestDistance) {
             bestLoop = loop;
             bestDistance = d;
@@ -33,7 +33,7 @@ function logNearestLoopPre(
     }
 
     console.log('area', getLoopArea(bestLoop!));
-    for (let curve of bestLoop!.curves) {
+    for (const curve of bestLoop!.curves) {
         drawFs.bezier(g, curve.ps, 'thin20 red nofill', showDelay);
     }
 }

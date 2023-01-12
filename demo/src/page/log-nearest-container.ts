@@ -1,4 +1,4 @@
-declare var _debug_: Debug; 
+declare const _debug_: Debug; 
 
 import { Debug } from '../../../src/debug/debug.js';
 import { Container } from '../../../src/container.js';
@@ -18,12 +18,11 @@ function getClosestSquareDistanceToRect(rect: number[][], p: number[]) {
 
 
 function logNearestContainer(g: SVGGElement, p: number[], showDelay = 1000) {
-    //let g;
     let bestContainer: Container;
     let bestDistance = Number.POSITIVE_INFINITY;
 
-    for (let container of _debug_.generated.elems.container) {
-        let dSquared = getClosestSquareDistanceToRect(container.box, p);
+    for (const container of _debug_.generated.elems.container) {
+        const dSquared = getClosestSquareDistanceToRect(container.box, p);
         
         if (dSquared < bestDistance) {
             bestContainer = container;
@@ -33,7 +32,7 @@ function logNearestContainer(g: SVGGElement, p: number[], showDelay = 1000) {
     
     _debug_.fs.drawElem.container(/*_debug_.generated.*/g, bestContainer!, '', showDelay);
     console.log(bestContainer!);
-    for (let x of bestContainer!.xs) {
+    for (const x of bestContainer!.xs) {
         //console.log('x', x.curve.ps.toString())
     }
 }

@@ -16,8 +16,8 @@ import { getBoundingBox_ } from '../get-bounding-box-.js';
  */
 function getCurvesIntersections(expMax) {
     return (curveA, curveB) => {
-        let psA = curveA.ps;
-        let psB = curveB.ps;
+        const psA = curveA.ps;
+        const psB = curveB.ps;
         if (psA.length === 2 && psB.length === 2) {
             return getLineLineIntersections(curveA, curveB, expMax);
         }
@@ -25,14 +25,14 @@ function getCurvesIntersections(expMax) {
             // curves are connected at endpoints
             // closed bounding boxes are guaranteed to intersect - don't check
             // check open bounding boxes
-            let aabbsIntersectOpen = areBoxesIntersecting(false, getBoundingBox_(psA), getBoundingBox_(psB));
+            const aabbsIntersectOpen = areBoxesIntersecting(false, getBoundingBox_(psA), getBoundingBox_(psB));
             if (!aabbsIntersectOpen) {
                 return checkEndpoints(curveA, curveB);
             }
             // check open bounding hulls
-            let bbHullA = getBoundingHull(psA);
-            let bbHullB = getBoundingHull(psB);
-            let hullsIntersectOpen = doConvexPolygonsIntersect(bbHullA, bbHullB, false);
+            const bbHullA = getBoundingHull(psA);
+            const bbHullB = getBoundingHull(psB);
+            const hullsIntersectOpen = doConvexPolygonsIntersect(bbHullA, bbHullB, false);
             if (!hullsIntersectOpen) {
                 return checkEndpoints(curveA, curveB);
             }
@@ -48,8 +48,8 @@ function getCurvesIntersections(expMax) {
             return undefined;
         }
         // check closed bounding hulls
-        let bbHullA = getBoundingHull(psA);
-        let bbHullB = getBoundingHull(psB);
+        const bbHullA = getBoundingHull(psA);
+        const bbHullB = getBoundingHull(psB);
         possiblyIntersecting = doConvexPolygonsIntersect(bbHullA, bbHullB, true);
         if (!possiblyIntersecting) {
             return undefined;
@@ -79,19 +79,19 @@ function checkEndpoints(curveA, curveB) {
     }
     // At this point A-->B (curveA's next === curveB)
     // There is thus an intersection at curveA(t=1) and curveB(t=0)
-    let psA = curveA.ps;
-    let psB = curveB.ps;
+    const psA = curveA.ps;
+    const psB = curveB.ps;
     // Is last point (i.e. at `t` === 1) of curveB on curveA?
     // if (isPointOnBezierExtension(psA, psB[psB.length-1])) {
     if (isPointOnBezierExtension(psA, psB[psB.length - 1].map(c => [c]))) {
         // Check if they are in same k family (this *is* necessary for two curves
         // in same k-family joined end to end, e.g. ---A--->|---B---> in which
         // case ...)
-        let xPairs = getOtherTs(psA, psB, [createRootExact(1)]);
+        const xPairs = getOtherTs(psA, psB, [createRootExact(1)]);
         if (xPairs === undefined || xPairs.length === 0) {
             return undefined;
         }
-        let xPair = xPairs[0];
+        const xPair = xPairs[0];
         return [[
                 { x: xPair[0], curve: curveA },
                 makeSimpleX(1, curveB, 1)
@@ -101,23 +101,23 @@ function checkEndpoints(curveA, curveB) {
 function getLineLineIntersections(curveA, curveB, expMax) {
     let psA = curveA.ps;
     let psB = curveB.ps;
-    let bbA = getBoundingBox_(psA);
-    let bbB = getBoundingBox_(psB);
+    const bbA = getBoundingBox_(psA);
+    const bbB = getBoundingBox_(psB);
     if (curveA.next !== curveB && curveB.next !== curveA) {
         // the two lines are not connected at their endpoints
         if (areBoxesIntersecting(true, bbA, bbB)) {
-            let xs = getIntersection(curveA, curveB, expMax, false);
+            const xs = getIntersection(curveA, curveB, expMax, false);
             return xs.length ? xs : undefined;
         }
         return undefined;
     }
     // the two lines are connected at their endpoints
-    let swap = curveB.next === curveA;
+    const swap = curveB.next === curveA;
     if (swap) {
         [curveA, curveB] = [curveB, curveA];
         [psA, psB] = [psB, psA];
     }
-    let orientation = orient2d(psA[0], psA[1], psB[1]);
+    const orientation = orient2d(psA[0], psA[1], psB[1]);
     if (orientation !== 0) {
         // they cannot intersect
         return undefined;
@@ -131,8 +131,8 @@ function getLineLineIntersections(curveA, curveB, expMax) {
     }
     // it is a line going back on itself 
     // - return endpoint intersections
-    let lenCurve1 = squaredDistanceBetween(psA[0], psA[1]);
-    let lenCurve2 = squaredDistanceBetween(psB[0], psB[1]);
+    const lenCurve1 = squaredDistanceBetween(psA[0], psA[1]);
+    const lenCurve2 = squaredDistanceBetween(psB[0], psB[1]);
     let tPair;
     if (lenCurve1 > lenCurve2) {
         // tPair = [inversion01Precise(psA, psB[1]), 1];

@@ -1,13 +1,13 @@
 function mergeContainers(ccs) {
-    let containers = [];
-    for (let cc of ccs) {
+    const containers = [];
+    for (const cc of ccs) {
         let minLeft = Number.POSITIVE_INFINITY;
         let minTop = Number.POSITIVE_INFINITY;
         let maxRight = Number.NEGATIVE_INFINITY;
         let maxBottom = Number.NEGATIVE_INFINITY;
-        let xs = [];
-        for (let c of cc) {
-            let [[left, top], [right, bottom]] = c.box;
+        const xs = [];
+        for (const c of cc) {
+            const [[left, top], [right, bottom]] = c.box;
             if (left < minLeft) {
                 minLeft = left;
             }
@@ -23,7 +23,7 @@ function mergeContainers(ccs) {
             xs.push(...c.xs);
         }
         // console.log(minLeft)
-        let container = {
+        const container = {
             box: [[minLeft, minTop], [maxRight, maxBottom]],
             xs: xs,
             inOuts: undefined

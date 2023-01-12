@@ -5,8 +5,8 @@ import { makeSimpleX } from "./make-simple-x.js";
  * @param loop
  */
 function getExtreme(loop) {
-    let { curve, y } = getMinY(loop);
-    let ts = y.ts;
+    const { curve, y } = getMinY(loop);
+    const ts = y.ts;
     if (ts[0] <= 0) {
         return [
             makeSimpleX(0, curve, 0),

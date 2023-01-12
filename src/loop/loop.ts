@@ -45,9 +45,9 @@ function loopFromBeziers(
         beziers: number[][][] = [], 
         idx?: number) {
 
-    let curves: Curve[] = [];
+    const curves: Curve[] = [];
 
-    let loop: Loop = { beziers, curves, idx };
+    const loop: Loop = { beziers, curves, idx };
 
     if (!beziers.length) { return loop; }
 
@@ -58,7 +58,7 @@ function loopFromBeziers(
 
         if (isPoint(beziers[i])) { continue; }
 
-        let curve: Curve = {
+        const curve: Curve = {
             loop,
             ps: beziers[i],
             prev: prev!,
@@ -74,7 +74,7 @@ function loopFromBeziers(
     }
 
     // close loop
-    let lastCurve = curves[curves.length-1];
+    const lastCurve = curves[curves.length-1];
     curves[0].prev = lastCurve;
     lastCurve.next = curves[0];
 

@@ -18,8 +18,8 @@ function _updObj(
             }
         }
         
-        let newV_ = { ...v, ...newV };
-        let newState = assocPath(path!, newV_, state);
+        const newV_ = { ...v, ...newV };
+        const newState = assocPath(path!, newV_, state);
 
         map.delete(v);
         map.set(newV_,path!);

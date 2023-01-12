@@ -14,8 +14,8 @@ class Source {
         this._skipOptionalSpaces();
     }
     parseSegment() {
-        var char = this._string[this._currentIndex];
-        var command = COMMAND_MAP[char];
+        const char = this._string[this._currentIndex];
+        let command = COMMAND_MAP[char];
         if (command === undefined) {
             if (this._prevCommand === undefined) {
                 throw new Error('Implicit command not allowed for first commands.');
@@ -41,8 +41,8 @@ class Source {
             this._currentIndex += 1;
         }
         this._prevCommand = command;
-        var values = undefined;
-        var cmd = command.toUpperCase();
+        let values = undefined;
+        const cmd = command.toUpperCase();
         if (cmd === "H" || cmd === "V") {
             values = [parseNumber(this)];
         }
@@ -92,11 +92,11 @@ class Source {
         if (!this.hasMoreData()) {
             return true;
         }
-        var command = COMMAND_MAP[this._string[this._currentIndex]];
+        const command = COMMAND_MAP[this._string[this._currentIndex]];
         return command === "M" || command === "m";
     }
     _isCurrentSpace() {
-        var char = this._string[this._currentIndex];
+        const char = this._string[this._currentIndex];
         return char <= " " && (char === " " || char === "\n" || char === "\t" || char === "\r" || char === "\f");
     }
     _skipOptionalSpaces() {
@@ -124,7 +124,7 @@ class Source {
             throw new Error('Unable to parse arc flag');
         }
         let flag = undefined;
-        let flagChar = this._string[this._currentIndex];
+        const flagChar = this._string[this._currentIndex];
         this._currentIndex += 1;
         if (flagChar === "0") {
             flag = 0;

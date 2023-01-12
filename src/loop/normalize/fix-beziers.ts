@@ -27,22 +27,22 @@ function fixBeziers(
         expMax: number, maxBitLength: number, doSendToGrid = true) {
             
     /** The actual control point grid spacing */
-    let gridSpacing = 2**expMax * 2**(-maxBitLength);
+    const gridSpacing = 2**expMax * 2**(-maxBitLength);
 
-    let sendToGrid_ = doSendToGrid
+    const sendToGrid_ = doSendToGrid
         ? sendToGrid(expMax, maxBitLength)
         : sendToGridNoop;
 
     return (loop: number[][][]) => {
-        let newPss: number[][][] = [];
+        const newPss: number[][][] = [];
 
         for (let i=0; i<loop.length; i++) {
             let ps: number[][] | undefined = loop[i].slice();
 
             // Get endpoint of last good bezier or else the original start point
-            let len = newPss.length;
-            let prevGoodBezier = newPss[len-1];
-            let prevGoodBezierEndpoint = prevGoodBezier
+            const len = newPss.length;
+            const prevGoodBezier = newPss[len-1];
+            const prevGoodBezierEndpoint = prevGoodBezier
                 ? prevGoodBezier[prevGoodBezier.length-1]
                 : sendToGrid_(loop[0][0]); // Bit-align original start point
 
@@ -64,11 +64,11 @@ function fixBeziers(
             if (ps !== undefined) { newPss.push(ps); }
         }
 
-        let len = newPss.length;
+        const len = newPss.length;
         if (!len) { return []; }
 
         // Connect the last bezier end-point to the first bezier start-point.
-        let ps = newPss[len-1];
+        const ps = newPss[len-1];
         ps[ps.length-1] = newPss[0][0];
 
         return newPss;

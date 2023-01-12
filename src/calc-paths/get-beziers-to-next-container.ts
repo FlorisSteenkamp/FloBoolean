@@ -5,9 +5,9 @@ import { containerIsBasic } from "../container.js";
 
 
 function getBeziersToNextContainer(expMax: number, out: InOut) {
-    let in_ = out.next!;
-    let endCurve = in_._x_!.curve;
-    let endT = in_._x_!.x.ri.tS;
+    const in_ = out.next!;
+    const endCurve = in_._x_!.curve;
+    const endT = in_._x_!.x.ri.tS;
     
     let curCurve = out._x_!.curve;
     let curT = out._x_!.x.ri.tS;
@@ -16,7 +16,7 @@ function getBeziersToNextContainer(expMax: number, out: InOut) {
         curT = mid(closestPointOnBezierCertified(curCurve.ps, out.p)[0].ri);
     }
 
-    let beziers: number[][][] = [];
+    const beziers: number[][][] = [];
     let inBez: number[][];
     while (true) {
         if (curCurve === endCurve && 
@@ -25,7 +25,7 @@ function getBeziersToNextContainer(expMax: number, out: InOut) {
             inBez = fromTo(curCurve.ps, curT, endT);
             return { beziers, in_, inBez }
         } else {
-            let ps = fromTo(curCurve.ps, curT, 1);
+            const ps = fromTo(curCurve.ps, curT, 1);
             beziers.push(ps);
         }
 

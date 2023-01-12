@@ -6,9 +6,9 @@ function assocPath(
         v: any,
         o: { [key:string]: any }) {
 
-    let k = path[0];
+    const k = path[0];
     if (path.length > 1) {
-        let nextO = (o[k] !== undefined) ? o[k] : {};
+        const nextO = (o[k] !== undefined) ? o[k] : {};
         v = assocPath(path.slice(1), v, nextO);
     }
     

@@ -8,8 +8,8 @@ import { Source } from './source.js';
 function parsePathDataString(string: string) {
     if (!string.length) { return []; }
 
-    let source = new Source(string);
-    let pathData = [];
+    const source = new Source(string);
+    const pathData = [];
 
     if (!source.initialCommandIsMoveTo()) { 
         throw new Error('Path must start with m or M'); 

@@ -9,14 +9,14 @@ import { InOut } from "../in-out.js";
  */
 function splitLoopTrees(root: InOut) {
 
-    let iLoopTrees: InOut[] = [];
-    let stack: InOut[] = [root];
+    const iLoopTrees: InOut[] = [];
+    const stack: InOut[] = [root];
 
     while (stack.length) {
-        let tree = stack.pop()!;
+        const tree = stack.pop()!;
 
         tree.children = tree.children || new Set();
-        for (let child of tree.children) {
+        for (const child of tree.children) {
             if (tree.windingNum === 0) {
                 iLoopTrees.push(child);
             }

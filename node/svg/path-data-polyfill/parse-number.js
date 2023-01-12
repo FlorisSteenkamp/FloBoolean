@@ -6,13 +6,13 @@
  * @param source
  */
 function parseNumber(source) {
-    var exponent = 0;
-    var integer = 0;
-    var frac = 1;
-    var decimal = 0;
-    var sign = 1;
-    var expsign = 1;
-    var startIndex = source._currentIndex;
+    let exponent = 0;
+    let integer = 0;
+    let frac = 1;
+    let decimal = 0;
+    let sign = 1;
+    let expsign = 1;
+    const startIndex = source._currentIndex;
     source._skipOptionalSpaces();
     // Read the sign.
     if (source._currentIndex < source._endIndex && source._string[source._currentIndex] === "+") {
@@ -28,15 +28,15 @@ function parseNumber(source) {
         throw new Error('The first character of a number must be one of [0-9+-.].');
     }
     // Read the integer part, build right-to-left.
-    var startIntPartIndex = source._currentIndex;
+    const startIntPartIndex = source._currentIndex;
     while (source._currentIndex < source._endIndex &&
         source._string[source._currentIndex] >= "0" &&
         source._string[source._currentIndex] <= "9") {
         source._currentIndex += 1; // Advance to first non-digit.
     }
     if (source._currentIndex !== startIntPartIndex) {
-        var scanIntPartIndex = source._currentIndex - 1;
-        var multiplier = 1;
+        let scanIntPartIndex = source._currentIndex - 1;
+        let multiplier = 1;
         while (scanIntPartIndex >= startIntPartIndex) {
             integer += multiplier * (Number(source._string[scanIntPartIndex]) - 0);
             scanIntPartIndex -= 1;
@@ -86,7 +86,7 @@ function parseNumber(source) {
             source._currentIndex += 1;
         }
     }
-    var number = integer + decimal;
+    let number = integer + decimal;
     number *= sign;
     if (exponent) {
         number *= Math.pow(10, expsign * exponent);

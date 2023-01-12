@@ -4,14 +4,14 @@ import { IPointOnShape } from '../../point-on-shape/point-on-shape.js';
 
 
 function drawMinY(g: SVGGElement, pos: IPointOnShape) {	
-    let p = evalDeCasteljau(pos.curve.ps, pos.t) ;
+    const p = evalDeCasteljau(pos.curve.ps, pos.t) ;
 
-    let ps = toCubic(pos.curve.ps);
+    // const ps = toCubic(pos.curve.ps);
     //console.log('x: ', getX(ps));
     //console.log('y: ', getY(ps));
     //console.log('t: ', pos.t);
 
-    let $elems = drawFs.crossHair( 
+    const $elems = drawFs.crossHair( 
             g, p, 'red thin10 nofill'
 	);  
 	

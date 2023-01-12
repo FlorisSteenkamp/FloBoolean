@@ -11,7 +11,7 @@
  * command, the new current point becomes (x, cpy) for the final value of x.
  */
 function h(s) {
-    let ps = [
+    const ps = [
         s.p,
         [s.vals[0], s.p[1]]
     ];

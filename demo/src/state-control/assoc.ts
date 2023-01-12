@@ -1,7 +1,7 @@
 
 function assoc(key: string, v: any, o: { [key:string]: any }) {
-    let no: { [key:string]: any } = {};
-    for (let k in o) {
+    const no: { [key:string]: any } = {};
+    for (const k in o) {
         no[k] = o[k]
     }
 

@@ -13,8 +13,8 @@ import { beziersToSvgPathStr } from '../../svg/beziers-to-svg-path-str.js';
  * @param delay
  */
 function drawShape(g, beziers, class_ = DEFAULT_CLASS, delay) {
-    let $path = document.createElementNS(XMLNS, 'path');
-    let d = beziersToSvgPathStr(beziers);
+    const $path = document.createElementNS(XMLNS, 'path');
+    const d = beziersToSvgPathStr(beziers);
     $path.setAttributeNS(null, "d", d);
     if (class_) {
         $path.setAttributeNS(null, "class", class_);

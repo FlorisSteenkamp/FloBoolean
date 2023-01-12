@@ -10,25 +10,25 @@ import { type __X__ } from "../-x-.js";
  * @param kind 
  */
 function makeSimpleX(t: number, curve: Curve, kind: 0|1|2|3|4|5): __X__ {
-    let ps = curve.ps;
+    const ps = curve.ps;
 
     if (t === 0) {
         // we have the exact point
-        let pS = ps[0];
-        let box = [ps[0],ps[0]];
+        const pS = ps[0];
+        const box = [ps[0],ps[0]];
 
         return { x: { ri: { tS: t, tE: t, multiplicity: 1 }, box, kind }, curve }
     } else if (t === 1) {
         // we have the exact point
-        let pE = ps[ps.length-1];
-        let box = [pE,pE];
+        const pE = ps[ps.length-1];
+        const box = [pE,pE];
         
         return { x: { ri: { tS: t, tE: t, multiplicity: 1 }, box, kind }, curve }
     }
     
     // there will be some error in calculating the point
-    let { p, pE } = evalDeCasteljauWithErr(ps,t);
-    let box = [
+    const { p, pE } = evalDeCasteljauWithErr(ps,t);
+    const box = [
         [p[0]-pE[0],p[1]-pE[1]],
         [p[0]+pE[0],p[1]+pE[1]]
     ];

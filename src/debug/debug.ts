@@ -40,9 +40,9 @@ function enableDebugForBooleanOp(debugOn: boolean) {
         return;
     }
 
-    let debug: Debug = (window as any)._debug_;
+    const debug: Debug = (window as any)._debug_;
 
-    debug = { 
+    const debug_ = { 
         ...debug,
         generated: { 
             ...(!debug ? {} : !debug.generated ? {} : debug.generated),
@@ -75,7 +75,7 @@ function enableDebugForBooleanOp(debugOn: boolean) {
         }
     };
 
-    (window as any)._debug_ = debug;
+    (window as any)._debug_ = debug_;
 }   
 
 

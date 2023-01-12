@@ -20,9 +20,9 @@ function drawShape(
         class_ = DEFAULT_CLASS,
         delay? : number) {
 
-    let $path = document.createElementNS(XMLNS, 'path');
+    const $path = document.createElementNS(XMLNS, 'path');
 
-    let d = beziersToSvgPathStr(beziers)
+    const d = beziersToSvgPathStr(beziers)
 
     $path.setAttributeNS(null, "d", d);
     if (class_) { $path.setAttributeNS(null, "class", class_); }

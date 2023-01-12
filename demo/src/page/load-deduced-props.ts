@@ -20,8 +20,8 @@ async function loadPath(vectorName: string) {
     // Put the found SVG elements child nodes into our SVG
     const svgContentElems = Array.from(svgElem!.childNodes) as Node[];
     let pathStr: string;
-    for (let svgContentElem of svgContentElems) {
-        let pathElem = svgContentElem as SVGPathElement;
+    for (const svgContentElem of svgContentElems) {
+        const pathElem = svgContentElem as SVGPathElement;
         if (pathElem.tagName === 'path') { 
             pathStr = pathElem.getAttribute('d')!;
             break; 
@@ -36,14 +36,14 @@ async function loadDeducedProps(
         stateControl: StateControl,
         pathStr: string) {
         
-    let bezierLoops = getPathsFromStr(pathStr);
-    let viewbox = getViewBoxForShape(bezierLoops);
+    const bezierLoops = getPathsFromStr(pathStr);
+    const viewbox = getViewBoxForShape(bezierLoops);
     let timingAll: number;
-    let timeStart = performance.now();
+    const timeStart = performance.now();
     try {
         // Resets _debug_
         updDebugGlobal(IS_DEBUG_ON);
-        let bezierLoopss = simplifyPaths(bezierLoops);
+        const bezierLoopss = simplifyPaths(bezierLoops);
         stateControl.transientState.bezierLoopss = bezierLoopss;
     } catch (e) {
         console.log(e);
@@ -57,14 +57,14 @@ async function loadDeducedProps(
 
 function findFirstSvgFromElems(elems: NodeListOf<Node>) {
     for (let i=0; i<elems.length; i++) {
-        let elem = elems[i] as SVGElement;
+        const elem = elems[i] as SVGElement;
         if (elem.tagName === 'svg') {
             return elem;
         }
         if (typeof elem.getElementsByTagName === 'undefined') {
             continue;
         }
-        let svgElems = elem.getElementsByTagName('svg');
+        const svgElems = elem.getElementsByTagName('svg');
         if (svgElems.length) {
             return svgElems[0];
         }
@@ -73,7 +73,7 @@ function findFirstSvgFromElems(elems: NodeListOf<Node>) {
 
 
 function createElemFromHtml(str: string) {
-    var template = document.createElement('template');
+    const template = document.createElement('template');
     str = str.trim(); // Never return a text node of whitespace as the result
     template.innerHTML = str;
 

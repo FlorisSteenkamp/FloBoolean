@@ -17,8 +17,8 @@ const EVENT_RIGHT = +1;
  */
 function sweepLine(items, getLeftmost, getRightmost, predicate) {
     // Initialize event queue to contain all endpoints.
-    let events = [];
-    for (let item of items) {
+    const events = [];
+    for (const item of items) {
         events.push({
             type: EVENT_LEFT,
             item,
@@ -31,15 +31,15 @@ function sweepLine(items, getLeftmost, getRightmost, predicate) {
         });
     }
     events.sort(compare);
-    let activeItems = new Set();
+    const activeItems = new Set();
     /** A list of pairs of items that passed the predicate */
-    let pairedItems = [];
-    for (let event of events) {
-        let item = event.item;
+    const pairedItems = [];
+    for (const event of events) {
+        const item = event.item;
         if (event.type === EVENT_LEFT) {
-            for (let activeItem of activeItems.values()) {
+            for (const activeItem of activeItems.values()) {
                 //(window as any).ii++;
-                let result = predicate(item, activeItem);
+                const result = predicate(item, activeItem);
                 if (result) {
                     //(window as any).jj++;
                     //console.log(result)
@@ -64,7 +64,7 @@ function sweepLine(items, getLeftmost, getRightmost, predicate) {
  * @param b Another event
  */
 function compare(a, b) {
-    let res = a.x - b.x;
+    const res = a.x - b.x;
     if (res !== 0) {
         return res;
     }

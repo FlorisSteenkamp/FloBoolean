@@ -36,13 +36,13 @@ function pairSet_has<T>(
         map: Map<T,Set<T>>, 
         vs: T[]) {
 
-    let set: Set<T>;
+    let set: Set<T> | undefined;
 
-    set = map.get(vs[0])!;
-    let has1 = set && set.has(vs[1]); 
+    set = map.get(vs[0]);
+    const has1 = set && set.has(vs[1]); 
 
-    set = map.get(vs[1])!;
-    let has2 = set && set.has(vs[0]); 
+    set = map.get(vs[1]);
+    const has2 = set && set.has(vs[0]); 
 
     return has1 || has2;
 }
@@ -53,12 +53,12 @@ function pairSet_has<T>(
  * @param map The map representing the pairs.
  */
 function pairSet_asArray<T>(map: Map<T,Set<T>>) {
-    let items: T[][] = [];
-    let map_ = new Map<T,Set<T>>();
+    const items: T[][] = [];
+    const map_ = new Map<T,Set<T>>();
 
-    for (let m of map) {
-        for (let s of m[1]) {
-            let vs = [m[0], s];
+    for (const m of map) {
+        for (const s of m[1]) {
+            const vs = [m[0], s];
             if (!pairSet_has(map_, vs)) {
                 items.push(vs);
                 pairSet_add(map_, vs);

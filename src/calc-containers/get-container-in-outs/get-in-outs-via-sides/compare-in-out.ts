@@ -23,11 +23,11 @@ function compareOrderedInOut(
     // Could not resolve by side indexes (they are the same)
 
     // Compare by side `t` values
-    let xA = inOutA.sideX!;
-    let xB = inOutB.sideX!;
+    const xA = inOutA.sideX!;
+    const xB = inOutB.sideX!;
     res = xA.ri.tS - xB.ri.tS;
 
-    let errBound = 2*4 * Number.EPSILON;  // is factor of 2 necessary?
+    const errBound = 2*4 * Number.EPSILON;  // is factor of 2 necessary?
     if (abs(res) >= errBound) {
         return res;
     }

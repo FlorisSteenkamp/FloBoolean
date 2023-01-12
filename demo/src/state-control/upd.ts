@@ -16,9 +16,9 @@ function _upd(
         state: State,
         setState: React.Dispatch<React.SetStateAction<AppState>>) {
 
-    let map: Map<any,string[]> = new Map();
-    let weakMap: WeakMap<any,string[]> = new WeakMap();
-    let updObj = _updObj(state, map, weakMap);
+    const map: Map<any,string[]> = new Map();
+    const weakMap: WeakMap<any,string[]> = new WeakMap();
+    const updObj = _updObj(state, map, weakMap);
 
     /** 
      * @param triggerUpdate If true, then triggers a react and localstorage 
@@ -27,7 +27,7 @@ function _upd(
     function _upd<T extends NestedObj>(triggerUpdate: boolean) {
         return(v: T, newV: Partial<T>) => {
 
-            let { appState, newV_ } = updObj(v,newV);
+            const { appState, newV_ } = updObj(v,newV);
             state.appState = appState;
 
             if (triggerUpdate) {
@@ -54,7 +54,7 @@ function _upd(
 
 function toLocalStorage(appState: AppState) {
     // omit transient (lazy loaded, etc) properties from state
-    let appState_: AppState = { 
+    const appState_: AppState = { 
         ...appState,
         pageState: {
             ...appState.pageState,

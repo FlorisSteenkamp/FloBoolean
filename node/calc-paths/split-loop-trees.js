@@ -5,12 +5,12 @@
  * @param root
  */
 function splitLoopTrees(root) {
-    let iLoopTrees = [];
-    let stack = [root];
+    const iLoopTrees = [];
+    const stack = [root];
     while (stack.length) {
-        let tree = stack.pop();
+        const tree = stack.pop();
         tree.children = tree.children || new Set();
-        for (let child of tree.children) {
+        for (const child of tree.children) {
             if (tree.windingNum === 0) {
                 iLoopTrees.push(child);
             }

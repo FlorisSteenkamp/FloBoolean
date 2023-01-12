@@ -22,8 +22,8 @@ function SimpleSelect_FromObj<T extends string>(props: Props<T>) {
     return (
         <select style={styles?.select} onChange={onChange}>
             {Object.entries(options).map(option => {
-                let key = option[0] as T;
-                let value = option[1] as { text: string };
+                const key = option[0] as T;
+                const value = option[1] as { text: string };
 
                 return (
                     <option key={key} value={key}>

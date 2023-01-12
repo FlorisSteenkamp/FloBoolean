@@ -17,19 +17,18 @@ function circleToCubicBeziers(
         rotation: number,
         clockwise = false) {
 
-    let pss = [
+    const pss = [
         [[0,   1],  [ C,  1],  [ 1,  C],  [ 1,  0]],
         [[1,   0],  [ 1, -C],  [ C, -1],  [ 0, -1]],
         [[0,  -1],  [-C, -1],  [-1, -C],  [-1,  0]],
         [[-1,  0],  [-1,  C],  [-C,  1],  [ 0,  1]]
-    ];
-
-    pss = pss.map(ps => ps.map(applyMatrix([
+    ]
+    .map(ps => ps.map(applyMatrix([
         [radiusX, 0],
         [0, radiusY]
-    ])));
-    pss = pss.map(ps => ps.map(rotateDegrees(rotation)));
-    pss = pss.map(ps => ps.map(translate(center)));
+    ])))
+    .map(ps => ps.map(rotateDegrees(rotation)))
+    .map(ps => ps.map(translate(center)));
 
     if (!clockwise) {
         return pss;
@@ -49,9 +48,9 @@ function rotateDegrees(θ: number) {
 
 
 function rotateRad(θ: number, p: number[]) {
-    let cosθ = Math.cos(θ);
-    let sinθ = Math.sin(θ);
-    let M = [
+    const cosθ = Math.cos(θ);
+    const sinθ = Math.sin(θ);
+    const M = [
         [cosθ, -sinθ],
         [sinθ,  cosθ]
     ];

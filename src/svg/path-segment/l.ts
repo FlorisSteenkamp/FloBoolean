@@ -15,7 +15,7 @@ import { PathState } from '../path-state.js';
  * final set of coordinates provided.
  */	
 function l(s: PathState): number[][] {
-    let ps = [
+    const ps = [
         s.p,
         s.vals!
     ];

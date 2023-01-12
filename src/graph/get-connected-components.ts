@@ -10,7 +10,7 @@ type TGraph<T> = Map<T,T[]>
 
 function addEdges<T,U>(graph: TGraph<T>, edges: IntersectionResult<T,U>[]) { 
     for (let i=0; i<edges.length; i++) {
-        let edge = edges[i];
+        const edge = edges[i];
         addEdge(graph, [edge.a, edge.b]);
     }
 }
@@ -20,7 +20,7 @@ function addEdges<T,U>(graph: TGraph<T>, edges: IntersectionResult<T,U>[]) {
  * Adds an edge to an undirected graph.
  */
 function addEdge<T>(graph: TGraph<T>, vertices: [T,T]) { 
-    let [src,dest] = vertices;
+    const [src,dest] = vertices;
     let srcList = graph.get(src);
     if (!srcList) {
         srcList = [];
@@ -47,9 +47,9 @@ function DFSUtil<T>(
     component.push(v);
 
     // Recur for all the vertices adjacent to this vertex 
-    let list = graph.get(v)!;
+    const list = graph.get(v)!;
     for (let i=0; i<list.length; i++) { 
-        let x = list[i];
+        const x = list[i];
         if (!visited.has(x)) {
             DFSUtil(graph, x, visited, component);
         } 
@@ -62,10 +62,10 @@ function DFSUtil<T>(
  */
 function getConnectedComponents<T>(graph: TGraph<T>) { 
     // Mark all the vertices as not visited 
-    let components: T[][] = [];
-    let visited: Set<T> = new Set(); 
-    for (let item of graph) {
-        let node = item[0];
+    const components: T[][] = [];
+    const visited: Set<T> = new Set(); 
+    for (const item of graph) {
+        const node = item[0];
         if (!visited.has(node)) { 
             // print all reachable vertices from v 
             components.push([]);

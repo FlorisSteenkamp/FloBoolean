@@ -8,15 +8,15 @@ import { completeLoop } from './complete-loop.js';
  * @param loop
  */
 function completePath(expMax, initialOut, takenLoops, takenOuts) {
-    let outStack = [initialOut];
+    const outStack = [initialOut];
     while (outStack.length) {
-        let out = outStack.pop();
+        const out = outStack.pop();
         takenLoops.add(out._x_.curve.loop);
         if (takenOuts.has(out)) {
             continue;
         }
         out.children = new Set();
-        let { beziers, additionalOutsToCheck } = completeLoop(expMax, takenOuts, out);
+        const { beziers, additionalOutsToCheck } = completeLoop(expMax, takenOuts, out);
         out.beziers = beziers;
         out.parent.children = out.parent.children || new Set();
         out.parent.children.add(out);

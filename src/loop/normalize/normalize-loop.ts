@@ -34,7 +34,7 @@ function normalizeLoops(
         doScramble = false,
         doSendToGrid = true): number[][][][] {
 
-    let fixBeziers_ = fixBeziers(expMax, maxBitLength, doSendToGrid);
+    const fixBeziers_ = fixBeziers(expMax, maxBitLength, doSendToGrid);
 
     let loops = bezierLoops.slice();
     // just for testing purposes
@@ -51,23 +51,22 @@ function scrambleLoops(
         loops: number[][][][], 
         maxBitLength: number, 
         expMax: number,
-        mult: number = 0.02) {
+        mult = 0.02) {
 
-    let loops_: number[][][][] = [];
-    for (let loop of loops) {
-        let loop_: number[][][] = [];
-        for (let bez of loop) {
-            let bez_ = bez.map(v => v.map(c => {
+    const loops_: number[][][][] = [];
+    for (const loop of loops) {
+        const loop_: number[][][] = [];
+        for (const bez of loop) {
+            const bez_ = bez.map(v => v.map(c => {
                 let c_ = 0;
                 let ii = 0;
-                let bl = 0;
                 let mblc: number;
                 let mbl = 0;
                 while (true) {
                     if (++ii > 10) { break; }
                     c_ = (c + Math.random()) * (1 + ((Math.random()-0.7) * mult));
                     c_ = toGrid(c_, expMax, maxBitLength);
-                    let bl = bitLength(c_);
+                    const bl = bitLength(c_);
                     if (bl > mbl) {
                         mbl = bl;
                         mblc = c_;

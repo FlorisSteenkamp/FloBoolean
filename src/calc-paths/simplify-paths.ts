@@ -1,4 +1,4 @@
-declare var _debug_: Debug; 
+declare const _debug_: Debug; 
 
 import { getBoundingHull, getBoundingBoxTight } from 'flo-bezier3';
 import { Debug } from '../debug/debug.js';
@@ -53,12 +53,12 @@ function simplifyPaths(
      * Higher bitlengths would increase the running time of the algorithm 
      * considerably.
      */
-    let maxBitLength = 46;
+    const maxBitLength = 46;
 
     maxCoordinate = maxCoordinate || getMaxCoordinate(bezierLoops);
     /** The exponent, e, such that 2**e >= all bezier coordinate points. */
-    let expMax = Math.ceil(Math.log2(maxCoordinate));
-    let gridSpacing = 2**expMax * 2**(-maxBitLength);
+    const expMax = Math.ceil(Math.log2(maxCoordinate));
+    const gridSpacing = 2**expMax * 2**(-maxBitLength);
 
     /** 
      * A size (based on the max value of the tangent) for the containers holding 
@@ -66,7 +66,7 @@ function simplifyPaths(
      */
     const containerSizeMultiplier = 2**4;
     //const containerSizeMultiplier = 2**39;
-    let containerDim = gridSpacing * containerSizeMultiplier;
+    const containerDim = gridSpacing * containerSizeMultiplier;
 
     bezierLoops = normalizeLoops(
         bezierLoops, 
@@ -79,23 +79,23 @@ function simplifyPaths(
     addDebugInfo1(bezierLoops);
     bezierLoops.sort(orderLoopAscendingByMinY);
 
-    let loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));
-    let { extremes } = getContainers(loops, containerDim, expMax);
+    const loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));
+    const { extremes } = getContainers(loops, containerDim, expMax);
 
-    let root = createRootInOut();
-    let takenLoops: Set<Loop> = new Set();
-    let takenOuts: Set<InOut> = new Set(); // Taken intersections
+    const root = createRootInOut();
+    const takenLoops: Set<Loop> = new Set();
+    const takenOuts: Set<InOut> = new Set(); // Taken intersections
 
-    for (let loop of loops) {
+    for (const loop of loops) {
         if (takenLoops.has(loop)) { continue; }
         takenLoops.add(loop);
 
-        let parent = getTightestContainingLoop(root, loop);
+        const parent = getTightestContainingLoop(root, loop);
 
-        let container = extremes.get(loop)![0].container!;
+        const container = extremes.get(loop)![0].container!;
         if (!container.inOuts.length) { continue; }
 
-        let initialOut = getOutermostInAndOut(container);
+        const initialOut = getOutermostInAndOut(container);
         // Each loop generated will give rise to one componentLoop. 
         initialOut.parent = parent;
         initialOut.windingNum = parent.windingNum! + initialOut.orientation!;
@@ -109,10 +109,10 @@ function simplifyPaths(
         );
     }
 
-    let loopTrees = splitLoopTrees(root);
-    let outSets = loopTrees.map(getLoopsFromTree);
+    const loopTrees = splitLoopTrees(root);
+    const outSets = loopTrees.map(getLoopsFromTree);
 
-    let loopss = outSets.map(
+    const loopss = outSets.map(
         outSet => outSet.map(out => loopFromOut(out, outSet[0].orientation!))
     );
 
@@ -120,11 +120,11 @@ function simplifyPaths(
      * Arbitrarily choose min. loop area to be equal to one square pixel on a 
      * 4096 x 4096 grid.
      */
-    let minLoopArea = (2**expMax * 2**(-12))**2;
+    const minLoopArea = (2**expMax * 2**(-12))**2;
 
-    let loopss_: Loop[][] = [];
+    const loopss_: Loop[][] = [];
     for (let i=0; i<loopss.length; i++) {
-        let loops = loopss[i].filter(
+        const loops = loopss[i].filter(
             (loop: Loop) => Math.abs(getLoopArea(loop)) > minLoopArea
         );
         if (loops.length) { 
@@ -147,7 +147,7 @@ function simplifyPaths(
 
 
 function loopFromOut(out: InOut, orientation: number) {
-    let loop = orientation < 0
+    const loop = orientation < 0
         ? loopFromBeziers(out.beziers)
         : reverseOrientation(loopFromBeziers(out.beziers));
 
@@ -158,7 +158,7 @@ function loopFromOut(out: InOut, orientation: number) {
 function addDebugInfo2(loopss: Loop[][]) {
     if (typeof _debug_ === 'undefined') { return; }
 
-    for (let loops of loopss) {
+    for (const loops of loopss) {
         _debug_.generated.elems.loop.push(...loops);
         _debug_.generated.elems.loops.push(loops);
         //console.log(loopsToSvgPathStr(loops.map(loop => loop.beziers)));
@@ -185,20 +185,20 @@ function addDebugInfo1(loops: number[][][][]) {
 
     // Modifies the displayed SVG to reflect changes caused by `normalizeLoops`.
     if (typeof document !== 'undefined') { 
-        let pathStr = loopsToSvgPathStr(loops); 
-        let $svg = document.getElementsByClassName('shape')[0]; 
+        const pathStr = loopsToSvgPathStr(loops); 
+        const $svg = document.getElementsByClassName('shape')[0]; 
         $svg.setAttributeNS(null, 'd', pathStr); 
     }
 
     
-    for (let loop of loops) {
+    for (const loop of loops) {
         _debug_.generated.elems.loopPre.push(...loops);
         _debug_.generated.elems.loopsPre.push(loops);
 
-        for (let ps of loop) {
-            let lbb   = getBoundingBox_(ps);
-            let tbb   = getBoundingBoxTight(ps);
-            let bhull = getBoundingHull(ps)!;
+        for (const ps of loop) {
+            const lbb   = getBoundingBox_(ps);
+            const tbb   = getBoundingBoxTight(ps);
+            const bhull = getBoundingHull(ps)!;
             _debug_.generated.elems.bezier_          .push(ps);
             _debug_.generated.elems.looseBoundingBox_.push(lbb);
             _debug_.generated.elems.tightBoundingBox_.push(tbb);

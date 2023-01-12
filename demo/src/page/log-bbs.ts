@@ -1,4 +1,4 @@
-declare var _debug_: Debug; 
+declare const _debug_: Debug; 
 
 import { squaredDistanceBetween, centroid } from 'flo-vector2d';
 import { closestPointOnBezier } from 'flo-bezier3';
@@ -17,9 +17,9 @@ function logNearestBezierPre(g: SVGGElement, p: number[], showDelay = 1000) {
     let bestPs: number[][];
     let bestDistance = Number.POSITIVE_INFINITY;
 
-    for (let ps of _debug_.generated.elems.bezier_) {
-        let bezierPoint = closestPointOnBezier(ps, p);
-        let d = squaredDistanceBetween(bezierPoint.p, p);
+    for (const ps of _debug_.generated.elems.bezier_) {
+        const bezierPoint = closestPointOnBezier(ps, p);
+        const d = squaredDistanceBetween(bezierPoint.p, p);
         
         if (d < bestDistance) {
             //g = generated.g;
@@ -34,21 +34,21 @@ function logNearestBezierPre(g: SVGGElement, p: number[], showDelay = 1000) {
 
 
 function logLooseBb_(g: SVGGElement, p: number[], showDelay = 1000) {
-    let poly = getNearestPoly(p, _debug_.generated.elems.looseBoundingBox_)!;
+    const poly = getNearestPoly(p, _debug_.generated.elems.looseBoundingBox_)!;
 
     _debug_.fs.drawElem.looseBoundingBox_(g, poly, undefined, showDelay);
     console.log(poly);
 } 
 
 function logTightBb_(g: SVGGElement, p: number[], showDelay = 1000) {
-    let poly = getNearestPoly(p, _debug_.generated.elems.tightBoundingBox_)!;
+    const poly = getNearestPoly(p, _debug_.generated.elems.tightBoundingBox_)!;
 
     _debug_.fs.drawElem.tightBoundingBox_(g, poly, undefined, showDelay);
     console.log(poly);
 } 
 
 function logBHull_(g: SVGGElement, p: number[], showDelay = 1000) {
-    let poly = getNearestPoly(p, _debug_.generated.elems.boundingHull_)!;
+    const poly = getNearestPoly(p, _debug_.generated.elems.boundingHull_)!;
 
     _debug_.fs.drawElem.boundingHull_(g, poly, undefined, showDelay);
     console.log(poly);
@@ -59,9 +59,9 @@ function getNearestPoly(p: number[], polys: number[][][]) {
     let bestPoly;
     let bestDistance = Number.POSITIVE_INFINITY;
 
-    for (let poly of polys) {
-        let c = centroid(poly);
-        let d = squaredDistanceBetween(c, p);
+    for (const poly of polys) {
+        const c = centroid(poly);
+        const d = squaredDistanceBetween(c, p);
             
         if (d < bestDistance) {
             bestPoly = poly;

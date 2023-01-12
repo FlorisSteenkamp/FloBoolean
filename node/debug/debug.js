@@ -9,8 +9,8 @@ function enableDebugForBooleanOp(debugOn) {
         window._debug_ = undefined;
         return;
     }
-    let debug = window._debug_;
-    debug = {
+    const debug = window._debug_;
+    const debug_ = {
         ...debug,
         generated: {
             ...(!debug ? {} : !debug.generated ? {} : debug.generated),
@@ -42,7 +42,7 @@ function enableDebugForBooleanOp(debugOn) {
             }
         }
     };
-    window._debug_ = debug;
+    window._debug_ = debug_;
 }
 export { enableDebugForBooleanOp };
 //# sourceMappingURL=debug.js.map

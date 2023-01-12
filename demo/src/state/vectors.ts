@@ -1,5 +1,5 @@
 
-let vectors = [
+const vectors = [
     'new1',
     'new2',
     'bold-b',
@@ -7,7 +7,7 @@ let vectors = [
     'multiple-xs-at-min-y',
     'complexish',
     'B',
-    'same-k-family-lines',,
+    'same-k-family-lines',
     'multi-level-reversed-orientation',
     'holy-poly',
     'f',

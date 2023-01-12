@@ -1,7 +1,7 @@
 import { drawLoop } from "./draw-loop.js";
 function drawLoops(g, loops) {
     const $svgs = [];
-    for (let loop of loops) {
+    for (const loop of loops) {
         $svgs.push(...drawLoop(g, loop));
     }
     return $svgs;

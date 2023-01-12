@@ -18,7 +18,7 @@ import { PathState } from "../path-state.js";
  * coordinate pair used in the polybézier.
  */
 function c(s: PathState): number[][] {
-    let ps = [
+    const ps = [
         s.p,
         [s.vals![0], s.vals![1]],
         [s.vals![2], s.vals![3]],

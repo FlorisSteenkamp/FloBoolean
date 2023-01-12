@@ -3,10 +3,10 @@ import { defaultAppState, defaultTransientState, defaultDeduced } from "./defaul
 
 
 function getInitialState(): AppState {
-    let appStateJson = localStorage.getItem('app-state');
+    const appStateJson = localStorage.getItem('app-state');
     if (!appStateJson) { return defaultAppState; }
 
-    let storedState: AppState = JSON.parse(appStateJson);
+    const storedState: AppState = JSON.parse(appStateJson);
     if (storedState.version !== defaultAppState.version) {
         return defaultAppState;
     }

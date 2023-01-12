@@ -9,9 +9,9 @@ import { makeSimpleX } from "./make-simple-x.js";
  * @param loop 
  */
 function getExtreme(loop: Loop): __X__[] {
-    let { curve, y } = getMinY(loop);
+    const { curve, y } = getMinY(loop);
     
-    let ts = y.ts;
+    const ts = y.ts;
 
     if (ts[0] <= 0) {
         return [

@@ -10,9 +10,9 @@ import { flatCoefficients } from "flo-poly";
  */
 function generateRandomPoints(n: number, width: number, SEED: number) {
     // get random values in [-width,+width]
-    let randoms1 = flatCoefficients(2*n, -width, +width, SEED);
-    let vs = randoms1.p.map(Math.round);
-    let ps: number[][] = [];
+    const randoms1 = flatCoefficients(2*n, -width, +width, SEED);
+    const vs = randoms1.p.map(Math.round);
+    const ps: number[][] = [];
     for (let i=0; i<n; i++) {
         ps.push([vs[i*2], vs[i*2+1]]);
     }

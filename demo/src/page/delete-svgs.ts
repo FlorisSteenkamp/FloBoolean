@@ -6,8 +6,8 @@
 function deleteSvgs($svgs: SVGElement[][]) {
 	if ($svgs === undefined) { return; }
 	
-    for (let $svg of $svgs) {
-		for (let $svgElem of $svg) {
+    for (const $svg of $svgs) {
+		for (const $svgElem of $svg) {
 			$svgElem.remove();
 		}
 	}

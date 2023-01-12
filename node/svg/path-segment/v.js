@@ -11,7 +11,7 @@
  * command, the new current point becomes (cpx, y) for the final value of y.
  */
 function v(s) {
-    let ps = [
+    const ps = [
         s.p,
         [s.p[0], s.vals[0]]
     ];

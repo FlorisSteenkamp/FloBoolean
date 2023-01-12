@@ -20,7 +20,7 @@ function a(s: PathState): number[][][] {
     s.prev2ndCubicControlPoint = undefined; 
     s.prev2ndQuadraticControlPoint = undefined;
     
-    let curves = arcToCubicCurves(
+    const curves = arcToCubicCurves(
         s.p, 
         s.vals![0], 
         s.vals![1], 
@@ -30,7 +30,7 @@ function a(s: PathState): number[][][] {
         [s.vals![5], s.vals![6]]
     );
 
-    let lastPs = curves[curves.length-1];
+    const lastPs = curves[curves.length-1];
     s.p = lastPs[lastPs.length-1]; // Update current point
 
     return curves;

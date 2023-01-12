@@ -12,7 +12,7 @@
  * final set of coordinates provided.
  */
 function l(s) {
-    let ps = [
+    const ps = [
         s.p,
         s.vals
     ];

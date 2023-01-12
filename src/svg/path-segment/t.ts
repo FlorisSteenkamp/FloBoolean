@@ -17,13 +17,13 @@ import { PathState } from '../path-state.js';
  * final (x,y) coordinate pair used in the polybézier.
  */
 function t(s: PathState): number[][] {
-    let p = s.prev2ndQuadraticControlPoint
+    const p = s.prev2ndQuadraticControlPoint
         ? [(s.p[0] - s.prev2ndQuadraticControlPoint[0]) + s.p[0], 
            (s.p[1] - s.prev2ndQuadraticControlPoint[1]) + s.p[1]]
         : s.p;
 
-    let QP1 = p;
-    let QP2 = [s.vals![0], s.vals![1]];
+    const QP1 = p;
+    const QP2 = [s.vals![0], s.vals![1]];
     
     s.prev2ndCubicControlPoint = undefined;
     s.prev2ndQuadraticControlPoint = QP1;

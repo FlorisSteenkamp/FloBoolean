@@ -25,8 +25,8 @@ function ButtonGroup<T extends string>(props: Props<T>) {
         <div className='btn-group' style={styles?.div}>
             {/* <span style={{display: 'inline-block'}}>{label}</span> */}
             {Object.entries(options).map(option => {
-                let key = option[0] as T;
-                let value = option[1] as { text: string };
+                const key = option[0] as T;
+                const value = option[1] as { text: string };
                 return (
                     <button 
                         key={key} 

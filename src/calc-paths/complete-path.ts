@@ -17,16 +17,16 @@ function completePath(
         takenLoops : Set<Loop>,
         takenOuts  : Set<InOut>) {
 
-    let outStack = [initialOut];
+    const outStack = [initialOut];
 
     while (outStack.length) {
-        let out = outStack.pop()!;
+        const out = outStack.pop()!;
         takenLoops.add(out!._x_!.curve.loop);
 
         if (takenOuts.has(out)) { continue; }
 
         out.children = new Set();
-        let { beziers, additionalOutsToCheck } = 
+        const { beziers, additionalOutsToCheck } = 
             completeLoop(expMax, takenOuts, out);
             
         out.beziers = beziers;

@@ -32,13 +32,13 @@ function getBeziersFromRawPaths(paths) {
     if (paths[0].type.toLowerCase() !== 'm') {
         throw new Error('Invalid SVG - every new path must start with an M or m.');
     }
-    let s = new PathState();
-    let beziersArrays = [];
+    const s = new PathState();
+    const beziersArrays = [];
     let beziers = [];
     let prevType = undefined;
     for (let i = 0; i < paths.length; i++) {
-        let pathSeg = paths[i];
-        let type = pathSeg.type.toLowerCase();
+        const pathSeg = paths[i];
+        const type = pathSeg.type.toLowerCase();
         s.vals = pathSeg.values;
         // If pathSeg was lowercase, it is relative - make absolute
         if (pathSeg.type === type) {
@@ -74,11 +74,11 @@ function getBeziersFromRawPaths(paths) {
             beziers.push(...a(s));
         }
         else {
-            let f = pathFs[type];
+            const f = pathFs[type];
             if (!f) {
                 throw new Error('Invalid SVG - command not recognized.');
             }
-            let ps = f(s);
+            const ps = f(s);
             s.p = ps[ps.length - 1]; // Update current point
             beziers.push(ps);
         }

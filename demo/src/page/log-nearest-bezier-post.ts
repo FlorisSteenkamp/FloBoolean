@@ -1,4 +1,4 @@
-declare var _debug_: Debug; 
+declare const _debug_: Debug; 
 
 import { squaredDistanceBetween } from 'flo-vector2d';
 import { closestPointOnBezier } from 'flo-bezier3';
@@ -22,15 +22,15 @@ function logNearestBezierPost(
     let bestPs: number[][];
     let bestDistance = Number.POSITIVE_INFINITY;
 
-    for (let loops of _debug_.generated.elems.loops) {
-        let bezierLoops = loops;
-        let generated = _debug_.generated;
+    for (const loops of _debug_.generated.elems.loops) {
+        const bezierLoops = loops;
+        const generated = _debug_.generated;
 
-        for (let loop of bezierLoops) {
-            let beziers = loop.beziers;
-            for (let ps of beziers) {
-                let bezierPoint = closestPointOnBezier(ps, p);
-                let d = squaredDistanceBetween(bezierPoint.p, p);
+        for (const loop of bezierLoops) {
+            const beziers = loop.beziers;
+            for (const ps of beziers) {
+                const bezierPoint = closestPointOnBezier(ps, p);
+                const d = squaredDistanceBetween(bezierPoint.p, p);
                 
                 if (d < bestDistance) {
                     //g = generated.g;

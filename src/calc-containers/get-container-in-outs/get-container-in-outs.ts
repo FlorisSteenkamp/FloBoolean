@@ -18,7 +18,7 @@ function getContainerInOuts(
         } {
 
     // We check one __X__ for each curve with an intersection within this container
-    let xs = container.xs;
+    const xs = container.xs;
 
     // Check nature of Xs. If Xs is the very common case where two curves cross
     // we can use a faster check. Also in the bit less common case where all

@@ -15,22 +15,24 @@ function getIntersections(
         loops: Loop[], 
         expMax: number): __X__[][] {
 
-    let curves: Curve[] = [];
-    for (let loop of loops) { for (let curve of loop.curves) {
-        curves.push(curve)
-    }};
+    const curves: Curve[] = [];
+    for (const loop of loops) {
+        for (const curve of loop.curves) {
+            curves.push(curve)
+        }
+    }
 
     // Filter curves so that we eliminate those that can definitely not intersect
-    let _xs = sweepLine(
+    const _xs = sweepLine(
         curves, 
         curve => getBoundingBox_(curve.ps)[0][0],
         curve => getBoundingBox_(curve.ps)[1][0],
         getCurvesIntersections(expMax)
     );
 
-    let xs: __X__[][] = [];
-    for (let _x of _xs) {
-        for (let x of _x.u!) {
+    const xs: __X__[][] = [];
+    for (const _x of _xs) {
+        for (const x of _x.u!) {
             xs.push(x);
         }
     }

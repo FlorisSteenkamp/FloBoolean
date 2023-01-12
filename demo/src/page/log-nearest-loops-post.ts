@@ -1,4 +1,4 @@
-declare var _debug_: Debug; 
+declare const _debug_: Debug; 
 
 import { squaredDistanceBetweenPointAndLineSegment } from 'flo-vector2d';
 import { evalDeCasteljau, length } from 'flo-bezier3';
@@ -15,16 +15,16 @@ function logNearestLoopsPost(
     let bestDistance = Number.POSITIVE_INFINITY;
     let bestLoops: Loop[] | undefined = undefined;
 
-    let generated = _debug_.generated;
-    let loopss = generated.elems.loops;
+    const generated = _debug_.generated;
+    const loopss = generated.elems.loops;
 
-    for (let loops of loopss) {
-        for (let loop of loops) {
-            for (let curve of loop.curves) {
-                let ps = curve.ps;
-                let l = [evalDeCasteljau(ps,0), evalDeCasteljau(ps,1)];
+    for (const loops of loopss) {
+        for (const loop of loops) {
+            for (const curve of loop.curves) {
+                const ps = curve.ps;
+                const l = [evalDeCasteljau(ps,0), evalDeCasteljau(ps,1)];
                 
-                let d = squaredDistanceBetweenPointAndLineSegment(p, l);
+                const d = squaredDistanceBetweenPointAndLineSegment(p, l);
                 
                 if (d < bestDistance) {
                     bestDistance = d;
@@ -34,8 +34,8 @@ function logNearestLoopsPost(
         }
     }
     
-    for (let loop of bestLoops!) {
-        for (let curve of loop.curves) {
+    for (const loop of bestLoops!) {
+        for (const curve of loop.curves) {
             drawFs.bezier(g, curve.ps, undefined, showDelay);
         }
     }

@@ -13903,7 +13903,7 @@ function from_to_fromTo(ps, tS, tE) {
  * @param container
  */
 function containerIsBasic(expMax, container) {
-    let xs = container.xs;
+    const xs = container.xs;
     if (xs.length <= 2) {
         return true;
     }
@@ -13919,7 +13919,7 @@ function containerIsBasic(expMax, container) {
  * @param additionalOutsToCheck
  */
 function getNextExit(expMax, in_, originalOut, additionalOutsToCheck, takenOuts) {
-    let markOutForChecking_ = markOutForChecking(originalOut, takenOuts, additionalOutsToCheck);
+    const markOutForChecking_ = markOutForChecking(originalOut, takenOuts, additionalOutsToCheck);
     let additionalBezier = undefined;
     let fromCount = 0;
     let toCount = 1;
@@ -13980,16 +13980,16 @@ function markOutForChecking(originalOut, takenOuts, additionalOutsToCheck) {
 
 
 function getBeziersToNextContainer(expMax, out) {
-    let in_ = out.next;
-    let endCurve = in_._x_.curve;
-    let endT = in_._x_.x.ri.tS;
+    const in_ = out.next;
+    const endCurve = in_._x_.curve;
+    const endT = in_._x_.x.ri.tS;
     let curCurve = out._x_.curve;
     let curT = out._x_.x.ri.tS;
     if (!containerIsBasic(expMax, out.container)) {
         // we must clip the outgoing curve
         curT = mid(closestPointOnBezierCertified(curCurve.ps, out.p)[0].ri);
     }
-    let beziers = [];
+    const beziers = [];
     let inBez;
     while (true) {
         if (curCurve === endCurve &&
@@ -13998,7 +13998,7 @@ function getBeziersToNextContainer(expMax, out) {
             return { beziers, in_, inBez };
         }
         else {
-            let ps = from_to_fromTo(curCurve.ps, curT, 1);
+            const ps = from_to_fromTo(curCurve.ps, curT, 1);
             beziers.push(ps);
         }
         curT = 0;
@@ -14019,14 +14019,14 @@ function getBeziersToNextContainer(expMax, out) {
  * @param out
  */
 function completeLoop(expMax, takenOuts, out) {
-    let additionalOutsToCheck = [];
-    let beziers = [];
+    const additionalOutsToCheck = [];
+    const beziers = [];
     // Move immediately to the outgoing start of the loop
     let out_ = out;
     let additionalBezier;
     do {
         takenOuts.add(out_); // Mark this intersection as taken
-        let { beziers: additionalBeziers, in_, inBez } = getBeziersToNextContainer(expMax, out_);
+        const { beziers: additionalBeziers, in_, inBez } = getBeziersToNextContainer(expMax, out_);
         // TODO - it will probably better to remove additionalBeziers and just
         // connect the endpoints of adjacent beziers - even if we had near
         // exact coordinates (think quad or better precision) of intersections
@@ -14038,8 +14038,8 @@ function completeLoop(expMax, takenOuts, out) {
         beziers.push(...additionalBeziers);
         ({ out_, additionalBezier } = getNextExit(expMax, in_, out, additionalOutsToCheck, takenOuts));
         if (additionalBezier) {
-            let t = mid(closestPointOnBezierCertified(inBez, additionalBezier[0])[0].ri);
-            let inBez_ = from_to_fromTo(inBez, 0, t);
+            const t = mid(closestPointOnBezierCertified(inBez, additionalBezier[0])[0].ri);
+            const inBez_ = from_to_fromTo(inBez, 0, t);
             beziers.push(inBez_);
             beziers.push(additionalBezier);
         }
@@ -14062,15 +14062,15 @@ function completeLoop(expMax, takenOuts, out) {
  * @param loop
  */
 function completePath(expMax, initialOut, takenLoops, takenOuts) {
-    let outStack = [initialOut];
+    const outStack = [initialOut];
     while (outStack.length) {
-        let out = outStack.pop();
+        const out = outStack.pop();
         takenLoops.add(out._x_.curve.loop);
         if (takenOuts.has(out)) {
             continue;
         }
         out.children = new Set();
-        let { beziers, additionalOutsToCheck } = completeLoop(expMax, takenOuts, out);
+        const { beziers, additionalOutsToCheck } = completeLoop(expMax, takenOuts, out);
         out.beziers = beziers;
         out.parent.children = out.parent.children || new Set();
         out.parent.children.add(out);
@@ -14192,7 +14192,7 @@ function memoize(f) {
     if (!SUPPORTED) {
         return f;
     }
-    let results = new WeakMap();
+    const results = new WeakMap();
     return function (a) {
         let result = results.get(a);
         if (result !== undefined) {
@@ -14212,7 +14212,7 @@ function memoize2(f) {
     if (!SUPPORTED) {
         return f;
     }
-    let results = new WeakMap();
+    const results = new WeakMap();
     return function (a, b) {
         let result = pairMap_get(results, a, b);
         if (result !== undefined) {
@@ -14324,18 +14324,18 @@ function isLoopInLoop(loop1, loop2) {
     do {
         i++;
         // This gets us a predictable random number between 0 and 1;
-        let rand1 = flatCoefficients(1, 0, 1, seed);
-        let t = rand1.p[0];
+        const rand1 = flatCoefficients(1, 0, 1, seed);
+        const t = rand1.p[0];
         seed = rand1.seed; // Get next seed.
         // This gets us a predictable random number roughly between 0 and the 
         // number of curves in the loop.
-        let curveCount = loop1.length;
-        let rand2 = flatCoefficients(1, 0, curveCount, seed);
-        let idx = Math.floor(rand2.p[0]);
+        const curveCount = loop1.length;
+        const rand2 = flatCoefficients(1, 0, curveCount, seed);
+        const idx = Math.floor(rand2.p[0]);
         seed = rand2.seed; // Get next seed.
-        let ps = loop1[idx];
-        let p = evalDeCasteljau(ps, t);
-        let res = f(loop1, loop2, p);
+        const ps = loop1[idx];
+        const p = evalDeCasteljau(ps, t);
+        const res = f(loop1, loop2, p);
         if (res !== undefined) {
             return res;
         }
@@ -14345,7 +14345,7 @@ function isLoopInLoop(loop1, loop2) {
         if (isLoopNotInLoop(loop1, loop2)) {
             return false;
         }
-        let count = getAxisAlignedRayLoopIntersections(loop2, p, 'left');
+        const count = getAxisAlignedRayLoopIntersections(loop2, p, 'left');
         if (count !== undefined) {
             return count % 2 !== 0;
         }
@@ -14357,14 +14357,14 @@ function isLoopInLoop(loop1, loop2) {
  * @param loops
  */
 function isLoopNotInLoop(loop1, loop2) {
-    let boundss = [loop1, loop2].map(getLoopBounds);
+    const boundss = [loop1, loop2].map(getLoopBounds);
     return (boundss[0].minX < boundss[1].minX ||
         boundss[0].maxX > boundss[1].maxX ||
         boundss[0].minY < boundss[1].minY ||
         boundss[0].maxY > boundss[1].maxY);
 }
 function getLoopBounds(pss) {
-    let bounds = pss.map(ps => getBounds_(ps));
+    const bounds = pss.map(ps => getBounds_(ps));
     return {
         minX: Math.min(...bounds.map(bound => bound.box[0][0])),
         maxX: Math.max(...bounds.map(bound => bound.box[1][0])),
@@ -14380,14 +14380,14 @@ function getLoopBounds(pss) {
  * @internal
  */
 function getAxisAlignedRayLoopIntersections(loop, p, dir) {
-    let [x, y] = p;
+    const [x, y] = p;
     let count = 0;
     for (let i = 0; i < loop.length; i++) {
-        let ps = loop[i];
+        const ps = loop[i];
         //------------------------------------------------------/
         //---- Check if ray intersects bezier bounding box -----/
         //------------------------------------------------------/
-        let [[minX, minY], [maxX, maxY]] = getBoundingBox_(ps);
+        const [[minX, minY], [maxX, maxY]] = getBoundingBox_(ps);
         let notIntersecting = ((dir === 'left' || dir === 'right') && (minY > y || maxY < y)) ||
             ((dir === 'up' || dir === 'down') && (minX > x || maxX < x));
         notIntersecting = notIntersecting ||
@@ -14400,11 +14400,11 @@ function getAxisAlignedRayLoopIntersections(loop, p, dir) {
         //----------- Get intersection ts on bezier ------------/
         //------------------------------------------------------/
         // Get the bezier's x-coordinate power representation.
-        let ts = [];
+        const ts = [];
         let f;
         let offset;
         let axis;
-        let dirIsDecreasing = (dir === 'left' || dir === 'up');
+        const dirIsDecreasing = (dir === 'left' || dir === 'up');
         if (dir === 'left' || dir === 'right') {
             //f = getY;
             f = (ps) => toPowerBasis(ps)[1];
@@ -14418,19 +14418,19 @@ function getAxisAlignedRayLoopIntersections(loop, p, dir) {
             axis = 1;
         }
         //let translatedPs = translate(offset, ps);
-        let translatedPs = ps.map(translate(offset));
-        let poly = f(translatedPs);
+        const translatedPs = ps.map(translate(offset));
+        const poly = f(translatedPs);
         //let ev = evalDeCasteljau(translatedPs);
-        let ts_ = allRoots(poly, 0 - DELTA, 1 + DELTA);
+        const ts_ = allRoots(poly, 0 - DELTA, 1 + DELTA);
         for (let i = 0; i < ts_.length; i++) {
-            let t = ts_[i];
+            const t = ts_[i];
             if (Math.abs(t) < DELTA || Math.abs(t - 1) < DELTA) {
                 // We don't know the exact number of intersections due to
                 // floating point arithmetic. 
                 return undefined;
             }
             //let p_ = ev(t);
-            let p_ = evalDeCasteljau(translatedPs, t);
+            const p_ = evalDeCasteljau(translatedPs, t);
             if ((dirIsDecreasing && p[axis] >= p_[axis]) ||
                 (!dirIsDecreasing && p[axis] <= p_[axis])) {
                 ts.push(t);
@@ -14441,8 +14441,8 @@ function getAxisAlignedRayLoopIntersections(loop, p, dir) {
         //------------------------------------------------------/
         // We only care if there were 1 or 3 intersections.
         if (ts.length === 1 || ts.length === 3) {
-            for (let t of ts) {
-                let tan = toUnitVector(tangent(ps, t));
+            for (const t of ts) {
+                const tan = toUnitVector(tangent(ps, t));
                 if (((dir === 'left' || dir === 'right') && Math.abs(tan[1]) < DELTA) ||
                     ((dir === 'down' || dir === 'up') && Math.abs(tan[0]) < DELTA)) {
                     // We don't know the exact number of intersections due to
@@ -14465,16 +14465,16 @@ function getAxisAlignedRayLoopIntersections(loop, p, dir) {
  */
 function getTightestContainingLoop(root, loop) {
     let containingLoop = undefined;
-    let stack = [root];
+    const stack = [root];
     while (stack.length) {
-        let inOut = stack.pop();
+        const inOut = stack.pop();
         f(inOut);
     }
     return containingLoop;
     function f(parent) {
         if (parent === root || isLoopInLoop(loop.beziers, parent.beziers)) {
             containingLoop = parent;
-            for (let child of parent.children) {
+            for (const child of parent.children) {
                 stack.push(child);
             }
         }
@@ -14496,8 +14496,8 @@ function orderLoopAscendingByMinY(loopA, loopB) {
 }
 function getMinY(pss) {
     let minY = Number.POSITIVE_INFINITY;
-    for (let ps of pss) {
-        let y = getBounds_(ps).box[0][1];
+    for (const ps of pss) {
+        const y = getBounds_(ps).box[0][1];
         if (y < minY) {
             minY = y;
         }
@@ -14514,12 +14514,12 @@ function getMinY(pss) {
  * @param root
  */
 function splitLoopTrees(root) {
-    let iLoopTrees = [];
-    let stack = [root];
+    const iLoopTrees = [];
+    const stack = [root];
     while (stack.length) {
-        let tree = stack.pop();
+        const tree = stack.pop();
         tree.children = tree.children || new Set();
-        for (let child of tree.children) {
+        for (const child of tree.children) {
             if (tree.windingNum === 0) {
                 iLoopTrees.push(child);
             }
@@ -14541,14 +14541,14 @@ function splitLoopTrees(root) {
  * @param root
  */
 function getLoopsFromTree(root) {
-    let trees = [root];
-    let stack = Array.from(root.children);
+    const trees = [root];
+    const stack = Array.from(root.children);
     while (stack.length) {
-        let tree = stack.pop();
+        const tree = stack.pop();
         if (tree.windingNum === 0) {
             trees.push(tree);
         }
-        for (let child of tree.children) {
+        for (const child of tree.children) {
             stack.push(child);
         }
     }
@@ -14608,7 +14608,7 @@ function areContainersIntersecting(container1, container2) {
 ;// CONCATENATED MODULE: ./src/graph/get-connected-components.ts
 function addEdges(graph, edges) {
     for (let i = 0; i < edges.length; i++) {
-        let edge = edges[i];
+        const edge = edges[i];
         addEdge(graph, [edge.a, edge.b]);
     }
 }
@@ -14616,7 +14616,7 @@ function addEdges(graph, edges) {
  * Adds an edge to an undirected graph.
  */
 function addEdge(graph, vertices) {
-    let [src, dest] = vertices;
+    const [src, dest] = vertices;
     let srcList = graph.get(src);
     if (!srcList) {
         srcList = [];
@@ -14635,9 +14635,9 @@ function DFSUtil(graph, v, visited, component) {
     visited.add(v);
     component.push(v);
     // Recur for all the vertices adjacent to this vertex 
-    let list = graph.get(v);
+    const list = graph.get(v);
     for (let i = 0; i < list.length; i++) {
-        let x = list[i];
+        const x = list[i];
         if (!visited.has(x)) {
             DFSUtil(graph, x, visited, component);
         }
@@ -14648,10 +14648,10 @@ function DFSUtil(graph, v, visited, component) {
  */
 function getConnectedComponents(graph) {
     // Mark all the vertices as not visited 
-    let components = [];
-    let visited = new Set();
-    for (let item of graph) {
-        let node = item[0];
+    const components = [];
+    const visited = new Set();
+    for (const item of graph) {
+        const node = item[0];
         if (!visited.has(node)) {
             // print all reachable vertices from v 
             components.push([]);
@@ -14668,15 +14668,15 @@ function getConnectedComponents(graph) {
  * @param connectedContainers
  */
 function getIsolatedComponents(containers, connectedContainers) {
-    let connectedContainers_ = new Set();
-    for (let cs of connectedContainers) {
-        for (let c of cs) {
+    const connectedContainers_ = new Set();
+    for (const cs of connectedContainers) {
+        for (const c of cs) {
             connectedContainers_.add(c);
         }
     }
-    let res = [];
+    const res = [];
     for (let i = 0; i < containers.length; i++) {
-        let container = containers[i];
+        const container = containers[i];
         if (!connectedContainers_.has(container)) {
             res.push(container);
         }
@@ -14687,15 +14687,15 @@ function getIsolatedComponents(containers, connectedContainers) {
 
 ;// CONCATENATED MODULE: ./src/calc-containers/merge-containers.ts
 function mergeContainers(ccs) {
-    let containers = [];
-    for (let cc of ccs) {
+    const containers = [];
+    for (const cc of ccs) {
         let minLeft = Number.POSITIVE_INFINITY;
         let minTop = Number.POSITIVE_INFINITY;
         let maxRight = Number.NEGATIVE_INFINITY;
         let maxBottom = Number.NEGATIVE_INFINITY;
-        let xs = [];
-        for (let c of cc) {
-            let [[left, top], [right, bottom]] = c.box;
+        const xs = [];
+        for (const c of cc) {
+            const [[left, top], [right, bottom]] = c.box;
             if (left < minLeft) {
                 minLeft = left;
             }
@@ -14711,7 +14711,7 @@ function mergeContainers(ccs) {
             xs.push(...c.xs);
         }
         // console.log(minLeft)
-        let container = {
+        const container = {
             box: [[minLeft, minTop], [maxRight, maxBottom]],
             xs: xs,
             inOuts: undefined
@@ -21521,19 +21521,15 @@ function areBoxesIntersectingDd(closed) {
         if (ay0[1] > ay1[1] || ay0[1] === ay1[1] && ay0[0] > ay1[0]) {
             [ay0, ay1] = [ay1, ay0];
         }
-        ;
         if (by0[1] > by1[1] || by0[1] === by1[1] && by0[0] > by1[0]) {
             [by0, by1] = [by1, by0];
         }
-        ;
         if (ax0[1] > ax1[1] || ax0[1] === ax1[1] && ax0[0] > ax1[0]) {
             [ax0, ax1] = [ax1, ax0];
         }
-        ;
         if (bx0[1] > bx1[1] || bx0[1] === bx1[1] && bx0[0] > bx1[0]) {
             [bx0, bx1] = [bx1, bx0];
         }
-        ;
         return closed
             ? (
             //ax0 <= bx1 && ax1 >= bx0 && 
@@ -21569,8 +21565,8 @@ function midBox(_x_) {
  * @param container
  */
 function getXInOuts(container) {
-    let [[left, top], [right, bottom]] = container.box;
-    let sides = [
+    const [[left, top], [right, bottom]] = container.box;
+    const sides = [
         [[right, top], [left, top]],
         [[left, top], [left, bottom]],
         [[left, bottom], [right, bottom]],
@@ -21580,11 +21576,11 @@ function getXInOuts(container) {
         // At this point all xs belong to the same curve and container.
         // For each of the four sides get the t values closest to the 
         // intersection t.
-        let ps = curve.ps;
-        let xs = xs_.slice();
+        const ps = curve.ps;
+        const xs = xs_.slice();
         for (let i = 0; i < sides.length; i++) {
-            let xs_ = getTs(ps, sides[i]);
-            for (let { psX, sideX } of xs_) {
+            const xs_ = getTs(ps, sides[i]);
+            for (const { psX, sideX } of xs_) {
                 xs.push({
                     x: psX,
                     side: i,
@@ -21599,12 +21595,12 @@ function getXInOuts(container) {
         // the tangent magnitude of a curve can attain (no need to resort to 
         // compensated intervals)
         xs.sort((xA, xB) => xA.x.ri.tS - xB.x.ri.tS);
-        let ins = [];
-        let outs = [];
+        const ins = [];
+        const outs = [];
         let prevX = undefined;
         /** true if the prevX was a proper X, false if it was a SideX */
         let prevWasX = undefined;
-        for (let x of xs) {
+        for (const x of xs) {
             if (x.side !== undefined) {
                 // it is a sideX
                 if (prevWasX === true) {
@@ -21645,13 +21641,13 @@ function getXInOuts(container) {
  * Get zero times compensated roots and exact coefficents
  */
 function getXs0(ps1, ps2) {
-    // let _coeffs = getIntersectionCoeffs(ps1, ps2);
-    let _coeffs = getCoeffsBezBez(ps1, ps2);
+    // const _coeffs = getIntersectionCoeffs(ps1, ps2);
+    const _coeffs = getCoeffsBezBez(ps1, ps2);
     if (_coeffs === undefined) {
         return undefined;
     }
-    let { coeffs, errBound, getPExact } = _coeffs;
-    let ris = allRootsCertified(coeffs, 0, 1, errBound, getPExact);
+    const { coeffs, errBound, getPExact } = _coeffs;
+    const ris = allRootsCertified(coeffs, 0, 1, errBound, getPExact);
     if (ris.length === 0) {
         return undefined;
     }
@@ -21673,25 +21669,27 @@ function rootIntervalToDouble(ri) {
  * @param risSide_
  */
 function getTs(ps, side) {
-    let xs0Side = getXs0(ps, side);
+    const xs0Side = getXs0(ps, side);
     if (xs0Side === undefined) {
         return [];
     }
-    let { ris: risSide, getPExact: getPExactSide } = xs0Side;
-    //let exactSide = getPExactSide();
+    const { getPExact: getPExactSide } = xs0Side;
+    let { ris: risSide } = xs0Side;
+    //const exactSide = getPExactSide();
     let exactSide = undefined; // lazy loaded
-    let getPExactSide_ = () => {
+    const getPExactSide_ = () => {
         exactSide = exactSide || getPExactSide();
         return exactSide;
     };
-    let xs0Ps = getXs0(side, ps);
+    const xs0Ps = getXs0(side, ps);
     if (xs0Ps === undefined) {
         return [];
     }
-    let { ris: risPs, getPExact: getPExactPs } = xs0Ps;
-    //let exactPs = getPExactPs();
+    let { ris: risPs } = xs0Ps;
+    const { getPExact: getPExactPs } = xs0Ps;
+    //const exactPs = getPExactPs();
     let exactPs = undefined; // lazy loaded
-    let getPExactPs_ = () => {
+    const getPExactPs_ = () => {
         exactPs = exactPs || getPExactPs();
         return exactPs;
     };
@@ -21711,12 +21709,12 @@ function getTs(ps, side) {
         // update boxes to new tighter versions
         boxesPs = risPs.map(ri => getIntervalBoxDd(ps, [ri.tS, ri.tE]));
         for (let i = 0; i < risPs.length; i++) {
-            let boxPsI = boxesPs[i];
+            const boxPsI = boxesPs[i];
             for (let j = i + 1; j < risPs.length; j++) {
-                let boxPsJ = boxesPs[j];
+                const boxPsJ = boxesPs[j];
                 if (areBoxesIntersectingDd(true)(boxPsI, boxPsJ)) {
-                    let _risPs = [];
-                    for (let riPs of risPs) {
+                    const _risPs = [];
+                    for (const riPs of risPs) {
                         // TODO - below we're converting riPs (using getXs0) to RootIntervalExp and below back to 
                         // RootInterval again - not necessary - fix
                         _risPs.push(...refineK1({ tS: riPs.tS[1], tE: riPs.tE[1], multiplicity: riPs.multiplicity }, getPExactPs_()));
@@ -21739,12 +21737,12 @@ function getTs(ps, side) {
     loop: while ( true && cSide < maxIter) {
         boxesSide = risSide.map(ri => getIntervalBoxDd(side, [ri.tS, ri.tE]));
         for (let i = 0; i < risSide.length; i++) {
-            let boxSideI = boxesSide[i];
+            const boxSideI = boxesSide[i];
             for (let j = i + 1; j < risSide.length; j++) {
-                let boxSideJ = boxesSide[j];
+                const boxSideJ = boxesSide[j];
                 if (areBoxesIntersectingDd(true)(boxSideI, boxSideJ)) {
-                    let _risSide = [];
-                    for (let riSide of risSide) {
+                    const _risSide = [];
+                    for (const riSide of risSide) {
                         _risSide.push(...refineK1({ tS: riSide.tS[1], tE: riSide.tE[1], multiplicity: riSide.multiplicity }, getPExactSide_()));
                     }
                     risSide = _risSide;
@@ -21755,16 +21753,16 @@ function getTs(ps, side) {
         }
         break loop;
     }
-    let xPairs = [];
+    const xPairs = [];
     for (let i = 0; i < risPs.length; i++) {
-        let boxPs = boxesPs[i];
+        const boxPs = boxesPs[i];
         for (let j = 0; j < risSide.length; j++) {
-            let boxSide = boxesSide[j];
+            const boxSide = boxesSide[j];
             // TODO - investigate if below commented code would improve algorithm
-            //let box = intersectBoxes(boxPs,boxSide);
+            //const box = intersectBoxes(boxPs,boxSide);
             //if (box !== undefined) {
             if (areBoxesIntersectingDd(true)(boxPs, boxSide)) {
-                let psX = {
+                const psX = {
                     compensated: cPs,
                     ri: rootIntervalToDouble(risPs[i]),
                     riExp: cPs ? risPs[i] : undefined,
@@ -21772,7 +21770,7 @@ function getTs(ps, side) {
                     kind: 1,
                     box: boxExpToBox(boxPs)
                 };
-                let sideX = {
+                const sideX = {
                     compensated: cSide,
                     ri: rootIntervalToDouble(risSide[j]),
                     riExp: cSide ? risSide[j] : undefined,
@@ -21805,13 +21803,13 @@ function boxExpToBox(boxExp) {
  */
 function getInOutsViaSides(container, ioIdx) {
     // We check one __X__ for each curve with an intersection within this container
-    let xs_ = container.xs;
-    let inOuts = [];
+    const xs_ = container.xs;
+    const inOuts = [];
     // get a map from each Curve to each __X__ of this container
-    let xMap = new Map();
-    for (let x of xs_) {
-        let curve = x.curve;
-        let xs = xMap.get(curve);
+    const xMap = new Map();
+    for (const x of xs_) {
+        const curve = x.curve;
+        const xs = xMap.get(curve);
         if (!xs) {
             xMap.set(curve, [x]);
         }
@@ -21819,9 +21817,9 @@ function getInOutsViaSides(container, ioIdx) {
             xs.push(x);
         }
     }
-    let getXInOuts_ = getXInOuts(container);
-    for (let entry of xMap) {
-        let [curve, xs] = entry;
+    const getXInOuts_ = getXInOuts(container);
+    for (const entry of xMap) {
+        const [curve, xs] = entry;
         let ins;
         let outs;
         ({ ins, outs, ioIdx } = getXInOuts_(curve, xs, ioIdx));
@@ -21884,23 +21882,23 @@ function getHodograph(ps) {
  * @param ioIdx
  */
 function getInOutsViaCrossing(container, ioIdx) {
-    let xs = container.xs;
-    let inOuts = [];
-    let x1 = xs[0];
-    let x2 = xs[1];
-    let ps1 = x1.curve.ps;
-    let ps2 = x2.curve.ps;
-    let p = evalDeCasteljau(ps1, x1.x.ri.tS);
-    let t1S = x1.x.ri.tS;
-    let t1E = x1.x.ri.tE;
-    let t2S = x2.x.ri.tS;
-    let t2E = x2.x.ri.tE;
+    const xs = container.xs;
+    const inOuts = [];
+    const x1 = xs[0];
+    const x2 = xs[1];
+    const ps1 = x1.curve.ps;
+    const ps2 = x2.curve.ps;
+    const p = evalDeCasteljau(ps1, x1.x.ri.tS);
+    const t1S = x1.x.ri.tS;
+    const t1E = x1.x.ri.tE;
+    const t2S = x2.x.ri.tS;
+    const t2E = x2.x.ri.tE;
     let v1s;
     let v2s;
     if (ps1.length === 4 || ps1.length === 3) {
         // cubic => hodograph is a parabola
         // quadratic => hodograph is a line (we still get the box, but in future maybe we can do better)
-        let h1 = getHodograph(ps1); // <= cubic: 50 bit-aligned => exact, quadratic: 52 bit-aligned => exact
+        const h1 = getHodograph(ps1); // <= cubic: 50 bit-aligned => exact, quadratic: 52 bit-aligned => exact
         v1s = getIntervalBox(h1, [t1S, t1E]);
     }
     else /*if (ps1.length === 2)*/ {
@@ -21910,7 +21908,7 @@ function getInOutsViaCrossing(container, ioIdx) {
     if (ps2.length === 4 || ps2.length === 3) {
         // cubic => hodograph is a parabola
         // quadratic => hodograph is a line (we still get the box, but in future maybe we can do better)
-        let h2 = getHodograph(ps2); // <= cubic: 50 bit-aligned => exact, quadratic: 52 bit-aligned => exact
+        const h2 = getHodograph(ps2); // <= cubic: 50 bit-aligned => exact, quadratic: 52 bit-aligned => exact
         v2s = getIntervalBox(h2, [t2S, t2E]);
     }
     else /*if (ps2.length === 2)*/ {
@@ -21925,8 +21923,8 @@ function getInOutsViaCrossing(container, ioIdx) {
     for (let i = 0; i < v1s.length; i++) {
         for (let j = 0; j < v2s.length; j++) {
             // we use orient2d below since it is completely robust (cross is not)
-            //let c = Math.sign(cross(v1s[i],v2s[j]));
-            let c = Math.sign(orient2d_orient2d(v1s[i], v2s[j], [0, 0]));
+            //const c = Math.sign(cross(v1s[i],v2s[j]));
+            const c = Math.sign(orient2d_orient2d(v1s[i], v2s[j], [0, 0]));
             if (c === 0) {
                 // too close to call 
                 // use a more accurate but slower method
@@ -21943,7 +21941,7 @@ function getInOutsViaCrossing(container, ioIdx) {
             }
         }
     }
-    let config1 = cSign > 0;
+    const config1 = cSign > 0;
     if (config1) {
         // config1 (the 1st of the 2 possible configurations)
         inOuts.push({ dir: -1, p, _x_: x1, container });
@@ -21977,7 +21975,7 @@ function getInOutsViaCrossing(container, ioIdx) {
  */
 function getContainerInOuts(container, ioIdx) {
     // We check one __X__ for each curve with an intersection within this container
-    let xs = container.xs;
+    const xs = container.xs;
     // Check nature of Xs. If Xs is the very common case where two curves cross
     // we can use a faster check. Also in the bit less common case where all
     // curves are joining at an interface we can do a fast ccw (the ccw part
@@ -22012,8 +22010,8 @@ const EVENT_RIGHT = +1;
  */
 function sweepLine(items, getLeftmost, getRightmost, predicate) {
     // Initialize event queue to contain all endpoints.
-    let events = [];
-    for (let item of items) {
+    const events = [];
+    for (const item of items) {
         events.push({
             type: EVENT_LEFT,
             item,
@@ -22026,15 +22024,15 @@ function sweepLine(items, getLeftmost, getRightmost, predicate) {
         });
     }
     events.sort(compare);
-    let activeItems = new Set();
+    const activeItems = new Set();
     /** A list of pairs of items that passed the predicate */
-    let pairedItems = [];
-    for (let event of events) {
-        let item = event.item;
+    const pairedItems = [];
+    for (const event of events) {
+        const item = event.item;
         if (event.type === EVENT_LEFT) {
-            for (let activeItem of activeItems.values()) {
+            for (const activeItem of activeItems.values()) {
                 //(window as any).ii++;
-                let result = predicate(item, activeItem);
+                const result = predicate(item, activeItem);
                 if (result) {
                     //(window as any).jj++;
                     //console.log(result)
@@ -22059,7 +22057,7 @@ function sweepLine(items, getLeftmost, getRightmost, predicate) {
  * @param b Another event
  */
 function compare(a, b) {
-    let res = a.x - b.x;
+    const res = a.x - b.x;
     if (res !== 0) {
         return res;
     }
@@ -23179,7 +23177,7 @@ function getOtherTs(ps1, ps2, ts2) {
     if (ts2.length === 0) {
         return [];
     }
-    let ts1 = bezierBezierIntersectionBoundless(ps2, ps1);
+    const ts1 = bezierBezierIntersectionBoundless(ps2, ps1);
     if (ts1 === undefined) {
         // infinite number of intersections
         return undefined;
@@ -23187,19 +23185,19 @@ function getOtherTs(ps1, ps2, ts2) {
     if (ts1.length === 0) {
         return [];
     }
-    let is1 = ts1.map(ri => getIntervalBox(ps1, [ri.tS, ri.tE]));
-    let is2 = ts2.map(ri => getIntervalBox(ps2, [ri.tS, ri.tE]));
-    let xPairs = [];
+    const is1 = ts1.map(ri => getIntervalBox(ps1, [ri.tS, ri.tE]));
+    const is2 = ts2.map(ri => getIntervalBox(ps2, [ri.tS, ri.tE]));
+    const xPairs = [];
     for (let i = 0; i < ts1.length; i++) {
-        let box1 = is1[i];
+        const box1 = is1[i];
         for (let j = 0; j < ts2.length; j++) {
-            let box2 = is2[j];
-            let box = intersectBoxes(box1, box2);
+            const box2 = is2[j];
+            const box = intersectBoxes(box1, box2);
             if (box !== undefined) {
                 // TODO important - combine boxes to make sense, i.e. combine better
                 // e.g. two odd multiplicity boxes should combine to a single even, etc. etc.
-                let x1 = { ri: ts1[i], box, kind: 1 };
-                let x2 = { ri: ts2[j], box, kind: 1 };
+                const x1 = { ri: ts1[i], box, kind: 1 };
+                const x2 = { ri: ts2[j], box, kind: 1 };
                 xPairs.push([x1, x2]);
             }
         }
@@ -23222,21 +23220,21 @@ function getOtherTs(ps1, ps2, ts2) {
 function doConvexPolygonsIntersect(polygonA, polygonB, closed) {
     // for each polygon, look at each edge of the polygon, and determine if 
     // it separates the two shapes
-    for (let polygon of [polygonA, polygonB]) {
-        let len = polygon.length;
+    for (const polygon of [polygonA, polygonB]) {
+        const len = polygon.length;
         for (let i = 1; i < len + 1; i++) {
             // grab 2 consecutive vertices to create an edge
-            let p1 = polygon[i - 1];
-            let p2 = polygon[i % len];
+            const p1 = polygon[i - 1];
+            const p2 = polygon[i % len];
             // find the vector perpendicular to this edge
-            let normal = [p2[1] - p1[1], p1[0] - p2[0]];
+            const normal = [p2[1] - p1[1], p1[0] - p2[0]];
             let minA = Number.POSITIVE_INFINITY;
             let maxA = Number.NEGATIVE_INFINITY;
             // for each vertex in the first shape, project it onto the line 
             // perpendicular to the edge and keep track of the min and max of 
             // these values
             for (let k = 0; k < polygonA.length; k++) {
-                let projected = normal[0] * polygonA[k][0] +
+                const projected = normal[0] * polygonA[k][0] +
                     normal[1] * polygonA[k][1];
                 if (projected < minA) {
                     minA = projected;
@@ -23251,7 +23249,7 @@ function doConvexPolygonsIntersect(polygonA, polygonB, closed) {
             let minB = Number.POSITIVE_INFINITY;
             let maxB = Number.NEGATIVE_INFINITY;
             for (let k = 0; k < polygonB.length; k++) {
-                let projected = normal[0] * polygonB[k][0] +
+                const projected = normal[0] * polygonB[k][0] +
                     normal[1] * polygonB[k][1];
                 if (projected < minB) {
                     minB = projected;
@@ -24050,24 +24048,24 @@ function getMinMaxT(t) {
  * @param isANextB is curveB the next curve after curveA, i.e. is A's next B
  */
 function getIntersection(curveA, curveB, expMax, isANextB) {
-    let ps1 = curveA.ps;
-    let ps2 = curveB.ps;
-    let xs = [];
+    const ps1 = curveA.ps;
+    const ps2 = curveB.ps;
+    const xs = [];
     let ris2 = bezierBezierIntersectionBoundless(ps1, ps2);
     if (ris2 === undefined) {
         // the curves have an infinte number of intersections
         // some reasonable error bound -> to be fine-tuned, but cannot
         // break the algorithm (unless its too small), only make it run slower.
-        let errBound = 2 ** (expMax - 47);
-        let xPairs = getEndpointIntersections(ps1, ps2);
-        for (let xPair of xPairs) {
-            let p1 = evalDeCasteljau(ps1, xPair.ri1.tS);
-            let box = [
+        const errBound = 2 ** (expMax - 47);
+        const xPairs = getEndpointIntersections(ps1, ps2);
+        for (const xPair of xPairs) {
+            const p1 = evalDeCasteljau(ps1, xPair.ri1.tS);
+            const box = [
                 [p1[0] - errBound, p1[1] - errBound],
                 [p1[0] + errBound, p1[1] + errBound],
             ];
-            let ri1 = { x: { ri: xPair.ri1, kind: 5, box }, curve: curveA }; // exact overlap endpoint
-            let ri2 = { x: { ri: xPair.ri2, kind: 5, box }, curve: curveB }; // exact overlap endpoint
+            const ri1 = { x: { ri: xPair.ri1, kind: 5, box }, curve: curveA }; // exact overlap endpoint
+            const ri2 = { x: { ri: xPair.ri2, kind: 5, box }, curve: curveB }; // exact overlap endpoint
             xs.push([ri1, ri2]);
         }
         return xs;
@@ -24079,13 +24077,13 @@ function getIntersection(curveA, curveB, expMax, isANextB) {
     if (ris2.length === 0) {
         return [];
     }
-    let xPairs = getOtherTs(ps1, ps2, ris2);
+    const xPairs = getOtherTs(ps1, ps2, ris2);
     if (xPairs === undefined || xPairs.length === 0) {
         return [];
     }
-    for (let xPair of xPairs) {
-        let x1 = { x: xPair[0], curve: curveA };
-        let x2 = { x: xPair[1], curve: curveB };
+    for (const xPair of xPairs) {
+        const x1 = { x: xPair[0], curve: curveA };
+        const x2 = { x: xPair[1], curve: curveB };
         xs.push([x1, x2]);
     }
     return xs;
@@ -24144,22 +24142,22 @@ function evalDeCasteljauWithErr(ps, t) {
  * @param kind
  */
 function makeSimpleX(t, curve, kind) {
-    let ps = curve.ps;
+    const ps = curve.ps;
     if (t === 0) {
         // we have the exact point
-        let pS = ps[0];
-        let box = [ps[0], ps[0]];
+        const pS = ps[0];
+        const box = [ps[0], ps[0]];
         return { x: { ri: { tS: t, tE: t, multiplicity: 1 }, box, kind }, curve };
     }
     else if (t === 1) {
         // we have the exact point
-        let pE = ps[ps.length - 1];
-        let box = [pE, pE];
+        const pE = ps[ps.length - 1];
+        const box = [pE, pE];
         return { x: { ri: { tS: t, tE: t, multiplicity: 1 }, box, kind }, curve };
     }
     // there will be some error in calculating the point
-    let { p, pE } = evalDeCasteljauWithErr(ps, t);
-    let box = [
+    const { p, pE } = evalDeCasteljauWithErr(ps, t);
+    const box = [
         [p[0] - pE[0], p[1] - pE[1]],
         [p[0] + pE[0], p[1] + pE[1]]
     ];
@@ -24186,8 +24184,8 @@ function makeSimpleX(t, curve, kind) {
  */
 function getCurvesIntersections(expMax) {
     return (curveA, curveB) => {
-        let psA = curveA.ps;
-        let psB = curveB.ps;
+        const psA = curveA.ps;
+        const psB = curveB.ps;
         if (psA.length === 2 && psB.length === 2) {
             return getLineLineIntersections(curveA, curveB, expMax);
         }
@@ -24195,14 +24193,14 @@ function getCurvesIntersections(expMax) {
             // curves are connected at endpoints
             // closed bounding boxes are guaranteed to intersect - don't check
             // check open bounding boxes
-            let aabbsIntersectOpen = areBoxesIntersecting(false, getBoundingBox_(psA), getBoundingBox_(psB));
+            const aabbsIntersectOpen = areBoxesIntersecting(false, getBoundingBox_(psA), getBoundingBox_(psB));
             if (!aabbsIntersectOpen) {
                 return checkEndpoints(curveA, curveB);
             }
             // check open bounding hulls
-            let bbHullA = getBoundingHull(psA);
-            let bbHullB = getBoundingHull(psB);
-            let hullsIntersectOpen = doConvexPolygonsIntersect(bbHullA, bbHullB, false);
+            const bbHullA = getBoundingHull(psA);
+            const bbHullB = getBoundingHull(psB);
+            const hullsIntersectOpen = doConvexPolygonsIntersect(bbHullA, bbHullB, false);
             if (!hullsIntersectOpen) {
                 return checkEndpoints(curveA, curveB);
             }
@@ -24218,8 +24216,8 @@ function getCurvesIntersections(expMax) {
             return undefined;
         }
         // check closed bounding hulls
-        let bbHullA = getBoundingHull(psA);
-        let bbHullB = getBoundingHull(psB);
+        const bbHullA = getBoundingHull(psA);
+        const bbHullB = getBoundingHull(psB);
         possiblyIntersecting = doConvexPolygonsIntersect(bbHullA, bbHullB, true);
         if (!possiblyIntersecting) {
             return undefined;
@@ -24249,19 +24247,19 @@ function checkEndpoints(curveA, curveB) {
     }
     // At this point A-->B (curveA's next === curveB)
     // There is thus an intersection at curveA(t=1) and curveB(t=0)
-    let psA = curveA.ps;
-    let psB = curveB.ps;
+    const psA = curveA.ps;
+    const psB = curveB.ps;
     // Is last point (i.e. at `t` === 1) of curveB on curveA?
     // if (isPointOnBezierExtension(psA, psB[psB.length-1])) {
     if (isPointOnBezierExtension(psA, psB[psB.length - 1].map(c => [c]))) {
         // Check if they are in same k family (this *is* necessary for two curves
         // in same k-family joined end to end, e.g. ---A--->|---B---> in which
         // case ...)
-        let xPairs = getOtherTs(psA, psB, [createRootExact(1)]);
+        const xPairs = getOtherTs(psA, psB, [createRootExact(1)]);
         if (xPairs === undefined || xPairs.length === 0) {
             return undefined;
         }
-        let xPair = xPairs[0];
+        const xPair = xPairs[0];
         return [[
                 { x: xPair[0], curve: curveA },
                 makeSimpleX(1, curveB, 1)
@@ -24271,23 +24269,23 @@ function checkEndpoints(curveA, curveB) {
 function getLineLineIntersections(curveA, curveB, expMax) {
     let psA = curveA.ps;
     let psB = curveB.ps;
-    let bbA = getBoundingBox_(psA);
-    let bbB = getBoundingBox_(psB);
+    const bbA = getBoundingBox_(psA);
+    const bbB = getBoundingBox_(psB);
     if (curveA.next !== curveB && curveB.next !== curveA) {
         // the two lines are not connected at their endpoints
         if (areBoxesIntersecting(true, bbA, bbB)) {
-            let xs = getIntersection(curveA, curveB, expMax, false);
+            const xs = getIntersection(curveA, curveB, expMax, false);
             return xs.length ? xs : undefined;
         }
         return undefined;
     }
     // the two lines are connected at their endpoints
-    let swap = curveB.next === curveA;
+    const swap = curveB.next === curveA;
     if (swap) {
         [curveA, curveB] = [curveB, curveA];
         [psA, psB] = [psB, psA];
     }
-    let orientation = orient2d_orient2d(psA[0], psA[1], psB[1]);
+    const orientation = orient2d_orient2d(psA[0], psA[1], psB[1]);
     if (orientation !== 0) {
         // they cannot intersect
         return undefined;
@@ -24301,8 +24299,8 @@ function getLineLineIntersections(curveA, curveB, expMax) {
     }
     // it is a line going back on itself 
     // - return endpoint intersections
-    let lenCurve1 = squared_distance_between_squaredDistanceBetween(psA[0], psA[1]);
-    let lenCurve2 = squared_distance_between_squaredDistanceBetween(psB[0], psB[1]);
+    const lenCurve1 = squared_distance_between_squaredDistanceBetween(psA[0], psA[1]);
+    const lenCurve2 = squared_distance_between_squaredDistanceBetween(psB[0], psB[1]);
     let tPair;
     if (lenCurve1 > lenCurve2) {
         // tPair = [inversion01Precise(psA, psB[1]), 1];
@@ -24334,18 +24332,17 @@ function getLineLineIntersections(curveA, curveB, expMax) {
  * @param loops
  */
 function getIntersections(loops, expMax) {
-    let curves = [];
-    for (let loop of loops) {
-        for (let curve of loop.curves) {
+    const curves = [];
+    for (const loop of loops) {
+        for (const curve of loop.curves) {
             curves.push(curve);
         }
     }
-    ;
     // Filter curves so that we eliminate those that can definitely not intersect
-    let _xs = sweepLine(curves, curve => getBoundingBox_(curve.ps)[0][0], curve => getBoundingBox_(curve.ps)[1][0], getCurvesIntersections(expMax));
-    let xs = [];
-    for (let _x of _xs) {
-        for (let x of _x.u) {
+    const _xs = sweepLine(curves, curve => getBoundingBox_(curve.ps)[0][0], curve => getBoundingBox_(curve.ps)[1][0], getCurvesIntersections(expMax));
+    const xs = [];
+    for (const _x of _xs) {
+        for (const x of _x.u) {
             xs.push(x);
         }
     }
@@ -24360,19 +24357,19 @@ function getIntersections(loops, expMax) {
  * @param xPairs
  */
 function setIntersectionNextValues(xPairs) {
-    let xsByLoop = new Map();
-    for (let xPair of xPairs) {
-        for (let x_ of xPair) {
-            let loop = x_.curve.loop;
-            let xs_ = xsByLoop.get(loop) || [];
+    const xsByLoop = new Map();
+    for (const xPair of xPairs) {
+        for (const x_ of xPair) {
+            const loop = x_.curve.loop;
+            const xs_ = xsByLoop.get(loop) || [];
             if (!xs_.length) {
                 xsByLoop.set(loop, xs_);
             }
             xs_.push(x_);
         }
     }
-    for (let item of xsByLoop) {
-        let xs = item[1];
+    for (const item of xsByLoop) {
+        const xs = item[1];
         if (!xs || !xs.length) {
             continue;
         }
@@ -24893,26 +24890,26 @@ const get_self_intersections_eps = Number.EPSILON;
  * @param loops
  */
 function getSelfIntersections(loops) {
-    let xs = [];
-    for (let loop of loops) {
-        for (let curve of loop.curves) {
-            let ps = curve.ps;
-            let ts = bezierSelfIntersection(ps);
+    const xs = [];
+    for (const loop of loops) {
+        for (const curve of loop.curves) {
+            const ps = curve.ps;
+            const ts = bezierSelfIntersection(ps);
             // if (ts === undefined) { continue; }  // there is no self-intersection
             if (ts.length === 0) {
                 continue;
             }
             // if a cusp (or extremely close to it)
-            let kind = ts[0] === ts[1]
+            const kind = ts[0] === ts[1]
                 ? 3 /*cusp*/
                 : 2 /*self-intersection*/;
             // TODO - fix box - must combine 2 boxes and bezierSelfIntersection must return intervals
-            let t0S = ts[0] - get_self_intersections_eps;
-            let t0E = ts[0] + get_self_intersections_eps;
-            let t1S = ts[1] - get_self_intersections_eps;
-            let t1E = ts[1] + get_self_intersections_eps;
-            let box0 = getIntervalBox(ps, [t0S, t0E]); // ts are within 1 upls accurate
-            let box1 = getIntervalBox(ps, [t1S, t1E]); // ts are within 1 upls accurate
+            const t0S = ts[0] - get_self_intersections_eps;
+            const t0E = ts[0] + get_self_intersections_eps;
+            const t1S = ts[1] - get_self_intersections_eps;
+            const t1E = ts[1] + get_self_intersections_eps;
+            const box0 = getIntervalBox(ps, [t0S, t0E]); // ts are within 1 upls accurate
+            const box1 = getIntervalBox(ps, [t1S, t1E]); // ts are within 1 upls accurate
             xs.push([
                 // TODO - multiplicity relevant??
                 { x: { ri: { tS: t0S, tE: t0E, multiplicity: 1 }, box: box0, kind }, curve },
@@ -24928,10 +24925,10 @@ function getSelfIntersections(loops) {
 
 function getInterfaceIntersections(loops) {
     /** all one-sided Xs from */
-    let xs = [];
+    const xs = [];
     // Get interface points
-    for (let loop of loops) {
-        for (let curve of loop.curves) {
+    for (const loop of loops) {
+        for (const curve of loop.curves) {
             xs.push([
                 makeSimpleX(1, curve, 4),
                 makeSimpleX(0, curve.next, 4), // interface
@@ -24948,15 +24945,15 @@ function getInterfaceIntersections(loops) {
 /**
  *
  */
-let get_min_y_getMinY = memoize(function getMinY(loop) {
-    let curves = loop.curves;
+const get_min_y_getMinY = memoize(function getMinY(loop) {
+    const curves = loop.curves;
     let bestY = getYBoundsTight(curves[0].ps).minY;
     let bestCurve = curves[0];
     for (let i = 1; i < curves.length; i++) {
-        let ps = loop.curves[i].ps;
-        let minY = getYBoundsTight(ps).minY;
-        let v = minY.box[0][1];
-        let x = bestY.box[0][1];
+        const ps = loop.curves[i].ps;
+        const minY = getYBoundsTight(ps).minY;
+        const v = minY.box[0][1];
+        const x = bestY.box[0][1];
         if (v < x || (v === x && minY.ts[0] > bestY.ts[0])) {
             bestY = minY;
             bestCurve = loop.curves[i];
@@ -24974,8 +24971,8 @@ let get_min_y_getMinY = memoize(function getMinY(loop) {
  * @param loop
  */
 function getExtreme(loop) {
-    let { curve, y } = get_min_y_getMinY(loop);
-    let ts = y.ts;
+    const { curve, y } = get_min_y_getMinY(loop);
+    const ts = y.ts;
     if (ts[0] <= 0) {
         return [
             makeSimpleX(0, curve, 0),
@@ -25020,10 +25017,10 @@ function getExtreme(loop) {
  * @param loops
  */
 function getExtremes(loops) {
-    let extremes = new Map();
-    let xs = [];
-    for (let loop of loops) {
-        let xPair = getExtreme(loop);
+    const extremes = new Map();
+    const xs = [];
+    for (const loop of loops) {
+        const xPair = getExtreme(loop);
         xs.push(xPair);
         extremes.set(loop, xPair);
     }
@@ -25042,9 +25039,9 @@ function getExtremes(loops) {
  * @param significantFigures
  */
 function toGrid(a, expMax, significantFigures) {
-    let expA = Math.floor(Math.log2(Math.abs(a)));
-    let expDif = expMax - expA;
-    let newSig = significantFigures - expDif + 1;
+    const expA = Math.floor(Math.log2(Math.abs(a)));
+    const expDif = expMax - expA;
+    const newSig = significantFigures - expDif + 1;
     if (newSig <= 0) {
         return 0;
     }
@@ -25071,11 +25068,10 @@ function sendContainersToGrid(containers, expMax, containerDim) {
      * than ⌈sqrt(n)⌉ where n is the number of intersections in a container.
      * Assume n < 100 - this is a (mild) limitation of the algorithm
      */
-    let expContainer = Math.log2(containerDim);
-    let expContainerAdj = expContainer - 3; // 2**-3 === 1/8 of container
-    let containers_ = containers.map(container => {
-        let box = container.box;
-        box = box.map(p => p.map(c => {
+    const expContainer = Math.log2(containerDim);
+    const expContainerAdj = expContainer - 3; // 2**-3 === 1/8 of container
+    const containers_ = containers.map(container => {
+        const box = container.box.map(p => p.map(c => {
             return toGrid(c, expMax, expMax - expContainerAdj);
         }));
         return { ...container, box };
@@ -25103,10 +25099,10 @@ function compareOrderedInOut(inOutA, inOutB) {
     }
     // Could not resolve by side indexes (they are the same)
     // Compare by side `t` values
-    let xA = inOutA.sideX;
-    let xB = inOutB.sideX;
+    const xA = inOutA.sideX;
+    const xB = inOutB.sideX;
     res = xA.ri.tS - xB.ri.tS;
-    let errBound = 2 * 4 * Number.EPSILON; // is factor of 2 necessary?
+    const errBound = 2 * 4 * Number.EPSILON; // is factor of 2 necessary?
     if (compare_in_out_abs(res) >= errBound) {
         return res;
     }
@@ -25169,30 +25165,30 @@ function compareOrderedInOut(inOutA, inOutB) {
  * @param containerDim
  */
 function getContainers(loops, containerDim, expMax) {
-    //let t0 = performance.now();
-    let xs1 = getIntersections(loops, expMax);
-    //let t1 = performance.now();
+    //const t0 = performance.now();
+    const xs1 = getIntersections(loops, expMax);
+    //const t1 = performance.now();
     //console.log("intersections took " + ((t1 - t0)).toFixed(3) + " milliseconds.");
-    let xs2 = getSelfIntersections(loops);
-    let xs3 = getInterfaceIntersections(loops);
-    let { extremes, xs: xs4 } = getExtremes(loops);
+    const xs2 = getSelfIntersections(loops);
+    const xs3 = getInterfaceIntersections(loops);
+    const { extremes, xs: xs4 } = getExtremes(loops);
     let xPairs = [...xs1, ...xs2, ...xs3, ...xs4];
     //console.log('general  ', xs1);
     //console.log('self     ', xs2);
     //console.log('interface', xs3);
     //console.log('topmost  ', xs4);
     if (typeof _debug_ !== 'undefined') {
-        for (let xPair of xs1) {
+        for (const xPair of xs1) {
             _debug_.generated.elems.intersection.push(...xPair);
         }
-        for (let xPair of xs2) {
+        for (const xPair of xs2) {
             _debug_.generated.elems.intersection.push(...xPair);
         }
         // TODO - are interface intersections really necessary?
-        for (let xPair of xs3) {
+        for (const xPair of xs3) {
             _debug_.generated.elems.intersection.push(...xPair);
         }
-        for (let xPair of xs4) {
+        for (const xPair of xs4) {
             _debug_.generated.elems.intersection.push(...xPair);
         }
     }
@@ -25210,15 +25206,15 @@ function getContainers(loops, containerDim, expMax) {
     // iterate, combining containers that overlap on each iteration 
     while (true) {
         /** container intersections as an array of Container pairs */
-        let is = sweepLine(containers, getLeftMost, getRightMost, areContainersIntersecting);
+        const is = sweepLine(containers, getLeftMost, getRightMost, areContainersIntersecting);
         // if there are no more intersections between containers we're done
         if (!is.length) {
             break;
         }
-        let graph = new Map();
+        const graph = new Map();
         addEdges(graph, is);
-        let connectedContainers = getConnectedComponents(graph);
-        let isolatedContainers = getIsolatedComponents(containers, connectedContainers);
+        const connectedContainers = getConnectedComponents(graph);
+        const isolatedContainers = getIsolatedComponents(containers, connectedContainers);
         containers = [
             ...mergeContainers(connectedContainers),
             ...isolatedContainers
@@ -25233,8 +25229,8 @@ function getContainers(loops, containerDim, expMax) {
     // exactly one opposite curve intersection (t values come in pairs)
     // Also, set inOuts on each container, and `idx`
     let ioIdx = 0;
-    for (let container of containers) {
-        for (let x of container.xs) {
+    for (const container of containers) {
+        for (const x of container.xs) {
             x.container = container;
         }
         let inOuts;
@@ -25245,8 +25241,8 @@ function getContainers(loops, containerDim, expMax) {
     xPairs = xPairs.filter(x => x[0].container !== undefined);
     setIntersectionNextValues(xPairs);
     // Connect container ins and outs
-    for (let container of containers) {
-        for (let out of container.inOuts) {
+    for (const container of containers) {
+        for (const out of container.inOuts) {
             if (out.dir === -1) {
                 continue;
             }
@@ -25262,15 +25258,15 @@ function getContainers(loops, containerDim, expMax) {
             out.idx = out.next.idx;
         }
     }
-    for (let container of containers) {
+    for (const container of containers) {
         container.inOuts.sort(compareOrderedInOut);
     }
     // set `next` and `prev` around container for each `inOut` for each `container`
-    for (let container of containers) {
-        let inOuts = container.inOuts;
+    for (const container of containers) {
+        const inOuts = container.inOuts;
         let prevInOut = inOuts[inOuts.length - 1];
         for (let i = 0; i < inOuts.length; i++) {
-            let inOut = inOuts[i];
+            const inOut = inOuts[i];
             inOut.prevAround = prevInOut;
             prevInOut.nextAround = inOut;
             prevInOut = inOut;
@@ -25285,16 +25281,16 @@ function getContainers(loops, containerDim, expMax) {
  * @param containers
  */
 function filterContainers(containers) {
-    let containers_ = containers.filter(container => {
-        let xs = container.xs;
+    const containers_ = containers.filter(container => {
+        const xs = container.xs;
         if (container.xs.length === 2) {
-            let _x_ = xs[0];
+            const _x_ = xs[0];
             if (_x_.x.kind === 1 && _x_.x.ri.multiplicity % 2 === 0) {
                 // multiple even intersection - exclude
                 return false;
             }
         }
-        for (let x of container.xs) {
+        for (const x of container.xs) {
             if (x.x.kind !== 4) {
                 // include container if any __X__ is not an interface
                 return true;
@@ -25323,9 +25319,9 @@ function getRightMost(container) {
  * @param parent
  */
 function getOutermostInAndOut(container) {
-    let inOuts = container.inOuts;
-    let firstInOut = inOuts[0];
-    let lastInOut = inOuts[inOuts.length - 1];
+    const inOuts = container.inOuts;
+    const firstInOut = inOuts[0];
+    const lastInOut = inOuts[inOuts.length - 1];
     // set 'loop' direction
     if (firstInOut.dir === 1) {
         firstInOut.orientation = -1; // anti-clockwise
@@ -25378,8 +25374,8 @@ function isPoint(ps) {
  * @param idx an optional index to assign to the loop - it can be anything
  */
 function loopFromBeziers(beziers = [], idx) {
-    let curves = [];
-    let loop = { beziers, curves, idx };
+    const curves = [];
+    const loop = { beziers, curves, idx };
     if (!beziers.length) {
         return loop;
     }
@@ -25389,7 +25385,7 @@ function loopFromBeziers(beziers = [], idx) {
         if (isPoint(beziers[i])) {
             continue;
         }
-        let curve = {
+        const curve = {
             loop,
             ps: beziers[i],
             prev: prev,
@@ -25404,7 +25400,7 @@ function loopFromBeziers(beziers = [], idx) {
         j++;
     }
     // close loop
-    let lastCurve = curves[curves.length - 1];
+    const lastCurve = curves[curves.length - 1];
     curves[0].prev = lastCurve;
     lastCurve.next = curves[0];
     // TODO - remove this eventually
@@ -25421,10 +25417,10 @@ function loopFromBeziers(beziers = [], idx) {
  * @param loop
  */
 function reverseOrientation(loop) {
-    let beziers = [];
-    let curves = loop.curves;
+    const beziers = [];
+    const curves = loop.curves;
     for (let i = curves.length - 1; i >= 0; i--) {
-        let curve = reverse(curves[i].ps);
+        const curve = reverse(curves[i].ps);
         beziers.push(curve);
     }
     return loopFromBeziers(beziers);
@@ -25706,8 +25702,8 @@ function fixBezierByPointSpacing(ps, gridSpacing, sendToGrid) {
             ]; // cannot be a line or quad
         }
         else {
-            let v = toLength(fromTo(ps[1], ps[2]), 2 * gridSpacing);
-            let p1 = translate(ps[1], v);
+            const v = toLength(fromTo(ps[1], ps[2]), 2 * gridSpacing);
+            const p1 = translate(ps[1], v);
             return checkCubicForLineOrQuad([
                 ps[0],
                 sendToGrid(p1),
@@ -25731,8 +25727,8 @@ function fixBezierByPointSpacing(ps, gridSpacing, sendToGrid) {
             ]; // cannot be a line or quad
         }
         else {
-            let v = toLength(fromTo(ps[2], ps[1]), 2 * gridSpacing);
-            let p2 = translate(ps[2], v);
+            const v = toLength(fromTo(ps[2], ps[1]), 2 * gridSpacing);
+            const p2 = translate(ps[2], v);
             return checkCubicForLineOrQuad([
                 ps[0],
                 ps[1],
@@ -25778,18 +25774,18 @@ function sendToGridNoop(p) { return p; }
  */
 function fixBeziers(expMax, maxBitLength, doSendToGrid = true) {
     /** The actual control point grid spacing */
-    let gridSpacing = 2 ** expMax * 2 ** (-maxBitLength);
-    let sendToGrid_ = doSendToGrid
+    const gridSpacing = 2 ** expMax * 2 ** (-maxBitLength);
+    const sendToGrid_ = doSendToGrid
         ? sendToGrid(expMax, maxBitLength)
         : sendToGridNoop;
     return (loop) => {
-        let newPss = [];
+        const newPss = [];
         for (let i = 0; i < loop.length; i++) {
             let ps = loop[i].slice();
             // Get endpoint of last good bezier or else the original start point
-            let len = newPss.length;
-            let prevGoodBezier = newPss[len - 1];
-            let prevGoodBezierEndpoint = prevGoodBezier
+            const len = newPss.length;
+            const prevGoodBezier = newPss[len - 1];
+            const prevGoodBezierEndpoint = prevGoodBezier
                 ? prevGoodBezier[prevGoodBezier.length - 1]
                 : sendToGrid_(loop[0][0]); // Bit-align original start point
             // Set the start point to the previous good bezier's endpoint
@@ -25806,12 +25802,12 @@ function fixBeziers(expMax, maxBitLength, doSendToGrid = true) {
                 newPss.push(ps);
             }
         }
-        let len = newPss.length;
+        const len = newPss.length;
         if (!len) {
             return [];
         }
         // Connect the last bezier end-point to the first bezier start-point.
-        let ps = newPss[len - 1];
+        const ps = newPss[len - 1];
         ps[ps.length - 1] = newPss[0][0];
         return newPss;
     };
@@ -25847,7 +25843,7 @@ function fixBeziers(expMax, maxBitLength, doSendToGrid = true) {
  * @param doSendToGrid
  */
 function normalizeLoops(bezierLoops, maxBitLength, expMax, doScramble = false, doSendToGrid = true) {
-    let fixBeziers_ = fixBeziers(expMax, maxBitLength, doSendToGrid);
+    const fixBeziers_ = fixBeziers(expMax, maxBitLength, doSendToGrid);
     let loops = bezierLoops.slice();
     // just for testing purposes
     loops = doScramble ? scrambleLoops(loops, maxBitLength, expMax, 1) : loops;
@@ -25857,14 +25853,13 @@ function normalizeLoops(bezierLoops, maxBitLength, expMax, doScramble = false, d
 }
 /** Just for testing purposes - not used in the actual algorithm */
 function scrambleLoops(loops, maxBitLength, expMax, mult = 0.02) {
-    let loops_ = [];
-    for (let loop of loops) {
-        let loop_ = [];
-        for (let bez of loop) {
-            let bez_ = bez.map(v => v.map(c => {
+    const loops_ = [];
+    for (const loop of loops) {
+        const loop_ = [];
+        for (const bez of loop) {
+            const bez_ = bez.map(v => v.map(c => {
                 let c_ = 0;
                 let ii = 0;
-                let bl = 0;
                 let mblc;
                 let mbl = 0;
                 while (true) {
@@ -25873,7 +25868,7 @@ function scrambleLoops(loops, maxBitLength, expMax, mult = 0.02) {
                     }
                     c_ = (c + Math.random()) * (1 + ((Math.random() - 0.7) * mult));
                     c_ = toGrid(c_, expMax, maxBitLength);
-                    let bl = bitLength(c_);
+                    const bl = bitLength(c_);
                     if (bl > mbl) {
                         mbl = bl;
                         mblc = c_;
@@ -25895,13 +25890,13 @@ function scrambleLoops(loops, maxBitLength, expMax, mult = 0.02) {
  * Returns the maximum control point coordinate value (x or y) within any loop.
  * @param loops The array of loops
  */
-let getMaxCoordinate = memoize((loops) => {
+const getMaxCoordinate = memoize((loops) => {
     let max = 0;
-    for (let loop of loops) {
-        for (let ps of loop) {
-            for (let p of ps) {
-                for (let c of p) {
-                    let c_ = Math.abs(c);
+    for (const loop of loops) {
+        for (const ps of loop) {
+            for (const p of ps) {
+                for (const c of p) {
+                    const c_ = Math.abs(c);
                     if (c_ > max) {
                         max = c_;
                     }
@@ -25945,7 +25940,7 @@ function getLoopArea(loop) {
 function beziersToSvgPathStr(beziers) {
     let str = '';
     for (let i = 0; i < beziers.length; i++) {
-        let ps = beziers[i];
+        const ps = beziers[i];
         if (i === 0) {
             str = 'M ' +
                 ps[0][0].toString() + ' ' +
@@ -25986,7 +25981,7 @@ function beziersToSvgPathStr(beziers) {
  */
 function loopsToSvgPathStr(loops) {
     let str = '';
-    for (let loop of loops) {
+    for (const loop of loops) {
         str = str + beziersToSvgPathStr(loop) + '\n';
     }
     return str;
@@ -26033,54 +26028,54 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
      * Higher bitlengths would increase the running time of the algorithm
      * considerably.
      */
-    let maxBitLength = 46;
+    const maxBitLength = 46;
     maxCoordinate = maxCoordinate || getMaxCoordinate(bezierLoops);
     /** The exponent, e, such that 2**e >= all bezier coordinate points. */
-    let expMax = Math.ceil(Math.log2(maxCoordinate));
-    let gridSpacing = 2 ** expMax * 2 ** (-maxBitLength);
+    const expMax = Math.ceil(Math.log2(maxCoordinate));
+    const gridSpacing = 2 ** expMax * 2 ** (-maxBitLength);
     /**
      * A size (based on the max value of the tangent) for the containers holding
      * critical points.
      */
     const containerSizeMultiplier = 2 ** 4;
     //const containerSizeMultiplier = 2**39;
-    let containerDim = gridSpacing * containerSizeMultiplier;
+    const containerDim = gridSpacing * containerSizeMultiplier;
     bezierLoops = normalizeLoops(bezierLoops, maxBitLength, expMax, false, true);
     addDebugInfo1(bezierLoops);
     bezierLoops.sort(orderLoopAscendingByMinY);
-    let loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));
-    let { extremes } = getContainers(loops, containerDim, expMax);
-    let root = createRootInOut();
-    let takenLoops = new Set();
-    let takenOuts = new Set(); // Taken intersections
-    for (let loop of loops) {
+    const loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));
+    const { extremes } = getContainers(loops, containerDim, expMax);
+    const root = createRootInOut();
+    const takenLoops = new Set();
+    const takenOuts = new Set(); // Taken intersections
+    for (const loop of loops) {
         if (takenLoops.has(loop)) {
             continue;
         }
         takenLoops.add(loop);
-        let parent = getTightestContainingLoop(root, loop);
-        let container = extremes.get(loop)[0].container;
+        const parent = getTightestContainingLoop(root, loop);
+        const container = extremes.get(loop)[0].container;
         if (!container.inOuts.length) {
             continue;
         }
-        let initialOut = getOutermostInAndOut(container);
+        const initialOut = getOutermostInAndOut(container);
         // Each loop generated will give rise to one componentLoop. 
         initialOut.parent = parent;
         initialOut.windingNum = parent.windingNum + initialOut.orientation;
         initialOut.children = new Set();
         completePath(expMax, getOutermostInAndOut(container), takenLoops, takenOuts);
     }
-    let loopTrees = splitLoopTrees(root);
-    let outSets = loopTrees.map(getLoopsFromTree);
-    let loopss = outSets.map(outSet => outSet.map(out => loopFromOut(out, outSet[0].orientation)));
+    const loopTrees = splitLoopTrees(root);
+    const outSets = loopTrees.map(getLoopsFromTree);
+    const loopss = outSets.map(outSet => outSet.map(out => loopFromOut(out, outSet[0].orientation)));
     /**
      * Arbitrarily choose min. loop area to be equal to one square pixel on a
      * 4096 x 4096 grid.
      */
-    let minLoopArea = (2 ** expMax * 2 ** (-12)) ** 2;
-    let loopss_ = [];
+    const minLoopArea = (2 ** expMax * 2 ** (-12)) ** 2;
+    const loopss_ = [];
     for (let i = 0; i < loopss.length; i++) {
-        let loops = loopss[i].filter((loop) => Math.abs(getLoopArea(loop)) > minLoopArea);
+        const loops = loopss[i].filter((loop) => Math.abs(getLoopArea(loop)) > minLoopArea);
         if (loops.length) {
             loops.sort((loopA, loopB) => {
                 return orderLoopAscendingByMinY(loopA.beziers, loopB.beziers);
@@ -26096,7 +26091,7 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
     return loopss_;
 }
 function loopFromOut(out, orientation) {
-    let loop = orientation < 0
+    const loop = orientation < 0
         ? loopFromBeziers(out.beziers)
         : reverseOrientation(loopFromBeziers(out.beziers));
     return loop;
@@ -26105,7 +26100,7 @@ function addDebugInfo2(loopss) {
     if (typeof _debug_ === 'undefined') {
         return;
     }
-    for (let loops of loopss) {
+    for (const loops of loopss) {
         _debug_.generated.elems.loop.push(...loops);
         _debug_.generated.elems.loops.push(loops);
         //console.log(loopsToSvgPathStr(loops.map(loop => loop.beziers)));
@@ -26130,17 +26125,17 @@ function addDebugInfo1(loops) {
     }
     // Modifies the displayed SVG to reflect changes caused by `normalizeLoops`.
     if (typeof document !== 'undefined') {
-        let pathStr = loopsToSvgPathStr(loops);
-        let $svg = document.getElementsByClassName('shape')[0];
+        const pathStr = loopsToSvgPathStr(loops);
+        const $svg = document.getElementsByClassName('shape')[0];
         $svg.setAttributeNS(null, 'd', pathStr);
     }
-    for (let loop of loops) {
+    for (const loop of loops) {
         _debug_.generated.elems.loopPre.push(...loops);
         _debug_.generated.elems.loopsPre.push(loops);
-        for (let ps of loop) {
-            let lbb = getBoundingBox_(ps);
-            let tbb = getBoundingBoxTight(ps);
-            let bhull = getBoundingHull(ps);
+        for (const ps of loop) {
+            const lbb = getBoundingBox_(ps);
+            const tbb = getBoundingBoxTight(ps);
+            const bhull = getBoundingHull(ps);
             _debug_.generated.elems.bezier_.push(ps);
             _debug_.generated.elems.looseBoundingBox_.push(lbb);
             _debug_.generated.elems.tightBoundingBox_.push(tbb);
@@ -26184,9 +26179,9 @@ const XMLNS = 'http://www.w3.org/2000/svg';
  * @param delay
  */
 function circle(g, circle, classes = DEFAULT_CLASS, delay) {
-    let c = circle.center;
-    let r = circle.radius;
-    let $circle = document.createElementNS(XMLNS, 'circle');
+    const c = circle.center;
+    const r = circle.radius;
+    const $circle = document.createElementNS(XMLNS, 'circle');
     $circle.setAttributeNS(null, "cx", c[0].toString());
     $circle.setAttributeNS(null, "cy", c[1].toString());
     $circle.setAttributeNS(null, "r", r.toString());
@@ -26209,7 +26204,7 @@ function circle(g, circle, classes = DEFAULT_CLASS, delay) {
  * @param classes
  */
 function line(g, l, classes = DEFAULT_CLASS, delay) {
-    let $line = document.createElementNS(XMLNS, 'line');
+    const $line = document.createElementNS(XMLNS, 'line');
     $line.setAttributeNS(null, "x1", l[0][0].toString());
     $line.setAttributeNS(null, "y1", l[0][1].toString());
     $line.setAttributeNS(null, "x2", l[1][0].toString());
@@ -26231,12 +26226,12 @@ function line(g, l, classes = DEFAULT_CLASS, delay) {
  * Draws a crosshair.
  */
 function crossHair(g, p, classes = DEFAULT_CLASS, r = 3, delay) {
-    let circle_ = { center: p, radius: r };
-    let $circle = circle(g, circle_, classes);
-    let l1 = [[p[0] - r, p[1]], [p[0] + r, p[1]]];
-    let l2 = [[p[0], p[1] - r], [p[0], p[1] + r]];
-    let $l1 = line(g, l1, classes);
-    let $l2 = line(g, l2, classes);
+    const circle_ = { center: p, radius: r };
+    const $circle = circle(g, circle_, classes);
+    const l1 = [[p[0] - r, p[1]], [p[0] + r, p[1]]];
+    const l2 = [[p[0], p[1] - r], [p[0], p[1] + r]];
+    const $l1 = line(g, l1, classes);
+    const $l2 = line(g, l2, classes);
     if (delay) {
         setTimeout(() => {
             $circle.forEach(e => e.remove());
@@ -26254,7 +26249,7 @@ function crossHair(g, p, classes = DEFAULT_CLASS, r = 3, delay) {
  * Draws a dot.
  */
 function dot(g, p, r = 3, color = 'red', delay) {
-    let [$dot] = circle(g, { center: p, radius: r }, 'dot ' + color, delay);
+    const [$dot] = circle(g, { center: p, radius: r }, 'dot ' + color, delay);
     if (delay) {
         setTimeout(() => $dot.remove(), delay);
     }
@@ -26266,12 +26261,12 @@ function dot(g, p, r = 3, color = 'red', delay) {
 
 
 function rect(g, rect, classes = DEFAULT_CLASS, delay) {
-    let [[x0, y0], [x1, y1]] = rect;
-    let x = x0 < x1 ? x0 : x1;
-    let y = y0 < y1 ? y0 : y1;
-    let width = Math.abs(x0 - x1);
-    let height = Math.abs(y0 - y1);
-    let $rect = document.createElementNS(XMLNS, 'rect');
+    const [[x0, y0], [x1, y1]] = rect;
+    const x = x0 < x1 ? x0 : x1;
+    const y = y0 < y1 ? y0 : y1;
+    const width = Math.abs(x0 - x1);
+    const height = Math.abs(y0 - y1);
+    const $rect = document.createElementNS(XMLNS, 'rect');
     $rect.setAttributeNS(null, "x", x.toString());
     $rect.setAttributeNS(null, "y", y.toString());
     $rect.setAttributeNS(null, "width", width.toString());
@@ -26299,7 +26294,7 @@ function rect(g, rect, classes = DEFAULT_CLASS, delay) {
  * @param delay
  */
 function polygon(g, poly, class_ = DEFAULT_CLASS, delay) {
-    let $path = document.createElementNS(XMLNS, 'path');
+    const $path = document.createElementNS(XMLNS, 'path');
     let d = `M${poly[0][0]} ${poly[0][1]} L`;
     for (let i = 0; i < poly.length; i++) {
         d += `${poly[i][0]} ${poly[i][1]} `;
@@ -26324,10 +26319,10 @@ function loop(g, curves, class_ = DEFAULT_CLASS, delay) {
     if (!curves.length) {
         return [];
     }
-    let $path = document.createElementNS(XMLNS, 'path');
+    const $path = document.createElementNS(XMLNS, 'path');
     let d = `M${curves[0][0][0]} ${curves[0][0][1]} `;
     for (let i = 0; i < curves.length; i++) {
-        let curve = curves[i];
+        const curve = curves[i];
         d += `${getType(curve.length)} `;
         for (let j = 1; j < curve.length; j++) {
             d += `${curve[j][0]} ${curve[j][1]} `;
@@ -26364,7 +26359,7 @@ function polyline(g, poly, class_ = DEFAULT_CLASS, delay) {
     if (poly.length < 2) {
         return [];
     }
-    let $path = document.createElementNS(XMLNS, 'path');
+    const $path = document.createElementNS(XMLNS, 'path');
     let d = `M${poly[0][0]} ${poly[0][1]} L`;
     for (let i = 0; i < poly.length; i++) {
         d += `${poly[i][0]} ${poly[i][1]} `;
@@ -26385,8 +26380,8 @@ function polyline(g, poly, class_ = DEFAULT_CLASS, delay) {
 
 
 function quadBezier(g, ps, class_ = DEFAULT_CLASS, delay) {
-    let [[x0, y0], [x1, y1], [x2, y2]] = ps;
-    let $path = document.createElementNS(XMLNS, 'path');
+    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
+    const $path = document.createElementNS(XMLNS, 'path');
     $path.setAttributeNS(null, "d", `M${x0} ${y0} Q${x1} ${y1} ${x2} ${y2}`);
     if (class_) {
         $path.setAttributeNS(null, "class", class_);
@@ -26404,12 +26399,12 @@ function quadBezier(g, ps, class_ = DEFAULT_CLASS, delay) {
 
 
 function cubicBezier(g, bezier, class_ = DEFAULT_CLASS, delay) {
-    let [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = bezier;
+    const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = bezier;
     if (x0 === x3 && x1 === x3 && x2 === x3 &&
         y0 === y3 && y1 === y3 && y2 === y3) {
         return crossHair(g, [x0, y0], class_, 0.2, delay);
     }
-    let $path = document.createElementNS(XMLNS, 'path');
+    const $path = document.createElementNS(XMLNS, 'path');
     $path.setAttributeNS(null, "d", `M${x0} ${y0} C${x1} ${y1} ${x2} ${y2} ${x3} ${y3}`);
     $path.setAttributeNS(null, "class", class_);
     g.appendChild($path);
@@ -26449,12 +26444,12 @@ const COLORS = ['red', 'green', 'cyan', 'blue'];
  * @param delay
  */
 function beziers(g, beziers, classes, delay) {
-    let alternateColors = classes === undefined;
-    let $beziers = [];
+    const alternateColors = classes === undefined;
+    const $beziers = [];
     for (let i = 0; i < beziers.length; i++) {
-        let ps = beziers[i];
-        let color = COLORS[i % COLORS.length];
-        let class_ = alternateColors
+        const ps = beziers[i];
+        const color = COLORS[i % COLORS.length];
+        const class_ = alternateColors
             ? 'thin5 nofill ' + color
             : classes;
         $beziers.push(...bezier(g, ps, class_));
@@ -26473,26 +26468,26 @@ function beziers(g, beziers, classes, delay) {
  * @param t The parameter ∈ [0,1]
  */
 function evaluateBezier(ps, t) {
-    let s = 1 - t;
+    const s = 1 - t;
     if (ps.length === 4) {
         // cubic
-        let [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
-        let x = x0 * s ** 3 + 3 * x1 * s ** 2 * t + 3 * x2 * s * t ** 2 + x3 * t ** 3;
-        let y = y0 * s ** 3 + 3 * y1 * s ** 2 * t + 3 * y2 * s * t ** 2 + y3 * t ** 3;
+        const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
+        const x = x0 * s ** 3 + 3 * x1 * s ** 2 * t + 3 * x2 * s * t ** 2 + x3 * t ** 3;
+        const y = y0 * s ** 3 + 3 * y1 * s ** 2 * t + 3 * y2 * s * t ** 2 + y3 * t ** 3;
         return [x, y];
     }
     if (ps.length === 3) {
         // quadratic
-        let [[x0, y0], [x1, y1], [x2, y2]] = ps;
-        let x = x0 * s ** 2 + 2 * x1 * s * t + x2 * t ** 2;
-        let y = y0 * s ** 2 + 2 * y1 * s * t + y2 * t ** 2;
+        const [[x0, y0], [x1, y1], [x2, y2]] = ps;
+        const x = x0 * s ** 2 + 2 * x1 * s * t + x2 * t ** 2;
+        const y = y0 * s ** 2 + 2 * y1 * s * t + y2 * t ** 2;
         return [x, y];
     }
     if (ps.length === 2) {
         // line
-        let [[x0, y0], [x1, y1]] = ps;
-        let x = x0 * s + x1 * t;
-        let y = y0 * s + y1 * t;
+        const [[x0, y0], [x1, y1]] = ps;
+        const x = x0 * s + x1 * t;
+        const y = y0 * s + y1 * t;
         return [x, y];
     }
     return [NaN, NaN];
@@ -26529,18 +26524,18 @@ function splitAt(ps, t) {
  * @param t The t parameter where the curve should be split
  */
 function splitCubicAt(ps, t) {
-    let [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
-    let s = 1 - t;
-    let t2 = t * t;
-    let t3 = t2 * t;
-    let s2 = s * s;
-    let s3 = s2 * s;
+    const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
+    const s = 1 - t;
+    const t2 = t * t;
+    const t3 = t2 * t;
+    const s2 = s * s;
+    const s3 = s2 * s;
     /** The split point */
-    let p = [
+    const p = [
         t3 * x3 + 3 * s * t2 * x2 + 3 * s2 * t * x1 + s3 * x0,
         t3 * y3 + 3 * s * t2 * y2 + 3 * s2 * t * y1 + s3 * y0
     ];
-    let ps1 = [
+    const ps1 = [
         [x0, y0],
         [t * x1 + s * x0,
             t * y1 + s * y0],
@@ -26548,7 +26543,7 @@ function splitCubicAt(ps, t) {
             t2 * y2 + 2 * s * t * y1 + s2 * y0],
         p
     ];
-    let ps2 = [
+    const ps2 = [
         p,
         [t2 * x3 + 2 * t * s * x2 + s2 * x1,
             t2 * y3 + 2 * t * s * y2 + s2 * y1],
@@ -26559,20 +26554,20 @@ function splitCubicAt(ps, t) {
     return [ps1, ps2];
 }
 function splitQuadAt(ps, t) {
-    let [[x0, y0], [x1, y1], [x2, y2]] = ps;
-    let s = 1 - t;
+    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
+    const s = 1 - t;
     /** The split point */
-    let p = [
+    const p = [
         s * s * x0 + 2 * s * t * x1 + t * t * x2,
         s * s * y0 + 2 * s * t * y1 + t * t * y2
     ];
-    let ps1 = [
+    const ps1 = [
         [x0, y0],
         [s * x0 + t * x1,
             s * y0 + t * y1],
         p
     ];
-    let ps2 = [
+    const ps2 = [
         p,
         [s * x1 + t * x2,
             s * y1 + t * y2],
@@ -26581,18 +26576,18 @@ function splitQuadAt(ps, t) {
     return [ps1, ps2];
 }
 function splitLineAt(ps, t) {
-    let [[x0, y0], [x1, y1]] = ps;
-    let s = 1 - t;
+    const [[x0, y0], [x1, y1]] = ps;
+    const s = 1 - t;
     /** The split point */
-    let p = [
+    const p = [
         s * x0 + t * x1,
         s * y0 + t * y1
     ];
-    let ps1 = [
+    const ps1 = [
         [x0, y0],
         p
     ];
-    let ps2 = [
+    const ps2 = [
         p,
         [x1, y1]
     ];
@@ -26620,7 +26615,7 @@ function bezierFromBezierPiece(ps, tRange) {
     }
     // If tRange[0] === tRange[1] then return a single point degenerated bezier.
     if (tRange[0] === tRange[1]) {
-        let p = evaluateBezier(ps, tRange[0]);
+        const p = evaluateBezier(ps, tRange[0]);
         return [p, p, p, p];
     }
     if (tRange[0] === 0) {
@@ -26649,16 +26644,10 @@ function bezierFromBezierPiece(ps, tRange) {
  * @param delay
  */
 function bezierPiece(g, ps_, tRange, class_ = DEFAULT_CLASS, delay) {
-    let $elems = [];
-    // Draw crosshair if t range bounds are equal.
-    if (tRange[0] === tRange[1]) {
-        let p = evaluateBezier(ps_, tRange[0]);
-        $elems = crossHair(g, p, class_, 1.5);
-    }
-    else {
-        let ps = bezierFromBezierPiece(ps_, tRange);
-        $elems = bezier(g, ps, class_);
-    }
+    const $elems = (tRange[0] === tRange[1])
+        // Draw crosshair if t range bounds are equal.
+        ? crossHair(g, evaluateBezier(ps_, tRange[0]), class_, 1.5)
+        : bezier(g, bezierFromBezierPiece(ps_, tRange), class_);
     if (delay) {
         setTimeout(() => $elems.forEach(e => e.remove()), delay);
     }
@@ -26679,7 +26668,7 @@ function bezierPiece(g, ps_, tRange, class_ = DEFAULT_CLASS, delay) {
  * @param delay
  */
 function text_text(g, p, str, fontSize, classes = DEFAULT_CLASS, delay) {
-    let $text = document.createElementNS(XMLNS, 'text');
+    const $text = document.createElementNS(XMLNS, 'text');
     $text.setAttributeNS(null, "x", p[0].toString());
     $text.setAttributeNS(null, "y", p[1].toString());
     $text.setAttributeNS(null, "font-size", fontSize.toString());
@@ -26708,7 +26697,7 @@ function text_text(g, p, str, fontSize, classes = DEFAULT_CLASS, delay) {
 
 
 
-let draw_fs_drawFs = {
+const drawFs = {
     circle: circle,
     crossHair: crossHair,
     dot: dot,
@@ -26726,125 +26715,16 @@ let draw_fs_drawFs = {
 };
 
 //# sourceMappingURL=draw-fs.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/debug/debug.js
-
-/**
- * Returns a new debug object by spreading boolean operation debug information
- * onto the given (possibly undefined) debug object.
- * @param debugOn a (possibly undefined) debug object
- */
-function enableDebugDrawFs(debugOn) {
-    if (!debugOn) {
-        return;
-    }
-    let debug = window._debug_;
-    debug = {
-        ...debug,
-        fs: {
-            ...debug?.fs,
-            draw: {
-                ...drawFs
-            }
-        }
-    };
-    window._debug_ = debug;
-}
-
-//# sourceMappingURL=debug.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/index.js
-
-
-
-//# sourceMappingURL=index.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/transformation/degree-or-type/line-to-cubic.js
-/**
- * Returns a cubic bezier from the given line with evenly spaced control points.
- *
- * @param ps a 2d line represented by two points
- *
- * @doc mdx
- */
-function lineToCubic(ps) {
-    const [[x0, y0], [x1, y1]] = ps;
-    const xInterval = (x1 - x0) / 3;
-    const yInterval = (y1 - y0) / 3;
-    return [
-        [x0, y0],
-        [x0 + xInterval, y0 + yInterval],
-        [x0 + xInterval * 2, y0 + yInterval * 2],
-        [x1, y1]
-    ];
-}
-
-//# sourceMappingURL=line-to-cubic.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/transformation/degree-or-type/quadratic-to-cubic.js
-/**
- * Returns the cubic version of the given quadratic bezier curve (by degree
- * elevation).
- *
- * * quadratic bezier curves can always be represented exactly by cubics - the
- * converse is false
- *
- * @param ps a quadratic bezier curve given as an ordered array of its
- * control point coordinates, e.g. `[[0,0], [1,1], [2,1]]`
- *
- * @doc mdx
- */
-function quadraticToCubic(ps) {
-    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
-    return [
-        [x0, y0],
-        [(1 / 3) * x0 + (2 / 3) * x1, (1 / 3) * y0 + (2 / 3) * y1],
-        [(2 / 3) * x1 + (1 / 3) * x2, (2 / 3) * y1 + (1 / 3) * y2],
-        [x2, y2]
-    ];
-}
-
-//# sourceMappingURL=quadratic-to-cubic.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/transformation/degree-or-type/to-cubic.js
-
-
-/**
- * Returns a cubic bezier curve that is equivalent to the given linear or
- * quadratic bezier curve.
- *
- * Cubics are just returned unaltered.
- *
- * This function simply uses `lineToCubic` or `quadraticToCubic` internally.
- *
- * @param ps an order 0,1,2 or 3 bezier curve given as an ordered array of its
- * control point coordinates, e.g. `[[0,0],[1,1],[2,1],[2,0]]`
- *
- * @doc mdx
- */
-function toCubic(ps) {
-    if (ps.length === 4) { // Cubic
-        return ps;
-    }
-    if (ps.length === 3) { // Quadratic
-        return quadraticToCubic(ps);
-    }
-    if (ps.length === 2) { // Linear
-        return lineToCubic(ps);
-    }
-    if (ps.length === 1) { // Point
-        const p = ps[0];
-        return [p, p, p, p];
-    }
-    throw new Error('The given bezier curve must be of order <= 3.');
-}
-
-//# sourceMappingURL=to-cubic.js.map
 ;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-min-y.ts
 
 
 function drawMinY(g, pos) {
-    let p = evalDeCasteljau(pos.curve.ps, pos.t);
-    let ps = toCubic(pos.curve.ps);
+    const p = evalDeCasteljau(pos.curve.ps, pos.t);
+    // const ps = toCubic(pos.curve.ps);
     //console.log('x: ', getX(ps));
     //console.log('y: ', getY(ps));
     //console.log('t: ', pos.t);
-    let $elems = draw_fs_drawFs.crossHair(g, p, 'red thin10 nofill');
+    const $elems = drawFs.crossHair(g, p, 'red thin10 nofill');
     return $elems;
 }
 
@@ -26861,21 +26741,21 @@ function drawMinY(g, pos) {
  * see https://sites.math.washington.edu/~king/coursedir/m324a10/as/centroid-green.pdf
  */
 function getLoopCentroid(loop) {
-    let A = getLoopArea(loop);
+    const A = getLoopArea(loop);
     let cx = 0;
     let cy = 0;
-    for (let curve of loop.curves) {
-        let ps = curve.ps;
-        let [x, y] = toPowerBasis(ps);
-        let [dx, dy] = toPowerBasis_1stDerivative(ps);
+    for (const curve of loop.curves) {
+        const ps = curve.ps;
+        const [x, y] = toPowerBasis(ps);
+        const [dx, dy] = toPowerBasis_1stDerivative(ps);
         const polyX = integrate(multiply(multiply(x, x), dy), 0);
         const polyY = integrate(multiply(multiply(y, y), dx), 0);
-        let _x = Horner(polyX, 1);
-        let _y = Horner(polyY, 1);
+        const _x = Horner(polyX, 1);
+        const _y = Horner(polyY, 1);
         cx += _x;
         cy += _y;
     }
-    let a = 1 / (2 * A);
+    const a = 1 / (2 * A);
     return [-a * cx, a * cy];
 }
 
@@ -26916,8 +26796,8 @@ const INF = Number.POSITIVE_INFINITY;
 /**
  * Returns the bounds of the given loop - used in tests only.
  */
-let get_loop_bounds_getLoopBounds = memoize(function (loop) {
-    let extremes = [
+const get_loop_bounds_getLoopBounds = memoize(function (loop) {
+    const extremes = [
         [
             { bezier: undefined, t: undefined, val: INF },
             { bezier: undefined, t: undefined, val: INF }
@@ -26928,12 +26808,12 @@ let get_loop_bounds_getLoopBounds = memoize(function (loop) {
         ]
     ];
     loop.curves.forEach(function (curve) {
-        let ps = curve.ps;
-        let bounds = getBounds_(ps);
+        const ps = curve.ps;
+        const bounds = getBounds_(ps);
         {
             {
-                let v = bounds.box[0][0];
-                let x = extremes[0][0].val;
+                const v = bounds.box[0][0];
+                const x = extremes[0][0].val;
                 if (v < x || (v === x && bounds.ts[0][0] > extremes[0][0].t)) {
                     extremes[0][0] = {
                         bezier: curve,
@@ -26943,8 +26823,8 @@ let get_loop_bounds_getLoopBounds = memoize(function (loop) {
                 }
             }
             {
-                let v = bounds.box[0][1];
-                let x = extremes[0][1].val;
+                const v = bounds.box[0][1];
+                const x = extremes[0][1].val;
                 if (v < x || (v === x && bounds.ts[0][1] > extremes[0][1].t)) {
                     extremes[0][1] = {
                         bezier: curve,
@@ -26956,8 +26836,8 @@ let get_loop_bounds_getLoopBounds = memoize(function (loop) {
         }
         {
             {
-                let v = bounds.box[1][0];
-                let x = extremes[1][0].val;
+                const v = bounds.box[1][0];
+                const x = extremes[1][0].val;
                 if (v > x || (v === x && bounds.ts[1][0] > extremes[1][0].t)) {
                     extremes[1][0] = {
                         bezier: curve,
@@ -26967,8 +26847,8 @@ let get_loop_bounds_getLoopBounds = memoize(function (loop) {
                 }
             }
             {
-                let v = bounds.box[1][1];
-                let x = extremes[1][1].val;
+                const v = bounds.box[1][1];
+                const x = extremes[1][1].val;
                 if (v > x || (v === x && bounds.ts[1][1] > extremes[1][1].t)) {
                     extremes[1][1] = {
                         bezier: curve,
@@ -27024,8 +26904,8 @@ const xmlns_XMLNS = 'http://www.w3.org/2000/svg';
  * @param delay
  */
 function drawShape(g, beziers, class_ = default_class_DEFAULT_CLASS, delay) {
-    let $path = document.createElementNS(xmlns_XMLNS, 'path');
-    let d = beziersToSvgPathStr(beziers);
+    const $path = document.createElementNS(xmlns_XMLNS, 'path');
+    const d = beziersToSvgPathStr(beziers);
     $path.setAttributeNS(null, "d", d);
     if (class_) {
         $path.setAttributeNS(null, "class", class_);
@@ -27049,7 +26929,7 @@ function drawLoop(g, loop) {
     let centroid = getLoopCentroid(loop);
     let area = getLoopArea(loop);
     let bounds = simplifyBounds(get_loop_bounds_getLoopBounds(loop));
-    draw_fs_drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 0);
+    drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 0);
     return drawShape(g, loop.curves.map(curve => curve.ps), 'red thin10 fill30', undefined);
 }
 
@@ -27058,7 +26938,7 @@ function drawLoop(g, loop) {
 
 function drawLoops(g, loops) {
     const $svgs = [];
-    for (let loop of loops) {
+    for (const loop of loops) {
         $svgs.push(...drawLoop(g, loop));
     }
     return $svgs;
@@ -27068,7 +26948,7 @@ function drawLoops(g, loops) {
 ;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-circle-percent.ts
 function drawCirclePercent(g, center, radiusPercent, classes) {
     const XMLNS = 'http://www.w3.org/2000/svg';
-    let $circle = document.createElementNS(XMLNS, 'circle');
+    const $circle = document.createElementNS(XMLNS, 'circle');
     $circle.setAttributeNS(null, "cx", center[0].toString());
     $circle.setAttributeNS(null, "cy", center[1].toString());
     $circle.setAttributeNS(null, "r", radiusPercent.toString() + '%');
@@ -27088,59 +26968,59 @@ function drawIntersection(g, x) {
 ;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-container.ts
 
 function drawContainer(g, container, classes, delay = 0) {
-    let rect = container.box;
-    let xs = container.xs;
-    let scale = 2 ** 0 * 0.0125;
+    const rect = container.box;
+    const xs = container.xs;
+    const scale = 2 ** 0 * 0.0125;
     // intersections
-    let $circles = [];
+    const $circles = [];
     for (let i = 0; i < xs.length; i++) {
-        let x = xs[i];
-        $circles.push(...draw_fs_drawFs.circle(g, { center: x.x.box[0], radius: scale }, 'thin2 red nofill', delay));
+        const x = xs[i];
+        $circles.push(...drawFs.circle(g, { center: x.x.box[0], radius: scale }, 'thin2 red nofill', delay));
     }
     // text showing intersection ordering
-    let $texts = [];
-    let inOuts = container.inOuts;
+    const $texts = [];
+    const inOuts = container.inOuts;
     for (let i = 0; i < inOuts.length; i++) {
-        let inOut = inOuts[i];
-        let p = inOut.p.slice();
-        let color = inOut.dir === -1 ? 'red' : 'blue';
-        let size = scale * (1 + (0.5 * i));
+        const inOut = inOuts[i];
+        const p = inOut.p.slice();
+        const color = inOut.dir === -1 ? 'red' : 'blue';
+        const size = scale * (1 + (0.5 * i));
         if (inOut.idx !== undefined) {
-            $texts.push(...draw_fs_drawFs.text(g, p, inOut.idx.toString(), scale * 8, `thin5 nofill ${color}`, delay));
+            $texts.push(...drawFs.text(g, p, inOut.idx.toString(), scale * 8, `thin5 nofill ${color}`, delay));
         }
-        $circles.push(...draw_fs_drawFs.dot(g, inOut.p, size, `thin2 nofill ${color}`, delay));
+        $circles.push(...drawFs.dot(g, inOut.p, size, `thin2 nofill ${color}`, delay));
     }
     // container rect
-    let $outline = draw_fs_drawFs.rect(g, rect, 'thin2 blue nofill', delay);
+    const $outline = drawFs.rect(g, rect, 'thin2 blue nofill', delay);
     return [...$outline, ...$circles, ...$texts];
 }
 
 
 ;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-loose-bounding-box.ts
 
-/** @hidden */
+/** @internal */
 function drawLooseBoundingBox(g, box, classes = 'thin5 brown nofill', delay = 0) {
-    let [[x0, y0], [x1, y1]] = box;
+    const [[x0, y0], [x1, y1]] = box;
     box = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
-    let $box = draw_fs_drawFs.polygon(g, box, classes, delay);
+    const $box = drawFs.polygon(g, box, classes, delay);
     return $box;
 }
 
 
 ;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-tight-bounding-box.ts
 
-/** @hidden */
+/** @internal */
 function drawTightBoundingBox(g, box, classes = 'thin5 pinker nofill', delay = 0) {
-    let $box = draw_fs_drawFs.polygon(g, box, classes, delay);
+    const $box = drawFs.polygon(g, box, classes, delay);
     return $box;
 }
 
 
 ;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-bounding-hull.ts
 
-/** @hidden */
+/** @internal */
 function drawBoundingHull(g, hull, classes = 'thin5 black nofill', delay = 0) {
-    let $polygon = draw_fs_drawFs.polygon(g, hull, classes, delay);
+    const $polygon = drawFs.polygon(g, hull, classes, delay);
     return $polygon;
 }
 
@@ -27148,9 +27028,9 @@ function drawBoundingHull(g, hull, classes = 'thin5 black nofill', delay = 0) {
 ;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-loop-pre.ts
 
 function drawLoopPre(g, loop) {
-    //let centroid = getLoopCentroid(loop);
-    //let area     = getLoopArea(loop);
-    //let bounds   = simplifyBounds(getLoopBounds(loop));
+    //const centroid = getLoopCentroid(loop);
+    //const area     = getLoopArea(loop);
+    //const bounds   = simplifyBounds(getLoopBounds(loop));
     //drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 0);
     return drawShape(g, loop, 'red thin10 fill30', undefined);
 }
@@ -27160,7 +27040,7 @@ function drawLoopPre(g, loop) {
 
 function drawLoopsPre(g, loops) {
     const $svgs = [];
-    for (let loop of loops) {
+    for (const loop of loops) {
         $svgs.push(...drawLoopPre(g, loop));
     }
     return $svgs;
@@ -27187,7 +27067,7 @@ const drawElemFunctions = {
     loops: drawLoops,
     intersection: drawIntersection,
     container: drawContainer,
-    bezier_: draw_fs_drawFs.bezier,
+    bezier_: drawFs.bezier,
     looseBoundingBox_: drawLooseBoundingBox,
     tightBoundingBox_: drawTightBoundingBox,
     boundingHull_: drawBoundingHull,
@@ -27206,8 +27086,8 @@ function enableDebugForBooleanOp(debugOn) {
         window._debug_ = undefined;
         return;
     }
-    let debug = window._debug_;
-    debug = {
+    const debug = window._debug_;
+    const debug_ = {
         ...debug,
         generated: {
             ...(!debug ? {} : !debug.generated ? {} : debug.generated),
@@ -27239,7 +27119,7 @@ function enableDebugForBooleanOp(debugOn) {
             }
         }
     };
-    window._debug_ = debug;
+    window._debug_ = debug_;
 }
 
 
@@ -27270,7 +27150,7 @@ class PathState {
  * parameters, they have an identical effect.
  */
 function z(s) {
-    let ps = [
+    const ps = [
         s.p,
         s.initialPoint
     ];
@@ -27298,7 +27178,7 @@ function z(s) {
  * coordinate pair used in the polybézier.
  */
 function c(s) {
-    let ps = [
+    const ps = [
         s.p,
         [s.vals[0], s.vals[1]],
         [s.vals[2], s.vals[3]],
@@ -27329,11 +27209,11 @@ function c(s) {
  * current point becomes the final (x,y) coordinate pair used in the polybézier.
  */
 function s(s) {
-    let p = s.prev2ndCubicControlPoint
+    const p = s.prev2ndCubicControlPoint
         ? [(s.p[0] - s.prev2ndCubicControlPoint[0]) + s.p[0],
             (s.p[1] - s.prev2ndCubicControlPoint[1]) + s.p[1]]
         : s.p;
-    let ps = [
+    const ps = [
         s.p,
         p,
         [s.vals[0], s.vals[1]],
@@ -27360,7 +27240,7 @@ function s(s) {
  * final set of coordinates provided.
  */
 function l(s) {
-    let ps = [
+    const ps = [
         s.p,
         s.vals
     ];
@@ -27384,7 +27264,7 @@ function l(s) {
  * command, the new current point becomes (x, cpy) for the final value of x.
  */
 function h(s) {
-    let ps = [
+    const ps = [
         s.p,
         [s.vals[0], s.p[1]]
     ];
@@ -27408,7 +27288,7 @@ function h(s) {
  * command, the new current point becomes (cpx, y) for the final value of y.
  */
 function v(s) {
-    let ps = [
+    const ps = [
         s.p,
         [s.p[0], s.vals[0]]
     ];
@@ -27433,11 +27313,11 @@ function v(s) {
  * pair used in the polybézier.
  */
 function q(s) {
-    let QP1 = [s.vals[0], s.vals[1]];
-    let QP2 = [s.vals[2], s.vals[3]];
+    const QP1 = [s.vals[0], s.vals[1]];
+    const QP2 = [s.vals[2], s.vals[3]];
     s.prev2ndCubicControlPoint = undefined;
     s.prev2ndQuadraticControlPoint = QP1;
-    let ps = [s.p, QP1, QP2];
+    const ps = [s.p, QP1, QP2];
     return ps;
 }
 
@@ -27459,12 +27339,12 @@ function q(s) {
  * final (x,y) coordinate pair used in the polybézier.
  */
 function t(s) {
-    let p = s.prev2ndQuadraticControlPoint
+    const p = s.prev2ndQuadraticControlPoint
         ? [(s.p[0] - s.prev2ndQuadraticControlPoint[0]) + s.p[0],
             (s.p[1] - s.prev2ndQuadraticControlPoint[1]) + s.p[1]]
         : s.p;
-    let QP1 = p;
-    let QP2 = [s.vals[0], s.vals[1]];
+    const QP1 = p;
+    const QP2 = [s.vals[0], s.vals[1]];
     s.prev2ndCubicControlPoint = undefined;
     s.prev2ndQuadraticControlPoint = QP1;
     return [s.p, QP1, QP2];
@@ -27499,8 +27379,8 @@ rotationAngle, largeArcFlag, sweepFlag, pE) {
  * @param angleRad
  */
 function arc_to_cubic_curves_rotate(x, y, angleRad) {
-    let X = x * Math.cos(angleRad) - y * Math.sin(angleRad);
-    let Y = x * Math.sin(angleRad) + y * Math.cos(angleRad);
+    const X = x * Math.cos(angleRad) - y * Math.sin(angleRad);
+    const Y = x * Math.sin(angleRad) + y * Math.cos(angleRad);
     return { x: X, y: Y };
 }
 /**
@@ -27530,8 +27410,8 @@ function degToRad(degrees) {
 function a(s) {
     s.prev2ndCubicControlPoint = undefined;
     s.prev2ndQuadraticControlPoint = undefined;
-    let curves = arcToCubicCurves(s.p, s.vals[0], s.vals[1], s.vals[2], s.vals[3], s.vals[4], [s.vals[5], s.vals[6]]);
-    let lastPs = curves[curves.length - 1];
+    const curves = arcToCubicCurves(s.p, s.vals[0], s.vals[1], s.vals[2], s.vals[3], s.vals[4], [s.vals[5], s.vals[6]]);
+    const lastPs = curves[curves.length - 1];
     s.p = lastPs[lastPs.length - 1]; // Update current point
     return curves;
 }
@@ -27572,13 +27452,13 @@ function getBeziersFromRawPaths(paths) {
     if (paths[0].type.toLowerCase() !== 'm') {
         throw new Error('Invalid SVG - every new path must start with an M or m.');
     }
-    let s = new PathState();
-    let beziersArrays = [];
+    const s = new PathState();
+    const beziersArrays = [];
     let beziers = [];
     let prevType = undefined;
     for (let i = 0; i < paths.length; i++) {
-        let pathSeg = paths[i];
-        let type = pathSeg.type.toLowerCase();
+        const pathSeg = paths[i];
+        const type = pathSeg.type.toLowerCase();
         s.vals = pathSeg.values;
         // If pathSeg was lowercase, it is relative - make absolute
         if (pathSeg.type === type) {
@@ -27614,11 +27494,11 @@ function getBeziersFromRawPaths(paths) {
             beziers.push(...a(s));
         }
         else {
-            let f = pathFs[type];
+            const f = pathFs[type];
             if (!f) {
                 throw new Error('Invalid SVG - command not recognized.');
             }
-            let ps = f(s);
+            const ps = f(s);
             s.p = ps[ps.length - 1]; // Update current point
             beziers.push(ps);
         }
@@ -27645,13 +27525,13 @@ function getBeziersFromRawPaths(paths) {
  * @param source
  */
 function parseNumber(source) {
-    var exponent = 0;
-    var integer = 0;
-    var frac = 1;
-    var decimal = 0;
-    var sign = 1;
-    var expsign = 1;
-    var startIndex = source._currentIndex;
+    let exponent = 0;
+    let integer = 0;
+    let frac = 1;
+    let decimal = 0;
+    let sign = 1;
+    let expsign = 1;
+    const startIndex = source._currentIndex;
     source._skipOptionalSpaces();
     // Read the sign.
     if (source._currentIndex < source._endIndex && source._string[source._currentIndex] === "+") {
@@ -27667,15 +27547,15 @@ function parseNumber(source) {
         throw new Error('The first character of a number must be one of [0-9+-.].');
     }
     // Read the integer part, build right-to-left.
-    var startIntPartIndex = source._currentIndex;
+    const startIntPartIndex = source._currentIndex;
     while (source._currentIndex < source._endIndex &&
         source._string[source._currentIndex] >= "0" &&
         source._string[source._currentIndex] <= "9") {
         source._currentIndex += 1; // Advance to first non-digit.
     }
     if (source._currentIndex !== startIntPartIndex) {
-        var scanIntPartIndex = source._currentIndex - 1;
-        var multiplier = 1;
+        let scanIntPartIndex = source._currentIndex - 1;
+        let multiplier = 1;
         while (scanIntPartIndex >= startIntPartIndex) {
             integer += multiplier * (Number(source._string[scanIntPartIndex]) - 0);
             scanIntPartIndex -= 1;
@@ -27725,7 +27605,7 @@ function parseNumber(source) {
             source._currentIndex += 1;
         }
     }
-    var number = integer + decimal;
+    let number = integer + decimal;
     number *= sign;
     if (exponent) {
         number *= Math.pow(10, expsign * exponent);
@@ -27755,8 +27635,8 @@ class Source {
         this._skipOptionalSpaces();
     }
     parseSegment() {
-        var char = this._string[this._currentIndex];
-        var command = COMMAND_MAP[char];
+        const char = this._string[this._currentIndex];
+        let command = COMMAND_MAP[char];
         if (command === undefined) {
             if (this._prevCommand === undefined) {
                 throw new Error('Implicit command not allowed for first commands.');
@@ -27782,8 +27662,8 @@ class Source {
             this._currentIndex += 1;
         }
         this._prevCommand = command;
-        var values = undefined;
-        var cmd = command.toUpperCase();
+        let values = undefined;
+        const cmd = command.toUpperCase();
         if (cmd === "H" || cmd === "V") {
             values = [parseNumber(this)];
         }
@@ -27833,11 +27713,11 @@ class Source {
         if (!this.hasMoreData()) {
             return true;
         }
-        var command = COMMAND_MAP[this._string[this._currentIndex]];
+        const command = COMMAND_MAP[this._string[this._currentIndex]];
         return command === "M" || command === "m";
     }
     _isCurrentSpace() {
-        var char = this._string[this._currentIndex];
+        const char = this._string[this._currentIndex];
         return char <= " " && (char === " " || char === "\n" || char === "\t" || char === "\r" || char === "\f");
     }
     _skipOptionalSpaces() {
@@ -27865,7 +27745,7 @@ class Source {
             throw new Error('Unable to parse arc flag');
         }
         let flag = undefined;
-        let flagChar = this._string[this._currentIndex];
+        const flagChar = this._string[this._currentIndex];
         this._currentIndex += 1;
         if (flagChar === "0") {
             flag = 0;
@@ -27892,8 +27772,8 @@ function parsePathDataString(string) {
     if (!string.length) {
         return [];
     }
-    let source = new Source(string);
-    let pathData = [];
+    const source = new Source(string);
+    const pathData = [];
     if (!source.initialCommandIsMoveTo()) {
         throw new Error('Path must start with m or M');
     }

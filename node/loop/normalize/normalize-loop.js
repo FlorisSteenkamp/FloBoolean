@@ -26,7 +26,7 @@ import { toGrid } from './to-grid.js';
  * @param doSendToGrid
  */
 function normalizeLoops(bezierLoops, maxBitLength, expMax, doScramble = false, doSendToGrid = true) {
-    let fixBeziers_ = fixBeziers(expMax, maxBitLength, doSendToGrid);
+    const fixBeziers_ = fixBeziers(expMax, maxBitLength, doSendToGrid);
     let loops = bezierLoops.slice();
     // just for testing purposes
     loops = doScramble ? scrambleLoops(loops, maxBitLength, expMax, 1) : loops;
@@ -36,14 +36,13 @@ function normalizeLoops(bezierLoops, maxBitLength, expMax, doScramble = false, d
 }
 /** Just for testing purposes - not used in the actual algorithm */
 function scrambleLoops(loops, maxBitLength, expMax, mult = 0.02) {
-    let loops_ = [];
-    for (let loop of loops) {
-        let loop_ = [];
-        for (let bez of loop) {
-            let bez_ = bez.map(v => v.map(c => {
+    const loops_ = [];
+    for (const loop of loops) {
+        const loop_ = [];
+        for (const bez of loop) {
+            const bez_ = bez.map(v => v.map(c => {
                 let c_ = 0;
                 let ii = 0;
-                let bl = 0;
                 let mblc;
                 let mbl = 0;
                 while (true) {
@@ -52,7 +51,7 @@ function scrambleLoops(loops, maxBitLength, expMax, mult = 0.02) {
                     }
                     c_ = (c + Math.random()) * (1 + ((Math.random() - 0.7) * mult));
                     c_ = toGrid(c_, expMax, maxBitLength);
-                    let bl = bitLength(c_);
+                    const bl = bitLength(c_);
                     if (bl > mbl) {
                         mbl = bl;
                         mblc = c_;

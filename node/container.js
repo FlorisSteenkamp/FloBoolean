@@ -6,7 +6,7 @@
  * @param container
  */
 function containerIsBasic(expMax, container) {
-    let xs = container.xs;
+    const xs = container.xs;
     if (xs.length <= 2) {
         return true;
     }

@@ -16,16 +16,16 @@ function doConvexPolygonsIntersect(
 
     // for each polygon, look at each edge of the polygon, and determine if 
     // it separates the two shapes
-    for (let polygon of [polygonA, polygonB]) {
-        let len = polygon.length;
+    for (const polygon of [polygonA, polygonB]) {
+        const len = polygon.length;
         for (let i=1; i<len+1; i++) {
 
             // grab 2 consecutive vertices to create an edge
-            let p1 = polygon[i - 1];
-            let p2 = polygon[i % len];
+            const p1 = polygon[i - 1];
+            const p2 = polygon[i % len];
 
             // find the vector perpendicular to this edge
-            let normal = [p2[1] - p1[1], p1[0] - p2[0]];
+            const normal = [p2[1] - p1[1], p1[0] - p2[0]];
 
             let minA = Number.POSITIVE_INFINITY;
             let maxA = Number.NEGATIVE_INFINITY;
@@ -33,7 +33,7 @@ function doConvexPolygonsIntersect(
             // perpendicular to the edge and keep track of the min and max of 
             // these values
             for (let k=0; k<polygonA.length; k++) {
-                let projected = 
+                const projected = 
                     normal[0] * polygonA[k][0] + 
                     normal[1] * polygonA[k][1];
                     
@@ -47,7 +47,7 @@ function doConvexPolygonsIntersect(
             let minB = Number.POSITIVE_INFINITY;
             let maxB = Number.NEGATIVE_INFINITY;
             for (let k=0; k<polygonB.length; k++) {
-                let projected = 
+                const projected = 
                     normal[0] * polygonB[k][0] + 
                     normal[1] * polygonB[k][1];
 

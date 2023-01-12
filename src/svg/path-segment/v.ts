@@ -14,7 +14,7 @@ import { PathState } from '../path-state.js';
  * command, the new current point becomes (cpx, y) for the final value of y.
  */
 function v(s: PathState): number[][] {
-    let ps = [
+    const ps = [
         s.p,
         [s.p[0], s.vals![0]]
     ];

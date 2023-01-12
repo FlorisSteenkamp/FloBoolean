@@ -14,7 +14,7 @@ function getNextExit(
         additionalOutsToCheck: InOut[],
         takenOuts: Set<InOut>) {
 
-    let markOutForChecking_ = markOutForChecking(
+            const markOutForChecking_ = markOutForChecking(
         originalOut, 
         takenOuts, 
         additionalOutsToCheck

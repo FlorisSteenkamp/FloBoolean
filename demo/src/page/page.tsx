@@ -1,4 +1,4 @@
-declare var _debug_: Debug; 
+declare const _debug_: Debug; 
 
 import * as React from 'react';
 // import { drawFs } from 'flo-draw';
@@ -84,36 +84,36 @@ function Page(props: Props) {
 	
 	
 	function mouseMove(event: React.MouseEvent<SVGSVGElement, MouseEvent>) {
-		let svg$ = ref.current;
+		const svg$ = ref.current;
 		if (!svg$) { return; }
 
-		let { state, transientState } = stateControl;
-		let { pageState } = state.appState;
-		let { zoomState } = transientState;
+		const { state, transientState } = stateControl;
+		const { pageState } = state.appState;
+		const { zoomState } = transientState;
 
 		if (!zoomState.mouseIsDown) { return; }
 
 		// Pixel coordinates
-		let pixelsX = event.nativeEvent.offsetX;
-		let pixelsY = event.nativeEvent.offsetY;
+		const pixelsX = event.nativeEvent.offsetX;
+		const pixelsY = event.nativeEvent.offsetY;
 		
-		let [viewboxX,viewboxY] = 
+		const [viewboxX,viewboxY] = 
 			getViewboxXY(svg$, pageState.viewbox, pixelsX, pixelsY);
 
-		let spanX = refX.current;
+		const spanX = refX.current;
 		if (spanX) { spanX.innerHTML = viewboxX.toFixed(2); }
-		let spanY = refY.current;
+		const spanY = refY.current;
 		if (spanY) { spanY.innerHTML = viewboxY.toFixed(2); }
 	
 		if (zoomState.zoomRect) { zoomState.zoomRect.remove(); }
-		let prevViewboxXY = zoomState.prevViewboxXY!;
+		const prevViewboxXY = zoomState.prevViewboxXY!;
 
-		let newZoomRect = [
+		const newZoomRect = [
 			prevViewboxXY, 
 			[viewboxX, viewboxY]
 		];
 
-		let g$ = svg$.getElementsByTagName('g')[0];
+		const g$ = svg$.getElementsByTagName('g')[0];
 		zoomState.zoomRect = drawRect(g$, newZoomRect);
 
 		//setXY({x,y});
@@ -123,12 +123,12 @@ function Page(props: Props) {
 	function mouseDown(event: React.MouseEvent<SVGSVGElement, MouseEvent>) {
 		if (event.shiftKey || event.ctrlKey || event.altKey) { return; }
 		
-		let svg$ = ref.current;
+		const svg$ = ref.current;
 		if (!svg$) { return; }
 		
-		let ox = event.nativeEvent.offsetX;
-		let oy = event.nativeEvent.offsetY;
-		let viewboxXY = getViewboxXY(svg$, pageState.viewbox, ox, oy);
+		const ox = event.nativeEvent.offsetX;
+		const oy = event.nativeEvent.offsetY;
+		const viewboxXY = getViewboxXY(svg$, pageState.viewbox, ox, oy);
 		
 		clickedForNewViewboxFirst(stateControl, viewboxXY);
 	}
@@ -137,12 +137,12 @@ function Page(props: Props) {
 	function mouseUp(event: React.MouseEvent<SVGSVGElement, MouseEvent>) {
 		if (event.shiftKey || event.ctrlKey || event.altKey) { return; }
 
-		let svg$ = ref.current;
+		const svg$ = ref.current;
 		if (!svg$) { return; }
 
-		let ox = event.nativeEvent.offsetX;
-		let oy = event.nativeEvent.offsetY;
-		let viewboxXY = getViewboxXY(svg$, pageState.viewbox, ox, oy);
+		const ox = event.nativeEvent.offsetX;
+		const oy = event.nativeEvent.offsetY;
+		const viewboxXY = getViewboxXY(svg$, pageState.viewbox, ox, oy);
 		
 		clickedForNewViewboxSecond(stateControl, viewboxXY);
 	}
@@ -159,28 +159,28 @@ function Page(props: Props) {
 	async function drawElements(toDraws: ToDraw) {
         if (typeof _debug_ === 'undefined') { return; }
 
-		let svg$ = ref.current!;
-		let g = svg$.getElementsByTagName('g')[0];
+		const svg$ = ref.current!;
+		const g = svg$.getElementsByTagName('g')[0];
 
-		let elemss$: SVGElement[][][] = [];
-        for (let elemType_ in toDraws) {
-            let elemType = elemType_ as keyof IDebugElems;
+		const elemss$: SVGElement[][][] = [];
+        for (const elemType_ in toDraws) {
+            const elemType = elemType_ as keyof IDebugElems;
 
-            let toDraw = toDraws[elemType];
+            const toDraw = toDraws[elemType];
 
-            let $elems = $svgs[elemType];
+            const $elems = $svgs[elemType];
             deleteSvgs($elems);
      
             if (!toDraw) { continue; }
 
-			let generated = _debug_.generated;
+			const generated = _debug_.generated;
             
 			if (generated.elems[elemType] === undefined) { 
 				continue; 
 			}
 			
-            for (let elem of generated.elems[elemType]) {
-                let drawElem = _debug_.fs.drawElem[elemType] as (g: SVGGElement, elem: any) => SVGElement[];
+            for (const elem of generated.elems[elemType]) {
+                const drawElem = _debug_.fs.drawElem[elemType] as (g: SVGGElement, elem: any) => SVGElement[];
                 $elems.push(drawElem(g, elem));
 			}
 			
@@ -192,17 +192,17 @@ function Page(props: Props) {
 
 
 	async function lazyLoadDeduced() {
-		let pageState: PageState;
+		const pageState: PageState;
 
 		({ pageState } = stateControl.state.appState);
-		let { vectorName } = pageState;
+		const { vectorName } = pageState;
 
-		let { pathStr } = await loadPath(vectorName);
+		const { pathStr } = await loadPath(vectorName);
 
 		({ pageState } = stateControl.state.appState);
 		upd(pageState.deduced!, { path: pathStr });
 
-		let { viewbox, timingAll } = await loadDeducedProps(stateControl, pathStr);
+		const { viewbox, timingAll } = await loadDeducedProps(stateControl, pathStr);
 
 		console.log(`All took: ${timingAll.toFixed(0)} milliseconds.`);
 
@@ -210,7 +210,7 @@ function Page(props: Props) {
             // logSomeStuff(timingAll);
         }
 
-		let elems$ = drawElements(toDraw);
+		const elems$ = drawElements(toDraw);
 
 		({ pageState } = stateControl.state.appState);
 
@@ -230,7 +230,7 @@ function Page(props: Props) {
 			value: unknown;
 		}>, child: React.ReactNode) {
 
-		let vectorName = event.target.value as string;
+		const vectorName = event.target.value as string;
 		upd(pageState, { vectorName });
 		lazyLoadDeduced();
 	}
@@ -247,23 +247,23 @@ function Page(props: Props) {
 			return;
 		}
 
-		let { state } = stateControl;
-        let { pageState } = state.appState;
+		const { state } = stateControl;
+        const { pageState } = state.appState;
 		const { clickFor, showDelay } = pageState;
 		
-		let svg$ = ref.current;
+		const svg$ = ref.current;
 		if (!svg$) { return; }
-		let g = svg$.getElementsByTagName('g')[0];
+		const g = svg$.getElementsByTagName('g')[0];
 
         // Pixel coordinates
-        let ox = event.nativeEvent.offsetX;
-        let oy = event.nativeEvent.offsetY;
+        const ox = event.nativeEvent.offsetX;
+        const oy = event.nativeEvent.offsetY;
 
 		// SVG actual coordinates
-		let viewboxXY = getViewboxXY(svg$, pageState.viewbox, ox, oy);
+		const viewboxXY = getViewboxXY(svg$, pageState.viewbox, ox, oy);
 		const [x,y] = viewboxXY;
 
-        let fs: { [T in ClickFor]: ((g: SVGGElement, p: number[], delay: number) => void) | undefined } = {
+        const fs: { [T in ClickFor]: ((g: SVGGElement, p: number[], delay: number) => void) | undefined } = {
 			bezier_           : logNearestBezierPre,
 			loopPre           : logNearestLoopPre,
 
@@ -297,7 +297,7 @@ function Page(props: Props) {
 			.keys(toDraw)
 			.filter(key => !!toDrawKeyToText[key as keyof ToDraw])
 			.map(_key => {
-				let key = _key as keyof ToDraw;
+				const key = _key as keyof ToDraw;
 				return (
 					<Checkbox 
 						key={key}
@@ -394,8 +394,8 @@ function clickedForNewViewboxFirst(
 		stateControl: StateControl, 
 		viewboxXY: number[]) {
 
-	let { transientState } = stateControl;
-	let { zoomState } = transientState;
+	const { transientState } = stateControl;
+	const { zoomState } = transientState;
 
 	// Just make sure previous rect is removed
 	if (zoomState.zoomRect) { zoomState.zoomRect.remove(); }
@@ -413,11 +413,11 @@ function clickedForNewViewboxSecond(
 		viewboxXY: number[]) {
 
 	// Get info
-	let { state, upd, transientState } = stateControl;
-	let { pageState } = state.appState;
-	let { viewbox } = pageState;
-	let { zoomState } = transientState;
-	let { prevViewboxXY } = zoomState;
+	const { state, upd, transientState } = stateControl;
+	const { pageState } = state.appState;
+	const { viewbox } = pageState;
+	const { zoomState } = transientState;
+	const { prevViewboxXY } = zoomState;
 
 	// Update transient info
 	zoomState.mouseIsDown = false;
@@ -431,15 +431,15 @@ function clickedForNewViewboxSecond(
 		[viewboxXY[1], prevViewboxXY![1]] = [prevViewboxXY![1], viewboxXY[1]];
 	}
 
-	let newViewbox = [prevViewboxXY!, viewboxXY];
+	const newViewbox = [prevViewboxXY!, viewboxXY];
 
-	let viewboxW = viewbox[1][0] - viewbox[0][0];
-	let viewboxH = viewbox[1][1] - viewbox[0][1];
-	let newViewboxW = viewboxXY[0] - prevViewboxXY![0];
-	let newViewboxH = viewboxXY[1] - prevViewboxXY![1];
+	const viewboxW = viewbox[1][0] - viewbox[0][0];
+	const viewboxH = viewbox[1][1] - viewbox[0][1];
+	const newViewboxW = viewboxXY[0] - prevViewboxXY![0];
+	const newViewboxH = viewboxXY[1] - prevViewboxXY![1];
 
-	let relWidth = newViewboxW / viewboxW;
-	let relHeight = newViewboxH / viewboxH;
+	const relWidth = newViewboxW / viewboxW;
+	const relHeight = newViewboxH / viewboxH;
 
 	if (relWidth < 0.01 || relHeight < 0.01) { return; }
 
@@ -454,15 +454,15 @@ function getViewboxXY(
 		pixelsX: number, 
 		pixelsY: number): number[] {
 
-	let boundingRect = svg$.getBoundingClientRect(); 
-	let pixelsW = boundingRect.width;
-	let pixelsH = boundingRect.height;
+	const boundingRect = svg$.getBoundingClientRect(); 
+	const pixelsW = boundingRect.width;
+	const pixelsH = boundingRect.height;
 
-	let viewboxW = viewbox[1][0] - viewbox[0][0];
-	let viewboxH = viewbox[1][1] - viewbox[0][1];
+	const viewboxW = viewbox[1][0] - viewbox[0][0];
+	const viewboxH = viewbox[1][1] - viewbox[0][1];
 
-	let viewboxX = ((pixelsX/pixelsW) * viewboxW) + viewbox[0][0];
-	let viewboxY = ((pixelsY/pixelsH) * viewboxH) + viewbox[0][1];
+	const viewboxX = ((pixelsX/pixelsW) * viewboxW) + viewbox[0][0];
+	const viewboxY = ((pixelsY/pixelsH) * viewboxH) + viewbox[0][1];
 
 	return [viewboxX, viewboxY];
 }
@@ -471,13 +471,13 @@ function getViewboxXY(
 function drawRect(g: SVGGElement, rect: number[][]) {
 	const XMLNS = 'http://www.w3.org/2000/svg';
 
-	let [[x0,y0],[x1,y1]] = rect;
-    let x = x0 < x1 ? x0 : x1;
-    let y = y0 < y1 ? y0 : y1;
-    let width = Math.abs(x0-x1);
-    let height = Math.abs(y0-y1);
+	const [[x0,y0],[x1,y1]] = rect;
+    const x = x0 < x1 ? x0 : x1;
+    const y = y0 < y1 ? y0 : y1;
+    const width = Math.abs(x0-x1);
+    const height = Math.abs(y0-y1);
 
-    let $rect = document.createElementNS(XMLNS, 'rect');
+    const $rect = document.createElementNS(XMLNS, 'rect');
     $rect.setAttributeNS(null, "x", x.toString());
     $rect.setAttributeNS(null, "y", y.toString());
     $rect.setAttributeNS(null, "width",  width.toString());
@@ -491,12 +491,12 @@ function drawRect(g: SVGGElement, rect: number[][]) {
 
 
 function gotoPrevViewbox(stateControl: StateControl) {
-    let { transientState, state, upd } = stateControl;
-    let { pageState } = state.appState;
-    let viewbox = transientState.viewboxStack.pop();
+    const { transientState, state, upd } = stateControl;
+    const { pageState } = state.appState;
+    const viewbox = transientState.viewboxStack.pop();
     if (!viewbox) {
-        let loops = _debug_.generated.elems.loop;
-        let bezierLoops = loops.map(loop => loop.beziers);
+        const loops = _debug_.generated.elems.loop;
+        const bezierLoops = loops.map(loop => loop.beziers);
         viewbox = getViewBoxForShape(bezierLoops);
     }
 

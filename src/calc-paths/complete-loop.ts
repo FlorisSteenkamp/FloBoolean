@@ -16,8 +16,8 @@ function completeLoop(
         takenOuts: Set<InOut>,
         out: InOut): { beziers: number[][][], additionalOutsToCheck: InOut[] } {
 
-    let additionalOutsToCheck: InOut[] = [];
-    let beziers: number[][][] = [];
+    const additionalOutsToCheck: InOut[] = [];
+    const beziers: number[][][] = [];
 
     // Move immediately to the outgoing start of the loop
     let out_: InOut | undefined = out;
@@ -26,7 +26,7 @@ function completeLoop(
     do {
         takenOuts.add(out_!); // Mark this intersection as taken
         
-        let { beziers: additionalBeziers, in_, inBez } = 
+        const { beziers: additionalBeziers, in_, inBez } = 
             getBeziersToNextContainer(expMax, out_!);
         // TODO - it will probably better to remove additionalBeziers and just
         // connect the endpoints of adjacent beziers - even if we had near
@@ -42,8 +42,8 @@ function completeLoop(
             expMax, in_!, out, additionalOutsToCheck, takenOuts
         ));
         if (additionalBezier) {
-            let t = mid(closestPointOnBezierCertified(inBez, additionalBezier[0])[0].ri);
-            let inBez_ = fromTo(inBez, 0, t);
+            const t = mid(closestPointOnBezierCertified(inBez, additionalBezier[0])[0].ri);
+            const inBez_ = fromTo(inBez, 0, t);
             beziers.push(inBez_);
             beziers.push(additionalBezier);
         } else {

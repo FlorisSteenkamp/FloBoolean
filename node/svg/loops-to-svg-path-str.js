@@ -6,7 +6,7 @@ import { beziersToSvgPathStr } from "./beziers-to-svg-path-str.js";
  */
 function loopsToSvgPathStr(loops) {
     let str = '';
-    for (let loop of loops) {
+    for (const loop of loops) {
         str = str + beziersToSvgPathStr(loop) + '\n';
     }
     return str;

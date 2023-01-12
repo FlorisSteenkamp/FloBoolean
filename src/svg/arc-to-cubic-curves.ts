@@ -38,8 +38,8 @@ function rotate(
         y: number, 
         angleRad: number): { x: number, y: number } {
 
-    let X = x * Math.cos(angleRad) - y * Math.sin(angleRad);
-    let Y = x * Math.sin(angleRad) + y * Math.cos(angleRad);
+    const X = x * Math.cos(angleRad) - y * Math.sin(angleRad);
+    const Y = x * Math.sin(angleRad) + y * Math.cos(angleRad);
     return {x: X, y: Y};
 }
 

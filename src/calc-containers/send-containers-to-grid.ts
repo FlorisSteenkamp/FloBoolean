@@ -20,12 +20,11 @@ function sendContainersToGrid(
      * than ⌈sqrt(n)⌉ where n is the number of intersections in a container.
      * Assume n < 100 - this is a (mild) limitation of the algorithm
      */
-    let expContainer = Math.log2(containerDim);
-    let expContainerAdj = expContainer - 3; // 2**-3 === 1/8 of container
+    const expContainer = Math.log2(containerDim);
+    const expContainerAdj = expContainer - 3; // 2**-3 === 1/8 of container
 
-    let containers_ = containers.map(container => {
-        let box = container.box;
-        box = box.map(p => p.map(c => {
+    const containers_ = containers.map(container => {
+        const box = container.box.map(p => p.map(c => {
             return toGrid(c, expMax, expMax - expContainerAdj);
         }));
 

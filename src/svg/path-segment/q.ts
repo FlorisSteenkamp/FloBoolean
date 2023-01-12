@@ -15,13 +15,13 @@ import { PathState } from '../path-state.js';
  * pair used in the polybézier.
  */
 function q(s: PathState): number[][] {
-    let QP1 = [s.vals![0], s.vals![1]];
-    let QP2 = [s.vals![2], s.vals![3]];
+    const QP1 = [s.vals![0], s.vals![1]];
+    const QP2 = [s.vals![2], s.vals![3]];
     
     s.prev2ndCubicControlPoint = undefined;
     s.prev2ndQuadraticControlPoint = QP1;
 
-    let ps = [s.p, QP1, QP2];
+    const ps = [s.p, QP1, QP2];
     
     return ps;
 }

@@ -27,17 +27,17 @@ function generateRandomLoops(
         SEED2 = randomSeed(), 
         SEED3 = randomSeed()) {
 
-    let ps = generateRandomPoints(numPoints, s, SEED1);
-    let psi = randomPointsInOutBlock(SEED2, blockSize, s, 4*bezierCount);
-    let randoms1 = flatCoefficients(psi.length, 0.1, 0.9, SEED3);
-    let vs = randoms1.p;
-    let loops: Loop[] = [];
+    const ps = generateRandomPoints(numPoints, s, SEED1);
+    const psi = randomPointsInOutBlock(SEED2, blockSize, s, 4*bezierCount);
+    const randoms1 = flatCoefficients(psi.length, 0.1, 0.9, SEED3);
+    const vs = randoms1.p;
+    const loops: Loop[] = [];
 
-    let bzs: number[][][] = [];
+    const bzs: number[][][] = [];
     let j = 0;
     for (let i=0; i<psi.length; i++) {
         if ((i+1) % 4 === 0) { 
-            let bz = cubicThroughPointGiven013(
+            const bz = cubicThroughPointGiven013(
                 [psi[i], psi[i-1], psi[i-2], psi[i-3]], // 3rd point is ignored
                 ps[j],
                 vs[i]
@@ -47,13 +47,13 @@ function generateRandomLoops(
 
             // stick endpoints together
             if (j % 2 === 0) { 
-                let len = bzs.length;
-                let bz1 = bzs[len-2];
-                let bz2 = bzs[len-1];
-                let ep1S = bz1[0];
-                let ep1E = bz1[3];
-                let ep2S = bz2[0];
-                let ep2E = bz2[3];
+                const len = bzs.length;
+                const bz1 = bzs[len-2];
+                const bz2 = bzs[len-1];
+                const ep1S = bz1[0];
+                const ep1E = bz1[3];
+                const ep2S = bz2[0];
+                const ep2E = bz2[3];
                 bzs.push([ep1E, ep2S]);
                 bzs.push([ep2E, ep1S]);
 
@@ -83,11 +83,11 @@ function generateRandomLoops(
  * @param n the number of points to generate
  */
 function randomPointsInOutBlock(SEED: number, width: number, exclWidth: number, n: number) {
-    let randoms1 = flatCoefficients(10*n, -width, +width, SEED);
-    let vs = randoms1.p.map(Math.round);
-    let ps: number[][] = [];
+    const randoms1 = flatCoefficients(10*n, -width, +width, SEED);
+    const vs = randoms1.p.map(Math.round);
+    const ps: number[][] = [];
     for (let i=0; i<10*n; i++) {
-        let p = [vs[i*2], vs[i*2+1]];
+        const p = [vs[i*2], vs[i*2+1]];
         if (!inRect(p, [[-exclWidth,-exclWidth],[exclWidth,exclWidth]])) {
             ps.push(p);
         }
@@ -97,7 +97,7 @@ function randomPointsInOutBlock(SEED: number, width: number, exclWidth: number, 
 
 
 function inRect(p: number[], rect: number[][]) {
-    let [[left,top], [right,bottom]] = rect;
+    const [[left,top], [right,bottom]] = rect;
 
     return (p[0] > left && p[0] < right && p[1] > top && p[1] < bottom);
 }

@@ -8,9 +8,9 @@ import { reduceSignificand } from "big-float-ts";
  * @param significantFigures
  */
 function toGrid(a, expMax, significantFigures) {
-    let expA = Math.floor(Math.log2(Math.abs(a)));
-    let expDif = expMax - expA;
-    let newSig = significantFigures - expDif + 1;
+    const expA = Math.floor(Math.log2(Math.abs(a)));
+    const expDif = expMax - expA;
+    const newSig = significantFigures - expDif + 1;
     if (newSig <= 0) {
         return 0;
     }

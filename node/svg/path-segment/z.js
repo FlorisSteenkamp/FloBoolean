@@ -9,7 +9,7 @@
  * parameters, they have an identical effect.
  */
 function z(s) {
-    let ps = [
+    const ps = [
         s.p,
         s.initialPoint
     ];

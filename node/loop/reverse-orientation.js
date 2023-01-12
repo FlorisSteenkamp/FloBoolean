@@ -5,10 +5,10 @@ import { loopFromBeziers } from './loop.js';
  * @param loop
  */
 function reverseOrientation(loop) {
-    let beziers = [];
-    let curves = loop.curves;
+    const beziers = [];
+    const curves = loop.curves;
     for (let i = curves.length - 1; i >= 0; i--) {
-        let curve = reverse(curves[i].ps);
+        const curve = reverse(curves[i].ps);
         beziers.push(curve);
     }
     return loopFromBeziers(beziers);

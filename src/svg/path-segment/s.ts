@@ -19,12 +19,12 @@ import { PathState } from "../path-state.js";
  * current point becomes the final (x,y) coordinate pair used in the polybézier.
  */
 function s(s: PathState): number[][] {
-    let p = s.prev2ndCubicControlPoint
+    const p = s.prev2ndCubicControlPoint
         ? [(s.p[0] - s.prev2ndCubicControlPoint[0]) + s.p[0], 
            (s.p[1] - s.prev2ndCubicControlPoint[1]) + s.p[1]]
         : s.p;
 
-    let ps = [
+    const ps = [
         s.p,
         p,
         [s.vals![0], s.vals![1]],

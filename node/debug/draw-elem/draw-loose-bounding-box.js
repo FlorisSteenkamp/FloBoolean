@@ -1,9 +1,9 @@
 import { drawFs } from "flo-draw";
-/** @hidden */
+/** @internal */
 function drawLooseBoundingBox(g, box, classes = 'thin5 brown nofill', delay = 0) {
-    let [[x0, y0], [x1, y1]] = box;
+    const [[x0, y0], [x1, y1]] = box;
     box = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
-    let $box = drawFs.polygon(g, box, classes, delay);
+    const $box = drawFs.polygon(g, box, classes, delay);
     return $box;
 }
 export { drawLooseBoundingBox };

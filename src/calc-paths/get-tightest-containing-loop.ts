@@ -12,9 +12,9 @@ function getTightestContainingLoop(
         loop: Loop): InOut {
     
     let containingLoop: InOut | undefined = undefined;
-    let stack: InOut[] = [root];
+    const stack: InOut[] = [root];
     while (stack.length) {
-        let inOut = stack.pop()!;
+        const inOut = stack.pop()!;
         f(inOut);
     }
 
@@ -24,7 +24,7 @@ function getTightestContainingLoop(
         if (parent === root || isLoopInLoop(loop.beziers, parent.beziers!)) {
             containingLoop = parent;
 
-            for (let child of parent.children!) {
+            for (const child of parent.children!) {
                 stack.push(child);
             }
         }

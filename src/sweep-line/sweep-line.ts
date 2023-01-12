@@ -54,8 +54,8 @@ function sweepLine<T,U>(
         predicate: (item1: T, item2: T) => U): IntersectionResult<T,U>[] {
 
     // Initialize event queue to contain all endpoints.
-    let events: IEvent<T>[] = [];
-	for (let item of items) {
+    const events: IEvent<T>[] = [];
+	for (const item of items) {
 		events.push({ 
             type: EVENT_LEFT, 
             item, 
@@ -70,17 +70,17 @@ function sweepLine<T,U>(
 
 	events.sort(compare);
 	
-	let activeItems = new Set<T>();
+	const activeItems = new Set<T>();
     
     /** A list of pairs of items that passed the predicate */
-	let pairedItems: IntersectionResult<T,U>[] = [];
-	for (let event of events) {
-    	let item = event.item;
+	const pairedItems: IntersectionResult<T,U>[] = [];
+	for (const event of events) {
+    	const item = event.item;
     	
    		if (event.type === EVENT_LEFT) {
-   			for (let activeItem of activeItems.values()) {
+   			for (const activeItem of activeItems.values()) {
                 //(window as any).ii++;
-                let result = predicate(item, activeItem);
+                const result = predicate(item, activeItem);
    				if (result) { 
                     //(window as any).jj++;
                     //console.log(result)
@@ -108,7 +108,7 @@ function sweepLine<T,U>(
  * @param b Another event
  */
 function compare<T>(a: IEvent<T>, b: IEvent<T>) {
-    let res = a.x - b.x;
+    const res = a.x - b.x;
 
     if (res !== 0) { return res; }
 

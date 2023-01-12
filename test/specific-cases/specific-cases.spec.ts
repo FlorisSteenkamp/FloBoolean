@@ -9,7 +9,7 @@ import { simplifyPaths } from '../../src/index.js';
 
 
 describe('specific cases', function() {
-    let tolerancePower = -30;
+    const tolerancePower = -30;
 
     let fileName: string;
     testIt('square', 'simple square -> should decompose correctly (no decompisition)');
@@ -40,8 +40,8 @@ describe('specific cases', function() {
     function testIt(fileName: string, description: string) {
         init(fileName);
         it(description, () => {
-            let loopss = simplifyPaths(bezierLoops);
-            let tolerance = makeTolerance(tolerancePower, bezierLoops);
+            const loopss = simplifyPaths(bezierLoops);
+            const tolerance = makeTolerance(tolerancePower, bezierLoops);
             assert(
                 checkShapes(loopss, invariants, tolerance),
                 'invariants differ'
