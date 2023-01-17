@@ -1,4 +1,4 @@
-import { Loop } from './loop.js';
+import type { Loop } from './loop.js';
 /**
  *
  */

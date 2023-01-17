@@ -1,6 +1,6 @@
- import { getYBoundsTight } from 'flo-bezier3';
+import type { Loop } from './loop.js';
+import { getYBoundsTight } from 'flo-bezier3';
 import { memoize } from 'flo-memoize';
-import { Loop } from './loop.js';
 
 
 /** 

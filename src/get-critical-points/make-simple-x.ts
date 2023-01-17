@@ -1,6 +1,6 @@
+import type { Curve } from "../curve/curve.js";
+import type { __X__ } from "../-x-.js";
 import { evalDeCasteljauWithErr } from "flo-bezier3";
-import { Curve } from "../curve/curve.js";
-import { type __X__ } from "../-x-.js";
 
 
 /**

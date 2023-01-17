@@ -1,7 +1,8 @@
+import type { Loop } from "../loop.js";
 import { flatCoefficients } from "flo-poly";
 import { cubicThroughPointGiven013 } from "flo-bezier3";
 import { generateRandomPoints } from "./generate-random-points.js";
-import { Loop, loopFromBeziers } from "../loop.js";
+import { loopFromBeziers } from "../loop.js";
 
 
 function randomSeed() {

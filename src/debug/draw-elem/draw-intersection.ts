@@ -1,5 +1,5 @@
+import type { __X__ } from '../../-x-.js';
 import { drawCirclePercent } from './draw-circle-percent.js';
-import { __X__ } from '../../-x-.js';
 
 
 function drawIntersection(g: SVGGElement, x: __X__) {

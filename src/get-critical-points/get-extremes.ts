@@ -1,5 +1,5 @@
-import { Loop } from "../loop/loop.js";
-import { __X__ } from "../-x-.js";
+import type { Loop } from "../loop/loop.js";
+import type { __X__ } from "../-x-.js";
 import { getExtreme } from "./get-extreme.js";
 
 

@@ -1,5 +1,5 @@
-import { RootInterval } from 'flo-poly';
-import { RootIntervalExp } from 'flo-poly';
+import type { RootInterval } from 'flo-poly';
+import type { RootIntervalExp } from 'flo-poly';
 /**
  * Represents an intersection point between two bezier curves as 'seen' by one
  * of the curves.
@@ -43,4 +43,4 @@ interface X {
     riExp?: RootIntervalExp;
     getPExact?: () => number[][];
 }
-export { type X };
+export type { X };

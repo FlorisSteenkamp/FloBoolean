@@ -1,4 +1,4 @@
-import { Loop } from "../../loop/loop.js";
+import type { Loop } from "../../loop/loop.js";
 import { drawLoop } from "./draw-loop.js";
 
 

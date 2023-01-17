@@ -1,6 +1,6 @@
-import { toPowerBasis, toCubic, evalDeCasteljau } from 'flo-bezier3';
+import type { IPointOnShape } from '../../point-on-shape/point-on-shape.js';
+import { evalDeCasteljau } from 'flo-bezier3';
 import { drawFs } from 'flo-draw';
-import { IPointOnShape } from '../../point-on-shape/point-on-shape.js';
 
 
 function drawMinY(g: SVGGElement, pos: IPointOnShape) {	

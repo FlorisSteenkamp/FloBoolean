@@ -1,5 +1,5 @@
-import { RootInterval } from 'flo-poly';
-import { RootIntervalExp } from 'flo-poly';
+import type { RootInterval } from 'flo-poly';
+import type { RootIntervalExp } from 'flo-poly';
 
 
 /** 
@@ -48,4 +48,4 @@ interface X {
 }
 
 
-export { type X }
+export type { X }

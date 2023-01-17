@@ -5,11 +5,17 @@ module.exports = {
         "node": true
     },
     "ignorePatterns": [
-        "node_modules/**/*",
         "*.cjs",
+        "*.min.js",
+        "node_modules/",
+        "dist/**/*",
+        "build/**/*",
         "node/**/*",
         "browser/**/*",
-        "test/**/*"
+        "unused/**/*",
+        "src-unused/**/*",
+        "test/**/*",
+        "demo/**/*"
     ],
     "extends": [
         "eslint:recommended",
@@ -38,9 +44,15 @@ module.exports = {
                 "noSideEffectsWhenCalled": [
                     { "function": "Object.freeze" },
                     {
-                        "module": "react",
-                        "functions": ["createContext", "createRef"],
-                    }
+                        "module": "#local",
+                        "functions": [
+                            
+                        ]
+                    },
+                    {
+                        "module": "flo-memoize",
+                        "functions": ["memoize"],
+                    },
                 ]
             }
         ]

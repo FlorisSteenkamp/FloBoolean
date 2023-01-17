@@ -1,7 +1,8 @@
+import type { Loop } from './loop.js';
+import type { Curve } from '../curve/curve.js';
+import type { IPointOnShape } from '../point-on-shape/point-on-shape.js';
+import { PointOnShape } from '../point-on-shape/point-on-shape.js';
 import { memoize } from 'flo-memoize';
-import { Loop } from './loop.js';
-import { Curve } from '../curve/curve.js';
-import { PointOnShape, IPointOnShape } from '../point-on-shape/point-on-shape.js';
 import { getBounds_ } from '../get-bounds-.js';
 
 

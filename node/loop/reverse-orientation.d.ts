@@ -1,4 +1,4 @@
-import { Loop } from './loop.js';
+import type { Loop } from './loop.js';
 /**
  * Returns a completely reversed loop of the given bezier loop.
  * @param loop

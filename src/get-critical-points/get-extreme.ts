@@ -1,6 +1,6 @@
-import { Loop } from "../loop/loop.js";
+import type { Loop } from "../loop/loop.js";
+import type { __X__ } from "../-x-.js";
 import { getMinY } from "../loop/get-min-y.js";
-import { __X__ } from "../-x-.js";
 import { makeSimpleX } from "./make-simple-x.js";
 
 

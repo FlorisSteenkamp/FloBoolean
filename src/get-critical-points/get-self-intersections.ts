@@ -1,7 +1,6 @@
+import type { __X__ } from '../-x-.js';
+import type { Loop } from '../loop/loop.js';
 import { bezierSelfIntersection, getIntervalBox } from 'flo-bezier3';
-import { __X__ } from '../-x-.js';
-import { Loop } from '../loop/loop.js';
-
 
 const eps = Number.EPSILON;
 

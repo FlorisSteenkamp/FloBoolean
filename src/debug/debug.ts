@@ -1,5 +1,5 @@
+import type { IDebugElems } from './debug-elem-types.js';
 import { drawElemFunctions, TDrawElemFunctions } from './draw-elem/draw-elem.js';
-import { IDebugElems } from './debug-elem-types.js';
 
 
 type GeneratedElems = { [T in keyof IDebugElems]: IDebugElems[T][] };
@@ -79,11 +79,13 @@ function enableDebugForBooleanOp(debugOn: boolean) {
 }   
 
 
-export { 
+export type { 
     Debug,
     GeneratedElems, 
     ITiming, 
     Generated, 
-    IDebugFunctions,
-    enableDebugForBooleanOp
+    IDebugFunctions
 }
+
+
+export { enableDebugForBooleanOp }
