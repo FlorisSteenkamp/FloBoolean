@@ -2,6 +2,7 @@ import { squaredDistanceBetween, toLength, fromTo as fromToVect, translate } fro
 // import { lengthSquaredUpperBound, isLine, isCubicReallyQuad, toQuadraticFromCubic } from "flo-bezier3";
 import { isReallyPoint, isCubicReallyQuad, cubicToQuadratic, isCollinear } from "flo-bezier3";
 import { areAllPointsDifferent } from "./are-all-points-different.js";
+const { abs } = Math;
 /**
  * Returns the same bezier if its points are well-spaced, e.g. all points not
  * coincident, etc., else fix it, if possible, and return the fixed bezier,
@@ -74,8 +75,8 @@ function fixBezierByPointSpacing(ps, gridSpacing, sendToGrid) {
             arePsEqual(ps[2], ps[3]))) {
         // Check if first and last point are sufficiently far apart to split
         // the bezier into a line so that all points differ.
-        if (ps[0][0] - ps[3][0] > (3 + 1) * gridSpacing ||
-            ps[0][1] - ps[3][1] > (3 + 1) * gridSpacing) {
+        if (abs(ps[0][0] - ps[3][0]) > (3 + 1) * gridSpacing ||
+            abs(ps[0][1] - ps[3][1]) > (3 + 1) * gridSpacing) {
             return [ps[0], ps[ps.length - 1]];
         }
         else {
