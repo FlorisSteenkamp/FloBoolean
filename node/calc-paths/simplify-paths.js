@@ -46,10 +46,11 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
      * A size (based on the max value of the tangent) for the containers holding
      * critical points.
      */
-    const containerSizeMultiplier = 2 ** 4;
-    //const containerSizeMultiplier = 2**39;
+    const containerSizeMultiplier = 2 ** 4; // TODO2 - put back!!
+    // const containerSizeMultiplier = 2**36;
     const containerDim = gridSpacing * containerSizeMultiplier;
     bezierLoops = normalizeLoops(bezierLoops, maxBitLength, expMax, false, true);
+    // console.log(bezierLoops)
     addDebugInfo1(bezierLoops);
     bezierLoops.sort(orderLoopAscendingByMinY);
     const loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));

@@ -8,9 +8,10 @@ const extensions = [
 ];
 
 module.exports = {
-    mode: 'production',
-    // mode: 'development',
+    // mode: 'production',
+    mode: 'development',
     entry: './src/app.tsx',
+    devtool: 'eval-source-map',
     resolve: {
         extensions,
         plugins: [new ResolveTypeScriptPlugin({
@@ -34,6 +35,7 @@ module.exports = {
         builtAt: true
     },
     plugins: [
+        /*
         new CircularDependencyPlugin({
             // exclude detection of files based on a RegExp
             exclude: /node_modules/,
@@ -42,6 +44,7 @@ module.exports = {
             // set the current working directory for displaying module paths
             cwd: process.cwd(),
         })
+        */
     ],
     optimization: {
         minimize: false

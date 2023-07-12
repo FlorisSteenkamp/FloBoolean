@@ -4,5 +4,5 @@
  * else return undefined.
  * @param ps A bezier
  */
-declare function fixBezierByPointSpacing(ps: number[][], gridSpacing: number, sendToGrid: (p: number[]) => number[]): number[][] | undefined;
+declare function fixBezierByPointSpacing(ps: number[][] | undefined, gridSpacing: number, sendToGrid: (p: number[]) => number[]): number[][] | undefined;
 export { fixBezierByPointSpacing };

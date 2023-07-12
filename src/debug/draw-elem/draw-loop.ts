@@ -14,7 +14,7 @@ function drawLoop(
     const centroid = getLoopCentroid(loop);
     const area     = getLoopArea(loop);
     const bounds   = simplifyBounds(getLoopBounds(loop));
-    drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 0);
+    drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 500);
 
     return drawShape(
         g, 

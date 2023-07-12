@@ -1,4 +1,4 @@
-import { areBoxesIntersecting } from "flo-bezier3";
+import { areBoxesIntersecting } from "../are-boxes-intersecting.js";
 import { Container } from "../container.js";
 
 

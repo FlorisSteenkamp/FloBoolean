@@ -20,6 +20,8 @@ function getContainerInOuts(
     // We check one __X__ for each curve with an intersection within this container
     const xs = container.xs;
 
+    // console.log(xs);
+
     // Check nature of Xs. If Xs is the very common case where two curves cross
     // we can use a faster check. Also in the bit less common case where all
     // curves are joining at an interface we can do a fast ccw (the ccw part

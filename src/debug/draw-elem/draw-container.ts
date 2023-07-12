@@ -20,7 +20,6 @@ function drawContainer(g: SVGGElement, container: Container, classes?: string, d
     for (let i=0; i<inOuts.length; i++) {
         const inOut = inOuts[i];
         const p = inOut.p.slice();
-
         const color = inOut.dir === -1 ? 'red' : 'blue';
         const size = scale*(1 + (0.5*i));
         if (inOut.idx !== undefined) {
@@ -32,7 +31,11 @@ function drawContainer(g: SVGGElement, container: Container, classes?: string, d
     // container rect
     const $outline = drawFs.rect(g, rect, 'thin2 blue nofill', delay);
 
-    return [...$outline, ...$circles, ...$texts];
+    return [
+        ...$outline,
+        ...$circles,
+        ...$texts
+    ];
 }
 
 

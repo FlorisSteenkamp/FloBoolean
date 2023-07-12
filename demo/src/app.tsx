@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { useState } from 'react';
-import * as ReactDOM from 'react-dom';
 import { _upd } from './state-control/upd.js';
 import { State } from './state/state.js';
 import { StateControl } from './state-control/state-control.js';
 import { getInitialState } from './state/get-initial-state.js';
 import { defaultTransientState } from './state/default-state.js';
 import { Page } from './page/page.js';
-//import { elementDocs } from './elements/docs';
+import { createRoot } from 'react-dom/client';
 
 
 function App() {
@@ -32,4 +31,4 @@ function App() {
 }
 
 
-ReactDOM.render(<App />, document.getElementById('app'));
+createRoot(document.getElementById('app')!).render(<App />)

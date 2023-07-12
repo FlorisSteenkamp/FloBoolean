@@ -3,9 +3,9 @@ declare const _debug_: Debug;
 import * as React from 'react';
 // import { drawFs } from 'flo-draw';
 import { useRef, useEffect } from 'react';
-import { Container, FormControl, InputLabel, MenuItem, Select, Grid } from '@material-ui/core';
+import { Container, FormControl, InputLabel, MenuItem, Select, Grid } from '@mui/material';
 import { StateControl } from '../state-control/state-control.js';
-import { useStyles } from './styles.js';
+// import { useStyles } from './styles.js';
 import { Debug, IDebugElems } from '../../../src/index.js';
 import { ToDraw } from '../state/to-draw.js';
 import { deleteSvgs } from './delete-svgs.js';
@@ -24,6 +24,7 @@ import { logNearestBezierPost } from './log-nearest-bezier-post.js';
 import { logNearestLoopsPost } from './log-nearest-loops-post.js';
 import { logNearestLoopPost } from './log-nearest-loop-post.js';
 import { logNearestLoopPre } from './log-nearest-loop-pre.js'
+import { SelectChangeEvent } from '@mui/material/Select';
 
 
 const toDrawCheckboxStyles = { 
@@ -75,7 +76,7 @@ function Page(props: Props) {
 	const { toDraw } = pageState;
 
 	// Hooks
-	const classes = useStyles();
+	// const classes = useStyles();
 	const ref = useRef<SVGSVGElement>(null);
 	const refX = useRef<HTMLSpanElement>(null);
 	const refY = useRef<HTMLSpanElement>(null);
@@ -192,7 +193,7 @@ function Page(props: Props) {
 
 
 	async function lazyLoadDeduced() {
-		const pageState: PageState;
+		let pageState: PageState;
 
 		({ pageState } = stateControl.state.appState);
 		const { vectorName } = pageState;
@@ -225,10 +226,8 @@ function Page(props: Props) {
 
 	//function vectorChanged(vectorName: string) {
 	function vectorChanged(
-		event: React.ChangeEvent<{
-			name?: string;
-			value: unknown;
-		}>, child: React.ReactNode) {
+		event: SelectChangeEvent<string>,
+		child: React.ReactNode) {
 
 		const vectorName = event.target.value as string;
 		upd(pageState, { vectorName });
@@ -292,7 +291,11 @@ function Page(props: Props) {
 
 
 	return (<>
-        <Container maxWidth="md" className={classes.container}>
+        <Container
+			maxWidth="md"
+			// className={classes.container}
+			sx={{ height: 'calc(100%)', padding: '10px' }}
+		>
 			{Object
 			.keys(toDraw)
 			.filter(key => !!toDrawKeyToText[key as keyof ToDraw])
@@ -351,7 +354,6 @@ function Page(props: Props) {
 						label="Shape"
 					>
 						{vectors.map(v => 
-							// <MenuItem key={v.name} value={v.name}>{v.name}</MenuItem>
 							<MenuItem key={v} value={v}>{v}</MenuItem>
 						)}
 					</Select>
@@ -493,7 +495,7 @@ function drawRect(g: SVGGElement, rect: number[][]) {
 function gotoPrevViewbox(stateControl: StateControl) {
     const { transientState, state, upd } = stateControl;
     const { pageState } = state.appState;
-    const viewbox = transientState.viewboxStack.pop();
+    let viewbox = transientState.viewboxStack.pop();
     if (!viewbox) {
         const loops = _debug_.generated.elems.loop;
         const bezierLoops = loops.map(loop => loop.beziers);

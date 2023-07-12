@@ -1,12 +1,13 @@
 import { orient2d } from 'big-float-ts';
 import { createRootExact, mid } from 'flo-poly';
 import { squaredDistanceBetween } from 'flo-vector2d';
-import { isPointOnBezierExtension, getBoundingHull, closestPointOnBezierCertified, areBoxesIntersecting } from "flo-bezier3";
+import { isPointOnBezierExtension, getBoundingHull, closestPointOnBezierCertified } from "flo-bezier3";
 import { getOtherTs } from './get-other-t.js';
 import { doConvexPolygonsIntersect } from "../geometry/do-convex-polygons-intersect.js";
 import { getIntersection } from './get-intersection.js';
 import { makeSimpleX } from './make-simple-x.js';
 import { getBoundingBox_ } from '../get-bounding-box-.js';
+import { areBoxesIntersecting } from '../are-boxes-intersecting.js';
 /**
  * Returns the pairs of intersection `t` values between the curves. Interface
  * intersections may not be returned - they should already be caught.
@@ -25,7 +26,9 @@ function getCurvesIntersections(expMax) {
             // curves are connected at endpoints
             // closed bounding boxes are guaranteed to intersect - don't check
             // check open bounding boxes
-            const aabbsIntersectOpen = areBoxesIntersecting(false, getBoundingBox_(psA), getBoundingBox_(psB));
+            const aabbsIntersectOpen = areBoxesIntersecting(false, 
+            // const aabbsIntersectOpen = areBoxesIntersecting(true,
+            getBoundingBox_(psA), getBoundingBox_(psB));
             if (!aabbsIntersectOpen) {
                 return checkEndpoints(curveA, curveB);
             }
@@ -103,15 +106,18 @@ function getLineLineIntersections(curveA, curveB, expMax) {
     let psB = curveB.ps;
     const bbA = getBoundingBox_(psA);
     const bbB = getBoundingBox_(psB);
+    // if (equal(psA,[[4,8],[4,7]]) && equal(psB,[[4,6],[4,8]])) {
+    //     console.log('testing');
+    // }
     if (curveA.next !== curveB && curveB.next !== curveA) {
-        // the two lines are not connected at their endpoints
+        // the two line curves are not consecutive in the loop
         if (areBoxesIntersecting(true, bbA, bbB)) {
             const xs = getIntersection(curveA, curveB, expMax, false);
             return xs.length ? xs : undefined;
         }
         return undefined;
     }
-    // the two lines are connected at their endpoints
+    // the two line curves are consecutive in the loop
     const swap = curveB.next === curveA;
     if (swap) {
         [curveA, curveB] = [curveB, curveA];
@@ -131,16 +137,14 @@ function getLineLineIntersections(curveA, curveB, expMax) {
     }
     // it is a line going back on itself 
     // - return endpoint intersections
-    const lenCurve1 = squaredDistanceBetween(psA[0], psA[1]);
-    const lenCurve2 = squaredDistanceBetween(psB[0], psB[1]);
+    const lenCurveA = squaredDistanceBetween(psA[0], psA[1]);
+    const lenCurveB = squaredDistanceBetween(psB[0], psB[1]);
     let tPair;
-    if (lenCurve1 > lenCurve2) {
-        // tPair = [inversion01Precise(psA, psB[1]), 1];
+    if (lenCurveA > lenCurveB) {
         const t0 = mid(closestPointOnBezierCertified(psA, psB[1])[0].ri);
         tPair = [t0, 1];
     }
     else {
-        // tPair = [0, inversion01Precise(psB, psA[0])];
         const t1 = mid(closestPointOnBezierCertified(psB, psA[0])[0].ri);
         tPair = [0, t1];
     }

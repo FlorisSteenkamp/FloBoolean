@@ -22,6 +22,10 @@ function getInOutsViaSides(
     // We check one __X__ for each curve with an intersection within this container
     const xs_ = container.xs;
 
+    //if (xs_.length === 4) {
+    //    console.log(xs_.map(x => x.x.kind))
+    //}
+
     const inOuts: InOut[] = [];
 
     // get a map from each Curve to each __X__ of this container

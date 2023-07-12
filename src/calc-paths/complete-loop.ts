@@ -23,6 +23,8 @@ function completeLoop(
     let out_: InOut | undefined = out;
     let additionalBezier: number[][] | undefined;
 
+    // console.log(out_);
+
     do {
         takenOuts.add(out_!); // Mark this intersection as taken
         

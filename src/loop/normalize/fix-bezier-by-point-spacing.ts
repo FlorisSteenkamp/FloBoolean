@@ -1,6 +1,6 @@
 import { squaredDistanceBetween, toLength, fromTo as fromToVect, translate } from "flo-vector2d";
 // import { lengthSquaredUpperBound, isLine, isCubicReallyQuad, toQuadraticFromCubic } from "flo-bezier3";
-import { isReallyPoint, isCubicReallyQuad, cubicToQuadratic, isCollinear } from "flo-bezier3";
+import { isReallyPoint, isCubicReallyQuad, cubicToQuadratic, isCollinear, equal } from "flo-bezier3";
 import { areAllPointsDifferent } from "./are-all-points-different.js";
 
 const { abs } = Math;
@@ -13,9 +13,11 @@ const { abs } = Math;
  * @param ps A bezier
  */
 function fixBezierByPointSpacing(
-        ps: number[][], 
+        ps: number[][] | undefined, 
         gridSpacing: number,
         sendToGrid: (p: number[]) => number[]): number[][] | undefined {
+
+    if (ps === undefined) { return undefined; }
 
     // Early filter - if all points coincide, we're done - degenerate to point
     if (isReallyPoint(ps)) {
@@ -39,9 +41,8 @@ function fixBezierByPointSpacing(
         // Is the quadratic bezier overlapping onto itself? 
         if (arePsEqual(ps[0], ps[2])) {
             // a quadratic with equal endpoints (and not degenerate to a point)
-            // The overlap is of no consequence to the algorithm so make it a
-            // line
-            return [ps[0], ps[1]];
+            return undefined;  // better to just remove it
+            // return [ps[0], ps[1]];
         }
         // At this point not all points same and not all points different and 
         // not endpoints coincide, so either:
@@ -56,32 +57,45 @@ function fixBezierByPointSpacing(
 
     // Early filter - if no points coincide, we're done - well spaced
     if (areAllPointsDifferent(ps)) {
-        return checkCubicForLineOrQuad(ps);
+        const ps_ = checkCubicForLineOrQuad(ps);
+        if (ps_ === undefined) { return undefined; }
+
+        if (equal(ps_,ps)) { return ps; }
+
+        return fixBezierByPointSpacing(
+            ps_,
+            gridSpacing, sendToGrid
+        );
     }
     
     if (arePsEqual(ps[0], ps[3])) {
         // we should simply handle this case for cubics - lines and quadratics 
         // degenerate into a point and a self-overlapping curve respectively.
+
+        // if (isCollinear(ps)) { return [ps[0], ps[3]]; }
+        if (isCollinear(ps)) { return undefined; }
         
-        if (arePsEqual(ps[1], ps[2])) {
-            // it is a cubic degenerated to a line
-            return [ps[0], ps[2]];
-        }
+        // if (arePsEqual(ps[1], ps[2])) {
+        //     // it is a cubic degenerated to a line
+        //     return [ps[0], ps[2]];
+        // }
 
         // no need to fix anything - it is a loop - it cannot be a line or a
         // quadratic (they don't make loops)
         return ps; 
     }
 
+    if (isCollinear(ps)) { return [ps[0],ps[3]]; }
+
     // At this point, either:
     // * point 0, 1 and 2 coincide
     // * point 1, 2 and 3 coincide
     // * points 0,1 AND points 2,3 coincide
-    // * only point 0 and point 1 coincides
-    // * only point 0 and point 2 coincides        
-    // * only point 1 and point 2 coincides
-    // * only point 1 and point 3 coincides
-    // * only point 2 and point 3 coincides
+    // * only point 0 and point 1 coincide
+    // * only point 0 and point 2 coincide
+    // * only point 1 and point 2 coincide
+    // * only point 1 and point 3 coincide
+    // * only point 2 and point 3 coincide
 
     // If point 0, 1 and 2 coincide OR point 1, 2 and 3 coincide OR
     // points 0,1 AND points 2,3 coincide we have a line
@@ -94,8 +108,18 @@ function fixBezierByPointSpacing(
         (arePsEqual(ps[0], ps[1]) && 
          arePsEqual(ps[2], ps[3]))
     ) {
+        return fixBezierByPointSpacing(
+            [ps[0], ps[ps.length-1]],
+            gridSpacing, sendToGrid
+        );
+
+        /*
         // Check if first and last point are sufficiently far apart to split
         // the bezier into a line so that all points differ.
+
+        // TODO2 - is below maybe not correct?
+        //if ((ps[0][0] - ps[3][0]) > (3+1)*gridSpacing || 
+        //    (ps[0][1] - ps[3][1]) > (3+1)*gridSpacing) {
         if (abs(ps[0][0] - ps[3][0]) > (3+1)*gridSpacing || 
             abs(ps[0][1] - ps[3][1]) > (3+1)*gridSpacing) {
 
@@ -105,7 +129,7 @@ function fixBezierByPointSpacing(
             // cannot fix it - it is basically a point.
 
             return undefined;
-        }
+        }*/
     }
 
 
@@ -144,12 +168,7 @@ function fixBezierByPointSpacing(
         // accuracy of the algorithm and it ensures the move > gridSpacing.
 
         if (squaredDistanceBetween(ps[1], ps[2]) < 4 * gridSpacing) {
-            return [
-                ps[0],
-                ps[2],
-                ps[2],
-                ps[3]
-            ]; // cannot be a line or quad
+            return [ps[0], ps[2], ps[2], ps[3]]; // cannot be a line or quad
         } else {
             const v = toLength(fromToVect(ps[1], ps[2]), 2 * gridSpacing);
             const p1 = translate(ps[1], v);

@@ -24,7 +24,11 @@ function drawContainer(g, container, classes, delay = 0) {
     }
     // container rect
     const $outline = drawFs.rect(g, rect, 'thin2 blue nofill', delay);
-    return [...$outline, ...$circles, ...$texts];
+    return [
+        ...$outline,
+        ...$circles,
+        ...$texts
+    ];
 }
 export { drawContainer };
 //# sourceMappingURL=draw-container.js.map

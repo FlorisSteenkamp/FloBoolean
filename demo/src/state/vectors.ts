@@ -2,6 +2,7 @@
 const vectors = [
     'new1',
     'new2',
+    'koldat',
     'bold-b',
     'square',
     'multiple-xs-at-min-y',
