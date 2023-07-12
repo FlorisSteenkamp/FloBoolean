@@ -2,7 +2,7 @@
     "name": "flo-boolean",
     "sideEffects": false,
     "description": "Boolean operations on planar algebraic curves (currently only simplification is supported).",
-    "version": "2.1.6",
+    "version": "2.1.7",
     "author": {
         "name": "Floris Steenkamp"
     },
