@@ -24,6 +24,7 @@ function filterContainers(containers: Container[]) {
                 return true; 
             }
         }
+
         return false; // exclude container
     });
 

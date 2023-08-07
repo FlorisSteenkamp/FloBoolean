@@ -8,6 +8,7 @@ import { setIntersectionNextValues } from "../get-critical-points/set-intersecti
 import { sweepLine } from "../sweep-line/sweep-line.js";
 import { getSelfIntersections } from '../get-critical-points/get-self-intersections.js';
 import { getInterfaceIntersections } from '../get-critical-points/get-interface-intersections.js';
+import { getExcessiveCurvatures } from '../get-critical-points/get-excessive-curvatures.js';
 import { getExtremes } from '../get-critical-points/get-extremes.js';
 import { sendContainersToGrid } from './send-containers-to-grid.js';
 import { compareOrderedInOut } from './get-container-in-outs/get-in-outs-via-sides/compare-in-out.js';
@@ -17,18 +18,17 @@ import { filterContainers } from './filter-containers.js';
  * @param containerDim
  */
 function getContainers(loops, containerDim, expMax) {
-    //const t0 = performance.now();
     const xs1 = getIntersections(loops, expMax);
-    //const t1 = performance.now();
-    //console.log("intersections took " + ((t1 - t0)).toFixed(3) + " milliseconds.");
     const xs2 = getSelfIntersections(loops);
     const xs3 = getInterfaceIntersections(loops);
     const { extremes, xs: xs4 } = getExtremes(loops);
-    let xPairs = [...xs1, ...xs2, ...xs3, ...xs4];
+    const xs5 = getExcessiveCurvatures(expMax, loops);
+    let xPairs = [...xs1, ...xs2, ...xs3, ...xs4, ...xs5];
     // console.log('general  ', xs1);
     // console.log('self     ', xs2);
     // console.log('interface', xs3);
     // console.log('topmost  ', xs4);
+    // console.log('excessive  ', xs5);
     if (typeof _debug_ !== 'undefined') {
         for (const xPair of xs1) {
             _debug_.generated.elems.intersection.push(...xPair);
@@ -36,11 +36,13 @@ function getContainers(loops, containerDim, expMax) {
         for (const xPair of xs2) {
             _debug_.generated.elems.intersection.push(...xPair);
         }
-        // TODO - are interface intersections really necessary?
         for (const xPair of xs3) {
             _debug_.generated.elems.intersection.push(...xPair);
         }
         for (const xPair of xs4) {
+            _debug_.generated.elems.intersection.push(...xPair);
+        }
+        for (const xPair of xs5) {
             _debug_.generated.elems.intersection.push(...xPair);
         }
     }
@@ -74,6 +76,7 @@ function getContainers(loops, containerDim, expMax) {
     }
     containers = filterContainers(containers);
     containers = sendContainersToGrid(containers, expMax, containerDim);
+    // console.log(xPairs.map(xp => xp[0].x.kind).filter(k => k === 7).length);
     if (typeof _debug_ !== 'undefined') {
         _debug_.generated.elems.container = containers;
     }

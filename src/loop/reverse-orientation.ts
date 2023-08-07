@@ -15,7 +15,7 @@ function reverseOrientation(loop: Loop) {
         beziers.push(curve);
     }
 
-    return loopFromBeziers(beziers);
+    return loopFromBeziers(beziers, undefined!);
 }
 
 

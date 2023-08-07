@@ -48,11 +48,15 @@ function simplifyPaths(
         timingStart = performance.now();
     }
 
+    // bezierLoops = bezierLoops.map(loopFromBeziers).map(reverseOrientation).map(loops => loops.beziers);
+    // console.log(loopsToSvgPathStr(bezierLoops));
+
     /** 
      * All bezier coordinates will be truncated to this (bit-aligned) bitlength.
      * Higher bitlengths would increase the running time of the algorithm 
      * considerably.
      */
+    // const maxBitLength = 46;
     const maxBitLength = 46;
 
     maxCoordinate = maxCoordinate || getMaxCoordinate(bezierLoops);
@@ -64,7 +68,7 @@ function simplifyPaths(
      * A size (based on the max value of the tangent) for the containers holding 
      * critical points.
      */
-    const containerSizeMultiplier = 2**4;  // TODO2 - put back!!
+    const containerSizeMultiplier = 2**6;
     // const containerSizeMultiplier = 2**36;
     const containerDim = gridSpacing * containerSizeMultiplier;
 
@@ -115,7 +119,7 @@ function simplifyPaths(
     const outSets = loopTrees.map(getLoopsFromTree);
 
     const loopss = outSets.map(
-        outSet => outSet.map(out => loopFromOut(out, outSet[0].orientation!))
+        outSet => outSet.map((out,idx) => loopFromOut(out, outSet[0].orientation!, idx))
     );
 
     /** 
@@ -144,14 +148,25 @@ function simplifyPaths(
         timing.simplifyPaths = performance.now() - timingStart!;
     }
 
+    // console.log(loopsToSvgPathStr(loopss_[0].map(loop => loop.beziers)));
     return loopss_;
 }
 
 
-function loopFromOut(out: InOut, orientation: number) {
+/**
+ * 
+ * @param out 
+ * @param orientation 
+ * @param idx identifies the loop during debugging
+ */
+function loopFromOut(
+        out: InOut,
+        orientation: number,
+        idx: number) {
+
     const loop = orientation < 0
-        ? loopFromBeziers(out.beziers)
-        : reverseOrientation(loopFromBeziers(out.beziers));
+        ? loopFromBeziers(out.beziers, idx)
+        : reverseOrientation(loopFromBeziers(out.beziers, idx));
 
     return loop;
 }

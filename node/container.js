@@ -7,7 +7,7 @@
  */
 function containerIsBasic(expMax, container) {
     const xs = container.xs;
-    if (xs.length <= 2) {
+    if (xs.length <= 2 && xs[0].x.kind !== 7) {
         return true;
     }
     return false;

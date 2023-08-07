@@ -9,7 +9,7 @@ import { evalDeCasteljauWithErr } from "flo-bezier3";
  * @param curve 
  * @param kind 
  */
-function makeSimpleX(t: number, curve: Curve, kind: 0|1|2|3|4|5): __X__ {
+function makeSimpleX(t: number, curve: Curve, kind: 0|1|2|3|4|5|7): __X__ {
     const ps = curve.ps;
 
     if (t === 0) {
@@ -29,10 +29,10 @@ function makeSimpleX(t: number, curve: Curve, kind: 0|1|2|3|4|5): __X__ {
     // there will be some error in calculating the point
     const { p, pE } = evalDeCasteljauWithErr(ps,t);
     const box = [
-        [p[0]-pE[0],p[1]-pE[1]],
-        [p[0]+pE[0],p[1]+pE[1]]
-    ];
-
+        [p[0] - pE[0], p[1] - pE[1]],
+        [p[0] + pE[0], p[1] + pE[1]]
+    ]; 
+ 
     return { x: { ri: { tS: t, tE: t, multiplicity: 1 }, box, kind }, curve };
 }
 

@@ -11,7 +11,7 @@ function reverseOrientation(loop) {
         const curve = reverse(curves[i].ps);
         beziers.push(curve);
     }
-    return loopFromBeziers(beziers);
+    return loopFromBeziers(beziers, undefined);
 }
 export { reverseOrientation };
 //# sourceMappingURL=reverse-orientation.js.map

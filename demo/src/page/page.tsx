@@ -1,11 +1,9 @@
 declare const _debug_: Debug; 
 
 import * as React from 'react';
-// import { drawFs } from 'flo-draw';
 import { useRef, useEffect } from 'react';
 import { Container, FormControl, InputLabel, MenuItem, Select, Grid } from '@mui/material';
 import { StateControl } from '../state-control/state-control.js';
-// import { useStyles } from './styles.js';
 import { Debug, IDebugElems } from '../../../src/index.js';
 import { ToDraw } from '../state/to-draw.js';
 import { deleteSvgs } from './delete-svgs.js';
@@ -17,14 +15,12 @@ import { getViewBoxForShape, toViewBoxStr } from './viewbox.js';
 import { logNearestContainer } from './log-nearest-container.js';
 import { logNearestBezierPre, logLooseBb_, logTightBb_, logBHull_ } from './log-bbs.js';
 import { ButtonGroup } from '../components/simple-button-group.js';
-import { ValueSelect } from '../components/value-select.js';
-import { inspect } from '../inspect.js';
-// import { logSomeStuff } from './log-some-stuff';
 import { logNearestBezierPost } from './log-nearest-bezier-post.js';
 import { logNearestLoopsPost } from './log-nearest-loops-post.js';
 import { logNearestLoopPost } from './log-nearest-loop-post.js';
 import { logNearestLoopPre } from './log-nearest-loop-pre.js'
 import { SelectChangeEvent } from '@mui/material/Select';
+import { gotoPrevViewbox } from './goto-prev-viewbox.js';
 
 
 const toDrawCheckboxStyles = { 
@@ -92,8 +88,6 @@ function Page(props: Props) {
 		const { pageState } = state.appState;
 		const { zoomState } = transientState;
 
-		if (!zoomState.mouseIsDown) { return; }
-
 		// Pixel coordinates
 		const pixelsX = event.nativeEvent.offsetX;
 		const pixelsY = event.nativeEvent.offsetY;
@@ -105,6 +99,8 @@ function Page(props: Props) {
 		if (spanX) { spanX.innerHTML = viewboxX.toFixed(2); }
 		const spanY = refY.current;
 		if (spanY) { spanY.innerHTML = viewboxY.toFixed(2); }
+
+		if (!zoomState.mouseIsDown) { return; }
 	
 		if (zoomState.zoomRect) { zoomState.zoomRect.remove(); }
 		const prevViewboxXY = zoomState.prevViewboxXY!;
@@ -360,12 +356,8 @@ function Page(props: Props) {
 					</FormControl>
 				</Grid>
 			</Grid>
-			<span ref={refX} style={{ userSelect: 'none', position: 'absolute', bottom: '13px', left: '10px' }}>
-				{/*{x.toFixed(2)}*/}
-			</span>
-			<span ref={refY} style={{ userSelect: 'none', position: 'absolute', bottom: '13px', left: '80px' }}>
-				{/*{y.toFixed(2)}*/}
-			</span>
+			<span ref={refX} style={{ userSelect: 'none', position: 'absolute', bottom: '13px', left: '10px' }} />
+			<span ref={refY} style={{ userSelect: 'none', position: 'absolute', bottom: '13px', left: '80px' }} />
 			<svg 
 				ref={ref}
 				xmlns="http://www.w3.org/2000/svg"
@@ -492,18 +484,6 @@ function drawRect(g: SVGGElement, rect: number[][]) {
 }
 
 
-function gotoPrevViewbox(stateControl: StateControl) {
-    const { transientState, state, upd } = stateControl;
-    const { pageState } = state.appState;
-    let viewbox = transientState.viewboxStack.pop();
-    if (!viewbox) {
-        const loops = _debug_.generated.elems.loop;
-        const bezierLoops = loops.map(loop => loop.beziers);
-        viewbox = getViewBoxForShape(bezierLoops);
-    }
-
-    upd(pageState, { viewbox });
-}
-
-
 export { Page }
+
+// 506

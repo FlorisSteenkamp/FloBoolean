@@ -7523,7 +7523,7 @@ function fromTo(ps, tS, tE) {
  */
 function containerIsBasic(expMax, container) {
     const xs = container.xs;
-    if (xs.length <= 2) {
+    if (xs.length <= 2 && xs[0].x.kind !== 7) {
         return true;
     }
     return false;
@@ -19477,6 +19477,445 @@ function getInterfaceIntersections(loops) {
 }
 
 
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/to-power-basis/to-power-basis-2nd-derivative/double/to-power-basis-2nd-derivative.js
+/**
+ * Returns the 2nd derivative of the power basis representation of a
+ * bezier curve of order cubic or less (with intermediate calculations done in
+ * double precision).
+ *
+ * * returns the resulting power basis x and y coordinate polynomials from
+ * highest power to lowest, e.g. if `x(t) = at^2 + bt + c`
+ * and `y(t) = dt^2 + et + f` then  the result is returned
+ * as `[[a,b,c],[d,e,f]]`
+ *
+ * @param ps an order 0,1,2 or 3 bezier curve given by an ordered array of its
+ * control points, e.g. `[[0,0],[1,1],[2,1],[2,0]]`
+ *
+ * @doc
+ */
+function toPowerBasis_2ndDerivative(ps) {
+    if (ps.length === 4) {
+        const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
+        return [[
+                6 * ((x3 - x0) + 3 * (x1 - x2)),
+                6 * ((x2 + x0) - 2 * x1)
+            ], [
+                6 * ((y3 - y0) + 3 * (y1 - y2)),
+                6 * ((y2 + y0) - 2 * y1)
+            ]];
+    }
+    if (ps.length === 3) {
+        const [[x0, y0], [x1, y1], [x2, y2]] = ps;
+        return [[
+                2 * (x2 - 2 * x1 + x0)
+            ], [
+                2 * (y2 - 2 * y1 + y0)
+            ]];
+    }
+    if (ps.length <= 2) {
+        return [[0], [0]];
+    }
+    throw new Error('The given bezier curve must be of order <= 3.');
+}
+
+//# sourceMappingURL=to-power-basis-2nd-derivative.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/to-power-basis/to-power-basis-3rd-derivative/double/to-power-basis-3rd-derivative.js
+/**
+ * Returns the 3rd derivative of the power basis representation of a bezier
+ * curve of order cubic or less (with intermediate calculations done in
+ * double precision).
+ *
+ * * returns the resulting power basis x and y coordinate polynomials from
+ * highest power to lowest, e.g. if `x(t) = at^2 + bt + c`
+ * and `y(t) = dt^2 + et + f` then  the result is returned
+ * as `[[a,b,c],[d,e,f]]`
+ *
+ * @param ps an order 0,1,2 or 3 bezier curve given by an ordered array of its
+ * control points, e.g. `[[0,0],[1,1],[2,1],[2,0]]`
+ *
+ * @doc
+ */
+function toPowerBasis_3rdDerivative(ps) {
+    if (ps.length === 4) {
+        const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
+        return [
+            6 * ((x3 - x0) + 3 * (x1 - x2)),
+            6 * ((y3 - y0) + 3 * (y1 - y2))
+        ];
+    }
+    if (ps.length <= 3) {
+        return [0, 0];
+    }
+    throw new Error('The given bezier curve must be of order <= 3.');
+    // Side note: if x0,x1,x2,x3 <= X (for some X) and t is an element of [0,1], 
+    // then max(dddx)(t) <= 48*X for all t.
+}
+
+//# sourceMappingURL=to-power-basis-3rd-derivative.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/get-curvature-extrema/get-abs-curvature-extrema-polys.js
+
+
+
+/**
+ * Returns the polynomials whose zeros are the `t` values of the local
+ * minima / maxima of the absolute curvature for the given bezier curve.
+ *
+ * The polynomials are in the form `p1*p2` where the zeros
+ * of `p1` are the inflection points and the zeros of `p2` are the other minima /
+ * maxima.
+ *
+ * * **precondition:** must be a `true` cubic bezier (not degenerate to line or
+ * quadratic)
+ * * see [MvG](https://math.stackexchange.com/a/1956264/130809)
+ * * **non-exact:** due to floating point roundof during calculation
+ *
+ * @param ps an order 1,2 or 3 bezier curve given as an array of its control
+ * points, e.g. `[[0,0],[1,1],[2,1],[2,0]]`
+ *
+ * @internal
+ */
+function getAbsCurvatureExtremaPolys(ps) {
+    // It is a real cubic - use the excellent answer from the description:
+    // dd(kappa^2)/dt === (x′′y′ − x′y′′)*((x′′′y′ − x′y′′′)(x′2 + y′2) − 3(x′x′′ + y′y′′)(x′′y′ − x′y′′))
+    // Inflection points at: (x′′y′ − x′y′′) === 0
+    // Max abs curvature at: ((x′′′y′ − x′y′′′)(x′2 + y′2) − 3(x′x′′ + y′y′′)(x′′y′ − x′y′′)) === 0
+    const [[dx2, dx1, dx0], [dy2, dy1, dy0]] = toPowerBasis_1stDerivative(ps); // max bitlength increase === 5
+    const [[ddx1, ddx0], [ddy1, ddy0]] = toPowerBasis_2ndDerivative(ps); // max bitlength increase === 6
+    const [dddx, dddy] = toPowerBasis_3rdDerivative(ps); // max bitlength increase === 6
+    // ((x′′′y′ − x′y′′′)(x′2 + y′2) − 3(x′x′′ + y′y′′)(x′′y′ − x′y′′))
+    // or 
+    // x′′′x′x′y′ + x′′′y′y′y′ - y′′′x′x′x′ - y′′′x′y′y′ + 
+    // 3(x′′y′′x′x′ - x′′x′′x′y′ - x′′y′′y′y′ + y′′y′′x′y′)
+    // The above line becomes
+    // ((dddx*dy(t) − dx(t)*dddy)(dx(t)dx(t) + dy(t)dy(t)) − 3(dx(t)ddx(t) + dy(t)ddy(t))(ddx(t)dy(t) − dx(t)ddy(t)))
+    // or 
+    // dddx*dxt**2*dyt + dddx*dyt**3 - dddy*dxt**3 - dddy*dxt*dyt**2 - 
+    // 3*ddxt**2*dxt*dyt + 3*ddxt*ddyt*dxt**2 - 3*ddxt*ddyt*dyt**2 + 3*ddyt**2*dxt*dyt
+    // which becomes: (after substituting e.g. dy(t) = dy2*t^2 + dy1*t + dy0, etc. using Python and
+    // then expanding and collecting terms)
+    const dddx_dy1 = dddx * dy1;
+    const dddy_dx1 = dddy * dx1;
+    const ddx0_dy0 = ddx0 * dy0;
+    const ddx0_dy1 = ddx0 * dy1;
+    const ddy1_ddy1 = ddy1 * ddy1;
+    const ddx1_dy0 = ddx1 * dy0;
+    const ddy0_dx0 = ddy0 * dx0;
+    const ddy0_dx1 = ddy0 * dx1;
+    const ddy1_dx0 = ddy1 * dx0;
+    const dx0_dx1 = dx0 * dx1;
+    const dx0_dx2 = dx0 * dx2;
+    const dx0_dy2 = dx0 * dy2;
+    const dx1_dx1 = dx1 * dx1;
+    const dx1_dx2 = dx1 * dx2;
+    const dx1_dy1 = dx1 * dy1;
+    const dx2_dy0 = dx2 * dy0;
+    const dx2_dy2 = dx2 * dy2;
+    const dx2_dx2 = dx2 * dx2;
+    const dy0_dy1 = dy0 * dy1;
+    const dy0_dy2 = dy0 * dy2;
+    const dy1_dy1 = dy1 * dy1;
+    const dy1_dy2 = dy1 * dy2;
+    const dy2_dy2 = dy2 * dy2;
+    const ss = dddx * dy0 - dddy * dx0;
+    const uu = dddx_dy1 - dddy_dx1;
+    const vv = ddx0 * dx0 + ddy0 * dy0;
+    const ww = ddx0 * dx1 + ddx1 * dx0 + ddy0 * dy1 + ddy1 * dy0;
+    const xx = ddx0_dy0 - ddy0_dx0;
+    const yy = ddx0_dy1 + ddx1_dy0 - ddy0_dx1 - ddy1_dx0;
+    const qq = dx0 * dx0 + dy0 * dy0;
+    const rr = dx0_dx1 + dy0_dy1;
+    // t6 cancels! see https://math.stackexchange.com/a/1956264/130809
+    const z1 = dx1_dy1 + dx2_dy0;
+    const z2 = dy0_dy2 + dy1_dy1;
+    const z3 = dx0_dx2 + dx1_dx1;
+    const z4 = dx1 * dy2 + dx2 * dy1;
+    const z5 = dx2_dx2 - dy2_dy2;
+    const z6 = dx1_dx2 - dy1_dy2;
+    const z7 = dx0_dy2 + dx1_dy1;
+    const z8 = dx0_dx1 - dy0_dy1;
+    const z9 = dx0 * dy1 + dx1 * dy0;
+    const x1 = dy0_dy2 + z2;
+    const x2 = dx0_dx2 + z3;
+    const x3 = dx0_dy2 + z1;
+    const x4 = dx1_dy1 + z1;
+    const x5 = x2 - x1;
+    const x6 = z1 + dx2_dy0;
+    const x7 = z7 + dx2_dy0;
+    const x8 = 2 * ddy0_dx1 + ddy1_dx0;
+    const t5 = dx2_dx2 * (dddx_dy1 - 3 * dddy_dx1) +
+        dy2_dy2 * (3 * dddx_dy1 - dddy_dx1) +
+        2 * ((dx2_dy2) * ((dddx * dx1 - dddy * dy1) + 3 * (ddy0 * ddy1 - ddx0 * ddx1)) + 3 * ddx1 * ddy1 * z6) +
+        3 * (z4 * (ddy1_ddy1 - ddx1 * ddx1) + z5 * (ddx0 * ddy1 + ddy0 * ddx1));
+    const t4 = dddx * (dy2 * (x2 + 3 * z2) + dx2 * x4) -
+        dddy * (dx0 * (3 * dx2_dx2 + dy2_dy2) + dx1 * (3 * dx1_dx2 + 2 * dy1_dy2) + dx2 * x1) +
+        3 * (ddx0 * ((ddy0 * z5 - ddx0 * dx2_dy2) + 2 * (ddy1 * z6 - ddx1 * z4)) +
+            ddx1 * (2 * ddy0 * z6 + ddy1 * (2 * (dx0_dx2 - dy0_dy2) + (dx1_dx1 - dy1_dy1)) - ddx1 * x7) +
+            ddy0 * (ddy0 * dx2_dy2 + 2 * ddy1 * z4) +
+            ddy1_ddy1 * x3);
+    const t3 = dddx * (2 * dx0 * z4 + dx1 * x6 + dy1 * (4 * dy0_dy2 + x1)) -
+        dddy * (2 * dx0 * (3 * dx1_dx2 + dy1_dy2) + dx1 * (dx1_dx1 + 2 * dy0_dy2) + dy1 * x6) +
+        3 * (ddx0 * (2 * (ddy0 * z6 - ddx1 * x7) + ddy1 * x5 - ddx0 * z4) +
+            ddx1 * (2 * ddy1 * z8 - ddx1 * z9) +
+            ddy0 * (ddy0 * z4 + 2 * ddy1 * x3 + ddx1 * x5) +
+            ddy1_ddy1 * z9);
+    const t2 = dddx * (dx0 * (dx0_dy2 + 2 * z1) + dy0 * (dx1_dx1 + 3 * z2)) -
+        dddy * (dx0 * (3 * z3 + x1) + dy0 * x4) +
+        3 * (ddx0 * (ddy0 * x5 - ddx0 * x3 + 2 * (ddy1 * z8 - ddx1 * z9)) +
+            ddx1 * (dx0 * (x8 - ddx1 * dy0) - dy0 * (2 * ddy0 * dy1 + ddy1 * dy0)) +
+            ddy0 * (ddy0 * z1 + dx0 * (2 * ddy1 * dy1 + ddy0 * dy2)) +
+            ddy1 * dy0 * x8);
+    const t1 = (qq * uu + 2 * rr * ss) - 3 * (vv * yy + ww * xx);
+    const t0 = ss * qq - 3 * vv * xx;
+    const r3 = ddx1 * dy2 - ddy1 * dx2;
+    const r2 = ddx0 * dy2 + ddx1 * dy1 - ddy0 * dx2 - ddy1 * dx1;
+    const r1 = ddx0_dy1 + ddx1_dy0 - ddy0_dx1 - ddy1_dx0;
+    const r0 = ddx0_dy0 - ddy0_dx0;
+    return {
+        inflectionPoly: [r3, r2, r1, r0],
+        otherExtremaPoly: [t5, t4, t3, t2, t1, t0]
+    };
+}
+
+//# sourceMappingURL=get-abs-curvature-extrema-polys.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/global-properties/classification/is-collinear.js
+
+// We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗
+const { orient2d: is_collinear_orient2d } = node_operators;
+/**
+ * Returns `true` if the given bezier curve has all control points collinear,
+ * `false` otherwise.
+ *
+ * * if you need to know whether a given bezier curve can be converted to an
+ * order 1 bezier curve (a line) such that the same `(x,y)` point is returned
+ * for the same `t` value then use e.g. [[isQuadReallyLine]] instead.
+ *
+ * * **exact** not susceptible to floating point round-off
+ *
+ * @param ps an order 0,1,2 or 3 bezier curve given as an array of its control
+ * points, e.g. `[[1,2],[3,4],[5,6],[7,8]]`
+ *
+ * @doc mdx
+ */
+function isCollinear(ps) {
+    if (ps.length === 4) {
+        // Cubic bezier
+        return (is_collinear_orient2d(ps[0], ps[1], ps[2]) === 0 &&
+            is_collinear_orient2d(ps[1], ps[2], ps[3]) === 0 &&
+            // The below check is necessary for if ps[1] === ps[2]
+            is_collinear_orient2d(ps[0], ps[2], ps[3]) === 0);
+    }
+    if (ps.length === 3) {
+        // Quadratic bezier
+        return is_collinear_orient2d(ps[0], ps[1], ps[2]) === 0;
+    }
+    if (ps.length <= 2) {
+        // Line (or point)
+        return true;
+    }
+    throw new Error('The given bezier curve must be of order <= 3.');
+}
+/**
+ * Returns `true` if the given bezier curve has all control points the
+ * same `y` value (possibly self-overlapping), `false` otherwise.
+ *
+ * @param ps An order 0, 1, 2 or 3 bezier curve.
+ *
+ * @doc
+ */
+function isHorizontal(ps) {
+    const y = ps[0][1];
+    for (let i = 1; i < ps.length; i++) {
+        if (ps[i][1] !== y) {
+            return false;
+        }
+    }
+    return true;
+}
+/**
+ * Returns `true` if the given bezier curve has all control points the
+ * same `x` value (possibly self-overlapping), `false` otherwise.
+ *
+ * @param ps An order 0, 1, 2 or 3 bezier curve.
+ *
+ * @doc
+ */
+function isVertical(ps) {
+    const x = ps[0][0];
+    for (let i = 1; i < ps.length; i++) {
+        if (ps[i][0] !== x) {
+            return false;
+        }
+    }
+    return true;
+}
+
+//# sourceMappingURL=is-collinear.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/get-curvature-extrema/get-curvature-extrema.js
+
+
+
+
+
+/**
+ * Returns the parameter `t` values (in `[0,1]`) of local minimum / maximum
+ * absolute curvature for the given bezier curve.
+ *
+ * If there are an infinite number of such `t` values (such as is the case for a
+ * line), an empty array is returned.
+ *
+ * * see [MvG](https://math.stackexchange.com/a/1956264/130809)'s excellent
+ * answer on math.stackexchange
+ *
+ * @param ps an order 1,2 or 3 bezier curve given as an ordered array of its
+ * control point coordinates, e.g. `[[0,0], [1,1], [2,1], [2,0]]`
+ *
+ * @doc mdx
+ */
+function getCurvatureExtrema(ps) {
+    if (isCollinear(ps)) {
+        return { minima: [], maxima: [], inflections: [] };
+    }
+    if (ps.length === 4 && isCubicReallyQuad(ps)) {
+        ps = cubicToQuadratic(ps);
+    }
+    if (ps.length === 3) {
+        const poly = getCurvatureExtremaQuadraticPoly(ps);
+        const maxima = allRoots(poly, 0, 1);
+        return {
+            minima: [],
+            maxima,
+            inflections: []
+        };
+    }
+    const polys = getAbsCurvatureExtremaPolys(ps);
+    const p1 = polys.inflectionPoly;
+    const p2 = polys.otherExtremaPoly;
+    const ts = allRoots(p2, 0, 1);
+    // get second derivative (using product rule) to see if it is a local 
+    // minimum or maximum, i.e. diff(p1*p2) = p1'*p2 + p1*p2' = dp1*p2 + p1*dp2
+    // = p1*dp2 (since dp1*p2 === 0)
+    const dp2 = differentiate(p2);
+    const minima = [];
+    const maxima = [];
+    for (let i = 0; i < ts.length; i++) {
+        const t = ts[i];
+        const dp2_ = Horner(dp2, t);
+        const p1_ = Horner(p1, t);
+        const secondDerivative = p1_ * dp2_;
+        if (secondDerivative >= 0) {
+            minima.push(t);
+        }
+        else {
+            maxima.push(t);
+        }
+    }
+    const inflections = allRoots(p1, 0, 1);
+    return { minima, maxima, inflections };
+}
+/**
+ * Returns the polynomial whose zero is the t value of maximum absolute
+ * curvature for the given *quadratic* bezier curve.
+ *
+ * * **precondition:** the given parabola is not degenerate to a line
+ * * **non-exact:** there is floating point roundof during calculation
+ * * see e.g. [math.stackexchange](https://math.stackexchange.com/a/2971112)'s
+ * answer by [KeithWM](https://math.stackexchange.com/a/2971112/130809)
+ *
+ * @param ps an order 2 bezier curve given as an array of control points,
+ * e.g. `[[0,0],[1,1],[2,1]]`
+ *
+ * @internal
+ */
+function getCurvatureExtremaQuadraticPoly(ps) {
+    // Find the point of max curvature (of the parabola)
+    // calculate t*
+    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
+    const x10 = x1 - x0;
+    const x21 = x2 - x1;
+    const wx = x21 - x10;
+    const y10 = y1 - y0;
+    const y21 = y2 - y1;
+    const wy = y21 - y10;
+    const n = x0 * (wx - x1) - x1 * (x21 - x1) +
+        y0 * (wy - y1) - y1 * (y21 - y1);
+    const d = wx * wx + wy * wy;
+    return [d, -n];
+}
+
+//# sourceMappingURL=get-curvature-extrema.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/local-properties-at-t/curvature.js
+
+
+
+/**
+ * Returns the curvature `κ` of the given linear, quadratic or cubic bezier
+ * curve at a specific given parameter value `t`.
+ *
+ * * returns `Number.NaN` at a cusp - this can be tested for with `Number.isNaN`
+ *
+ * @param ps an order 1,2 or 3 bezier curve, e.g. `[[0,0],[1,1],[2,1],[2,0]]`
+ * @param t the parameter value where the curvature should be evaluated
+ *
+ * @doc mdx
+ */
+function curvature(ps, t) {
+    const [dX, dY] = toPowerBasis_1stDerivative(ps);
+    const [ddX, ddY] = toPowerBasis_2ndDerivative(ps);
+    const dx = Horner(dX, t);
+    const dy = Horner(dY, t);
+    const ddx = Horner(ddX, t);
+    const ddy = Horner(ddY, t);
+    const a = dx * ddy - dy * ddx;
+    const b = Math.sqrt((dx * dx + dy * dy) ** 3);
+    return a / b;
+}
+/**
+ * Alias for [[κ]].
+ *
+ * Returns the curvature `κ` of the given linear, quadratic or cubic bezier
+ * curve at a specific given parameter value `t`.
+ *
+ * * **alias**: [[curvature]]
+ *
+ * @param ps an order 1, 2 or 3 bezier curve, e.g. `[[0,0],[1,1],[2,1],[2,0]]`
+ * @param t the parameter value where the curvature should be evaluated
+ *
+ * @doc
+ */
+const κ = (/* unused pure expression or super */ null && (curvature));
+
+//# sourceMappingURL=curvature.js.map
+;// CONCATENATED MODULE: ./src/get-critical-points/get-excessive-curvatures.ts
+
+
+const { abs: get_excessive_curvatures_abs } = Math;
+function getExcessiveCurvatures(expMax, loops) {
+    /** all one-sided Xs from */
+    const xs = [];
+    // return xs;
+    // Get interface points
+    for (const loop of loops) {
+        for (const curve of loop.curves) {
+            const ps = curve.ps;
+            const extrema = getCurvatureExtrema(ps);
+            const { minima, maxima } = extrema;
+            const minmaxs = [0, 1, ...minima, ...maxima];
+            for (let t of minmaxs) {
+                //const k = eeCurvature(ps,[t]);
+                const k = get_excessive_curvatures_abs(curvature(ps, t));
+                if (k > 10000000 * 2 ** -expMax) {
+                    xs.push([
+                        makeSimpleX(t, curve, 7),
+                        makeSimpleX(t, curve, 7), // excessive curvature
+                    ]);
+                }
+            }
+        }
+    }
+    return xs;
+}
+
+
 ;// CONCATENATED MODULE: ./src/loop/get-min-y.ts
 
 
@@ -19595,6 +20034,7 @@ function toGrid(a, expMax, significantFigures) {
 /**
  * Returns the containers from the given containers by sending their boxes to a
  * grid with a smaller bitlength.
+ *
  * @param containers
  * @param expMax
  * @param containerDim
@@ -19728,23 +20168,23 @@ function filterContainers(containers) {
 
 
 
+
 /**
  *
  * @param containerDim
  */
 function getContainers(loops, containerDim, expMax) {
-    //const t0 = performance.now();
     const xs1 = getIntersections(loops, expMax);
-    //const t1 = performance.now();
-    //console.log("intersections took " + ((t1 - t0)).toFixed(3) + " milliseconds.");
     const xs2 = getSelfIntersections(loops);
     const xs3 = getInterfaceIntersections(loops);
     const { extremes, xs: xs4 } = getExtremes(loops);
-    let xPairs = [...xs1, ...xs2, ...xs3, ...xs4];
+    const xs5 = getExcessiveCurvatures(expMax, loops);
+    let xPairs = [...xs1, ...xs2, ...xs3, ...xs4, ...xs5];
     // console.log('general  ', xs1);
     // console.log('self     ', xs2);
     // console.log('interface', xs3);
     // console.log('topmost  ', xs4);
+    // console.log('excessive  ', xs5);
     if (typeof _debug_ !== 'undefined') {
         for (const xPair of xs1) {
             _debug_.generated.elems.intersection.push(...xPair);
@@ -19752,11 +20192,13 @@ function getContainers(loops, containerDim, expMax) {
         for (const xPair of xs2) {
             _debug_.generated.elems.intersection.push(...xPair);
         }
-        // TODO - are interface intersections really necessary?
         for (const xPair of xs3) {
             _debug_.generated.elems.intersection.push(...xPair);
         }
         for (const xPair of xs4) {
+            _debug_.generated.elems.intersection.push(...xPair);
+        }
+        for (const xPair of xs5) {
             _debug_.generated.elems.intersection.push(...xPair);
         }
     }
@@ -19790,6 +20232,7 @@ function getContainers(loops, containerDim, expMax) {
     }
     containers = filterContainers(containers);
     containers = sendContainersToGrid(containers, expMax, containerDim);
+    // console.log(xPairs.map(xp => xp[0].x.kind).filter(k => k === 7).length);
     if (typeof _debug_ !== 'undefined') {
         _debug_.generated.elems.container = containers;
     }
@@ -19945,7 +20388,6 @@ function loopFromBeziers(beziers = [], idx) {
     const lastCurve = curves[curves.length - 1];
     curves[0].prev = lastCurve;
     lastCurve.next = curves[0];
-    // TODO - remove this eventually
     lastCurve.ps[lastCurve.ps.length - 1] = curves[0].ps[0];
     return loop;
 }
@@ -19965,83 +20407,10 @@ function reverseOrientation(loop) {
         const curve = reverse(curves[i].ps);
         beziers.push(curve);
     }
-    return loopFromBeziers(beziers);
+    return loopFromBeziers(beziers, undefined);
 }
 
 
-;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/global-properties/classification/is-collinear.js
-
-// We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗
-const { orient2d: is_collinear_orient2d } = node_operators;
-/**
- * Returns `true` if the given bezier curve has all control points collinear,
- * `false` otherwise.
- *
- * * if you need to know whether a given bezier curve can be converted to an
- * order 1 bezier curve (a line) such that the same `(x,y)` point is returned
- * for the same `t` value then use e.g. [[isQuadReallyLine]] instead.
- *
- * * **exact** not susceptible to floating point round-off
- *
- * @param ps an order 0,1,2 or 3 bezier curve given as an array of its control
- * points, e.g. `[[1,2],[3,4],[5,6],[7,8]]`
- *
- * @doc mdx
- */
-function isCollinear(ps) {
-    if (ps.length === 4) {
-        // Cubic bezier
-        return (is_collinear_orient2d(ps[0], ps[1], ps[2]) === 0 &&
-            is_collinear_orient2d(ps[1], ps[2], ps[3]) === 0 &&
-            // The below check is necessary for if ps[1] === ps[2]
-            is_collinear_orient2d(ps[0], ps[2], ps[3]) === 0);
-    }
-    if (ps.length === 3) {
-        // Quadratic bezier
-        return is_collinear_orient2d(ps[0], ps[1], ps[2]) === 0;
-    }
-    if (ps.length <= 2) {
-        // Line (or point)
-        return true;
-    }
-    throw new Error('The given bezier curve must be of order <= 3.');
-}
-/**
- * Returns `true` if the given bezier curve has all control points the
- * same `y` value (possibly self-overlapping), `false` otherwise.
- *
- * @param ps An order 0, 1, 2 or 3 bezier curve.
- *
- * @doc
- */
-function isHorizontal(ps) {
-    const y = ps[0][1];
-    for (let i = 1; i < ps.length; i++) {
-        if (ps[i][1] !== y) {
-            return false;
-        }
-    }
-    return true;
-}
-/**
- * Returns `true` if the given bezier curve has all control points the
- * same `x` value (possibly self-overlapping), `false` otherwise.
- *
- * @param ps An order 0, 1, 2 or 3 bezier curve.
- *
- * @doc
- */
-function isVertical(ps) {
-    const x = ps[0][0];
-    for (let i = 1; i < ps.length; i++) {
-        if (ps[i][0] !== x) {
-            return false;
-        }
-    }
-    return true;
-}
-
-//# sourceMappingURL=is-collinear.js.map
 ;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/global-properties/classification/is-self-overlapping.js
 
 /**
@@ -20812,11 +21181,14 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
     if (typeof _debug_ !== 'undefined') {
         timingStart = performance.now();
     }
+    // bezierLoops = bezierLoops.map(loopFromBeziers).map(reverseOrientation).map(loops => loops.beziers);
+    // console.log(loopsToSvgPathStr(bezierLoops));
     /**
      * All bezier coordinates will be truncated to this (bit-aligned) bitlength.
      * Higher bitlengths would increase the running time of the algorithm
      * considerably.
      */
+    // const maxBitLength = 46;
     const maxBitLength = 46;
     maxCoordinate = maxCoordinate || getMaxCoordinate(bezierLoops);
     /** The exponent, e, such that 2**e >= all bezier coordinate points. */
@@ -20826,7 +21198,7 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
      * A size (based on the max value of the tangent) for the containers holding
      * critical points.
      */
-    const containerSizeMultiplier = 2 ** 4; // TODO2 - put back!!
+    const containerSizeMultiplier = 2 ** 6;
     // const containerSizeMultiplier = 2**36;
     const containerDim = gridSpacing * containerSizeMultiplier;
     bezierLoops = normalizeLoops(bezierLoops, maxBitLength, expMax, false, true);
@@ -20857,7 +21229,7 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
     }
     const loopTrees = splitLoopTrees(root);
     const outSets = loopTrees.map(getLoopsFromTree);
-    const loopss = outSets.map(outSet => outSet.map(out => loopFromOut(out, outSet[0].orientation)));
+    const loopss = outSets.map(outSet => outSet.map((out, idx) => loopFromOut(out, outSet[0].orientation, idx)));
     /**
      * Arbitrarily choose min. loop area to be equal to one square pixel on a
      * 4096 x 4096 grid.
@@ -20878,12 +21250,19 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
         const timing = _debug_.generated.timing;
         timing.simplifyPaths = performance.now() - timingStart;
     }
+    // console.log(loopsToSvgPathStr(loopss_[0].map(loop => loop.beziers)));
     return loopss_;
 }
-function loopFromOut(out, orientation) {
+/**
+ *
+ * @param out
+ * @param orientation
+ * @param idx identifies the loop during debugging
+ */
+function loopFromOut(out, orientation, idx) {
     const loop = orientation < 0
-        ? loopFromBeziers(out.beziers)
-        : reverseOrientation(loopFromBeziers(out.beziers));
+        ? loopFromBeziers(out.beziers, idx)
+        : reverseOrientation(loopFromBeziers(out.beziers, idx));
     return loop;
 }
 function addDebugInfo2(loopss) {

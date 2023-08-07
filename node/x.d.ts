@@ -29,8 +29,9 @@ interface X {
      * * 0 => extreme, e.g. topmost point
      * * 2 => self intersection, a.k.a. ordinary double point, a.k.a crunode
      * * 3 => cusp
+     * * 7 => a point of excessive curvature
      */
-    kind: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+    kind: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
     /**
      * A small box that is guaranteed to contain the intersection
      * (given by its top-left and bottom-right corner) calculated from the root
