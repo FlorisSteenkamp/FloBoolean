@@ -19,9 +19,6 @@ function getCurvesIntersections(expMax) {
     return (curveA, curveB) => {
         const psA = curveA.ps;
         const psB = curveB.ps;
-        if (psA.length === 4 && psA[0][0] === 590 && psA[0][1] === 565) {
-            console.log('a');
-        }
         if (psA.length === 2 && psB.length === 2) {
             return getLineLineIntersections(curveA, curveB, expMax);
         }

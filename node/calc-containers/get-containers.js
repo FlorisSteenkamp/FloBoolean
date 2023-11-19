@@ -24,11 +24,11 @@ function getContainers(loops, containerDim, expMax) {
     const { extremes, xs: xs4 } = getExtremes(loops);
     const xs5 = getExcessiveCurvatures(expMax, loops);
     let xPairs = [...xs1, ...xs2, ...xs3, ...xs4, ...xs5];
-    console.log('general  ', xs1);
-    console.log('self     ', xs2);
-    console.log('interface', xs3);
-    console.log('topmost  ', xs4);
-    console.log('excessive  ', xs5);
+    // console.log('general  ', xs1);
+    // console.log('self     ', xs2);
+    // console.log('interface', xs3);
+    // console.log('topmost  ', xs4);
+    // console.log('excessive  ', xs5);
     if (typeof _debug_ !== 'undefined') {
         for (const xPair of xs1) {
             _debug_.generated.elems.intersection.push(...xPair);
