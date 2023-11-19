@@ -38,11 +38,8 @@ function sweepLine(items, getLeftmost, getRightmost, predicate) {
         const item = event.item;
         if (event.type === EVENT_LEFT) {
             for (const activeItem of activeItems.values()) {
-                //(window as any).ii++;
                 const result = predicate(item, activeItem);
                 if (result) {
-                    //(window as any).jj++;
-                    //console.log(result)
                     pairedItems.push({
                         a: item,
                         b: activeItem,

@@ -1,0 +1,14 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+>
+    <path 
+        class="shape"
+        d="
+            M -500 2500
+            Q -158 2806 -182 2672 
+            Q -278 2132 200 1827 
+            L -270 2509
+            z"
+    />
+</svg>

@@ -41,7 +41,7 @@ function logNearestBezierPost(
         }
     }
     
-    drawFs.bezier(g, bestPs!, undefined, showDelay);
+    drawFs.bezier(g, bestPs!, 'blue thin20 nofill', showDelay, 'blue thin10', 0.1, 'blue thin5 nofill');
     console.log(bestPs!);
 }
 

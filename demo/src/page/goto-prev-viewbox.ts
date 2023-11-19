@@ -12,6 +12,7 @@ function gotoPrevViewbox(
     const { pageState } = state.appState;
     let viewbox = transientState.viewboxStack.pop();
     if (!viewbox) {
+
         const loops = _debug_.generated.elems.loop;
         const bezierLoops = loops.map(loop => loop.beziers);
         viewbox = getViewBoxForShape(bezierLoops);

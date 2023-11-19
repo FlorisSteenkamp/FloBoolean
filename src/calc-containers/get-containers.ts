@@ -38,11 +38,11 @@ function getContainers(
 
     let xPairs = [...xs1, ...xs2, ...xs3, ...xs4, ...xs5];
 
-    // console.log('general  ', xs1);
-    // console.log('self     ', xs2);
-    // console.log('interface', xs3);
-    // console.log('topmost  ', xs4);
-    // console.log('excessive  ', xs5);
+    console.log('general  ', xs1);
+    console.log('self     ', xs2);
+    console.log('interface', xs3);
+    console.log('topmost  ', xs4);
+    console.log('excessive  ', xs5);
 
 
     if (typeof _debug_ !== 'undefined') { 

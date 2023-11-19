@@ -9,15 +9,15 @@
     "dependencies": {
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
-        "@mui/material": "^5.14.0",
-        "ramda": "^0.29.0",
+        "@mui/material": "^5.14.18",
+        "ramda": "^0.29.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0"
     },
     "devDependencies": {
-        "@types/ramda": "^0.29.3",
-        "@types/react": "^18.2.14",
-        "@types/react-dom": "^18.2.7"
+        "@types/ramda": "^0.29.9",
+        "@types/react": "^18.2.37",
+        "@types/react-dom": "^18.2.15"
     },
     "scripts": {}
 }

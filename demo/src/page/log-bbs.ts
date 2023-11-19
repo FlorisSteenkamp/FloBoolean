@@ -3,6 +3,7 @@ declare const _debug_: Debug;
 import { squaredDistanceBetween, centroid } from 'flo-vector2d';
 import { closestPointOnBezier } from 'flo-bezier3';
 import { Debug } from '../../../src/debug/debug.js';
+import { drawFs } from 'flo-draw';
 
 
 /**
@@ -28,7 +29,7 @@ function logNearestBezierPre(g: SVGGElement, p: number[], showDelay = 1000) {
         }
     }
     
-    _debug_.fs.drawElem.bezier_(g, bestPs!, undefined, showDelay);
+    drawFs.bezier(g, bestPs!, 'blue thin20 nofill', showDelay, 'blue thin10', 0.1, 'blue thin5 nofill');
     console.log(bestPs!);
 } 
 

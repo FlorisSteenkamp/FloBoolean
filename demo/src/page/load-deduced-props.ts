@@ -43,8 +43,9 @@ async function loadDeducedProps(
     try {
         // Resets _debug_
         updDebugGlobal(IS_DEBUG_ON);
-        const bezierLoopss = simplifyPaths(bezierLoops);
-        stateControl.transientState.bezierLoopss = bezierLoopss;
+        const loopss = simplifyPaths(bezierLoops);
+        console.log(loopss);
+        stateControl.transientState.bezierLoopss = loopss;
     } catch (e) {
         console.log(e);
     } finally {

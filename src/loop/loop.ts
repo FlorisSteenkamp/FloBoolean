@@ -43,7 +43,7 @@ function isPoint(ps: number[][]): boolean {
  */
 function loopFromBeziers(
         beziers: number[][][] = [], 
-        idx: number) {
+        idx: number): Loop {
 
     const curves: Curve[] = [];
 

@@ -2148,6 +2148,7 @@ const sce = scaleExpansion;
 function eHorner(p, x) {
     let q = [0];
     for (let i = 0; i < p.length; i++) {
+        // q = p[i] + x*q;
         q = fes(p[i], sce(q, x));
     }
     return q;
@@ -4734,11 +4735,11 @@ function orient2dAdapt(A, B, C, detsum) {
 }
 
 //# sourceMappingURL=orient2d.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-graham-scan/node/get-smallest-indx-y-then-x.js
+;// CONCATENATED MODULE: ./node_modules/flo-graham-scan/node/get-smallest-idx-y-then-x.js
 /**
  * @internal
  */
-function getSmallestIndxYThenX(ps) {
+function getSmallestIdxYThenX(ps) {
     let smallest = [
         Number.POSITIVE_INFINITY,
         Number.POSITIVE_INFINITY
@@ -4755,25 +4756,8 @@ function getSmallestIndxYThenX(ps) {
     return smallestI;
 }
 
-//# sourceMappingURL=get-smallest-indx-y-then-x.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-graham-scan/node/swap.js
-/**
- * In-place swap two elements in the given array.
- *
- * @internal
- */
-function swap(arr, a, b) {
-    if (a === b) {
-        return;
-    }
-    const temp = arr[a];
-    arr[a] = arr[b];
-    arr[b] = temp;
-}
-
-//# sourceMappingURL=swap.js.map
+//# sourceMappingURL=get-smallest-idx-y-then-x.js.map
 ;// CONCATENATED MODULE: ./node_modules/flo-graham-scan/node/index.js
-
 
 
 /**
@@ -4788,19 +4772,13 @@ function swap(arr, a, b) {
  * @param includeAllBoundaryPoints Set this to true to if all boundary points
  * should be returned, even redundant ones - defaults to `false`
  */
-function grahamScan(ps, includeAllBoundaryPoints = false) {
-    if (!ps.length) {
+function grahamScan(ps) {
+    const n = ps.length;
+    if (n === 0) {
         return undefined;
     }
-    function fail(p1, p2, p3) {
-        const res = orient2d_orient2d(p1, p2, p3);
-        return includeAllBoundaryPoints
-            ? res < 0
-            : res <= 0;
-    }
     const ps_ = ps.slice();
-    const n = ps_.length;
-    const idx = getSmallestIndxYThenX(ps_);
+    const idx = getSmallestIdxYThenX(ps_);
     const [p] = ps_.splice(idx, 1);
     ps_.sort((a, b) => {
         let res = -orient2d_orient2d(p, a, b);
@@ -4814,25 +4792,38 @@ function grahamScan(ps, includeAllBoundaryPoints = false) {
         return a[0] - b[0];
     });
     ps_.unshift(p);
-    let m = 1;
-    for (let i = 2; i < n; i++) {
-        while (fail(ps_[m - 1], ps_[m], ps_[i])) {
-            if (m > 1) {
-                m -= 1;
-                continue;
-            }
-            else if (i === n - 1) {
-                m -= 1;
+    let stack = [];
+    for (const p of ps_) {
+        while (stack.length > 1) {
+            const r = orient2d_orient2d(stack[stack.length - 2], stack[stack.length - 1], p) <= 0;
+            if (!r) {
                 break;
             }
-            else {
-                i += 1;
-            }
+            stack.pop();
         }
-        m += 1;
-        swap(ps_, m, i);
+        stack.push(p);
     }
-    return ps_.slice(0, m + 1);
+    const len = stack.length;
+    const stack_ = [stack[0]];
+    for (let i = 1; i < len; i++) {
+        const pS = stack[(i - 1) % len];
+        const pM = stack[(i) % len];
+        const pE = stack[(i + 1) % len];
+        if (orient2d_orient2d(pS, pM, pE) !== 0 || dot(pS, pM, pE) < 0) {
+            stack_.push(pM);
+        }
+    }
+    return stack_;
+}
+/**
+ * No need to be accurate
+ */
+function dot(p1, p2, p3) {
+    const v1x = p2[0] - p1[0];
+    const v1y = p2[1] - p1[1];
+    const v2x = p3[0] - p2[0];
+    const v2y = p3[1] - p2[1];
+    return v1x * v2x + v1y * v2y;
 }
 
 //# sourceMappingURL=index.js.map
@@ -4856,208 +4847,43 @@ function grahamScan(ps, includeAllBoundaryPoints = false) {
 const getBoundingHull = grahamScan;
 
 //# sourceMappingURL=get-bounding-hull.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/simultaneous-properties/closest-and-furthest-point-on-bezier/get-coeffs/double-double/get-footpoint-poly-3-dd.js
-
-// We *have* to do the below to improve performance with bundlers❗ The assignee is a getter❗ The assigned is a pure function❗
-const td = node_twoDiff;
-const qaq = node_ddAddDd;
-const qmd = node_ddMultDouble2;
-const qmq = node_ddMultDd;
-const qm2 = node_ddMultBy2;
-const qm4 = node_ddMultBy4;
-const qdq = node_ddDiffDd;
+;// CONCATENATED MODULE: ./node_modules/flo-poly/node/roots/certified/root-interval.js
 /**
- * Returns the polynomial whose roots are all the `t` values on the given bezier
- * curve such that the line from the given point to the point on the bezier
- * evaluated at `t` is tangent to the bezier curve at `t`.
+ * Simple function that creates and returns an exact root (with a bracketing
+ * interval width of 0 and multiplicity 1)
  *
- * * intermediate calculations are done (and the final result returned in)
- * double-double precision
+ * @param t
  *
- * @param ps an order 3 bezier curve given as an ordered array of its
- * control point coordinates, e.g. `[[0,0], [1,1], [2,1], [2,0]]`
- * @param p a point, e.g. `[1,2]`
- *
- * @internal
+ * @doc
  */
-function getFootpointPoly3Dd(ps, p) {
-    //const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
-    const p0 = ps[0];
-    const p1 = ps[1];
-    const p2 = ps[2];
-    const p3 = ps[3];
-    const x0 = p0[0];
-    const y0 = p0[1];
-    const x1 = p1[0];
-    const y1 = p1[1];
-    const x2 = p2[0];
-    const y2 = p2[1];
-    const x3 = p3[0];
-    const y3 = p3[1];
-    const [x, y] = p;
-    const xx0 = td(x0, x); // exact
-    const xx1 = td(x1, x); // exact
-    const xx2 = td(x2, x); // exact
-    const xx3 = td(x3, x); // exact
-    const yy0 = td(y0, y); // exact
-    const yy1 = td(y1, y); // exact
-    const yy2 = td(y2, y); // exact
-    const yy3 = td(y3, y); // exact
-    const x00 = qmq(xx0, xx0);
-    const x01 = qmd(6, qmq(xx0, xx1));
-    const x02 = qmd(6, qmq(xx0, xx2));
-    const x03 = qm2(qmq(xx0, xx3));
-    const x11 = qmd(9, qmq(xx1, xx1));
-    const x12 = qmd(18, qmq(xx1, xx2));
-    const x13 = qmd(6, qmq(xx1, xx3));
-    const x22 = qmd(9, qmq(xx2, xx2));
-    const x23 = qmd(6, qmq(xx2, xx3));
-    const x33 = qmq(xx3, xx3);
-    const y00 = qmq(yy0, yy0);
-    const y01 = qmd(6, qmq(yy0, yy1));
-    const y02 = qmd(6, qmq(yy0, yy2));
-    const y03 = qm2(qmq(yy0, yy3));
-    const y11 = qmd(9, qmq(yy1, yy1));
-    const y12 = qmd(18, qmq(yy1, yy2));
-    const y13 = qmd(6, qmq(yy1, yy3));
-    const y22 = qmd(9, qmq(yy2, yy2));
-    const y23 = qmd(6, qmq(yy2, yy3));
-    const y33 = qmq(yy3, yy3);
-    const q1 = qaq(x13, x22);
-    const q2 = qaq(x03, x12);
-    const q3 = qaq(x02, x11);
-    const r1 = qaq(y13, y22);
-    const r2 = qaq(y03, y12);
-    const r3 = qaq(y02, y11);
-    // const t5 = 6*(((((x33 - x23) + (x00 - x01)) + q1) + (q3 - q2)) + 
-    //               ((((y33 - y23) + (y00 - y01)) + r1) + (r3 - r2)));
-    const t5 = qmd(6, qaq(qaq(qaq(qaq(qdq(x33, x23), qdq(x00, x01)), q1), qdq(q3, q2)), qaq(qaq(qaq(qdq(y33, y23), qdq(y00, y01)), r1), qdq(r3, r2))));
-    //const t4 = 5*((((x23 + 5*x01) + 3*q2) - 2*(q1 + 2*q3 + 3*x00)) +
-    //              (((y23 + 5*y01) + 3*r2) - 2*(r1 + 2*r3 + 3*y00)));
-    const t4 = qmd(5, qaq(qdq(qaq(qaq(x23, qmd(5, x01)), qmd(3, q2)), qm2(qaq(qaq(q1, qm2(q3)), qmd(3, x00)))), qdq(qaq(qaq(y23, qmd(5, y01)), qmd(3, r2)), qm2(qaq(qaq(r1, qm2(r3)), qmd(3, y00))))));
-    //const t3 = 4*(((q1 - 3*(q2 - 2*q3)) - 5*(2*x01 - 3*x00)) +
-    //              ((r1 - 3*(r2 - 2*r3)) - 5*(2*y01 - 3*y00)));
-    const t3 = qm4(qaq(qdq(qdq(q1, qmd(3, (qdq(q2, qm2(q3))))), qmd(5, qdq(qm2(x01), qmd(3, x00)))), qdq(qdq(r1, qmd(3, (qdq(r2, qm2(r3))))), qmd(5, qdq(qm2(y01), qmd(3, y00))))));
-    //const t2 = 3*((q2 - 2*(2*q3 - 5*(x01 - 2*x00))) +
-    //              (r2 - 2*(2*r3 - 5*(y01 - 2*y00))));
-    const t2 = qmd(3, qaq(qdq(q2, qm2(qdq(qm2(q3), qmd(5, qdq(x01, qm2(x00)))))), qdq(r2, qm2(qdq(qm2(r3), qmd(5, qdq(y01, qm2(y00))))))));
-    //const t1 = 2*((q3 - 5*(x01 - 3*x00)) +
-    //              (r3 - 5*(y01 - 3*y00)));
-    const t1 = qm2(qaq(qdq(q3, qmd(5, (qdq(x01, qmd(3, x00))))), qdq(r3, qmd(5, (qdq(y01, qmd(3, y00)))))));
-    //const t0 = ((x01 - 6*x00) +
-    //            (y01 - 6*y00));
-    const t0 = qaq(qdq(x01, qmd(6, x00)), qdq(y01, qmd(6, y00)));
-    return [t5, t4, t3, t2, t1, t0];
+function createRootExact(t) {
+    return { tS: t, tE: t, multiplicity: 1 };
+}
+/**
+ * Simple function that returns the middle of the root bracketing interval - can
+ * be used to estimate the root
+ *
+ * @param ri a root interval
+ *
+ * @doc
+ */
+function mid(ri) {
+    return (ri.tS + ri.tE) / 2;
 }
 
-//# sourceMappingURL=get-footpoint-poly-3-dd.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/simultaneous-properties/closest-and-furthest-point-on-bezier/get-coeffs/double-double/get-footpoint-poly-2-dd.js
-
-// We *have* to do the below to improve performance with bundlers❗ The assignee is a getter❗ The assigned is a pure function❗
-const get_footpoint_poly_2_dd_td = node_twoDiff;
-const get_footpoint_poly_2_dd_qaq = node_ddAddDd;
-const get_footpoint_poly_2_dd_qmd = node_ddMultDouble2;
-const get_footpoint_poly_2_dd_qmq = node_ddMultDd;
-const get_footpoint_poly_2_dd_qm2 = node_ddMultBy2;
-const qdifq = node_ddDiffDd;
-const get_footpoint_poly_2_dd_qm4 = node_ddMultBy4;
-/**
- * Returns the polynomial whose roots are all the `t` values on the given bezier
- * curve such that the line from the given point to the point on the bezier
- * evaluated at `t` is tangent to the bezier curve at `t`.
- *
- * * intermediate calculations are done (and the final result returned in)
- * double-double precision
- *
- * @param ps an order 2 bezier curve given as an ordered array of its
- * control point coordinates, e.g. `[[0,0], [1,1], [2,1]]`
- * @param p a point, e.g. `[1,2]`
- *
- * @internal
- */
-function getFootpointPoly2Dd(ps, p) {
-    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
-    const [x, y] = p;
-    const xx0 = get_footpoint_poly_2_dd_td(x0, x);
-    const xx1 = get_footpoint_poly_2_dd_td(x1, x);
-    const xx2 = get_footpoint_poly_2_dd_td(x2, x);
-    const yy0 = get_footpoint_poly_2_dd_td(y0, y);
-    const yy1 = get_footpoint_poly_2_dd_td(y1, y);
-    const yy2 = get_footpoint_poly_2_dd_td(y2, y);
-    const x00 = get_footpoint_poly_2_dd_qmq(xx0, xx0);
-    const x01 = get_footpoint_poly_2_dd_qmq(xx0, xx1);
-    const x02 = get_footpoint_poly_2_dd_qmq(xx0, xx2);
-    const x11 = get_footpoint_poly_2_dd_qmq(xx1, xx1);
-    const x12 = get_footpoint_poly_2_dd_qmq(xx1, xx2);
-    const x22 = get_footpoint_poly_2_dd_qmq(xx2, xx2);
-    const y00 = get_footpoint_poly_2_dd_qmq(yy0, yy0);
-    const y01 = get_footpoint_poly_2_dd_qmq(yy0, yy1);
-    const y02 = get_footpoint_poly_2_dd_qmq(yy0, yy2);
-    const y11 = get_footpoint_poly_2_dd_qmq(yy1, yy1);
-    const y12 = get_footpoint_poly_2_dd_qmq(yy1, yy2);
-    const y22 = get_footpoint_poly_2_dd_qmq(yy2, yy2);
-    const q1 = get_footpoint_poly_2_dd_qaq(y02, get_footpoint_poly_2_dd_qm2(y11));
-    const r1 = get_footpoint_poly_2_dd_qaq(x02, get_footpoint_poly_2_dd_qm2(x11));
-    //const t3 = ((y22 + y00) + 2*q1 - 4*(y12 + y01)) + 
-    //           ((x22 + x00) + 2*r1 - 4*(x12 + x01));
-    const t3 = get_footpoint_poly_2_dd_qaq(qdifq(get_footpoint_poly_2_dd_qaq(get_footpoint_poly_2_dd_qaq(y22, y00), get_footpoint_poly_2_dd_qm2(q1)), get_footpoint_poly_2_dd_qm4(get_footpoint_poly_2_dd_qaq(y12, y01))), qdifq(get_footpoint_poly_2_dd_qaq(get_footpoint_poly_2_dd_qaq(x22, x00), get_footpoint_poly_2_dd_qm2(r1)), get_footpoint_poly_2_dd_qm4(get_footpoint_poly_2_dd_qaq(x12, x01))));
-    //const t2 = 3*(((y12 - q1) + (3*y01 - y00)) + 
-    //              ((x12 - r1) + (3*x01 - x00)));
-    const t2 = get_footpoint_poly_2_dd_qmd(3, get_footpoint_poly_2_dd_qaq(get_footpoint_poly_2_dd_qaq(qdifq(y12, q1), qdifq(get_footpoint_poly_2_dd_qmd(3, y01), y00)), get_footpoint_poly_2_dd_qaq(qdifq(x12, r1), qdifq(get_footpoint_poly_2_dd_qmd(3, x01), x00))));
-    //const t1 = (q1 - 3*(2*y01 - y00)) + 
-    //           (r1 - 3*(2*x01 - x00));
-    const t1 = get_footpoint_poly_2_dd_qaq(qdifq(q1, get_footpoint_poly_2_dd_qmd(3, qdifq(get_footpoint_poly_2_dd_qm2(y01), y00))), qdifq(r1, get_footpoint_poly_2_dd_qmd(3, qdifq(get_footpoint_poly_2_dd_qm2(x01), x00))));
-    //const t0 = (y01 - y00) + 
-    //           (x01 - x00);
-    const t0 = get_footpoint_poly_2_dd_qaq(qdifq(y01, y00), qdifq(x01, x00));
-    return [t3, t2, t1, t0];
+//# sourceMappingURL=root-interval.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/intersection/bezier-bezier-intersection/x.js
+/** @internal */
+function getPFromBox(box) {
+    const tl = box[0];
+    const br = box[1];
+    return [
+        (tl[0] + br[0]) / 2,
+        (tl[1] + br[1]) / 2,
+    ];
 }
 
-//# sourceMappingURL=get-footpoint-poly-2-dd.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/simultaneous-properties/closest-and-furthest-point-on-bezier/get-coeffs/double-double/get-footpoint-poly-1-dd.js
-
-// We *have* to do the below to improve performance with bundlers❗ The assignee is a getter❗ The assigned is a pure function❗
-const get_footpoint_poly_1_dd_tp = node_twoProduct;
-const get_footpoint_poly_1_dd_qaq = node_ddAddDd;
-const qmn2 = node_ddMultByNeg2;
-const get_footpoint_poly_1_dd_qdifq = node_ddDiffDd;
-/**
- * Returns the polynomial whose roots are all the `t` values on the given bezier
- * curve such that the line from the given point to the point on the bezier
- * evaluated at `t` is tangent to the bezier curve at `t`.
- *
- * * intermediate calculations are done (and the final result returned in)
- * double-double precision
- *
- * @param ps an order 1 bezier curve given as an ordered array of its
- * control point coordinates, e.g. `[[0,0], [1,1]]`
- * @param p a point, e.g. `[1,2]`
- *
- * @internal
- */
-function getFootpointPoly1Dd(ps, p) {
-    const [[x0, y0], [x1, y1]] = ps;
-    const [x, y] = p;
-    const xx0 = x0 - x;
-    const xx1 = x1 - x;
-    const yy0 = y0 - y;
-    const yy1 = y1 - y;
-    const x00 = get_footpoint_poly_1_dd_tp(xx0, xx0);
-    const x01 = get_footpoint_poly_1_dd_tp(xx0, xx1);
-    const x11 = get_footpoint_poly_1_dd_tp(xx1, xx1);
-    const y00 = get_footpoint_poly_1_dd_tp(yy0, yy0);
-    const y01 = get_footpoint_poly_1_dd_tp(yy0, yy1);
-    const y11 = get_footpoint_poly_1_dd_tp(yy1, yy1);
-    const s1 = get_footpoint_poly_1_dd_qaq(x01, y01);
-    const s2 = get_footpoint_poly_1_dd_qaq(y00, x00);
-    //const t1 = (x11 + y11) + (s2 - 2*s1)
-    const t1 = get_footpoint_poly_1_dd_qaq(get_footpoint_poly_1_dd_qaq(x11, y11), get_footpoint_poly_1_dd_qaq(s2, qmn2(s1)));
-    //const t0 = s1 - s2;
-    const t0 = get_footpoint_poly_1_dd_qdifq(s1, s2);
-    return [t1, t0];
-}
-
-//# sourceMappingURL=get-footpoint-poly-1-dd.js.map
+//# sourceMappingURL=x.js.map
 ;// CONCATENATED MODULE: ./node_modules/big-float-ts/node/double-representation/double-to-octets.js
 // Modified from https://github.com/bartaz/ieee754-visualization/
 // under the MIT license
@@ -6316,15 +6142,274 @@ const node_operators = {
 
 
 //# sourceMappingURL=index.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/simultaneous-properties/closest-and-furthest-point-on-bezier/root-interval-to-distance-squared-interval.js
+
+// We *have* to do the below to improve performance with bundlers❗ The assignee is a getter❗ The assigned is a pure function❗
+const root_interval_to_distance_squared_interval_estimate = eEstimate;
+const td = two_diff_twoDiff;
+const emult = eMult;
+const eadd = eAdd;
+const root_interval_to_distance_squared_interval_eps = Number.EPSILON;
+/**
+ * Returns the distance interval squared given the root interval (currently
+ * ignoring multiplicity)
+ *
+ * @param box
+ * @param p
+ *
+ * @internal
+ */
+function rootIntervalToDistanceSquaredInterval(box, p) {
+    const bl = box[0];
+    const tr = box[1];
+    const minX = bl[0];
+    const minY = bl[1];
+    const maxX = tr[0];
+    const maxY = tr[1];
+    const x = p[0]; // <0>
+    const y = p[1]; // <0>
+    let minDSquared = Number.POSITIVE_INFINITY;
+    let maxDSquared = Number.NEGATIVE_INFINITY;
+    // for each corner of the interval box
+    for (const [a, b] of [[minX, minY], [minX, maxY], [maxX, minY], [maxX, maxY]]) {
+        /*
+        // distance to 1st corner of interval box - `distance² = x² + y²`
+        const dc1 = (a - x)**2 + (b - y)**2;
+        // max absolute roundoff error of `dc1`
+        // <4>dc1 <-- <4>(<3>(<1>(a - x)**2) + <3>(<1>((b - y)**2))
+        const dc1E = 4*γ1*((a + x)**2 + (b + y)**2);
+        const dc1Min = dc1 - dc1E;  // distance minus max error
+        const dc1Max = dc1 + dc1E;  // distance plus max error
+        */
+        /** distance to 1st corner of interval box - `distance² = x² + y²` */
+        const ax = td(a, x); // a - x
+        const by = td(b, y); // b - y
+        const dc1Exact = eadd(emult(ax, ax), emult(by, by)); // ax**2 + bx**2
+        const dc1 = root_interval_to_distance_squared_interval_estimate(dc1Exact);
+        const dc1Min = dc1 * (1 - root_interval_to_distance_squared_interval_eps); // distance minus max error
+        const dc1Max = dc1 * (1 + root_interval_to_distance_squared_interval_eps); // distance plus max error
+        if (dc1Min <= minDSquared) {
+            minDSquared = dc1Min;
+        }
+        if (dc1Max >= maxDSquared) {
+            maxDSquared = dc1Max;
+        }
+    }
+    return [minDSquared, maxDSquared];
+}
+
+//# sourceMappingURL=root-interval-to-distance-squared-interval.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/simultaneous-properties/closest-and-furthest-point-on-bezier/get-coeffs/double-double/get-footpoint-poly-3-dd.js
+
+// We *have* to do the below to improve performance with bundlers❗ The assignee is a getter❗ The assigned is a pure function❗
+const get_footpoint_poly_3_dd_td = node_twoDiff;
+const qaq = node_ddAddDd;
+const qmd = node_ddMultDouble2;
+const qmq = node_ddMultDd;
+const qm2 = node_ddMultBy2;
+const qm4 = node_ddMultBy4;
+const qdq = node_ddDiffDd;
+/**
+ * Returns the polynomial whose roots are all the `t` values on the given bezier
+ * curve such that the line from the given point to the point on the bezier
+ * evaluated at `t` is tangent to the bezier curve at `t`.
+ *
+ * * intermediate calculations are done (and the final result returned in)
+ * double-double precision
+ *
+ * @param ps an order 3 bezier curve given as an ordered array of its
+ * control point coordinates, e.g. `[[0,0], [1,1], [2,1], [2,0]]`
+ * @param p a point, e.g. `[1,2]`
+ *
+ * @internal
+ */
+function getFootpointPoly3Dd(ps, p) {
+    //const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
+    const p0 = ps[0];
+    const p1 = ps[1];
+    const p2 = ps[2];
+    const p3 = ps[3];
+    const x0 = p0[0];
+    const y0 = p0[1];
+    const x1 = p1[0];
+    const y1 = p1[1];
+    const x2 = p2[0];
+    const y2 = p2[1];
+    const x3 = p3[0];
+    const y3 = p3[1];
+    const [x, y] = p;
+    const xx0 = get_footpoint_poly_3_dd_td(x0, x); // exact
+    const xx1 = get_footpoint_poly_3_dd_td(x1, x); // exact
+    const xx2 = get_footpoint_poly_3_dd_td(x2, x); // exact
+    const xx3 = get_footpoint_poly_3_dd_td(x3, x); // exact
+    const yy0 = get_footpoint_poly_3_dd_td(y0, y); // exact
+    const yy1 = get_footpoint_poly_3_dd_td(y1, y); // exact
+    const yy2 = get_footpoint_poly_3_dd_td(y2, y); // exact
+    const yy3 = get_footpoint_poly_3_dd_td(y3, y); // exact
+    const x00 = qmq(xx0, xx0);
+    const x01 = qmd(6, qmq(xx0, xx1));
+    const x02 = qmd(6, qmq(xx0, xx2));
+    const x03 = qm2(qmq(xx0, xx3));
+    const x11 = qmd(9, qmq(xx1, xx1));
+    const x12 = qmd(18, qmq(xx1, xx2));
+    const x13 = qmd(6, qmq(xx1, xx3));
+    const x22 = qmd(9, qmq(xx2, xx2));
+    const x23 = qmd(6, qmq(xx2, xx3));
+    const x33 = qmq(xx3, xx3);
+    const y00 = qmq(yy0, yy0);
+    const y01 = qmd(6, qmq(yy0, yy1));
+    const y02 = qmd(6, qmq(yy0, yy2));
+    const y03 = qm2(qmq(yy0, yy3));
+    const y11 = qmd(9, qmq(yy1, yy1));
+    const y12 = qmd(18, qmq(yy1, yy2));
+    const y13 = qmd(6, qmq(yy1, yy3));
+    const y22 = qmd(9, qmq(yy2, yy2));
+    const y23 = qmd(6, qmq(yy2, yy3));
+    const y33 = qmq(yy3, yy3);
+    const q1 = qaq(x13, x22);
+    const q2 = qaq(x03, x12);
+    const q3 = qaq(x02, x11);
+    const r1 = qaq(y13, y22);
+    const r2 = qaq(y03, y12);
+    const r3 = qaq(y02, y11);
+    // const t5 = 6*(((((x33 - x23) + (x00 - x01)) + q1) + (q3 - q2)) + 
+    //               ((((y33 - y23) + (y00 - y01)) + r1) + (r3 - r2)));
+    const t5 = qmd(6, qaq(qaq(qaq(qaq(qdq(x33, x23), qdq(x00, x01)), q1), qdq(q3, q2)), qaq(qaq(qaq(qdq(y33, y23), qdq(y00, y01)), r1), qdq(r3, r2))));
+    //const t4 = 5*((((x23 + 5*x01) + 3*q2) - 2*(q1 + 2*q3 + 3*x00)) +
+    //              (((y23 + 5*y01) + 3*r2) - 2*(r1 + 2*r3 + 3*y00)));
+    const t4 = qmd(5, qaq(qdq(qaq(qaq(x23, qmd(5, x01)), qmd(3, q2)), qm2(qaq(qaq(q1, qm2(q3)), qmd(3, x00)))), qdq(qaq(qaq(y23, qmd(5, y01)), qmd(3, r2)), qm2(qaq(qaq(r1, qm2(r3)), qmd(3, y00))))));
+    //const t3 = 4*(((q1 - 3*(q2 - 2*q3)) - 5*(2*x01 - 3*x00)) +
+    //              ((r1 - 3*(r2 - 2*r3)) - 5*(2*y01 - 3*y00)));
+    const t3 = qm4(qaq(qdq(qdq(q1, qmd(3, (qdq(q2, qm2(q3))))), qmd(5, qdq(qm2(x01), qmd(3, x00)))), qdq(qdq(r1, qmd(3, (qdq(r2, qm2(r3))))), qmd(5, qdq(qm2(y01), qmd(3, y00))))));
+    //const t2 = 3*((q2 - 2*(2*q3 - 5*(x01 - 2*x00))) +
+    //              (r2 - 2*(2*r3 - 5*(y01 - 2*y00))));
+    const t2 = qmd(3, qaq(qdq(q2, qm2(qdq(qm2(q3), qmd(5, qdq(x01, qm2(x00)))))), qdq(r2, qm2(qdq(qm2(r3), qmd(5, qdq(y01, qm2(y00))))))));
+    //const t1 = 2*((q3 - 5*(x01 - 3*x00)) +
+    //              (r3 - 5*(y01 - 3*y00)));
+    const t1 = qm2(qaq(qdq(q3, qmd(5, (qdq(x01, qmd(3, x00))))), qdq(r3, qmd(5, (qdq(y01, qmd(3, y00)))))));
+    //const t0 = ((x01 - 6*x00) +
+    //            (y01 - 6*y00));
+    const t0 = qaq(qdq(x01, qmd(6, x00)), qdq(y01, qmd(6, y00)));
+    return [t5, t4, t3, t2, t1, t0];
+}
+
+//# sourceMappingURL=get-footpoint-poly-3-dd.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/simultaneous-properties/closest-and-furthest-point-on-bezier/get-coeffs/double-double/get-footpoint-poly-2-dd.js
+
+// We *have* to do the below to improve performance with bundlers❗ The assignee is a getter❗ The assigned is a pure function❗
+const get_footpoint_poly_2_dd_td = node_twoDiff;
+const get_footpoint_poly_2_dd_qaq = node_ddAddDd;
+const get_footpoint_poly_2_dd_qmd = node_ddMultDouble2;
+const get_footpoint_poly_2_dd_qmq = node_ddMultDd;
+const get_footpoint_poly_2_dd_qm2 = node_ddMultBy2;
+const qdifq = node_ddDiffDd;
+const get_footpoint_poly_2_dd_qm4 = node_ddMultBy4;
+/**
+ * Returns the polynomial whose roots are all the `t` values on the given bezier
+ * curve such that the line from the given point to the point on the bezier
+ * evaluated at `t` is tangent to the bezier curve at `t`.
+ *
+ * * intermediate calculations are done (and the final result returned in)
+ * double-double precision
+ *
+ * @param ps an order 2 bezier curve given as an ordered array of its
+ * control point coordinates, e.g. `[[0,0], [1,1], [2,1]]`
+ * @param p a point, e.g. `[1,2]`
+ *
+ * @internal
+ */
+function getFootpointPoly2Dd(ps, p) {
+    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
+    const [x, y] = p;
+    const xx0 = get_footpoint_poly_2_dd_td(x0, x);
+    const xx1 = get_footpoint_poly_2_dd_td(x1, x);
+    const xx2 = get_footpoint_poly_2_dd_td(x2, x);
+    const yy0 = get_footpoint_poly_2_dd_td(y0, y);
+    const yy1 = get_footpoint_poly_2_dd_td(y1, y);
+    const yy2 = get_footpoint_poly_2_dd_td(y2, y);
+    const x00 = get_footpoint_poly_2_dd_qmq(xx0, xx0);
+    const x01 = get_footpoint_poly_2_dd_qmq(xx0, xx1);
+    const x02 = get_footpoint_poly_2_dd_qmq(xx0, xx2);
+    const x11 = get_footpoint_poly_2_dd_qmq(xx1, xx1);
+    const x12 = get_footpoint_poly_2_dd_qmq(xx1, xx2);
+    const x22 = get_footpoint_poly_2_dd_qmq(xx2, xx2);
+    const y00 = get_footpoint_poly_2_dd_qmq(yy0, yy0);
+    const y01 = get_footpoint_poly_2_dd_qmq(yy0, yy1);
+    const y02 = get_footpoint_poly_2_dd_qmq(yy0, yy2);
+    const y11 = get_footpoint_poly_2_dd_qmq(yy1, yy1);
+    const y12 = get_footpoint_poly_2_dd_qmq(yy1, yy2);
+    const y22 = get_footpoint_poly_2_dd_qmq(yy2, yy2);
+    const q1 = get_footpoint_poly_2_dd_qaq(y02, get_footpoint_poly_2_dd_qm2(y11));
+    const r1 = get_footpoint_poly_2_dd_qaq(x02, get_footpoint_poly_2_dd_qm2(x11));
+    //const t3 = ((y22 + y00) + 2*q1 - 4*(y12 + y01)) + 
+    //           ((x22 + x00) + 2*r1 - 4*(x12 + x01));
+    const t3 = get_footpoint_poly_2_dd_qaq(qdifq(get_footpoint_poly_2_dd_qaq(get_footpoint_poly_2_dd_qaq(y22, y00), get_footpoint_poly_2_dd_qm2(q1)), get_footpoint_poly_2_dd_qm4(get_footpoint_poly_2_dd_qaq(y12, y01))), qdifq(get_footpoint_poly_2_dd_qaq(get_footpoint_poly_2_dd_qaq(x22, x00), get_footpoint_poly_2_dd_qm2(r1)), get_footpoint_poly_2_dd_qm4(get_footpoint_poly_2_dd_qaq(x12, x01))));
+    //const t2 = 3*(((y12 - q1) + (3*y01 - y00)) + 
+    //              ((x12 - r1) + (3*x01 - x00)));
+    const t2 = get_footpoint_poly_2_dd_qmd(3, get_footpoint_poly_2_dd_qaq(get_footpoint_poly_2_dd_qaq(qdifq(y12, q1), qdifq(get_footpoint_poly_2_dd_qmd(3, y01), y00)), get_footpoint_poly_2_dd_qaq(qdifq(x12, r1), qdifq(get_footpoint_poly_2_dd_qmd(3, x01), x00))));
+    //const t1 = (q1 - 3*(2*y01 - y00)) + 
+    //           (r1 - 3*(2*x01 - x00));
+    const t1 = get_footpoint_poly_2_dd_qaq(qdifq(q1, get_footpoint_poly_2_dd_qmd(3, qdifq(get_footpoint_poly_2_dd_qm2(y01), y00))), qdifq(r1, get_footpoint_poly_2_dd_qmd(3, qdifq(get_footpoint_poly_2_dd_qm2(x01), x00))));
+    //const t0 = (y01 - y00) + 
+    //           (x01 - x00);
+    const t0 = get_footpoint_poly_2_dd_qaq(qdifq(y01, y00), qdifq(x01, x00));
+    return [t3, t2, t1, t0];
+}
+
+//# sourceMappingURL=get-footpoint-poly-2-dd.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/simultaneous-properties/closest-and-furthest-point-on-bezier/get-coeffs/double-double/get-footpoint-poly-1-dd.js
+
+// We *have* to do the below to improve performance with bundlers❗ The assignee is a getter❗ The assigned is a pure function❗
+const get_footpoint_poly_1_dd_tp = node_twoProduct;
+const get_footpoint_poly_1_dd_qaq = node_ddAddDd;
+const qmn2 = node_ddMultByNeg2;
+const get_footpoint_poly_1_dd_qdifq = node_ddDiffDd;
+/**
+ * Returns the polynomial whose roots are all the `t` values on the given bezier
+ * curve such that the line from the given point to the point on the bezier
+ * evaluated at `t` is tangent to the bezier curve at `t`.
+ *
+ * * intermediate calculations are done (and the final result returned in)
+ * double-double precision
+ *
+ * @param ps an order 1 bezier curve given as an ordered array of its
+ * control point coordinates, e.g. `[[0,0], [1,1]]`
+ * @param p a point, e.g. `[1,2]`
+ *
+ * @internal
+ */
+function getFootpointPoly1Dd(ps, p) {
+    const [[x0, y0], [x1, y1]] = ps;
+    const [x, y] = p;
+    const xx0 = x0 - x;
+    const xx1 = x1 - x;
+    const yy0 = y0 - y;
+    const yy1 = y1 - y;
+    const x00 = get_footpoint_poly_1_dd_tp(xx0, xx0);
+    const x01 = get_footpoint_poly_1_dd_tp(xx0, xx1);
+    const x11 = get_footpoint_poly_1_dd_tp(xx1, xx1);
+    const y00 = get_footpoint_poly_1_dd_tp(yy0, yy0);
+    const y01 = get_footpoint_poly_1_dd_tp(yy0, yy1);
+    const y11 = get_footpoint_poly_1_dd_tp(yy1, yy1);
+    const s1 = get_footpoint_poly_1_dd_qaq(x01, y01);
+    const s2 = get_footpoint_poly_1_dd_qaq(y00, x00);
+    //const t1 = (x11 + y11) + (s2 - 2*s1)
+    const t1 = get_footpoint_poly_1_dd_qaq(get_footpoint_poly_1_dd_qaq(x11, y11), get_footpoint_poly_1_dd_qaq(s2, qmn2(s1)));
+    //const t0 = s1 - s2;
+    const t0 = get_footpoint_poly_1_dd_qdifq(s1, s2);
+    return [t1, t0];
+}
+
+//# sourceMappingURL=get-footpoint-poly-1-dd.js.map
 ;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/simultaneous-properties/closest-and-furthest-point-on-bezier/get-coeffs/exact/get-footpoint-poly-3-exact.js
 
 // We *have* to do the below to improve performance with bundlers❗ The assignee is a getter❗ The assigned is a pure function❗
 const get_footpoint_poly_3_exact_td = two_diff_twoDiff;
-const emult = eMult;
+const get_footpoint_poly_3_exact_emult = eMult;
 const get_footpoint_poly_3_exact_sce = scaleExpansion2;
 const em2 = eMultBy2;
 const emn2 = eMultByNeg2;
-const eadd = eAdd;
+const get_footpoint_poly_3_exact_eadd = eAdd;
 const ediff = eDiff;
 /**
  * Returns the *exact* polynomial whose roots are all the `t` values on the
@@ -6363,62 +6448,62 @@ function getFootpointPoly3Exact(ps, p) {
     const yy1 = get_footpoint_poly_3_exact_td(y1, y);
     const yy2 = get_footpoint_poly_3_exact_td(y2, y);
     const yy3 = get_footpoint_poly_3_exact_td(y3, y);
-    const x00 = emult(xx0, xx0);
-    const x01 = get_footpoint_poly_3_exact_sce(6, emult(xx0, xx1));
-    const x02 = get_footpoint_poly_3_exact_sce(6, emult(xx0, xx2));
-    const x03 = em2(emult(xx0, xx3));
-    const x11 = get_footpoint_poly_3_exact_sce(9, emult(xx1, xx1));
-    const x12 = get_footpoint_poly_3_exact_sce(18, emult(xx1, xx2));
-    const x13 = get_footpoint_poly_3_exact_sce(6, emult(xx1, xx3));
-    const x22 = get_footpoint_poly_3_exact_sce(9, emult(xx2, xx2));
-    const x23 = get_footpoint_poly_3_exact_sce(6, emult(xx2, xx3));
-    const x33 = emult(xx3, xx3);
-    const y00 = emult(yy0, yy0);
-    const y01 = get_footpoint_poly_3_exact_sce(6, emult(yy0, yy1));
-    const y02 = get_footpoint_poly_3_exact_sce(6, emult(yy0, yy2));
-    const y03 = em2(emult(yy0, yy3));
-    const y11 = get_footpoint_poly_3_exact_sce(9, emult(yy1, yy1));
-    const y12 = get_footpoint_poly_3_exact_sce(18, emult(yy1, yy2));
-    const y13 = get_footpoint_poly_3_exact_sce(6, emult(yy1, yy3));
-    const y22 = get_footpoint_poly_3_exact_sce(9, emult(yy2, yy2));
-    const y23 = get_footpoint_poly_3_exact_sce(6, emult(yy2, yy3));
-    const y33 = emult(yy3, yy3);
-    const q1 = eadd(x13, x22);
-    const q2 = eadd(x03, x12);
-    const q3 = eadd(x02, x11);
-    const r1 = eadd(y13, y22);
-    const r2 = eadd(y03, y12);
-    const r3 = eadd(y02, y11);
+    const x00 = get_footpoint_poly_3_exact_emult(xx0, xx0);
+    const x01 = get_footpoint_poly_3_exact_sce(6, get_footpoint_poly_3_exact_emult(xx0, xx1));
+    const x02 = get_footpoint_poly_3_exact_sce(6, get_footpoint_poly_3_exact_emult(xx0, xx2));
+    const x03 = em2(get_footpoint_poly_3_exact_emult(xx0, xx3));
+    const x11 = get_footpoint_poly_3_exact_sce(9, get_footpoint_poly_3_exact_emult(xx1, xx1));
+    const x12 = get_footpoint_poly_3_exact_sce(18, get_footpoint_poly_3_exact_emult(xx1, xx2));
+    const x13 = get_footpoint_poly_3_exact_sce(6, get_footpoint_poly_3_exact_emult(xx1, xx3));
+    const x22 = get_footpoint_poly_3_exact_sce(9, get_footpoint_poly_3_exact_emult(xx2, xx2));
+    const x23 = get_footpoint_poly_3_exact_sce(6, get_footpoint_poly_3_exact_emult(xx2, xx3));
+    const x33 = get_footpoint_poly_3_exact_emult(xx3, xx3);
+    const y00 = get_footpoint_poly_3_exact_emult(yy0, yy0);
+    const y01 = get_footpoint_poly_3_exact_sce(6, get_footpoint_poly_3_exact_emult(yy0, yy1));
+    const y02 = get_footpoint_poly_3_exact_sce(6, get_footpoint_poly_3_exact_emult(yy0, yy2));
+    const y03 = em2(get_footpoint_poly_3_exact_emult(yy0, yy3));
+    const y11 = get_footpoint_poly_3_exact_sce(9, get_footpoint_poly_3_exact_emult(yy1, yy1));
+    const y12 = get_footpoint_poly_3_exact_sce(18, get_footpoint_poly_3_exact_emult(yy1, yy2));
+    const y13 = get_footpoint_poly_3_exact_sce(6, get_footpoint_poly_3_exact_emult(yy1, yy3));
+    const y22 = get_footpoint_poly_3_exact_sce(9, get_footpoint_poly_3_exact_emult(yy2, yy2));
+    const y23 = get_footpoint_poly_3_exact_sce(6, get_footpoint_poly_3_exact_emult(yy2, yy3));
+    const y33 = get_footpoint_poly_3_exact_emult(yy3, yy3);
+    const q1 = get_footpoint_poly_3_exact_eadd(x13, x22);
+    const q2 = get_footpoint_poly_3_exact_eadd(x03, x12);
+    const q3 = get_footpoint_poly_3_exact_eadd(x02, x11);
+    const r1 = get_footpoint_poly_3_exact_eadd(y13, y22);
+    const r2 = get_footpoint_poly_3_exact_eadd(y03, y12);
+    const r3 = get_footpoint_poly_3_exact_eadd(y02, y11);
     //const t5 = 6*((x33 - x23 + q1 - q2 + q3 - x01 + x00) + 
     //              (y33 - y23 + r1 - r2 + r3 - y01 + y00));
-    const t5a = ediff(eadd(eadd(x33, x00), eadd(q1, q3)), (eadd(eadd(q2, x23), x01)));
-    const t5b = ediff(eadd(eadd(y33, y00), eadd(r1, r3)), (eadd(eadd(r2, y23), y01)));
-    const t5 = get_footpoint_poly_3_exact_sce(6, eadd(t5a, t5b));
+    const t5a = ediff(get_footpoint_poly_3_exact_eadd(get_footpoint_poly_3_exact_eadd(x33, x00), get_footpoint_poly_3_exact_eadd(q1, q3)), (get_footpoint_poly_3_exact_eadd(get_footpoint_poly_3_exact_eadd(q2, x23), x01)));
+    const t5b = ediff(get_footpoint_poly_3_exact_eadd(get_footpoint_poly_3_exact_eadd(y33, y00), get_footpoint_poly_3_exact_eadd(r1, r3)), (get_footpoint_poly_3_exact_eadd(get_footpoint_poly_3_exact_eadd(r2, y23), y01)));
+    const t5 = get_footpoint_poly_3_exact_sce(6, get_footpoint_poly_3_exact_eadd(t5a, t5b));
     //const t4 = 5*((x23 - 2*(q1 + 2*q3 + 3*x00) + 3*q2 + 5*x01) +
     //              (y23 - 2*(r1 + 2*r3 + 3*y00) + 3*r2 + 5*y01));
-    const t4a = eadd(emn2(eadd(eadd(q1, em2(q3)), get_footpoint_poly_3_exact_sce(3, x00))), eadd(eadd(x23, get_footpoint_poly_3_exact_sce(3, q2)), get_footpoint_poly_3_exact_sce(5, x01)));
-    const t4b = eadd(emn2(eadd(eadd(r1, em2(r3)), get_footpoint_poly_3_exact_sce(3, y00))), eadd(eadd(y23, get_footpoint_poly_3_exact_sce(3, r2)), get_footpoint_poly_3_exact_sce(5, y01)));
-    const t4 = get_footpoint_poly_3_exact_sce(5, eadd(t4a, t4b));
+    const t4a = get_footpoint_poly_3_exact_eadd(emn2(get_footpoint_poly_3_exact_eadd(get_footpoint_poly_3_exact_eadd(q1, em2(q3)), get_footpoint_poly_3_exact_sce(3, x00))), get_footpoint_poly_3_exact_eadd(get_footpoint_poly_3_exact_eadd(x23, get_footpoint_poly_3_exact_sce(3, q2)), get_footpoint_poly_3_exact_sce(5, x01)));
+    const t4b = get_footpoint_poly_3_exact_eadd(emn2(get_footpoint_poly_3_exact_eadd(get_footpoint_poly_3_exact_eadd(r1, em2(r3)), get_footpoint_poly_3_exact_sce(3, y00))), get_footpoint_poly_3_exact_eadd(get_footpoint_poly_3_exact_eadd(y23, get_footpoint_poly_3_exact_sce(3, r2)), get_footpoint_poly_3_exact_sce(5, y01)));
+    const t4 = get_footpoint_poly_3_exact_sce(5, get_footpoint_poly_3_exact_eadd(t4a, t4b));
     //const t3 = 4*((q1 - 3*(q2 - 2*q3) - 5*(2*x01 - 3*x00)) +
     //              (r1 - 3*(r2 - 2*r3) - 5*(2*y01 - 3*y00)));
-    const t3a = eadd(eadd(q1, get_footpoint_poly_3_exact_sce(3, (ediff(em2(q3), q2)))), get_footpoint_poly_3_exact_sce(5, (ediff(get_footpoint_poly_3_exact_sce(3, x00), em2(x01)))));
-    const t3b = eadd(eadd(r1, get_footpoint_poly_3_exact_sce(3, (ediff(em2(r3), r2)))), get_footpoint_poly_3_exact_sce(5, (ediff(get_footpoint_poly_3_exact_sce(3, y00), em2(y01)))));
-    const t3 = get_footpoint_poly_3_exact_sce(4, eadd(t3a, t3b));
+    const t3a = get_footpoint_poly_3_exact_eadd(get_footpoint_poly_3_exact_eadd(q1, get_footpoint_poly_3_exact_sce(3, (ediff(em2(q3), q2)))), get_footpoint_poly_3_exact_sce(5, (ediff(get_footpoint_poly_3_exact_sce(3, x00), em2(x01)))));
+    const t3b = get_footpoint_poly_3_exact_eadd(get_footpoint_poly_3_exact_eadd(r1, get_footpoint_poly_3_exact_sce(3, (ediff(em2(r3), r2)))), get_footpoint_poly_3_exact_sce(5, (ediff(get_footpoint_poly_3_exact_sce(3, y00), em2(y01)))));
+    const t3 = get_footpoint_poly_3_exact_sce(4, get_footpoint_poly_3_exact_eadd(t3a, t3b));
     //const t2 = 3*((q2 - 2*(2*q3 - 5*(x01 - 2*x00))) +
     //              (r2 - 2*(2*r3 - 5*(y01 - 2*y00))));
     const t2a = ediff(q2, em2(ediff(em2(q3), get_footpoint_poly_3_exact_sce(5, (ediff(x01, em2(x00)))))));
     const t2b = ediff(r2, em2(ediff(em2(r3), get_footpoint_poly_3_exact_sce(5, (ediff(y01, em2(y00)))))));
-    const t2 = get_footpoint_poly_3_exact_sce(3, eadd(t2a, t2b));
+    const t2 = get_footpoint_poly_3_exact_sce(3, get_footpoint_poly_3_exact_eadd(t2a, t2b));
     //const t1 = 2*((q3 - 5*(x01 - 3*x00)) +
     //              (r3 - 5*(y01 - 3*y00)));
     const t1a = ediff(q3, get_footpoint_poly_3_exact_sce(5, (ediff(x01, get_footpoint_poly_3_exact_sce(3, x00)))));
     const t1b = ediff(r3, get_footpoint_poly_3_exact_sce(5, (ediff(y01, get_footpoint_poly_3_exact_sce(3, y00)))));
-    const t1 = em2(eadd(t1a, t1b));
+    const t1 = em2(get_footpoint_poly_3_exact_eadd(t1a, t1b));
     //const t0 = ((x01 - 6*x00) +
     //            (y01 - 6*y00));
     const t0a = ediff(x01, get_footpoint_poly_3_exact_sce(6, x00));
     const t0b = ediff(y01, get_footpoint_poly_3_exact_sce(6, y00));
-    const t0 = eadd(t0a, t0b);
+    const t0 = get_footpoint_poly_3_exact_eadd(t0a, t0b);
     return [t5, t4, t3, t2, t1, t0];
 }
 
@@ -6843,66 +6928,82 @@ function getClosestOnBezier1FromPointErrorCounters(ps, p) {
 }
 
 //# sourceMappingURL=get-closest-on-bezier-from-point-error-counters.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-poly/node/roots/certified/root-interval.js
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/simultaneous-properties/closest-and-furthest-point-on-bezier/get-foot-points-polys-on-bezier-certified.js
+
+
+
+
+
+
+
+
+
+
+const γγ6 = error_analysis_error_analysis_(6);
 /**
- * Simple function that creates and returns an exact root (with a bracketing
- * interval width of 0 and multiplicity 1)
+ * Returns the footpoint(s) (and parameter `t` value(s)) on the
+ * given bezier curve to the given point (with `t ∈ [0,1]`).
  *
- * @param t
+ * * guaranteed accurate to within `4*Number.EPSILON` in the returned `t`
+ * value(s)
+ * * the returned point(s) are objects with the following properties:
+ *     * `p`: the best estimate point on the bezier curve (calculated from the root interval `ri`)
+ *     * `t`: the best estimate `t` parameter value (calculated from the root interval `ri`)
+ *     * `d`: the best estimate closest distance from the point to the bezier curve (calculated from the root interval `ri`)
+ *     * `ri`: a root interval guaranteed to contain the actual `t` value
+ *     * `box`: a small box guaranteed to contain the relevant point on the bezier curve
+ *     * `dSquaredI`: a small squared distance interval guaranteed to contain the actual distance squared
+ *        between the point and the bezier curve
+ *
+ * @param ps an order 0,1,2 or 3 bezier curve given as an ordered array of its
+ * control point coordinates, e.g. `[[0,0], [1,1], [2,1], [2,0]]`
+ * @param p a point, e.g. `[1,2]`
  *
  * @doc
  */
-function createRootExact(t) {
-    return { tS: t, tE: t, multiplicity: 1 };
-}
-/**
- * Simple function that returns the middle of the root bracketing interval - can
- * be used to estimate the root
- *
- * @param ri a root interval
- *
- * @doc
- */
-function mid(ri) {
-    return (ri.tS + ri.tE) / 2;
+function getFootPointsOnBezierPolysCertified(ps, p) {
+    const order = ps.length - 1;
+    if (order === 3) {
+        return {
+            polyDd: getFootpointPoly3Dd(ps, p),
+            polyE: getClosestOnBezier3FromPointErrorCounters(ps, p).map(e => 10 * γγ6 * e),
+            getPolyExact: () => getFootpointPoly3Exact(ps, p)
+        };
+    }
+    else if (order === 2) {
+        return {
+            polyDd: getFootpointPoly2Dd(ps, p),
+            polyE: getClosestOnBezier2FromPointErrorCounters(ps, p).map(e => 8 * γγ6 * e),
+            getPolyExact: () => getFootpointPoly2Exact(ps, p)
+        };
+    }
+    else if (order === 1) {
+        return {
+            polyDd: getFootpointPoly1Dd(ps, p),
+            polyE: getClosestOnBezier1FromPointErrorCounters(ps, p).map(e => 6 * γγ6 * e),
+            getPolyExact: () => getFootpointPoly1Exact(ps, p)
+        };
+    }
+    else if (order === 0) {
+        return {
+            polyDd: [[0, 1]],
+            polyE: [0],
+            getPolyExact: () => [[1]]
+        };
+    }
+    else {
+        throw new Error('The given bezier curve must be of order <= 3');
+    }
 }
 
-//# sourceMappingURL=root-interval.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/intersection/bezier-bezier-intersection/x.js
-/** @internal */
-function getPFromBox(box) {
-    const tl = box[0];
-    const br = box[1];
-    return [
-        (tl[0] + br[0]) / 2,
-        (tl[1] + br[1]) / 2,
-    ];
-}
-
-//# sourceMappingURL=x.js.map
+//# sourceMappingURL=get-foot-points-polys-on-bezier-certified.js.map
 ;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/simultaneous-properties/closest-and-furthest-point-on-bezier/closest-point-on-bezier-certified.js
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-// We *have* to do the below to improve performance with bundlers❗ The assignee is a getter❗ The assigned is a pure function❗
-const closest_point_on_bezier_certified_estimate = eEstimate;
-const closest_point_on_bezier_certified_td = two_diff_twoDiff;
-const closest_point_on_bezier_certified_emult = eMult;
-const closest_point_on_bezier_certified_eadd = eAdd;
-const closest_point_on_bezier_certified_eps = Number.EPSILON;
 const { sqrt } = Math;
-const γγ6 = error_analysis_error_analysis_(6);
 /**
  * Returns the closest point(s) (and parameter `t` value(s)) on the given
  * bezier curve to the given point (with `t ∈ [0,1]`).
@@ -6926,30 +7027,12 @@ const γγ6 = error_analysis_error_analysis_(6);
  *
  * @doc
  */
-function closestPointOnBezierCertified(ps, p) {
-    const order = ps.length - 1;
-    let ris;
-    if (order === 3) {
-        // keep TypeScript happy; `ris` cannot be `undefined` here
-        ris = allRootsCertified(getFootpointPoly3Dd(ps, p), 0, 1, getClosestOnBezier3FromPointErrorCounters(ps, p).map(e => 10 * γγ6 * e), () => getFootpointPoly3Exact(ps, p));
-    }
-    else if (order === 2) {
-        // keep TypeScript happy; `ris` cannot be `undefined` here
-        ris = allRootsCertified(getFootpointPoly2Dd(ps, p), 0, 1, getClosestOnBezier2FromPointErrorCounters(ps, p).map(e => 8 * γγ6 * e), () => getFootpointPoly2Exact(ps, p));
-    }
-    else if (order === 1) {
-        // keep TypeScript happy; `ris` cannot be `undefined` here
-        ris = allRootsCertified(getFootpointPoly1Dd(ps, p), 0, 1, getClosestOnBezier1FromPointErrorCounters(ps, p).map(e => 6 * γγ6 * e), () => getFootpointPoly1Exact(ps, p));
-    }
-    else if (order === 0) {
-        return [];
-    }
-    else {
-        throw new Error('The given bezier curve must be of order <= 3');
-    }
-    ris.push({ tS: 0, tE: 0, multiplicity: 1 });
-    ris.push({ tS: 1, tE: 1, multiplicity: 1 });
-    const infos = ris.map(ri => {
+function closestPointOnBezierCertified(ps, p, lb = 0, ub = 1) {
+    const { polyDd, polyE, getPolyExact } = getFootPointsOnBezierPolysCertified(ps, p);
+    const ris = allRootsCertified(polyDd, lb, ub, polyE, getPolyExact);
+    ris.push({ tS: lb, tE: lb, multiplicity: 1 });
+    ris.push({ tS: ub, tE: ub, multiplicity: 1 });
+    const infos = ris.map((ri) => {
         const box = getIntervalBox(ps, [ri.tS, ri.tE]);
         const dSquaredI = rootIntervalToDistanceSquaredInterval(box, p);
         return {
@@ -6978,103 +7061,7 @@ function closestPointOnBezierCertified(ps, p) {
     }
     return closestPointInfos;
 }
-/**
- * Returns the distance interval squared given the root interval (currently
- * ignoring multiplicity)
- *
- * @param box
- * @param p
- *
- * @internal
- */
-function rootIntervalToDistanceSquaredInterval(box, p) {
-    const bl = box[0];
-    const tr = box[1];
-    const minX = bl[0];
-    const minY = bl[1];
-    const maxX = tr[0];
-    const maxY = tr[1];
-    const x = p[0]; // <0>
-    const y = p[1]; // <0>
-    let minDSquared = Number.POSITIVE_INFINITY;
-    let maxDSquared = Number.NEGATIVE_INFINITY;
-    // for each corner of the interval box
-    for (const [a, b] of [[minX, minY], [minX, maxY], [maxX, minY], [maxX, maxY]]) {
-        /*
-        // distance to 1st corner of interval box - `distance² = x² + y²`
-        const dc1 = (a - x)**2 + (b - y)**2;
-        // max absolute roundoff error of `dc1`
-        // <4>dc1 <-- <4>(<3>(<1>(a - x)**2) + <3>(<1>((b - y)**2))
-        const dc1E = 4*γ1*((a + x)**2 + (b + y)**2);
-        const dc1Min = dc1 - dc1E;  // distance minus max error
-        const dc1Max = dc1 + dc1E;  // distance plus max error
-        */
-        /** distance to 1st corner of interval box - `distance² = x² + y²` */
-        const ax = closest_point_on_bezier_certified_td(a, x);
-        const by = closest_point_on_bezier_certified_td(b, y);
-        const dc1Exact = closest_point_on_bezier_certified_eadd(closest_point_on_bezier_certified_emult(ax, ax), closest_point_on_bezier_certified_emult(by, by));
-        const dc1 = closest_point_on_bezier_certified_estimate(dc1Exact);
-        const dc1Min = dc1 * (1 - closest_point_on_bezier_certified_eps); // distance minus max error
-        const dc1Max = dc1 * (1 + closest_point_on_bezier_certified_eps); // distance plus max error
-        if (dc1Min <= minDSquared) {
-            minDSquared = dc1Min;
-        }
-        if (dc1Max >= maxDSquared) {
-            maxDSquared = dc1Max;
-        }
-    }
-    return [minDSquared, maxDSquared];
-}
 
-/**
- * Returns the closest point on the bezier to the given point - returns the point
- * and the t value.
- *
- * * this function also acts as an excellent inversion formula.
- *
- * @param ps an order 1,2 or 3 bezier curve given as an ordered array of its
- * control point coordinates, e.g. `[[0,0], [1,1], [2,1], [2,0]]`
- * @param p a point, e.g. `[1,2]`
- */
-/*
- function closestPointOnBezierPrecise(
-        ps: number[][],
-        p: number[]): {
-            p: number[];
-            t: number;
-        } {
-
-    const polyE = getFootpointPolyExact(ps, p);
-    const polyDd = polyE.map(eToDd);
-    const polyErr = polyE.map((c,i) => Math.abs(eEstimate(eDiff(c,polyDd[i]))));
-    function getPExact() { return polyE; }
-
-    let ts = allRootsCertified(
-        polyDd,
-        0, 1,
-        polyErr,
-        getPExact
-    ).map(mid);
-
-    ts.push(0);
-    ts.push(1);
-
-    let ps_ = ts.map(t => ({ p: evaluateExact(ps, t).map(eEstimate), t }));
-
-    // Get point with minimum distance
-    let minD = Number.POSITIVE_INFINITY;
-    let minT: { p: number[], t: number } | undefined = undefined;
-    ps_.forEach(p_ => {
-        let d = squaredDistanceBetween(p_.p, p);
-        if (d < minD) {
-            minD = d;
-            minT = p_;
-        }
-    });
-
-    return minT!;
-}
-*/ 
 //# sourceMappingURL=closest-point-on-bezier-certified.js.map
 ;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/transformation/split/from-to/from-to-3.js
 /**
@@ -13488,7 +13475,6 @@ function getImplicitForm1ExactPb(pspb) {
 const get_coeffs_bez1_bez1_exact_sce = scaleExpansion2;
 const epr = expansionProduct;
 const get_coeffs_bez1_bez1_exact_fes = fastExpansionSum;
-const get_coeffs_bez1_bez1_exact_eSign = (/* unused pure expression or super */ null && (_eSign));
 /**
  * Returns an error-free polynomial in 1 variable whose roots are the parameter
  * values of the intersection points of two order 1 bezier curves (i.e. 2 lines).
@@ -15474,10 +15460,10 @@ const eval_de_casteljau_dd_qad = node_ddAddDouble;
  **/
 function evalDeCasteljauDd(ps, t) {
     if (t[0] === 0 && t[1] === 0) {
-        return ps[0].map(c => [c]);
+        return ps[0].map(c => [0, c]);
     }
     else if (t[0] === 0 && t[1] === 1) {
-        return ps[ps.length - 1].map(c => [c]);
+        return ps[ps.length - 1].map(c => [0, c]);
     }
     if (ps.length === 4) {
         const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
@@ -16432,11 +16418,8 @@ function sweepLine(items, getLeftmost, getRightmost, predicate) {
         const item = event.item;
         if (event.type === EVENT_LEFT) {
             for (const activeItem of activeItems.values()) {
-                //(window as any).ii++;
                 const result = predicate(item, activeItem);
                 if (result) {
-                    //(window as any).jj++;
-                    //console.log(result)
                     pairedItems.push({
                         a: item,
                         b: activeItem,
@@ -18721,6 +18704,9 @@ function getCurvesIntersections(expMax) {
     return (curveA, curveB) => {
         const psA = curveA.ps;
         const psB = curveB.ps;
+        if (psA.length === 4 && psA[0][0] === 590 && psA[0][1] === 565) {
+            console.log('a');
+        }
         if (psA.length === 2 && psB.length === 2) {
             return getLineLineIntersections(curveA, curveB, expMax);
         }
@@ -19538,13 +19524,14 @@ function toPowerBasis_2ndDerivative(ps) {
 function toPowerBasis_3rdDerivative(ps) {
     if (ps.length === 4) {
         const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
-        return [
-            6 * ((x3 - x0) + 3 * (x1 - x2)),
-            6 * ((y3 - y0) + 3 * (y1 - y2))
-        ];
+        return [[
+                6 * ((x3 - x0) + 3 * (x1 - x2))
+            ], [
+                6 * ((y3 - y0) + 3 * (y1 - y2))
+            ]];
     }
     if (ps.length <= 3) {
-        return [0, 0];
+        return [[0], [0]];
     }
     throw new Error('The given bezier curve must be of order <= 3.');
     // Side note: if x0,x1,x2,x3 <= X (for some X) and t is an element of [0,1], 
@@ -19581,7 +19568,7 @@ function getAbsCurvatureExtremaPolys(ps) {
     // Max abs curvature at: ((x′′′y′ − x′y′′′)(x′2 + y′2) − 3(x′x′′ + y′y′′)(x′′y′ − x′y′′)) === 0
     const [[dx2, dx1, dx0], [dy2, dy1, dy0]] = toPowerBasis_1stDerivative(ps); // max bitlength increase === 5
     const [[ddx1, ddx0], [ddy1, ddy0]] = toPowerBasis_2ndDerivative(ps); // max bitlength increase === 6
-    const [dddx, dddy] = toPowerBasis_3rdDerivative(ps); // max bitlength increase === 6
+    const [[dddx], [dddy]] = toPowerBasis_3rdDerivative(ps); // max bitlength increase === 6
     // ((x′′′y′ − x′y′′′)(x′2 + y′2) − 3(x′x′′ + y′y′′)(x′′y′ − x′y′′))
     // or 
     // x′′′x′x′y′ + x′′′y′y′y′ - y′′′x′x′x′ - y′′′x′y′y′ + 
@@ -19750,7 +19737,40 @@ function isVertical(ps) {
 }
 
 //# sourceMappingURL=is-collinear.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/get-curvature-extrema/get-curvature-extrema-quadratic-poly.js
+/**
+ * Returns the polynomial whose zero is the t value of maximum absolute
+ * curvature for the given *quadratic* bezier curve.
+ *
+ * * **precondition:** the given parabola is not degenerate to a line
+ * * **non-exact:** there is floating point roundof during calculation
+ * * see e.g. [math.stackexchange](https://math.stackexchange.com/a/2971112)'s
+ * answer by [KeithWM](https://math.stackexchange.com/a/2971112/130809)
+ *
+ * @param ps an order 2 bezier curve given as an array of control points,
+ * e.g. `[[0,0],[1,1],[2,1]]`
+ *
+ * @internal
+ */
+function getCurvatureExtremaQuadraticPoly(ps) {
+    // Find the point of max curvature (of the parabola)
+    // calculate t*
+    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
+    const x10 = x1 - x0;
+    const x21 = x2 - x1;
+    const wx = x21 - x10;
+    const y10 = y1 - y0;
+    const y21 = y2 - y1;
+    const wy = y21 - y10;
+    const n = x0 * (wx - x1) - x1 * (x21 - x1) +
+        y0 * (wy - y1) - y1 * (y21 - y1);
+    const d = wx * wx + wy * wy;
+    return [d, -n];
+}
+
+//# sourceMappingURL=get-curvature-extrema-quadratic-poly.js.map
 ;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/get-curvature-extrema/get-curvature-extrema.js
+
 
 
 
@@ -19811,35 +19831,6 @@ function getCurvatureExtrema(ps) {
     }
     const inflections = allRoots(p1, 0, 1);
     return { minima, maxima, inflections };
-}
-/**
- * Returns the polynomial whose zero is the t value of maximum absolute
- * curvature for the given *quadratic* bezier curve.
- *
- * * **precondition:** the given parabola is not degenerate to a line
- * * **non-exact:** there is floating point roundof during calculation
- * * see e.g. [math.stackexchange](https://math.stackexchange.com/a/2971112)'s
- * answer by [KeithWM](https://math.stackexchange.com/a/2971112/130809)
- *
- * @param ps an order 2 bezier curve given as an array of control points,
- * e.g. `[[0,0],[1,1],[2,1]]`
- *
- * @internal
- */
-function getCurvatureExtremaQuadraticPoly(ps) {
-    // Find the point of max curvature (of the parabola)
-    // calculate t*
-    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
-    const x10 = x1 - x0;
-    const x21 = x2 - x1;
-    const wx = x21 - x10;
-    const y10 = y1 - y0;
-    const y21 = y2 - y1;
-    const wy = y21 - y10;
-    const n = x0 * (wx - x1) - x1 * (x21 - x1) +
-        y0 * (wy - y1) - y1 * (y21 - y1);
-    const d = wx * wx + wy * wy;
-    return [d, -n];
 }
 
 //# sourceMappingURL=get-curvature-extrema.js.map
@@ -20180,11 +20171,11 @@ function getContainers(loops, containerDim, expMax) {
     const { extremes, xs: xs4 } = getExtremes(loops);
     const xs5 = getExcessiveCurvatures(expMax, loops);
     let xPairs = [...xs1, ...xs2, ...xs3, ...xs4, ...xs5];
-    // console.log('general  ', xs1);
-    // console.log('self     ', xs2);
-    // console.log('interface', xs3);
-    // console.log('topmost  ', xs4);
-    // console.log('excessive  ', xs5);
+    console.log('general  ', xs1);
+    console.log('self     ', xs2);
+    console.log('interface', xs3);
+    console.log('topmost  ', xs4);
+    console.log('excessive  ', xs5);
     if (typeof _debug_ !== 'undefined') {
         for (const xPair of xs1) {
             _debug_.generated.elems.intersection.push(...xPair);
@@ -21188,8 +21179,8 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
      * Higher bitlengths would increase the running time of the algorithm
      * considerably.
      */
-    // const maxBitLength = 46;
     const maxBitLength = 46;
+    // const maxBitLength = 32;
     maxCoordinate = maxCoordinate || getMaxCoordinate(bezierLoops);
     /** The exponent, e, such that 2**e >= all bezier coordinate points. */
     const expMax = Math.ceil(Math.log2(maxCoordinate));
@@ -21199,7 +21190,7 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
      * critical points.
      */
     const containerSizeMultiplier = 2 ** 6;
-    // const containerSizeMultiplier = 2**36;
+    // const containerSizeMultiplier = 2**34;
     const containerDim = gridSpacing * containerSizeMultiplier;
     bezierLoops = normalizeLoops(bezierLoops, maxBitLength, expMax, false, true);
     // console.log(bezierLoops)
@@ -21234,7 +21225,8 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
      * Arbitrarily choose min. loop area to be equal to one square pixel on a
      * 4096 x 4096 grid.
      */
-    const minLoopArea = (2 ** expMax * 2 ** (-12)) ** 2;
+    // const minLoopArea = (2**expMax * 2**(-12))**2;
+    const minLoopArea = (2 ** expMax * 2 ** (-16)) ** 2;
     const loopss_ = [];
     for (let i = 0; i < loopss.length; i++) {
         const loops = loopss[i].filter((loop) => Math.abs(getLoopArea(loop)) > minLoopArea);
@@ -21363,7 +21355,22 @@ function circle(g, circle, classes = DEFAULT_CLASS, delay) {
 }
 
 //# sourceMappingURL=circle.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/dot.js
+
+/**
+ * Draws a dot.
+ */
+function dot_dot(g, p, r = 3, color = 'red', delay) {
+    const [$dot] = circle(g, { center: p, radius: r }, 'dot ' + color, delay);
+    if (delay) {
+        setTimeout(() => $dot.remove(), delay);
+    }
+    return [$dot];
+}
+
+//# sourceMappingURL=dot.js.map
 ;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/line.js
+
 
 
 /**
@@ -21372,7 +21379,7 @@ function circle(g, circle, classes = DEFAULT_CLASS, delay) {
  * @param l
  * @param classes
  */
-function line(g, l, classes = DEFAULT_CLASS, delay) {
+function line(g, l, classes = DEFAULT_CLASS, delay = 0, controlPointClass = undefined, controlPointRadius = 0) {
     const $line = document.createElementNS(XMLNS, 'line');
     $line.setAttributeNS(null, "x1", l[0][0].toString());
     $line.setAttributeNS(null, "y1", l[0][1].toString());
@@ -21380,10 +21387,22 @@ function line(g, l, classes = DEFAULT_CLASS, delay) {
     $line.setAttributeNS(null, "y2", l[1][1].toString());
     $line.setAttributeNS(null, "class", classes);
     g.appendChild($line);
-    if (delay) {
-        setTimeout(() => $line.remove(), delay);
+    let $dots = [];
+    if (controlPointClass !== undefined) {
+        for (const p of l) {
+            $dots.push(...dot_dot(g, p, controlPointRadius, controlPointClass, delay));
+        }
     }
-    return [$line];
+    for (const $ of $dots) {
+        g.appendChild($);
+    }
+    const $svgs = [$line, ...$dots];
+    if (delay) {
+        setTimeout(() => { for (const $ of $svgs) {
+            $.remove();
+        } }, delay);
+    }
+    return $svgs;
 }
 
 //# sourceMappingURL=line.js.map
@@ -21412,20 +21431,6 @@ function crossHair(g, p, classes = DEFAULT_CLASS, r = 3, delay) {
 }
 
 //# sourceMappingURL=cross-hair.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/dot.js
-
-/**
- * Draws a dot.
- */
-function dot(g, p, r = 3, color = 'red', delay) {
-    const [$dot] = circle(g, { center: p, radius: r }, 'dot ' + color, delay);
-    if (delay) {
-        setTimeout(() => $dot.remove(), delay);
-    }
-    return [$dot];
-}
-
-//# sourceMappingURL=dot.js.map
 ;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/rect.js
 
 
@@ -21548,18 +21553,37 @@ function polyline(g, poly, class_ = DEFAULT_CLASS, delay) {
 ;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/quad-bezier.js
 
 
-function quadBezier(g, ps, class_ = DEFAULT_CLASS, delay) {
+
+
+function quadBezier(g, ps, class_ = DEFAULT_CLASS, delay = 0, controlPointClass = undefined, controlPointRadius = 0, lineCLass = undefined) {
     const [[x0, y0], [x1, y1], [x2, y2]] = ps;
     const $path = document.createElementNS(XMLNS, 'path');
     $path.setAttributeNS(null, "d", `M${x0} ${y0} Q${x1} ${y1} ${x2} ${y2}`);
     if (class_) {
         $path.setAttributeNS(null, "class", class_);
     }
-    g.appendChild($path);
-    if (delay) {
-        setTimeout(() => $path.remove(), delay);
+    let $dots = [];
+    if (controlPointClass !== undefined) {
+        for (const p of ps) {
+            $dots.push(...dot_dot(g, p, controlPointRadius, controlPointClass, delay));
+        }
     }
-    return [$path];
+    let $lines = [];
+    if (lineCLass !== undefined) {
+        for (let i = 0; i < ps.length - 1; i++) {
+            $lines.push(...line(g, [ps[i], ps[i + 1]], lineCLass, delay));
+        }
+    }
+    const $svgs = [$path, ...$dots, ...$lines];
+    for (const $ of $svgs) {
+        g.appendChild($);
+    }
+    if (delay) {
+        setTimeout(() => { for (const $ of $svgs) {
+            $.remove();
+        } }, delay);
+    }
+    return $svgs;
 }
 
 //# sourceMappingURL=quad-bezier.js.map
@@ -21567,8 +21591,10 @@ function quadBezier(g, ps, class_ = DEFAULT_CLASS, delay) {
 
 
 
-function cubicBezier(g, bezier, class_ = DEFAULT_CLASS, delay) {
-    const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = bezier;
+
+
+function cubicBezier(g, ps, class_ = DEFAULT_CLASS, delay = 0, controlPointClass = undefined, controlPointRadius = 0, lineCLass = undefined) {
+    const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
     if (x0 === x3 && x1 === x3 && x2 === x3 &&
         y0 === y3 && y1 === y3 && y2 === y3) {
         return crossHair(g, [x0, y0], class_, 0.2, delay);
@@ -21576,11 +21602,28 @@ function cubicBezier(g, bezier, class_ = DEFAULT_CLASS, delay) {
     const $path = document.createElementNS(XMLNS, 'path');
     $path.setAttributeNS(null, "d", `M${x0} ${y0} C${x1} ${y1} ${x2} ${y2} ${x3} ${y3}`);
     $path.setAttributeNS(null, "class", class_);
-    g.appendChild($path);
-    if (delay) {
-        setTimeout(() => $path.remove(), delay);
+    let $dots = [];
+    if (controlPointClass !== undefined) {
+        for (const p of ps) {
+            $dots.push(...dot_dot(g, p, controlPointRadius, controlPointClass, delay));
+        }
     }
-    return [$path];
+    let $lines = [];
+    if (lineCLass !== undefined) {
+        for (let i = 0; i < ps.length - 1; i++) {
+            $lines.push(...line(g, [ps[i], ps[i + 1]], lineCLass, delay));
+        }
+    }
+    const $svgs = [$path, ...$dots, ...$lines];
+    for (const $ of $svgs) {
+        g.appendChild($);
+    }
+    if (delay) {
+        setTimeout(() => { for (const $ of $svgs) {
+            $.remove();
+        } }, delay);
+    }
+    return $svgs;
 }
 
 //# sourceMappingURL=cubic-bezier.js.map
@@ -21589,15 +21632,26 @@ function cubicBezier(g, bezier, class_ = DEFAULT_CLASS, delay) {
 
 
 
-function bezier(g, bezier, class_ = DEFAULT_CLASS, delay) {
+/**
+ * Draws a bezier.
+ *
+ * @param g
+ * @param bezier
+ * @param class_
+ * @param delay
+ * @param controlPointClass a dot at each control point will be drawn if specified
+ * @param lineClass a line to each control point will be drawn if specified
+ * @returns
+ */
+function bezier(g, bezier, class_ = DEFAULT_CLASS, delay = 0, controlPointClass = undefined, controlPointRadius = 0, lineClass = undefined) {
     if (bezier.length === 2) {
-        return line(g, bezier, class_, delay);
+        return line(g, bezier, class_, delay, controlPointClass, controlPointRadius);
     }
     else if (bezier.length === 3) {
-        return quadBezier(g, bezier, class_, delay);
+        return quadBezier(g, bezier, class_, delay, controlPointClass, controlPointRadius, lineClass);
     }
     else if (bezier.length === 4) {
-        return cubicBezier(g, bezier, class_, delay);
+        return cubicBezier(g, bezier, class_, delay, controlPointClass, controlPointRadius, lineClass);
     }
     return [];
 }
@@ -21869,7 +21923,7 @@ function text_text(g, p, str, fontSize, classes = DEFAULT_CLASS, delay) {
 const drawFs = {
     circle: circle,
     crossHair: crossHair,
-    dot: dot,
+    dot: dot_dot,
     line: line,
     rect: rect,
     beziers: beziers,

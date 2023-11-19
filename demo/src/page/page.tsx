@@ -76,7 +76,7 @@ function Page(props: Props) {
 	const ref = useRef<SVGSVGElement>(null);
 	const refX = useRef<HTMLSpanElement>(null);
 	const refY = useRef<HTMLSpanElement>(null);
-	useEffect(function() { lazyLoadDeduced() }, []); // run only once
+	useEffect(function() { lazyLoadDeduced(false) }, []); // run only once
 	//const [{x,y}, setXY] = useState({x: 0, y: 0});
 	
 	
@@ -188,7 +188,7 @@ function Page(props: Props) {
 	}
 
 
-	async function lazyLoadDeduced() {
+	async function lazyLoadDeduced(changeViewbox: boolean) {
 		let pageState: PageState;
 
 		({ pageState } = stateControl.state.appState);
@@ -211,11 +211,9 @@ function Page(props: Props) {
 
 		({ pageState } = stateControl.state.appState);
 
-		upd(pageState, { 
-			viewbox,
-			deduced: {
-				path: pathStr 
-			}
+		upd(stateControl.state.appState.pageState, { 
+			...(changeViewbox ? { viewbox } : {}),
+			deduced: { path: pathStr }
 		});
 	}
 
@@ -227,7 +225,7 @@ function Page(props: Props) {
 
 		const vectorName = event.target.value as string;
 		upd(pageState, { vectorName });
-		lazyLoadDeduced();
+		lazyLoadDeduced(true);
 	}
 
 	function onClickForChanged(key: ClickFor | 'spacer'): void {

@@ -39,8 +39,8 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
      * Higher bitlengths would increase the running time of the algorithm
      * considerably.
      */
-    // const maxBitLength = 46;
     const maxBitLength = 46;
+    // const maxBitLength = 32;
     maxCoordinate = maxCoordinate || getMaxCoordinate(bezierLoops);
     /** The exponent, e, such that 2**e >= all bezier coordinate points. */
     const expMax = Math.ceil(Math.log2(maxCoordinate));
@@ -50,7 +50,7 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
      * critical points.
      */
     const containerSizeMultiplier = 2 ** 6;
-    // const containerSizeMultiplier = 2**36;
+    // const containerSizeMultiplier = 2**34;
     const containerDim = gridSpacing * containerSizeMultiplier;
     bezierLoops = normalizeLoops(bezierLoops, maxBitLength, expMax, false, true);
     // console.log(bezierLoops)
@@ -85,7 +85,8 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
      * Arbitrarily choose min. loop area to be equal to one square pixel on a
      * 4096 x 4096 grid.
      */
-    const minLoopArea = (2 ** expMax * 2 ** (-12)) ** 2;
+    // const minLoopArea = (2**expMax * 2**(-12))**2;
+    const minLoopArea = (2 ** expMax * 2 ** (-16)) ** 2;
     const loopss_ = [];
     for (let i = 0; i < loopss.length; i++) {
         const loops = loopss[i].filter((loop) => Math.abs(getLoopArea(loop)) > minLoopArea);

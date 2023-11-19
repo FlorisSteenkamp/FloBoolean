@@ -10,15 +10,15 @@ type IntersectionResult<T,U> = {
 
 
 type LEFT  = -1;
-type RIGHT =  1;
+type RIGHT = 1;
 
 
 /** 
  * Represents an event
  */
 interface IEvent<T> {
-    /** type - 0 -> left side, 1 -> right side */
-    type: LEFT|RIGHT;
+    /** type --> -1 === left side, +1 === right side */
+    type: LEFT | RIGHT;
 
     /** The item */
     item: T;
@@ -79,11 +79,8 @@ function sweepLine<T,U>(
     	
    		if (event.type === EVENT_LEFT) {
    			for (const activeItem of activeItems.values()) {
-                //(window as any).ii++;
                 const result = predicate(item, activeItem);
    				if (result) { 
-                    //(window as any).jj++;
-                    //console.log(result)
                     pairedItems.push({ 
                         a: item, 
                         b: activeItem, 
