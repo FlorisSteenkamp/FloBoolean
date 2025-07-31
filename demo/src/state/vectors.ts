@@ -1,5 +1,6 @@
 
 const vectors = [
+    'ring2',
     'V2',
     'Mt44',
     'new1',

@@ -7,6 +7,7 @@ import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
 
 /** 
  * Completes a loop for a specific intersection point entry curve.
+ * 
  * @param expMax
  * @param takenOuts
  * @param out
@@ -40,7 +41,7 @@ function completeLoop(
         // coordinate of loops
         beziers.push(...additionalBeziers);
 
-        ({out_, additionalBezier} = getNextExit(
+        ({ out_, additionalBezier } = getNextExit(
             expMax, in_!, out, additionalOutsToCheck, takenOuts
         ));
         if (additionalBezier) {

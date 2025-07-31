@@ -112,24 +112,6 @@ function fixBezierByPointSpacing(
             [ps[0], ps[ps.length-1]],
             gridSpacing, sendToGrid
         );
-
-        /*
-        // Check if first and last point are sufficiently far apart to split
-        // the bezier into a line so that all points differ.
-
-        // TODO2 - is below maybe not correct?
-        //if ((ps[0][0] - ps[3][0]) > (3+1)*gridSpacing || 
-        //    (ps[0][1] - ps[3][1]) > (3+1)*gridSpacing) {
-        if (abs(ps[0][0] - ps[3][0]) > (3+1)*gridSpacing || 
-            abs(ps[0][1] - ps[3][1]) > (3+1)*gridSpacing) {
-
-            return [ps[0], ps[ps.length-1]];
-        } else {
-            // Points are not sufficiently far apart to resolve onto grid -
-            // cannot fix it - it is basically a point.
-
-            return undefined;
-        }*/
     }
 
 

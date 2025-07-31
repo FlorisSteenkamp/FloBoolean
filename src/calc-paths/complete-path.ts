@@ -6,16 +6,17 @@ import { Loop } from '../loop/loop.js';
 /**
  * Completes the path of a disjoint set of loops, i.e. this function is called 
  * for each disjoint set of paths.
+ * 
  * @param intersections 
  * @param takenLoops 
  * @param parent 
  * @param loop 
  */
 function completePath(
-        expMax     : number,
-        initialOut : InOut,
-        takenLoops : Set<Loop>,
-        takenOuts  : Set<InOut>) {
+        expMax: number,
+        initialOut: InOut,
+        takenLoops: Set<Loop>,
+        takenOuts: Set<InOut>) {
 
     const outStack = [initialOut];
 

@@ -24,7 +24,9 @@ function sendToGridNoop(p: number[]) { return p; }
  * @param maxBitLength 
  */
 function fixBeziers(
-        expMax: number, maxBitLength: number, doSendToGrid = true) {
+        expMax: number,
+        maxBitLength: number,
+        doSendToGrid = true) {
             
     /** The actual control point grid spacing */
     const gridSpacing = 2**expMax * 2**(-maxBitLength);

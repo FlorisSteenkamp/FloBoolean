@@ -1,0 +1,22 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+>
+    <path 
+        class="shape"
+        d=" 
+            M 67 612
+            L 191 588 
+            L 140 548
+            L 133 549 
+            L 125 546
+            z
+
+            M 88 602
+            Q 124 567 131 567 
+            L 142 567
+            L 88 602 
+            z
+        "
+    />
+</svg>

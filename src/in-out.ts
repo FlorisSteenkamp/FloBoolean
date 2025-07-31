@@ -5,13 +5,13 @@ import { X } from "./x.js";
 
 interface InOut {
     /** direction, in (-1) or out (+1) */
-    dir: -1|1; 
+    readonly dir: -1|1; 
     idx?: number;
     /** intersection */
-    _x_?: __X__;
-    container: Container;
+    readonly _x_?: __X__;
+    readonly container: Container;
     /** intersection point with the container box */
-    p: number[];
+    readonly p: number[];
 
     /** the next in from this out */
     next?: InOut;
@@ -34,7 +34,7 @@ interface InOut {
      * where the 'quadrant' (0 -> right edge, 1 -> top edge, 2 -> left edge, 
      * 3 -> bottom edge)
      */
-     side?: number | undefined;
+    readonly side?: number | undefined;
     /** 
      * The intersection with the side of the container.
      * 
@@ -42,7 +42,7 @@ interface InOut {
      * of the side such that when lexographically ordering the ordered pair
      * [side, sideT] it forms a well-ordering of the InOut.
      */
-    sideX?: X | undefined;
+    readonly sideX?: X | undefined;
 }
 
 

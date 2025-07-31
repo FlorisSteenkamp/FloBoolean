@@ -3,6 +3,7 @@ import { Loop } from '../loop/loop.js';
 /**
  * Completes the path of a disjoint set of loops, i.e. this function is called
  * for each disjoint set of paths.
+ *
  * @param intersections
  * @param takenLoops
  * @param parent

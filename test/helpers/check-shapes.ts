@@ -24,10 +24,6 @@ function checkShapes(
         });
     });
 
-    invariants;//?
-    invariants_;//?
-    // JSON.stringify(invariants_, null, 4);//?
-
     return checkInvariants(invariants_, invariants, tolerance);
 }
 

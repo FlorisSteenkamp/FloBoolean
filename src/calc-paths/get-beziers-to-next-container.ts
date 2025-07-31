@@ -4,7 +4,10 @@ import { InOut } from "../in-out.js";
 import { containerIsBasic } from "../container.js";
 
 
-function getBeziersToNextContainer(expMax: number, out: InOut) {
+function getBeziersToNextContainer(
+        expMax: number,
+        out: InOut) {
+
     const in_ = out.next!;
     const endCurve = in_._x_!.curve;
     const endT = in_._x_!.x.ri.tS;

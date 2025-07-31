@@ -37,6 +37,2094 @@ __webpack_require__.d(__webpack_exports__, {
   Dw: () => (/* reexport */ sweepLine)
 });
 
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/default-class.js
+const DEFAULT_CLASS = 'red thin10 nofill ';
+
+//# sourceMappingURL=default-class.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/xmlns.js
+const XMLNS = 'http://www.w3.org/2000/svg';
+
+//# sourceMappingURL=xmlns.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/circle.js
+
+
+/**
+ * Draws a circle
+ * @param g An SVG group element wherein to draw the circle.
+ * @param circle
+ * @param classes
+ * @param delay
+ */
+function circle(g, circle, classes = DEFAULT_CLASS, delay) {
+    const c = circle.center;
+    const r = circle.radius;
+    const $circle = document.createElementNS(XMLNS, 'circle');
+    $circle.setAttributeNS(null, "cx", c[0].toString());
+    $circle.setAttributeNS(null, "cy", c[1].toString());
+    $circle.setAttributeNS(null, "r", r.toString());
+    $circle.setAttributeNS(null, "class", classes);
+    g.appendChild($circle);
+    if (delay) {
+        setTimeout(() => $circle.remove(), delay);
+    }
+    return [$circle];
+}
+
+//# sourceMappingURL=circle.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/dot.js
+
+/**
+ * Draws a dot.
+ */
+function dot(g, p, r = 3, color = 'red', delay) {
+    const [$dot] = circle(g, { center: p, radius: r }, 'dot ' + color, delay);
+    if (delay) {
+        setTimeout(() => $dot.remove(), delay);
+    }
+    return [$dot];
+}
+
+//# sourceMappingURL=dot.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/line.js
+
+
+
+/**
+ *
+ * @param snap
+ * @param l
+ * @param classes
+ */
+function line(g, l, classes = DEFAULT_CLASS, delay = 0, controlPointClass = undefined, controlPointRadius = 0) {
+    const $line = document.createElementNS(XMLNS, 'line');
+    $line.setAttributeNS(null, "x1", l[0][0].toString());
+    $line.setAttributeNS(null, "y1", l[0][1].toString());
+    $line.setAttributeNS(null, "x2", l[1][0].toString());
+    $line.setAttributeNS(null, "y2", l[1][1].toString());
+    $line.setAttributeNS(null, "class", classes);
+    g.appendChild($line);
+    let $dots = [];
+    if (controlPointClass !== undefined) {
+        for (const p of l) {
+            $dots.push(...dot(g, p, controlPointRadius, controlPointClass, delay));
+        }
+    }
+    for (const $ of $dots) {
+        g.appendChild($);
+    }
+    const $svgs = [$line, ...$dots];
+    if (delay) {
+        setTimeout(() => { for (const $ of $svgs) {
+            $.remove();
+        } }, delay);
+    }
+    return $svgs;
+}
+
+//# sourceMappingURL=line.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/cross-hair.js
+
+
+
+/**
+ * Draws a crosshair.
+ */
+function crossHair(g, p, classes = DEFAULT_CLASS, r = 3, delay) {
+    const circle_ = { center: p, radius: r };
+    const $circle = circle(g, circle_, classes);
+    const l1 = [[p[0] - r, p[1]], [p[0] + r, p[1]]];
+    const l2 = [[p[0], p[1] - r], [p[0], p[1] + r]];
+    const $l1 = line(g, l1, classes);
+    const $l2 = line(g, l2, classes);
+    if (delay) {
+        setTimeout(() => {
+            $circle.forEach(e => e.remove());
+            $l1.forEach(e => e.remove());
+            $l2.forEach(e => e.remove());
+        }, delay);
+    }
+    return [...$circle, ...$l1, ...$l2];
+}
+
+//# sourceMappingURL=cross-hair.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/rect.js
+
+
+function rect(g, rect, classes = DEFAULT_CLASS, delay) {
+    const [[x0, y0], [x1, y1]] = rect;
+    const x = x0 < x1 ? x0 : x1;
+    const y = y0 < y1 ? y0 : y1;
+    const width = Math.abs(x0 - x1);
+    const height = Math.abs(y0 - y1);
+    const $rect = document.createElementNS(XMLNS, 'rect');
+    $rect.setAttributeNS(null, "x", x.toString());
+    $rect.setAttributeNS(null, "y", y.toString());
+    $rect.setAttributeNS(null, "width", width.toString());
+    $rect.setAttributeNS(null, "height", height.toString());
+    if (classes) {
+        $rect.setAttributeNS(null, "class", classes);
+    }
+    g.appendChild($rect);
+    if (delay) {
+        setTimeout(() => $rect.remove(), delay);
+    }
+    return [$rect];
+}
+
+//# sourceMappingURL=rect.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/polygon.js
+
+
+/**
+ * Draws a polygon
+ * @param g
+ * @param poly the polygon specified as an array of points - the last point does
+ * not have to be specified
+ * @param class_
+ * @param delay
+ */
+function polygon(g, poly, class_ = DEFAULT_CLASS, delay) {
+    const $path = document.createElementNS(XMLNS, 'path');
+    let d = `M${poly[0][0]} ${poly[0][1]} L`;
+    for (let i = 0; i < poly.length; i++) {
+        d += `${poly[i][0]} ${poly[i][1]} `;
+    }
+    d += ' z';
+    $path.setAttributeNS(null, "d", d);
+    if (class_) {
+        $path.setAttributeNS(null, "class", class_);
+    }
+    g.appendChild($path);
+    if (delay) {
+        setTimeout(() => $path.remove(), delay);
+    }
+    return [$path];
+}
+
+//# sourceMappingURL=polygon.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/loop.js
+
+
+function loop(g, curves, class_ = DEFAULT_CLASS, delay) {
+    if (!curves.length) {
+        return [];
+    }
+    const $path = document.createElementNS(XMLNS, 'path');
+    let d = `M${curves[0][0][0]} ${curves[0][0][1]} `;
+    for (let i = 0; i < curves.length; i++) {
+        const curve = curves[i];
+        d += `${getType(curve.length)} `;
+        for (let j = 1; j < curve.length; j++) {
+            d += `${curve[j][0]} ${curve[j][1]} `;
+        }
+    }
+    d += ' z';
+    $path.setAttributeNS(null, "d", d);
+    if (class_) {
+        $path.setAttributeNS(null, "class", class_);
+    }
+    g.appendChild($path);
+    if (delay) {
+        setTimeout(() => $path.remove(), delay);
+    }
+    return [$path];
+}
+function getType(len) {
+    if (len === 2) {
+        return 'L';
+    }
+    if (len === 3) {
+        return 'Q';
+    }
+    if (len === 4) {
+        return 'C';
+    }
+}
+
+//# sourceMappingURL=loop.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/polyline.js
+
+
+function polyline(g, poly, class_ = DEFAULT_CLASS, delay) {
+    if (poly.length < 2) {
+        return [];
+    }
+    const $path = document.createElementNS(XMLNS, 'path');
+    let d = `M${poly[0][0]} ${poly[0][1]} L`;
+    for (let i = 0; i < poly.length; i++) {
+        d += `${poly[i][0]} ${poly[i][1]} `;
+    }
+    $path.setAttributeNS(null, "d", d);
+    if (class_) {
+        $path.setAttributeNS(null, "class", class_);
+    }
+    g.appendChild($path);
+    if (delay) {
+        setTimeout(() => $path.remove(), delay);
+    }
+    return [$path];
+}
+
+//# sourceMappingURL=polyline.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/quad-bezier.js
+
+
+
+
+function quadBezier(g, ps, class_ = DEFAULT_CLASS, delay = 0, controlPointClass = undefined, controlPointRadius = 0, lineCLass = undefined) {
+    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
+    const $path = document.createElementNS(XMLNS, 'path');
+    $path.setAttributeNS(null, "d", `M${x0} ${y0} Q${x1} ${y1} ${x2} ${y2}`);
+    if (class_) {
+        $path.setAttributeNS(null, "class", class_);
+    }
+    let $dots = [];
+    if (controlPointClass !== undefined) {
+        for (const p of ps) {
+            $dots.push(...dot(g, p, controlPointRadius, controlPointClass, delay));
+        }
+    }
+    let $lines = [];
+    if (lineCLass !== undefined) {
+        for (let i = 0; i < ps.length - 1; i++) {
+            $lines.push(...line(g, [ps[i], ps[i + 1]], lineCLass, delay));
+        }
+    }
+    const $svgs = [$path, ...$dots, ...$lines];
+    for (const $ of $svgs) {
+        g.appendChild($);
+    }
+    if (delay) {
+        setTimeout(() => { for (const $ of $svgs) {
+            $.remove();
+        } }, delay);
+    }
+    return $svgs;
+}
+
+//# sourceMappingURL=quad-bezier.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/cubic-bezier.js
+
+
+
+
+
+function cubicBezier(g, ps, class_ = DEFAULT_CLASS, delay = 0, controlPointClass = undefined, controlPointRadius = 0, lineCLass = undefined) {
+    const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
+    if (x0 === x3 && x1 === x3 && x2 === x3 &&
+        y0 === y3 && y1 === y3 && y2 === y3) {
+        return crossHair(g, [x0, y0], class_, 0.2, delay);
+    }
+    const $path = document.createElementNS(XMLNS, 'path');
+    $path.setAttributeNS(null, "d", `M${x0} ${y0} C${x1} ${y1} ${x2} ${y2} ${x3} ${y3}`);
+    $path.setAttributeNS(null, "class", class_);
+    let $dots = [];
+    if (controlPointClass !== undefined) {
+        for (const p of ps) {
+            $dots.push(...dot(g, p, controlPointRadius, controlPointClass, delay));
+        }
+    }
+    let $lines = [];
+    if (lineCLass !== undefined) {
+        for (let i = 0; i < ps.length - 1; i++) {
+            $lines.push(...line(g, [ps[i], ps[i + 1]], lineCLass, delay));
+        }
+    }
+    const $svgs = [$path, ...$dots, ...$lines];
+    for (const $ of $svgs) {
+        g.appendChild($);
+    }
+    if (delay) {
+        setTimeout(() => { for (const $ of $svgs) {
+            $.remove();
+        } }, delay);
+    }
+    return $svgs;
+}
+
+//# sourceMappingURL=cubic-bezier.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/bezier.js
+
+
+
+
+/**
+ * Draws a bezier.
+ *
+ * @param g
+ * @param bezier
+ * @param class_
+ * @param delay
+ * @param controlPointClass a dot at each control point will be drawn if specified
+ * @param lineClass a line to each control point will be drawn if specified
+ * @returns
+ */
+function bezier(g, bezier, class_ = DEFAULT_CLASS, delay = 0, controlPointClass = undefined, controlPointRadius = 0, lineClass = undefined) {
+    if (bezier.length === 2) {
+        return line(g, bezier, class_, delay, controlPointClass, controlPointRadius);
+    }
+    else if (bezier.length === 3) {
+        return quadBezier(g, bezier, class_, delay, controlPointClass, controlPointRadius, lineClass);
+    }
+    else if (bezier.length === 4) {
+        return cubicBezier(g, bezier, class_, delay, controlPointClass, controlPointRadius, lineClass);
+    }
+    return [];
+}
+
+//# sourceMappingURL=bezier.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/beziers.js
+
+const COLORS = ['red', 'green', 'cyan', 'blue'];
+/**
+ * Draws beziers.
+ * @param snap
+ * @param beziers
+ * @param delay
+ */
+function beziers(g, beziers, classes, delay) {
+    const alternateColors = classes === undefined;
+    const $beziers = [];
+    for (let i = 0; i < beziers.length; i++) {
+        const ps = beziers[i];
+        const color = COLORS[i % COLORS.length];
+        const class_ = alternateColors
+            ? 'thin5 nofill ' + color
+            : classes;
+        $beziers.push(...bezier(g, ps, class_));
+    }
+    if (delay) {
+        setTimeout(() => $beziers.forEach(e => e.remove()), delay);
+    }
+    return $beziers;
+}
+
+//# sourceMappingURL=beziers.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/evaluate-bezier.js
+/**
+ * Returns an estimate of evaluating the given bezier at the given t value.
+ * @param ps An order 1, 2 or bezier
+ * @param t The parameter ∈ [0,1]
+ */
+function evaluateBezier(ps, t) {
+    const s = 1 - t;
+    if (ps.length === 4) {
+        // cubic
+        const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
+        const x = x0 * s ** 3 + 3 * x1 * s ** 2 * t + 3 * x2 * s * t ** 2 + x3 * t ** 3;
+        const y = y0 * s ** 3 + 3 * y1 * s ** 2 * t + 3 * y2 * s * t ** 2 + y3 * t ** 3;
+        return [x, y];
+    }
+    if (ps.length === 3) {
+        // quadratic
+        const [[x0, y0], [x1, y1], [x2, y2]] = ps;
+        const x = x0 * s ** 2 + 2 * x1 * s * t + x2 * t ** 2;
+        const y = y0 * s ** 2 + 2 * y1 * s * t + y2 * t ** 2;
+        return [x, y];
+    }
+    if (ps.length === 2) {
+        // line
+        const [[x0, y0], [x1, y1]] = ps;
+        const x = x0 * s + x1 * t;
+        const y = y0 * s + y1 * t;
+        return [x, y];
+    }
+    return [NaN, NaN];
+}
+
+//# sourceMappingURL=evaluate-bezier.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/split-at.js
+/**
+ * Returns 2 new beziers split at the given t parameter, i.e. for the ranges
+ * [0,t] and [t,1].
+ * @param ps
+ * @param t
+ */
+function splitAt(ps, t) {
+    if (ps.length === 2) {
+        return splitLineAt(ps, t);
+    }
+    else if (ps.length === 3) {
+        return splitQuadAt(ps, t);
+    }
+    else if (ps.length === 4) {
+        return splitCubicAt(ps, t);
+    }
+    return [];
+}
+/**
+ * Returns 2 new cubic beziers split at the given t parameter, i.e. for the ranges
+ * [0,t] and [t,1]. Uses de Casteljau's algorithm.
+ *
+ * A loose bound on the accuracy of the resultant points is given by:
+ * |δP| = 2n*max_k(|b_k|)η, where n = 3 (cubic), b_k are the control points
+ * abd η is Number.EPSILON.
+ * @param ps A cubic bezier curve
+ * @param t The t parameter where the curve should be split
+ */
+function splitCubicAt(ps, t) {
+    const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
+    const s = 1 - t;
+    const t2 = t * t;
+    const t3 = t2 * t;
+    const s2 = s * s;
+    const s3 = s2 * s;
+    /** The split point */
+    const p = [
+        t3 * x3 + 3 * s * t2 * x2 + 3 * s2 * t * x1 + s3 * x0,
+        t3 * y3 + 3 * s * t2 * y2 + 3 * s2 * t * y1 + s3 * y0
+    ];
+    const ps1 = [
+        [x0, y0],
+        [t * x1 + s * x0,
+            t * y1 + s * y0],
+        [t2 * x2 + 2 * s * t * x1 + s2 * x0,
+            t2 * y2 + 2 * s * t * y1 + s2 * y0],
+        p
+    ];
+    const ps2 = [
+        p,
+        [t2 * x3 + 2 * t * s * x2 + s2 * x1,
+            t2 * y3 + 2 * t * s * y2 + s2 * y1],
+        [t * x3 + s * x2,
+            t * y3 + s * y2],
+        [x3, y3]
+    ];
+    return [ps1, ps2];
+}
+function splitQuadAt(ps, t) {
+    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
+    const s = 1 - t;
+    /** The split point */
+    const p = [
+        s * s * x0 + 2 * s * t * x1 + t * t * x2,
+        s * s * y0 + 2 * s * t * y1 + t * t * y2
+    ];
+    const ps1 = [
+        [x0, y0],
+        [s * x0 + t * x1,
+            s * y0 + t * y1],
+        p
+    ];
+    const ps2 = [
+        p,
+        [s * x1 + t * x2,
+            s * y1 + t * y2],
+        [x2, y2]
+    ];
+    return [ps1, ps2];
+}
+function splitLineAt(ps, t) {
+    const [[x0, y0], [x1, y1]] = ps;
+    const s = 1 - t;
+    /** The split point */
+    const p = [
+        s * x0 + t * x1,
+        s * y0 + t * y1
+    ];
+    const ps1 = [
+        [x0, y0],
+        p
+    ];
+    const ps2 = [
+        p,
+        [x1, y1]
+    ];
+    return [ps1, ps2];
+}
+
+//# sourceMappingURL=split-at.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/bezier-from-bezier-piece.js
+
+
+/**
+ * Returns a new bezier from the given bezier by limiting its t range.
+ *
+ * Duplicated here so we don't circularly depend on flo-bezier.
+ *
+ * Uses de Casteljau's algorithm.
+ *
+ * @param ps a bezier
+ * @param tRange a t range
+ */
+function bezierFromBezierPiece(ps, tRange) {
+    // If tRange = [0,1] then return original bezier.
+    if (tRange[0] === 0 && tRange[1] === 1) {
+        return ps;
+    }
+    // If tRange[0] === tRange[1] then return a single point degenerated bezier.
+    if (tRange[0] === tRange[1]) {
+        const p = evaluateBezier(ps, tRange[0]);
+        return [p, p, p, p];
+    }
+    if (tRange[0] === 0) {
+        return splitAt(ps, tRange[1])[0];
+    }
+    if (tRange[1] === 1) {
+        return splitAt(ps, tRange[0])[1];
+    }
+    // At this stage we know the t range is not degenerate and tRange[0] !== 0 
+    // and tRange[1] !== 1
+    return splitAt(splitAt(ps, tRange[0])[1], (tRange[1] - tRange[0]) / (1 - tRange[0]))[0];
+}
+
+//# sourceMappingURL=bezier-from-bezier-piece.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/bezier-piece.js
+
+
+
+
+
+/**
+ * Draws a bezier piece, i.e. a bezier within a specified t range.
+ * @param snap
+ * @param bezierPiece
+ * @param class
+ * @param delay
+ */
+function bezierPiece(g, ps_, tRange, class_ = DEFAULT_CLASS, delay) {
+    const $elems = (tRange[0] === tRange[1])
+        // Draw crosshair if t range bounds are equal.
+        ? crossHair(g, evaluateBezier(ps_, tRange[0]), class_, 1.5)
+        : bezier(g, bezierFromBezierPiece(ps_, tRange), class_);
+    if (delay) {
+        setTimeout(() => $elems.forEach(e => e.remove()), delay);
+    }
+    return $elems;
+}
+
+//# sourceMappingURL=bezier-piece.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/text.js
+
+
+/**
+ * Draws text
+ * @param g a SVG group element wherein to draw
+ * @param p
+ * @param str
+ * @param fontSize
+ * @param classes
+ * @param delay
+ */
+function text_text(g, p, str, fontSize, classes = DEFAULT_CLASS, delay) {
+    const $text = document.createElementNS(XMLNS, 'text');
+    $text.setAttributeNS(null, "x", p[0].toString());
+    $text.setAttributeNS(null, "y", p[1].toString());
+    $text.setAttributeNS(null, "font-size", fontSize.toString());
+    $text.setAttributeNS(null, "class", classes);
+    $text.textContent = str;
+    g.appendChild($text);
+    if (delay) {
+        setTimeout(() => $text.remove(), delay);
+    }
+    return [$text];
+}
+
+//# sourceMappingURL=text.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw-fs.js
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const drawFs = {
+    circle: circle,
+    crossHair: crossHair,
+    dot: dot,
+    line: line,
+    rect: rect,
+    beziers: beziers,
+    bezier: bezier,
+    bezierPiece: bezierPiece,
+    quadBezier: quadBezier,
+    cubicBezier: cubicBezier,
+    polygon: polygon,
+    loop: loop,
+    polyline: polyline,
+    text: text_text
+};
+
+//# sourceMappingURL=draw-fs.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/local-properties-at-t/evaluate/double/eval-de-casteljau.js
+/**
+ * Returns the resulting point of evaluating the given bezier curve at the
+ * given parameter `t`.
+ *
+ * * uses [De Casteljau's algorithm](https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm)
+ * in double precision floating point arithmetic
+ *
+ * The resulting point `p` is returned as the pair `[x,y]`, where `x` and `y` are
+ * double precision floating point numbers.
+ *
+ * @param ps an order 1,2 or 3 bezier curve, e.g. `[[0,0],[1,1],[2,1],[2,0]]`
+ * @param t the parameter value where the bezier should be evaluated
+ *
+ * @doc mdx
+ **/
+function evalDeCasteljau(ps, t) {
+    if (t === 0) {
+        return ps[0];
+    }
+    else if (t === 1) {
+        return ps[ps.length - 1];
+    }
+    if (ps.length === 4) {
+        const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
+        const a01 = x0 + (x1 - x0) * t;
+        const a11 = x1 + (x2 - x1) * t;
+        const a21 = x2 + (x3 - x2) * t;
+        const a02 = a01 + (a11 - a01) * t;
+        const a12 = a11 + (a21 - a11) * t;
+        const x = a02 + (a12 - a02) * t;
+        const b01 = y0 + (y1 - y0) * t;
+        const b11 = y1 + (y2 - y1) * t;
+        const b21 = y2 + (y3 - y2) * t;
+        const b02 = b01 + (b11 - b01) * t;
+        const b12 = b11 + (b21 - b11) * t;
+        const y = b02 + (b12 - b02) * t;
+        return [x, y];
+    }
+    if (ps.length === 3) {
+        const [[x0, y0], [x1, y1], [x2, y2]] = ps;
+        const a01 = x0 + (x1 - x0) * t;
+        const a11 = x1 + (x2 - x1) * t;
+        const x = a01 + (a11 - a01) * t;
+        const b01 = y0 + (y1 - y0) * t;
+        const b11 = y1 + (y2 - y1) * t;
+        const y = b01 + (b11 - b01) * t;
+        return [x, y];
+    }
+    if (ps.length === 2) {
+        const [[x0, y0], [x1, y1]] = ps;
+        const x = x0 + (x1 - x0) * t;
+        const y = y0 + (y1 - y0) * t;
+        return [x, y];
+    }
+    if (ps.length === 1) {
+        return ps[0];
+    }
+    throw new Error('The given bezier curve must be of order <= 3.');
+}
+
+//# sourceMappingURL=eval-de-casteljau.js.map
+;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-min-y.ts
+
+
+function drawMinY(g, pos) {
+    const p = evalDeCasteljau(pos.curve.ps, pos.t);
+    // const ps = toCubic(pos.curve.ps);
+    //console.log('x: ', getX(ps));
+    //console.log('y: ', getY(ps));
+    //console.log('t: ', pos.t);
+    const $elems = drawFs.crossHair(g, p, 'red thin10 nofill');
+    return $elems;
+}
+
+
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/to-power-basis/to-power-basis/double/to-power-basis.js
+/**
+ * Returns the power basis representation of a bezier curve of order cubic or
+ * less.
+ *
+ * * intermediate calculations are done in double precision
+ * * returns the resulting power basis x and y coordinate polynomials from
+ * highest power to lowest, e.g. if `x(t) = at^2 + bt + c`
+ * and `y(t) = dt^2 + et + f` then  the result is returned
+ * as `[[a,b,c],[d,e,f]]`
+ *
+ * @param ps an order 0,1,2 or 3 bezier curve given by an ordered array of its
+ * control points, e.g. `[[0,0],[1,1],[2,1],[2,0]]`
+ *
+ * @doc
+ */
+function toPowerBasis(ps) {
+    if (ps.length === 4) {
+        return toPowerBasis3(ps);
+    }
+    if (ps.length === 3) {
+        return toPowerBasis2(ps);
+    }
+    if (ps.length === 2) {
+        return toPowerBasis1(ps);
+    }
+    if (ps.length === 1) {
+        return toPowerBasis0(ps);
+    }
+    throw new Error('The given bezier curve must be of order <= 3.');
+}
+/** @internal */
+function toPowerBasis3(ps) {
+    const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
+    return [[
+            (x3 - x0) + 3 * (x1 - x2),
+            3 * ((x2 + x0) - 2 * x1),
+            3 * (x1 - x0),
+            x0
+        ], [
+            (y3 - y0) + 3 * (y1 - y2),
+            3 * ((y2 + y0) - 2 * y1),
+            3 * (y1 - y0),
+            y0
+        ]];
+}
+/** @internal */
+function toPowerBasis2(ps) {
+    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
+    return [[
+            (x2 + x0) - 2 * x1,
+            2 * (x1 - x0),
+            x0
+        ], [
+            (y2 + y0) - 2 * y1,
+            2 * (y1 - y0),
+            y0
+        ]];
+}
+/** @internal */
+function toPowerBasis1(ps) {
+    const [[x0, y0], [x1, y1]] = ps;
+    return [[
+            x1 - x0,
+            x0,
+        ], [
+            y1 - y0,
+            y0,
+        ]];
+}
+/** @internal */
+function toPowerBasis0(ps) {
+    const [[x0, y0]] = ps;
+    return [[x0], [y0]];
+}
+
+//# sourceMappingURL=to-power-basis.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/to-power-basis/to-power-basis-1st-derivative/double/to-power-basis-1st-derivative.js
+/**
+ * Returns the derivative of the power basis representation of a
+ * bezier curve of order cubic or less (with intermediate calculations done in
+ * double precision).
+ *
+ * * returns the resulting power basis x and y coordinate polynomials from
+ * highest power to lowest, e.g. if `x(t) = at^2 + bt + c`
+ * and `y(t) = dt^2 + et + f` then  the result is returned
+ * as `[[a,b,c],[d,e,f]]`
+ *
+ * @param ps an order 0,1,2 or 3 bezier curve given by an ordered array of its
+ * control points, e.g. `[[0,0],[1,1],[2,1],[2,0]]`
+ *
+ * @doc
+ */
+function toPowerBasis_1stDerivative(ps) {
+    if (ps.length === 4) {
+        return toPowerBasis3_1stDerivative(ps);
+    }
+    if (ps.length === 3) {
+        return toPowerBasis2_1stDerivative(ps);
+    }
+    if (ps.length === 2) {
+        return toPowerBasis1_1stDerivative(ps);
+    }
+    if (ps.length === 1) {
+        return [[0], [0]];
+    }
+    throw new Error('The bezier curve must be of order <= 3.');
+}
+/** @internal */
+function toPowerBasis3_1stDerivative(ps) {
+    const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
+    return [[
+            3 * ((x3 - x0) + 3 * (x1 - x2)),
+            6 * ((x2 + x0) - 2 * x1),
+            3 * (x1 - x0)
+        ], [
+            3 * ((y3 - y0) + 3 * (y1 - y2)),
+            6 * ((y2 + y0) - 2 * y1),
+            3 * (y1 - y0)
+        ]];
+}
+/** @internal */
+function toPowerBasis2_1stDerivative(ps) {
+    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
+    return [[
+            2 * ((x2 + x0) - 2 * x1),
+            2 * (x1 - x0)
+        ], [
+            2 * ((y2 + y0) - 2 * y1),
+            2 * (y1 - y0)
+        ]];
+}
+/** @internal */
+function toPowerBasis1_1stDerivative(ps) {
+    const [[x0, y0], [x1, y1]] = ps;
+    return [[
+            x1 - x0
+        ], [
+            y1 - y0
+        ]];
+}
+
+//# sourceMappingURL=to-power-basis-1st-derivative.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-poly/node/basic/double/remove-leading-zeros.js
+/**
+ * If the highest power coefficient of the given polynomial is 0 then
+ * removeLeadingZeros can be called to remove all such highest terms so that
+ * the returned array is a valid presentation of a polynomial.
+ *
+ * @param p a polynomial whose leading zeros should be removed
+ *
+ * @example
+ * ```typescript
+ * removeLeadingZeros([1e-18, 1e-10, 1e-1]); //=> [1e-18, 1e-10, 1e-1]
+ * removeLeadingZeros([0, 1e-10, 1e-1]); //=> [1e-10, 1e-1]
+ * ```
+ *
+ * @doc
+ */
+function removeLeadingZeros(p) {
+    let lzCount = 0;
+    for (let i = 0; i <= p.length - 1; i++) {
+        if (p[i] !== 0) {
+            break;
+        }
+        lzCount++;
+    }
+    if (lzCount !== 0) {
+        p = p.slice(lzCount);
+    }
+    return p;
+}
+
+//# sourceMappingURL=remove-leading-zeros.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-poly/node/basic/double/multiply.js
+
+// We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗ Otherwise code is too slow❗
+const multiply_removeLeadingZeros = removeLeadingZeros;
+/**
+ * Returns the result of multiplying 2 polynomials in double precision.
+ *
+ * * see [polynomial arithmetic](https://en.wikipedia.org/wiki/Polynomial_arithmetic)
+ * * see [polynomial multiplication](https://en.wikipedia.org/wiki/Discrete_Fourier_transform#Polynomial_multiplication)
+ * * see [polynomial multiplication](http://web.cs.iastate.edu/~cs577/handouts/polymultiply.pdf)
+ *
+ * @param p1 a polynomial with coefficients given densely as an array of double
+ * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
+ * represents the polynomial `5x^2 - 3x`
+ * @param p2 another polynomial.
+ * @example
+ * ```typescript
+ * multiply([1,2,3], [2,5,3,5]); //=> [2, 9, 19, 26, 19, 15]
+ * ```
+ *
+ * @doc
+ */
+function multiply(p1, p2) {
+    const d1 = p1.length - 1;
+    const d2 = p2.length - 1;
+    // if either or both is the zero polynomial
+    if (d1 < 0 || d2 < 0) {
+        return [];
+    }
+    const d = d1 + d2;
+    const r = new Array(d + 1).fill(0);
+    for (let i = 0; i < d1 + 1; i++) {
+        for (let j = 0; j < d2 + 1; j++) {
+            r[d - (i + j)] += (p1[d1 - i] * p2[d2 - j]);
+        }
+    }
+    return multiply_removeLeadingZeros(r);
+}
+
+//# sourceMappingURL=multiply.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-poly/node/basic/double/negate.js
+/**
+ * Returns the negative of the given polynomial (p -> -p).
+ *
+ * @param p a polynomial with coefficients given densely as an array of double
+ * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
+ * represents the polynomial `5x^2 - 3x`
+ * @example
+ * ```typescript
+ * negate([0.1, -0.2]); //=> [-0.1, 0.2]
+ * ```
+ *
+ * @doc
+ */
+function negate(p) {
+    const p_ = [];
+    for (let i = 0; i < p.length; i++) {
+        p_.push(-p[i]);
+    }
+    return p_;
+}
+
+//# sourceMappingURL=negate.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-poly/node/calculus/double/integrate.js
+/**
+ * Returns the result of integrating the given polynomial in double precision.
+ *
+ * @param p a polynomial with coefficients given densely as an array of double
+ * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
+ * represents the polynomial `5x^2 - 3x`
+ * @param c the constant of intergration
+ *
+ * @example
+ * ```typescript
+ * integrate([3, 2, 1]); //=> [1, 1, 1, c]
+ * ```
+ *
+ * @doc
+ */
+function integrate(p, c) {
+    const result = [];
+    const d = p.length - 1;
+    for (let i = 0; i < d + 1; i++) {
+        result.push(p[i] / (d + 1 - i));
+    }
+    result.push(c);
+    return result;
+}
+
+//# sourceMappingURL=integrate.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-poly/node/basic/double/add.js
+
+// We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗ Otherwise code is too slow❗
+const add_removeLeadingZeros = removeLeadingZeros;
+/**
+ * Returns the result of adding two polynomials in double precision.
+ *
+ * @param p1 a polynomial with coefficients given densely as an array of double
+ * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
+ * represents the polynomial `5x^2 - 3x`
+ * @param p2 another polynomial
+ *
+ * @example
+ * ```typescript
+ * add([1,2,3],[3,4]); //=> [1,5,7]
+ * ```
+ *
+ * @doc
+ */
+function add(p1, p2) {
+    // Initialize result array  
+    const d1 = p1.length - 1;
+    const d2 = p2.length - 1;
+    const Δd = d1 - d2;
+    const Δd1 = Δd < 0 ? +Δd : 0;
+    const Δd2 = Δd > 0 ? -Δd : 0;
+    const d = Math.max(d1, d2);
+    // Add coefficients
+    const result = [];
+    for (let i = 0; i < d + 1; i++) {
+        const c1 = p1[i + Δd1] || 0;
+        const c2 = p2[i + Δd2] || 0;
+        result.push(c1 + c2);
+    }
+    // Ensure the result is a valid polynomial representation
+    return add_removeLeadingZeros(result);
+}
+
+//# sourceMappingURL=add.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-poly/node/evaluate/double/horner.js
+/**
+ * Returns the result of evaluating a univariate polynomial using
+ * Horner's method in double precision floating point arithmetic.
+ *
+ * * see [Horner's Method](https://en.wikipedia.org/wiki/Horner%27s_method)
+ *
+ * @param p a polynomial with coefficients given densely as an array of double
+ * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
+ * represents the polynomial `5x^2 - 3x`
+ * @param x the value at which to evaluate the polynomial
+ *
+ * @doc
+ */
+function Horner(p, x) {
+    let q = 0;
+    for (let i = 0; i < p.length; i++) {
+        q = q * x + p[i];
+    }
+    return q;
+}
+// inlined (with q => E, p => p0)
+//let E = p0[0]; for (let i=1; i<p0.length; i++) {E = E*x + p0[i]; }
+
+//# sourceMappingURL=horner.js.map
+;// CONCATENATED MODULE: ./src/loop/get-loop-area.ts
+
+
+/**
+ * Returns the area of the given Loop.
+ * * see e.g. https://mathinsight.org/greens_theorem_find_area
+ */
+function getLoopArea(loop) {
+    let totalArea = 0;
+    for (const curve of loop.curves) {
+        const ps = curve.ps;
+        const [x, y] = toPowerBasis(ps);
+        const [dx, dy] = toPowerBasis_1stDerivative(ps);
+        const xdy = multiply(x, dy);
+        const ydx = negate(multiply(y, dx));
+        const poly = integrate(add(xdy, ydx), 0);
+        const area = Horner(poly, 1);
+        totalArea += area;
+    }
+    return -totalArea / 2;
+}
+
+
+;// CONCATENATED MODULE: ./src/loop/get-loop-centroid.ts
+
+
+
+/**
+ * Returns the approximate centroid of the given loop
+ *
+ * * **precondition**: loop must be a jordan curve (i.e. closed and simple)
+ *
+ * see https://sites.math.washington.edu/~king/coursedir/m324a10/as/centroid-green.pdf
+ */
+function getLoopCentroid(loop) {
+    const A = getLoopArea(loop);
+    let cx = 0;
+    let cy = 0;
+    for (const curve of loop.curves) {
+        const ps = curve.ps;
+        const [x, y] = toPowerBasis(ps);
+        const [dx, dy] = toPowerBasis_1stDerivative(ps);
+        const polyX = integrate(multiply(multiply(x, x), dy), 0);
+        const polyY = integrate(multiply(multiply(y, y), dx), 0);
+        const _x = Horner(polyX, 1);
+        const _y = Horner(polyY, 1);
+        cx += _x;
+        cy += _y;
+    }
+    const a = 1 / (2 * A);
+    return [-a * cx, a * cy];
+}
+
+
+;// CONCATENATED MODULE: ./src/point-on-shape/point-on-shape.ts
+
+/**
+ * Represents a point on the shape boundary.
+ */
+class PointOnShape {
+    /**
+     * @param curve	The [[ICurve]] on the shape boundary this points belong to.
+     * @param t The bezier parameter value on the curve to identify the point
+     * coordinates.
+     */
+    constructor(curve, t) {
+        this.curve = curve;
+        this.t = t;
+        // Cache
+        this.p_ = undefined;
+    }
+    /**
+     * The planar point coordinates of this [[PointOnShape]].
+     */
+    get p() {
+        return this.p_ === undefined
+            ? this.p_ = evalDeCasteljau(this.curve.ps, this.t)
+            : this.p_;
+    }
+}
+
+
+;// CONCATENATED MODULE: ./node_modules/flo-memoize/node/memoize.js
+/**
+ * Memoize (by reference on the input parameter) the given arity 1 function.
+ *
+ * * the input parameter must be an `object` (so it can be used as a key to
+ * `WeakMap` and thus garbage collected later; this is especially important
+ * in functional programming where a lot of garbage collection takes place;
+ *
+ * * use `memoizePrimitive` instead if it is not important that the keys
+ * will *never* be garbage collected
+ */
+function memoize(f) {
+    const results = new WeakMap();
+    return function (t) {
+        let r = results.get(t);
+        if (r !== undefined) {
+            //console.log('cache hit');
+            return r;
+        }
+        //console.log('cache miss');
+        r = f(t);
+        results.set(t, r);
+        return r;
+    };
+}
+
+//# sourceMappingURL=memoize.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-poly/node/calculus/double/differentiate.js
+/**
+ * Returns the result of differentiating the given polynomial in double
+ * precision.
+ *
+ * @param p a polynomial with coefficients given densely as an array of double
+ * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
+ * represents the polynomial `5x^2 - 3x`
+ *
+ * @example
+ * ```typescript
+ * differentiate([5, 4, 3, 2, 1]); //=> [20, 12, 6, 2]
+ * ```
+ *
+ * @doc
+ */
+function differentiate(p) {
+    const result = [];
+    const d = p.length - 1;
+    for (let i = 0; i < d; i++) {
+        result.push((d - i) * p[i]);
+    }
+    return result;
+}
+
+//# sourceMappingURL=differentiate.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-poly/node/roots/naive/brent-poly.js
+
+const brent_poly_Horner = Horner;
+const eps = Number.EPSILON;
+const u = eps / 2;
+const abs = Math.abs;
+const max = Math.max;
+/**
+ * Returns a refined root given a root bracketed in the interval (a,b) of the
+ * given polynomial using Brent's Method.
+ *
+ * * near exact implementation of the original Brent Dekker Method (also known
+ * as Brent's Method), except that it is specialzed to polynomial evaluation
+ *
+ * * the algorithm stops once the interval width becomes equal or less than
+ * `2 * Number.EPSILON/2 * max(1,abs(a),abs(b))` where `a` and `b` are the current
+ * lower and upper interval limits
+ *
+ * * Brent's Method is an excellent root-refinement choice since:
+ *  * guaranteed converge (unlike the Newton and other so-called single-point
+ * methods),
+ *  * converges in a reasonable number of iterations even for highly contrived
+ * functions (unlike Dekker's Method) and
+ *  * nearly always converges fast, i.e. super-linearly (unlike the Secant and
+ * Regula-Falsi methods).
+ * * unfortunately the algorithm given on [Wikipedia](https://en.wikipedia.org/wiki/Brent%27s_method)
+ * works but is not precisely Brent's method and runs about 2x or more slower
+ * due to it not implementing the critically important 'micro-step' (Aug 2020).
+ *
+ * * see [Brent (page 47)](https://maths-people.anu.edu.au/~brent/pd/rpb011i.pdf)
+ *
+ * @param p a polynomial with coefficients given densely as an array of double
+ * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
+ * represents the polynomial `5x^2 - 3x`
+ * @param lb the lower limit of the search interval.
+ * @param ub the upper limit of the search interval.
+ * @param fa (may be left out - will be calculated automatically) the result of
+ * evaluating the input polynomial at `a`
+ * @param fb (may be left out - will be calculated automatically) the result of
+ * evaluating the input polynomial at `b`
+ *
+ * @example
+ * ```typescript
+ * const p = fromRoots([-10,2,3,4]);  //=> [1, 1, -64, 236, -240]
+ * const a = 2.2;
+ * const b = 3.8;
+ * brent(p,a,b); //=> 3.000000000000003
+ * b = 3.1;
+ * brent(p,a,b); //=> 3.000000000000001
+ * ```
+ *
+ * @doc
+ */
+function brentPoly(p, lb, ub, fa = brent_poly_Horner(p, lb), fb = brent_poly_Horner(p, ub)) {
+    // Precondition: fa, fb !== 0
+    //---- Make local copies of a and b.
+    let a = lb;
+    let b = ub;
+    let c = a;
+    let fc = fa;
+    let e = b - a;
+    let d = e;
+    while (true) {
+        if (abs(fc) < abs(fb)) {
+            a = b;
+            b = c;
+            c = a;
+            fa = fb;
+            fb = fc;
+            fc = fa;
+        }
+        const δ = 2 * u * max(1, abs(a), abs(b));
+        const m = 0.5 * (c - b);
+        //if (abs(m) <= δ || fb === 0) {
+        if (abs(m) <= δ) {
+            // uncomment below if range to be returned
+            //return b < c ? [b,c] : [c,b];
+            // uncomment below if leftmost guess to be returned
+            //return b < c ? b : c;
+            // uncomment below if rightmost guess to be returned
+            //return b < c ? b : c;
+            // uncomment below if any guess to be returned
+            return b;
+        }
+        if (abs(e) < δ || abs(fa) <= abs(fb)) {
+            e = m;
+            d = e;
+        }
+        else {
+            let s = fb / fa;
+            let p;
+            let q;
+            if (a === c) {
+                p = 2 * m * s;
+                q = 1 - s;
+            }
+            else {
+                q = fa / fc;
+                const r = fb / fc;
+                p = s * (2 * m * q * (q - r) - (b - a) * (r - 1));
+                q = (q - 1) * (r - 1) * (s - 1);
+            }
+            if (0 < p) {
+                q = -q;
+            }
+            else {
+                p = -p;
+            }
+            s = e;
+            e = d;
+            if (2 * p < 3 * m * q - abs(δ * q) && p < abs(0.5 * s * q)) {
+                d = p / q;
+            }
+            else {
+                e = m;
+                d = e;
+            }
+        }
+        a = b;
+        fa = fb;
+        if (δ < abs(d)) {
+            b = b + d;
+        }
+        else if (0 < m) {
+            b = b + δ;
+        }
+        else {
+            //b = b - eps;
+            b = b - δ;
+        }
+        fb = brent_poly_Horner(p, b);
+        // inlined above line:
+        //fb = p[0]; for (let i=1; i<p.length; i++) { fb = fb*b + p[i]; }
+        if (fb === 0) {
+            return b;
+        }
+        if (fb * fc > 0) {
+            c = a;
+            fc = fa;
+            e = b - a;
+            d = e;
+        }
+    }
+}
+
+//# sourceMappingURL=brent-poly.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-poly/node/basic/double/invert.js
+/**
+ * Inverts the given polynomial by reversing the order of the coefficients,
+ * i.e. p(x) -> x^deg(p) * p(1/x)
+ *
+ * @param p a polynomial with coefficients given densely as an array of double
+ * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
+ * represents the polynomial `5x^2 - 3x`
+ *
+ * @example
+ * ```typescript
+ * invert([3,2,-5]);  // => [-5,2,3]
+ * ```
+ *
+ * @doc
+ */
+function invert(p) {
+    return p.slice().reverse();
+}
+
+//# sourceMappingURL=invert.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-poly/node/roots/root-bounds/upper-to-lower-bound.js
+
+// We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗ Otherwise code is too slow❗
+const upper_to_lower_bound_invert = invert;
+/**
+ * Returns a function that returns a positive lower root bound given a function
+ * that returns a positive upper root bound.
+ *
+ * @param positiveUpperBoundFunction
+ *
+ * @internal
+ */
+function upperToLowerBound(positiveUpperBoundFunction) {
+    return (p) => {
+        return 1 / positiveUpperBoundFunction(upper_to_lower_bound_invert(p));
+    };
+}
+
+//# sourceMappingURL=upper-to-lower-bound.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-poly/node/change-variables/double/reflect-about-y-axis.js
+/**
+ * Returns the result of reflecting the given polynomial about the Y-axis, i.e.
+ * perform the change of variables: p(x) <- p(-x).
+ *
+ * @param p a polynomial with coefficients given densely as an array of double
+ * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
+ * represents the polynomial `5x^2 - 3x`
+ *
+ * @example
+ * ```typescript
+ * reflectAboutYAxis([5,4,3,2,1]); //=> [5, -4, 3, -2, 1]
+ * ```
+ *
+ * @doc
+ */
+function reflectAboutYAxis(p) {
+    const d = p.length - 1;
+    if (d < 0) {
+        return [];
+    }
+    const result = p.slice();
+    for (let i = 0; i < d + 1; i++) {
+        if (i % 2) {
+            result[i] = -result[i];
+        }
+    }
+    return result;
+}
+
+//# sourceMappingURL=reflect-about-y-axis.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-poly/node/roots/root-bounds/positive-to-negative-bound.js
+
+// We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗ Otherwise code is too slow❗
+const positive_to_negative_bound_reflectAboutYAxis = reflectAboutYAxis;
+/**
+ * Returns a function that returns a negative root bound given a function that
+ * returns a positive root bound.
+ *
+ * @param positiveBoundFunction
+ *
+ * @internal
+ */
+function positiveToNegativeBound(positiveBoundFunction) {
+    return (p) => {
+        return -positiveBoundFunction(positive_to_negative_bound_reflectAboutYAxis(p));
+    };
+}
+
+//# sourceMappingURL=positive-to-negative-bound.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-poly/node/roots/root-bounds/root-bounds-lmq.js
+
+
+
+// We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗ Otherwise code is too slow❗
+const root_bounds_lmq_negate = negate;
+const root_bounds_lmq_upperToLowerBound = upperToLowerBound;
+const root_bounds_lmq_positiveToNegativeBound = positiveToNegativeBound;
+/**
+ * Returns an upper bound for the positive real roots of the given polynomial.
+ *
+ * See algoritm 6 of the paper by Vigklas, Akritas and Strzeboński,
+ * specifically the LocalMaxQuadratic algorithm hence LMQ.
+ *
+ * @param p a polynomial with coefficients given densely as an array of double
+ * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
+ * represents the polynomial `5x^2 - 3x`
+ *
+ * @example
+ * ```typescript
+ * positiveRootUpperBound_LMQ([2,-3,6,5,-130]); //=> 4.015534272870436
+ * positiveRootUpperBound_LMQ([2,3]);           //=> 0
+ * positiveRootUpperBound_LMQ([-2,-3,-4]);      //=> 0
+ * ```
+ *
+ * @doc
+ */
+function positiveRootUpperBound_LMQ(p) {
+    const deg = p.length - 1;
+    if (deg < 1) {
+        return 0;
+    }
+    if (p[0] < 0) {
+        p = root_bounds_lmq_negate(p);
+    }
+    const timesUsed = [];
+    for (let i = 0; i < deg; i++) {
+        timesUsed.push(1);
+    }
+    let ub = 0;
+    for (let m = 0; m <= deg; m++) {
+        if (p[m] >= 0) {
+            continue;
+        }
+        let tempub = Number.POSITIVE_INFINITY;
+        let any = false;
+        for (let k = 0; k < m; k++) {
+            if (p[k] <= 0) {
+                continue;
+            }
+            const temp = (-p[m] / (p[k] / 2 ** timesUsed[k])) ** (1 / (m - k));
+            timesUsed[k]++;
+            if (tempub > temp) {
+                tempub = temp;
+            }
+            any = true;
+        }
+        if (any && ub < tempub)
+            ub = tempub;
+    }
+    return ub;
+}
+/**
+ * Returns a positive lower bound of the real roots of the given polynomial
+ *
+ * See algoritm 6 of the paper by Vigklas, Akritas and Strzeboński,
+ * specifically the LocalMaxQuadratic algorithm hence LMQ.
+ *
+ * @param p a polynomial with coefficients given densely as an array of double
+ * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
+ * represents the polynomial `5x^2 - 3x`
+ *
+ * @doc
+ */
+const positiveRootLowerBound_LMQ = root_bounds_lmq_upperToLowerBound(positiveRootUpperBound_LMQ);
+/**
+ * Returns a negative lower (further from zero) bound of the real roots of the
+ * given polynomial.
+ *
+ * See algoritm 6 of the paper by Vigklas, Akritas and Strzeboński,
+ * specifically the LocalMaxQuadratic algorithm hence LMQ.
+ *
+ * @param p a polynomial with coefficients given densely as an array of double
+ * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
+ * represents the polynomial `5x^2 - 3x`
+ *
+ * @doc
+ */
+const negativeRootLowerBound_LMQ = root_bounds_lmq_positiveToNegativeBound(positiveRootUpperBound_LMQ);
+/**
+ * Returns a negative upper (closer to zero) bound of the real roots of the
+ * given polynomial.
+ *
+ * See algoritm 6 of the paper by Vigklas, Akritas and Strzeboński,
+ * specifically the LocalMaxQuadratic algorithm hence LMQ.
+ *
+ * @param p a polynomial with coefficients given densely as an array of double
+ * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
+ * represents the polynomial `5x^2 - 3x`
+ *
+ * @doc
+ */
+const negativeRootUpperBound_LMQ = root_bounds_lmq_upperToLowerBound(negativeRootLowerBound_LMQ);
+
+//# sourceMappingURL=root-bounds-lmq.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-poly/node/roots/naive/all-roots.js
+
+
+
+
+
+
+// We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗ Otherwise code is too slow❗
+const all_roots_differentiate = differentiate;
+const all_roots_Horner = Horner;
+const all_roots_brentPoly = brentPoly;
+const all_roots_negativeRootUpperBound_LMQ = negativeRootLowerBound_LMQ;
+const all_roots_positiveRootUpperBound_LMQ = positiveRootUpperBound_LMQ;
+const all_roots_removeLeadingZeros = removeLeadingZeros;
+/**
+ * Find and return all roots of the given polynomial in the given interval.
+ *
+ * * an empty array is returned for a constant or the zero polynomial
+ *
+ * * **non-exact:** roots are found 'naively' using double-precision arithmetic
+ * and accuracy will thus depend on the condition number around the root - use
+ * [[allRootsCertifiedSimplified]] or [[allRootsCertified]] instead if certified
+ * root bounds are required (it is about 3x slower, but still very fast!)
+ *
+ * * close (where the definition of closeness depends on the condition
+ * number) or multiple *even* roots can be returned as 0, 1 or more close
+ * roots, whereas close or multiple *odd* roots are guaranteed to return *at
+ * least 1 root*
+ *
+ * * optimized for polynomials of degree 1 to about 30
+ *
+ * * roots are refined using the celebrated Brent's Method (and evaluated using
+ * Horner's Method) until a root interval is found with
+ * width `<= eps * max(1, 2^⌈log₂r⌉)`, where `eps = Number.EPSILON` and
+ * `r` is a root
+ *
+ * * **ordered:** the returned roots are ordered from lowest to highest
+ *
+ * @param p a polynomial with coefficients given densely as an array of double
+ * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
+ * represents the polynomial `5x^2 - 3x`
+ * @param lb defaults to `Number.NEGATIVE_INFINITY`; lower bound of roots to be
+ * returned
+ * @param ub defaults to `Number.POSITIVE_INFINITY`; upper bound of roots to be
+ * returned
+ *
+ * @doc
+ */
+function allRoots(p, lb = Number.NEGATIVE_INFINITY, ub = Number.POSITIVE_INFINITY) {
+    p = all_roots_removeLeadingZeros(p);
+    //---- count and remove roots at zero
+    let numZerosAtZero = 0;
+    while (p[p.length - 1] === 0) {
+        p = p.slice(0, -1);
+        numZerosAtZero++;
+    }
+    //------------------------
+    // return an empty array for a constant or the zero polynomial
+    if (p.length <= 1) {
+        const roots = [];
+        for (let j = 0; j < numZerosAtZero; j++) {
+            roots.push(0);
+        }
+        return roots;
+    }
+    if (lb === Number.NEGATIVE_INFINITY) {
+        lb = all_roots_negativeRootUpperBound_LMQ(p);
+    }
+    if (ub === Number.POSITIVE_INFINITY) {
+        ub = all_roots_positiveRootUpperBound_LMQ(p);
+    }
+    // Get all derivatives, i.e. 
+    // ps === [p, dp, ddp, ..., constant]
+    //        [0,  1,   2, ..., deg     ]
+    const ps = [p];
+    for (let i = 1; i <= p.length - 1; i++) {
+        ps.push(all_roots_differentiate(ps[i - 1]));
+    }
+    //const δ = Math.max(2*eps, 2*eps * Math.max(Math.abs(lb), Math.abs(ub)));
+    /** root intervals */
+    let is = [];
+    // loop: ps[diffCount] === [linear, quadratic, ..., deg]
+    for (let diffCount = p.length - 2; diffCount >= 0; diffCount--) {
+        // Get roots within intervals:
+        // ---------------------------
+        // Finds and returns all roots of the given polynomial within the given 
+        // intervals, starting from the lower bound (lb) and ending at the upper
+        // bound (ub)
+        const p = ps[diffCount];
+        const roots = [];
+        let _a_ = lb;
+        let _A_ = all_roots_Horner(p, _a_);
+        // if lower bound value is zero and this is the last iteration with 
+        // p === the original polynomial then push the root at the lower bound
+        if (_A_ === 0 && diffCount === 0) {
+            roots.push(lb);
+        }
+        for (let i = 0; i < is.length; i++) {
+            const _b_ = is[i];
+            const _B_ = all_roots_Horner(p, _b_);
+            // if there is a root at the right interval then add it
+            if (_B_ === 0) {
+                roots.push(_b_);
+            }
+            else if (_A_ * _B_ < 0) {
+                roots.push(all_roots_brentPoly(p, _a_, _b_, _A_, _B_));
+            }
+            _a_ = _b_;
+            _A_ = _B_;
+        }
+        const _B_ = all_roots_Horner(p, ub);
+        if (_A_ * _B_ < 0) {
+            roots.push(all_roots_brentPoly(p, _a_, ub, _A_, _B_));
+        }
+        // if upper bound value is zero and this is the last iteration with 
+        // p === the original polynomial then push the root at the upper bound
+        if (_B_ === 0 && diffCount === 0) {
+            roots.push(ub);
+        }
+        is = roots;
+    }
+    if (numZerosAtZero > 0 && lb <= 0 && ub >= 0) {
+        // at this point the existing intervals, `is`, are sorted
+        // find the insertion spot and insert the zero roots to keep the roots
+        // sorted
+        const isWithZeroRoots = [];
+        let zerosInserted = false;
+        for (let i = 0; i < is.length; i++) {
+            if (!zerosInserted && is[i] >= 0) {
+                // push the zero roots
+                for (let j = 0; j < numZerosAtZero; j++) {
+                    isWithZeroRoots.push(0);
+                }
+                zerosInserted = true;
+            }
+            isWithZeroRoots.push(is[i]);
+        }
+        return isWithZeroRoots;
+    }
+    return is;
+}
+
+//# sourceMappingURL=all-roots.js.map
+;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/global-properties/bounds/get-bounds.js
+
+
+
+/**
+ * Returns an axis-aligned bounding box together with the `t` values where the
+ * bounds on the bezier are reached.
+ *
+ * @param ps an order 1,2 or 3 bezier curve given as an array of its control
+ * points, e.g. `[[0,0], [1,1], [2,1], [2,0]]`
+ *
+ * @doc mdx
+ */
+function getBounds(ps) {
+    // Roots of derivative
+    const dxy = toPowerBasis_1stDerivative(ps);
+    const rootsX = allRoots(dxy[0], 0, 1);
+    const rootsY = allRoots(dxy[1], 0, 1);
+    // Endpoints
+    rootsX.push(0, 1);
+    rootsY.push(0, 1);
+    let minX = Number.POSITIVE_INFINITY;
+    let maxX = Number.NEGATIVE_INFINITY;
+    let minY = Number.POSITIVE_INFINITY;
+    let maxY = Number.NEGATIVE_INFINITY;
+    let tMinX;
+    let tMaxX;
+    let tMinY;
+    let tMaxY;
+    // Test points
+    for (let i = 0; i < rootsX.length; i++) {
+        const t = rootsX[i];
+        const [x,] = evalDeCasteljau(ps, t);
+        if (x < minX) {
+            minX = x;
+            tMinX = t;
+        }
+        if (x > maxX) {
+            maxX = x;
+            tMaxX = t;
+        }
+    }
+    for (let i = 0; i < rootsY.length; i++) {
+        const t = rootsY[i];
+        const [, y] = evalDeCasteljau(ps, t);
+        if (y < minY) {
+            minY = y;
+            tMinY = t;
+        }
+        if (y > maxY) {
+            maxY = y;
+            tMaxY = t;
+        }
+    }
+    // `tMinX`, ... is guaranteed defined below - TS was (understandably) 
+    // unable to follow the logic.
+    const ts = [[tMinX, tMinY], [tMaxX, tMaxY]];
+    const box = [[minX, minY], [maxX, maxY]];
+    return { ts, box };
+}
+
+//# sourceMappingURL=get-bounds.js.map
+;// CONCATENATED MODULE: ./src/get-bounds-.ts
+
+
+const getBounds_ = memoize(getBounds);
+
+
+;// CONCATENATED MODULE: ./src/loop/get-loop-bounds.ts
+
+
+
+const INF = Number.POSITIVE_INFINITY;
+/**
+ * Returns the bounds of the given loop - used in tests only.
+ */
+const getLoopBounds = memoize(function (loop) {
+    const extremes = [
+        [
+            { bezier: undefined, t: undefined, val: INF },
+            { bezier: undefined, t: undefined, val: INF }
+        ],
+        [
+            { bezier: undefined, t: undefined, val: -INF },
+            { bezier: undefined, t: undefined, val: -INF }
+        ]
+    ];
+    loop.curves.forEach(function (curve) {
+        const ps = curve.ps;
+        const bounds = getBounds_(ps);
+        {
+            {
+                const v = bounds.box[0][0];
+                const x = extremes[0][0].val;
+                if (v < x || (v === x && bounds.ts[0][0] > extremes[0][0].t)) {
+                    extremes[0][0] = {
+                        bezier: curve,
+                        t: bounds.ts[0][0],
+                        val: v
+                    };
+                }
+            }
+            {
+                const v = bounds.box[0][1];
+                const x = extremes[0][1].val;
+                if (v < x || (v === x && bounds.ts[0][1] > extremes[0][1].t)) {
+                    extremes[0][1] = {
+                        bezier: curve,
+                        t: bounds.ts[0][1],
+                        val: v
+                    };
+                }
+            }
+        }
+        {
+            {
+                const v = bounds.box[1][0];
+                const x = extremes[1][0].val;
+                if (v > x || (v === x && bounds.ts[1][0] > extremes[1][0].t)) {
+                    extremes[1][0] = {
+                        bezier: curve,
+                        t: bounds.ts[1][0],
+                        val: v
+                    };
+                }
+            }
+            {
+                const v = bounds.box[1][1];
+                const x = extremes[1][1].val;
+                if (v > x || (v === x && bounds.ts[1][1] > extremes[1][1].t)) {
+                    extremes[1][1] = {
+                        bezier: curve,
+                        t: bounds.ts[1][1],
+                        val: v
+                    };
+                }
+            }
+        }
+    });
+    return {
+        minX: new PointOnShape(extremes[0][0].bezier, extremes[0][0].t),
+        minY: new PointOnShape(extremes[0][1].bezier, extremes[0][1].t),
+        maxX: new PointOnShape(extremes[1][0].bezier, extremes[1][0].t),
+        maxY: new PointOnShape(extremes[1][1].bezier, extremes[1][1].t)
+    };
+});
+
+
+;// CONCATENATED MODULE: ./src/loop/simplify-bounds.ts
+/** Used in tests only - not used in algorithm */
+function simplifyBounds(bounds) {
+    return {
+        minX: bounds.minX.p[0],
+        minY: bounds.minY.p[1],
+        maxX: bounds.maxX.p[0],
+        maxY: bounds.maxY.p[1],
+    };
+}
+
+
+;// CONCATENATED MODULE: ./src/debug/draw-elem/default-class.ts
+const default_class_DEFAULT_CLASS = 'red thin10 nofill ';
+
+
+;// CONCATENATED MODULE: ./src/debug/draw-elem/xmlns.ts
+const xmlns_XMLNS = 'http://www.w3.org/2000/svg';
+
+
+;// CONCATENATED MODULE: ./src/svg/beziers-to-svg-path-str.ts
+/**
+ * Returns an SVG path string representation of the given bezier loop.
+ * @param beziers An array of bezier curves each given as an array of
+ * control points.
+ */
+function beziersToSvgPathStr(beziers) {
+    let str = '';
+    for (let i = 0; i < beziers.length; i++) {
+        const ps = beziers[i];
+        if (i === 0) {
+            str = 'M ' +
+                ps[0][0].toString() + ' ' +
+                ps[0][1].toString() + '\n';
+        }
+        if (ps.length === 4) {
+            str += 'C ' +
+                ps[1][0].toString() + ' ' +
+                ps[1][1].toString() + ' ' +
+                ps[2][0].toString() + ' ' +
+                ps[2][1].toString() + ' ' +
+                ps[3][0].toString() + ' ' +
+                ps[3][1].toString() + ' ' + '\n';
+        }
+        else if (ps.length === 3) {
+            str += 'Q ' +
+                ps[1][0].toString() + ' ' +
+                ps[1][1].toString() + ' ' +
+                ps[2][0].toString() + ' ' +
+                ps[2][1].toString() + ' ' + '\n';
+        }
+        else if (ps.length === 2) {
+            str += 'L ' +
+                ps[1][0].toString() + ' ' +
+                ps[1][1].toString() + ' ' + '\n';
+        }
+    }
+    return str + ' z' + '\n';
+}
+
+
+;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-shape.ts
+
+
+
+// TODO - move to flo-draw
+/**
+ * Draws an SVG shape
+ * @param g
+ * @param shape the shape specified as an array of bezier curves
+ *
+ * * the last point does not have to be specified
+ *
+ * @param class_
+ * @param delay
+ */
+function drawShape(g, beziers, class_ = default_class_DEFAULT_CLASS, delay) {
+    const $path = document.createElementNS(xmlns_XMLNS, 'path');
+    const d = beziersToSvgPathStr(beziers);
+    $path.setAttributeNS(null, "d", d);
+    if (class_) {
+        $path.setAttributeNS(null, "class", class_);
+    }
+    g.appendChild($path);
+    if (delay) {
+        setTimeout(() => $path.remove(), delay);
+    }
+    return [$path];
+}
+
+
+;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-loop.ts
+
+
+
+
+
+
+function drawLoop(g, loop) {
+    const centroid = getLoopCentroid(loop);
+    const area = getLoopArea(loop);
+    const bounds = simplifyBounds(getLoopBounds(loop));
+    drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 500);
+    return drawShape(g, loop.curves.map(curve => curve.ps), 'red thin10 fill30', undefined);
+}
+
+
+;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-loops.ts
+
+function drawLoops(g, loops) {
+    const $svgs = [];
+    for (const loop of loops) {
+        $svgs.push(...drawLoop(g, loop));
+    }
+    return $svgs;
+}
+
+
+;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-circle-percent.ts
+function drawCirclePercent(g, center, radiusPercent, classes) {
+    const XMLNS = 'http://www.w3.org/2000/svg';
+    const $circle = document.createElementNS(XMLNS, 'circle');
+    $circle.setAttributeNS(null, "cx", center[0].toString());
+    $circle.setAttributeNS(null, "cy", center[1].toString());
+    $circle.setAttributeNS(null, "r", radiusPercent.toString() + '%');
+    $circle.setAttributeNS(null, "class", classes);
+    g.appendChild($circle);
+    return $circle;
+}
+
+
+;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-intersection.ts
+
+function drawIntersection(g, x) {
+    return [drawCirclePercent(g, x.x.box[0], 0.7, 'purple thin5 nofill')];
+}
+
+
+;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-container.ts
+
+function drawContainer(g, container, classes, delay = 0) {
+    const rect = container.box;
+    const xs = container.xs;
+    const scale = 2 ** 0 * 0.0125;
+    // intersections
+    const $circles = [];
+    for (let i = 0; i < xs.length; i++) {
+        const x = xs[i];
+        $circles.push(...drawFs.circle(g, { center: x.x.box[0], radius: scale }, 'thin2 red nofill', delay));
+    }
+    // text showing intersection ordering
+    const $texts = [];
+    const inOuts = container.inOuts;
+    for (let i = 0; i < inOuts.length; i++) {
+        const inOut = inOuts[i];
+        const p = inOut.p.slice();
+        const color = inOut.dir === -1 ? 'red' : 'blue';
+        const size = scale * (1 + (0.5 * i));
+        if (inOut.idx !== undefined) {
+            $texts.push(...drawFs.text(g, p, inOut.idx.toString(), scale * 8, `thin5 nofill ${color}`, delay));
+        }
+        $circles.push(...drawFs.dot(g, inOut.p, size, `thin2 nofill ${color}`, delay));
+    }
+    // container rect
+    const $outline = drawFs.rect(g, rect, 'thin2 blue nofill', delay);
+    return [
+        ...$outline,
+        ...$circles,
+        ...$texts
+    ];
+}
+
+
+;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-loose-bounding-box.ts
+
+/** @internal */
+function drawLooseBoundingBox(g, box, classes = 'thin5 brown nofill', delay = 0) {
+    const [[x0, y0], [x1, y1]] = box;
+    box = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
+    const $box = drawFs.polygon(g, box, classes, delay);
+    return $box;
+}
+
+
+;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-tight-bounding-box.ts
+
+/** @internal */
+function drawTightBoundingBox(g, box, classes = 'thin5 pinker nofill', delay = 0) {
+    const $box = drawFs.polygon(g, box, classes, delay);
+    return $box;
+}
+
+
+;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-bounding-hull.ts
+
+/** @internal */
+function drawBoundingHull(g, hull, classes = 'thin5 black nofill', delay = 0) {
+    const $polygon = drawFs.polygon(g, hull, classes, delay);
+    return $polygon;
+}
+
+
+;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-loop-pre.ts
+
+function drawLoopPre(g, loop) {
+    //const centroid = getLoopCentroid(loop);
+    //const area     = getLoopArea(loop);
+    //const bounds   = simplifyBounds(getLoopBounds(loop));
+    //drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 0);
+    return drawShape(g, loop, 'red thin10 fill30', undefined);
+}
+
+
+;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-loops-pre.ts
+
+function drawLoopsPre(g, loops) {
+    const $svgs = [];
+    for (const loop of loops) {
+        $svgs.push(...drawLoopPre(g, loop));
+    }
+    return $svgs;
+}
+
+
+;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-elem.ts
+
+
+
+
+
+
+
+
+
+
+
+const drawElemFunctions = {
+    minY: drawMinY,
+    loop: drawLoop,
+    loopPre: drawLoopPre,
+    loopsPre: drawLoopsPre,
+    loops: drawLoops,
+    intersection: drawIntersection,
+    container: drawContainer,
+    bezier_: drawFs.bezier,
+    looseBoundingBox_: drawLooseBoundingBox,
+    tightBoundingBox_: drawTightBoundingBox,
+    boundingHull_: drawBoundingHull,
+};
+
+
+;// CONCATENATED MODULE: ./src/debug/debug.ts
+
+/**
+ * Returns a new debug object by spreading boolean operation debug information
+ * onto the given (possibly undefined) debug object.
+ * @param debug a (possibly undefined) debug object
+ */
+function enableDebugForBooleanOp(debugOn) {
+    if (!debugOn) {
+        window._debug_ = undefined;
+        return;
+    }
+    const debug = window._debug_;
+    const debug_ = {
+        ...debug,
+        generated: {
+            ...(!debug ? {} : !debug.generated ? {} : debug.generated),
+            elems: {
+                ...(!debug ? {} : !debug.generated ? {} : !debug.generated.elems ? {} : debug.generated.elems),
+                minY: [],
+                loop: [],
+                loopPre: [],
+                loopsPre: [],
+                loops: [],
+                intersection: [],
+                container: [],
+                bezier_: [],
+                looseBoundingBox_: [],
+                tightBoundingBox_: [],
+                boundingHull_: [],
+            },
+            timing: {
+                ...(!debug ? {} : !debug.generated ? {} : !debug.generated.timing ? {} : debug.generated.timing),
+                normalize: 0,
+                simplifyPaths: 0,
+            }
+        },
+        fs: {
+            ...(!debug ? {} : !debug.fs ? {} : debug.fs),
+            drawElem: {
+                ...(!debug ? {} : !debug.fs ? {} : !debug.fs.drawElem ? {} : debug.fs.drawElem),
+                ...drawElemFunctions
+            }
+        }
+    };
+    window._debug_ = debug_;
+}
+
+
 ;// CONCATENATED MODULE: ./node_modules/flo-vector2d/node/distance-and-length/squared-distance-between.js
 /**
  * Returns the squared distance between two 2d points.
@@ -118,8 +2206,8 @@ function e_sign_eSign(e) {
 
 //# sourceMappingURL=e-sign.js.map
 ;// CONCATENATED MODULE: ./node_modules/flo-poly/node/error-analysis/gamma.js
-const u = Number.EPSILON / 2;
-const uu = u * u;
+const gamma_u = Number.EPSILON / 2;
+const uu = gamma_u * gamma_u;
 /**
  * The canonical floating point error function, γ.
  *
@@ -132,7 +2220,7 @@ const uu = u * u;
  * @doc
  */
 function γ(n) {
-    const nu = n * u;
+    const nu = n * gamma_u;
     return nu / (1 - nu);
 }
 /**
@@ -284,7 +2372,7 @@ function doubleSqrt(x) {
 //# sourceMappingURL=double-sqrt.js.map
 ;// CONCATENATED MODULE: ./node_modules/double-double/node/double-with-err/sqrt-with-err.js
 /** @internal */
-const eps = Number.EPSILON;
+const sqrt_with_err_eps = Number.EPSILON;
 /**
  * Returns the result of the square root of a double floating point number
  * together with an absolute error bound where x_ is an absolute error
@@ -1806,7 +3894,7 @@ function EFTHorner(p, x) {
 
 //# sourceMappingURL=eft-horner.js.map
 ;// CONCATENATED MODULE: ./node_modules/flo-poly/node/evaluate/double/horner-with-running-error.js
-const abs = Math.abs;
+const horner_with_running_error_abs = Math.abs;
 const horner_with_running_error_u = Number.EPSILON / 2;
 /**
  * Returns the result of evaluating a polyniomial at a point x, including a
@@ -1824,43 +3912,18 @@ const horner_with_running_error_u = Number.EPSILON / 2;
  */
 function hornerWithRunningError(p, x) {
     let r̂ = p[0];
-    let e = abs(r̂) * 0.5;
+    let e = horner_with_running_error_abs(r̂) * 0.5;
     for (let i = 1; i < p.length; i++) {
         r̂ = r̂ * x + p[i];
-        e = e * abs(x) + abs(r̂);
+        e = e * horner_with_running_error_abs(x) + horner_with_running_error_abs(r̂);
     }
-    e = horner_with_running_error_u * (2 * e - abs(r̂));
+    e = horner_with_running_error_u * (2 * e - horner_with_running_error_abs(r̂));
     return [r̂, e];
 }
 // inlined (where r̂ => r, e => e1, p => p0)
 //let r = p0[0]; let e1 = Math.abs(r) / 2; for (let i=1; i<p0.length; i++) { r = r*x + p0[i]; e1 = Math.abs(x)*e1 + Math.abs(r); } e1 = Number.EPSILON * (2*e1 - Math.abs(r));
 
 //# sourceMappingURL=horner-with-running-error.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-poly/node/evaluate/double/horner.js
-/**
- * Returns the result of evaluating a univariate polynomial using
- * Horner's method in double precision floating point arithmetic.
- *
- * * see [Horner's Method](https://en.wikipedia.org/wiki/Horner%27s_method)
- *
- * @param p a polynomial with coefficients given densely as an array of double
- * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
- * represents the polynomial `5x^2 - 3x`
- * @param x the value at which to evaluate the polynomial
- *
- * @doc
- */
-function Horner(p, x) {
-    let q = 0;
-    for (let i = 0; i < p.length; i++) {
-        q = q * x + p[i];
-    }
-    return q;
-}
-// inlined (with q => E, p => p0)
-//let E = p0[0]; for (let i=1; i<p0.length; i++) {E = E*x + p0[i]; }
-
-//# sourceMappingURL=horner.js.map
 ;// CONCATENATED MODULE: ./node_modules/flo-poly/node/evaluate/double/abs-horner.js
 const abs_horner_abs = Math.abs;
 /**
@@ -2230,7 +4293,7 @@ const refine_certified_eHorner = eHorner;
 const refine_certified_eEstimate = eEstimate;
 const refine_certified_eps = Number.EPSILON;
 const refine_certified_abs = Math.abs;
-const max = Math.max;
+const refine_certified_max = Math.max;
 /**
  * Returns a refined root given a root bracketed in the interval (a,b) of the
  * given polynomial using Brent's Method - modified slightly to allow for
@@ -2296,7 +4359,7 @@ function refineCertified(p, pE, lb, ub, fa, fb, getPolyExact, exact) {
         //let δ = 2 * eps * max(1,abs(b));
         //let δ = 2 * u * max(1,abs(b));
         let δ;
-        const mm = max(refine_certified_abs(a), refine_certified_abs(b));
+        const mm = refine_certified_max(refine_certified_abs(a), refine_certified_abs(b));
         if (mm <= 1) {
             δ = refine_certified_eps;
         }
@@ -2412,224 +4475,6 @@ function refineCertified(p, pE, lb, ub, fa, fb, getPolyExact, exact) {
 }
 
 //# sourceMappingURL=refine-certified.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-poly/node/basic/double/negate.js
-/**
- * Returns the negative of the given polynomial (p -> -p).
- *
- * @param p a polynomial with coefficients given densely as an array of double
- * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
- * represents the polynomial `5x^2 - 3x`
- * @example
- * ```typescript
- * negate([0.1, -0.2]); //=> [-0.1, 0.2]
- * ```
- *
- * @doc
- */
-function negate(p) {
-    const p_ = [];
-    for (let i = 0; i < p.length; i++) {
-        p_.push(-p[i]);
-    }
-    return p_;
-}
-
-//# sourceMappingURL=negate.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-poly/node/basic/double/invert.js
-/**
- * Inverts the given polynomial by reversing the order of the coefficients,
- * i.e. p(x) -> x^deg(p) * p(1/x)
- *
- * @param p a polynomial with coefficients given densely as an array of double
- * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
- * represents the polynomial `5x^2 - 3x`
- *
- * @example
- * ```typescript
- * invert([3,2,-5]);  // => [-5,2,3]
- * ```
- *
- * @doc
- */
-function invert(p) {
-    return p.slice().reverse();
-}
-
-//# sourceMappingURL=invert.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-poly/node/roots/root-bounds/upper-to-lower-bound.js
-
-// We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗ Otherwise code is too slow❗
-const upper_to_lower_bound_invert = invert;
-/**
- * Returns a function that returns a positive lower root bound given a function
- * that returns a positive upper root bound.
- *
- * @param positiveUpperBoundFunction
- *
- * @internal
- */
-function upperToLowerBound(positiveUpperBoundFunction) {
-    return (p) => {
-        return 1 / positiveUpperBoundFunction(upper_to_lower_bound_invert(p));
-    };
-}
-
-//# sourceMappingURL=upper-to-lower-bound.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-poly/node/change-variables/double/reflect-about-y-axis.js
-/**
- * Returns the result of reflecting the given polynomial about the Y-axis, i.e.
- * perform the change of variables: p(x) <- p(-x).
- *
- * @param p a polynomial with coefficients given densely as an array of double
- * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
- * represents the polynomial `5x^2 - 3x`
- *
- * @example
- * ```typescript
- * reflectAboutYAxis([5,4,3,2,1]); //=> [5, -4, 3, -2, 1]
- * ```
- *
- * @doc
- */
-function reflectAboutYAxis(p) {
-    const d = p.length - 1;
-    if (d < 0) {
-        return [];
-    }
-    const result = p.slice();
-    for (let i = 0; i < d + 1; i++) {
-        if (i % 2) {
-            result[i] = -result[i];
-        }
-    }
-    return result;
-}
-
-//# sourceMappingURL=reflect-about-y-axis.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-poly/node/roots/root-bounds/positive-to-negative-bound.js
-
-// We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗ Otherwise code is too slow❗
-const positive_to_negative_bound_reflectAboutYAxis = reflectAboutYAxis;
-/**
- * Returns a function that returns a negative root bound given a function that
- * returns a positive root bound.
- *
- * @param positiveBoundFunction
- *
- * @internal
- */
-function positiveToNegativeBound(positiveBoundFunction) {
-    return (p) => {
-        return -positiveBoundFunction(positive_to_negative_bound_reflectAboutYAxis(p));
-    };
-}
-
-//# sourceMappingURL=positive-to-negative-bound.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-poly/node/roots/root-bounds/root-bounds-lmq.js
-
-
-
-// We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗ Otherwise code is too slow❗
-const root_bounds_lmq_negate = negate;
-const root_bounds_lmq_upperToLowerBound = upperToLowerBound;
-const root_bounds_lmq_positiveToNegativeBound = positiveToNegativeBound;
-/**
- * Returns an upper bound for the positive real roots of the given polynomial.
- *
- * See algoritm 6 of the paper by Vigklas, Akritas and Strzeboński,
- * specifically the LocalMaxQuadratic algorithm hence LMQ.
- *
- * @param p a polynomial with coefficients given densely as an array of double
- * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
- * represents the polynomial `5x^2 - 3x`
- *
- * @example
- * ```typescript
- * positiveRootUpperBound_LMQ([2,-3,6,5,-130]); //=> 4.015534272870436
- * positiveRootUpperBound_LMQ([2,3]);           //=> 0
- * positiveRootUpperBound_LMQ([-2,-3,-4]);      //=> 0
- * ```
- *
- * @doc
- */
-function positiveRootUpperBound_LMQ(p) {
-    const deg = p.length - 1;
-    if (deg < 1) {
-        return 0;
-    }
-    if (p[0] < 0) {
-        p = root_bounds_lmq_negate(p);
-    }
-    const timesUsed = [];
-    for (let i = 0; i < deg; i++) {
-        timesUsed.push(1);
-    }
-    let ub = 0;
-    for (let m = 0; m <= deg; m++) {
-        if (p[m] >= 0) {
-            continue;
-        }
-        let tempub = Number.POSITIVE_INFINITY;
-        let any = false;
-        for (let k = 0; k < m; k++) {
-            if (p[k] <= 0) {
-                continue;
-            }
-            const temp = (-p[m] / (p[k] / 2 ** timesUsed[k])) ** (1 / (m - k));
-            timesUsed[k]++;
-            if (tempub > temp) {
-                tempub = temp;
-            }
-            any = true;
-        }
-        if (any && ub < tempub)
-            ub = tempub;
-    }
-    return ub;
-}
-/**
- * Returns a positive lower bound of the real roots of the given polynomial
- *
- * See algoritm 6 of the paper by Vigklas, Akritas and Strzeboński,
- * specifically the LocalMaxQuadratic algorithm hence LMQ.
- *
- * @param p a polynomial with coefficients given densely as an array of double
- * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
- * represents the polynomial `5x^2 - 3x`
- *
- * @doc
- */
-const positiveRootLowerBound_LMQ = root_bounds_lmq_upperToLowerBound(positiveRootUpperBound_LMQ);
-/**
- * Returns a negative lower (further from zero) bound of the real roots of the
- * given polynomial.
- *
- * See algoritm 6 of the paper by Vigklas, Akritas and Strzeboński,
- * specifically the LocalMaxQuadratic algorithm hence LMQ.
- *
- * @param p a polynomial with coefficients given densely as an array of double
- * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
- * represents the polynomial `5x^2 - 3x`
- *
- * @doc
- */
-const negativeRootLowerBound_LMQ = root_bounds_lmq_positiveToNegativeBound(positiveRootUpperBound_LMQ);
-/**
- * Returns a negative upper (closer to zero) bound of the real roots of the
- * given polynomial.
- *
- * See algoritm 6 of the paper by Vigklas, Akritas and Strzeboński,
- * specifically the LocalMaxQuadratic algorithm hence LMQ.
- *
- * @param p a polynomial with coefficients given densely as an array of double
- * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
- * represents the polynomial `5x^2 - 3x`
- *
- * @doc
- */
-const negativeRootUpperBound_LMQ = root_bounds_lmq_upperToLowerBound(negativeRootLowerBound_LMQ);
-
-//# sourceMappingURL=root-bounds-lmq.js.map
 ;// CONCATENATED MODULE: ./node_modules/flo-poly/node/roots/certified/all-roots-certified.js
 
 
@@ -3081,134 +4926,6 @@ function allRootsCertifiedSimplified(p, lb = Number.NEGATIVE_INFINITY, ub = Numb
 }
 
 //# sourceMappingURL=all-roots-certified-simplified.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/to-power-basis/to-power-basis-1st-derivative/double/to-power-basis-1st-derivative.js
-/**
- * Returns the derivative of the power basis representation of a
- * bezier curve of order cubic or less (with intermediate calculations done in
- * double precision).
- *
- * * returns the resulting power basis x and y coordinate polynomials from
- * highest power to lowest, e.g. if `x(t) = at^2 + bt + c`
- * and `y(t) = dt^2 + et + f` then  the result is returned
- * as `[[a,b,c],[d,e,f]]`
- *
- * @param ps an order 0,1,2 or 3 bezier curve given by an ordered array of its
- * control points, e.g. `[[0,0],[1,1],[2,1],[2,0]]`
- *
- * @doc
- */
-function toPowerBasis_1stDerivative(ps) {
-    if (ps.length === 4) {
-        return toPowerBasis3_1stDerivative(ps);
-    }
-    if (ps.length === 3) {
-        return toPowerBasis2_1stDerivative(ps);
-    }
-    if (ps.length === 2) {
-        return toPowerBasis1_1stDerivative(ps);
-    }
-    if (ps.length === 1) {
-        return [[0], [0]];
-    }
-    throw new Error('The bezier curve must be of order <= 3.');
-}
-/** @internal */
-function toPowerBasis3_1stDerivative(ps) {
-    const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
-    return [[
-            3 * ((x3 - x0) + 3 * (x1 - x2)),
-            6 * ((x2 + x0) - 2 * x1),
-            3 * (x1 - x0)
-        ], [
-            3 * ((y3 - y0) + 3 * (y1 - y2)),
-            6 * ((y2 + y0) - 2 * y1),
-            3 * (y1 - y0)
-        ]];
-}
-/** @internal */
-function toPowerBasis2_1stDerivative(ps) {
-    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
-    return [[
-            2 * ((x2 + x0) - 2 * x1),
-            2 * (x1 - x0)
-        ], [
-            2 * ((y2 + y0) - 2 * y1),
-            2 * (y1 - y0)
-        ]];
-}
-/** @internal */
-function toPowerBasis1_1stDerivative(ps) {
-    const [[x0, y0], [x1, y1]] = ps;
-    return [[
-            x1 - x0
-        ], [
-            y1 - y0
-        ]];
-}
-
-//# sourceMappingURL=to-power-basis-1st-derivative.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/local-properties-at-t/evaluate/double/eval-de-casteljau.js
-/**
- * Returns the resulting point of evaluating the given bezier curve at the
- * given parameter `t`.
- *
- * * uses [De Casteljau's algorithm](https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm)
- * in double precision floating point arithmetic
- *
- * The resulting point `p` is returned as the pair `[x,y]`, where `x` and `y` are
- * double precision floating point numbers.
- *
- * @param ps an order 1,2 or 3 bezier curve, e.g. `[[0,0],[1,1],[2,1],[2,0]]`
- * @param t the parameter value where the bezier should be evaluated
- *
- * @doc mdx
- **/
-function evalDeCasteljau(ps, t) {
-    if (t === 0) {
-        return ps[0];
-    }
-    else if (t === 1) {
-        return ps[ps.length - 1];
-    }
-    if (ps.length === 4) {
-        const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
-        const a01 = x0 + (x1 - x0) * t;
-        const a11 = x1 + (x2 - x1) * t;
-        const a21 = x2 + (x3 - x2) * t;
-        const a02 = a01 + (a11 - a01) * t;
-        const a12 = a11 + (a21 - a11) * t;
-        const x = a02 + (a12 - a02) * t;
-        const b01 = y0 + (y1 - y0) * t;
-        const b11 = y1 + (y2 - y1) * t;
-        const b21 = y2 + (y3 - y2) * t;
-        const b02 = b01 + (b11 - b01) * t;
-        const b12 = b11 + (b21 - b11) * t;
-        const y = b02 + (b12 - b02) * t;
-        return [x, y];
-    }
-    if (ps.length === 3) {
-        const [[x0, y0], [x1, y1], [x2, y2]] = ps;
-        const a01 = x0 + (x1 - x0) * t;
-        const a11 = x1 + (x2 - x1) * t;
-        const x = a01 + (a11 - a01) * t;
-        const b01 = y0 + (y1 - y0) * t;
-        const b11 = y1 + (y2 - y1) * t;
-        const y = b01 + (b11 - b01) * t;
-        return [x, y];
-    }
-    if (ps.length === 2) {
-        const [[x0, y0], [x1, y1]] = ps;
-        const x = x0 + (x1 - x0) * t;
-        const y = y0 + (y1 - y0) * t;
-        return [x, y];
-    }
-    if (ps.length === 1) {
-        return ps[0];
-    }
-    throw new Error('The given bezier curve must be of order <= 3.');
-}
-
-//# sourceMappingURL=eval-de-casteljau.js.map
 ;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/local-properties-at-t/evaluate/eval-de-casteljau-error.js
 const eval_de_casteljau_error_abs = Math.abs;
 /**
@@ -4552,7 +6269,7 @@ function eNegativeOf(e) {
 
 // We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗
 const negativeOf = eNegativeOf;
-const add = fastExpansionSum;
+const e_diff_add = fastExpansionSum;
 /**
  * Returns the difference between two floating point expansions, i.e. e - f.
  *
@@ -4563,7 +6280,7 @@ const add = fastExpansionSum;
  */
 function eDiff(e, f) {
     const g = negativeOf(f);
-    return add(e, g);
+    return e_diff_add(e, g);
 }
 
 //# sourceMappingURL=e-diff.js.map
@@ -4809,7 +6526,7 @@ function grahamScan(ps) {
         const pS = stack[(i - 1) % len];
         const pM = stack[(i) % len];
         const pE = stack[(i + 1) % len];
-        if (orient2d_orient2d(pS, pM, pE) !== 0 || dot(pS, pM, pE) < 0) {
+        if (orient2d_orient2d(pS, pM, pE) !== 0 || node_dot(pS, pM, pE) < 0) {
             stack_.push(pM);
         }
     }
@@ -4818,7 +6535,7 @@ function grahamScan(ps) {
 /**
  * No need to be accurate
  */
-function dot(p1, p2, p3) {
+function node_dot(p1, p2, p3) {
     const v1x = p2[0] - p1[0];
     const v1y = p2[1] - p1[1];
     const v2x = p3[0] - p2[0];
@@ -7620,6 +9337,7 @@ function getBeziersToNextContainer(expMax, out) {
 
 /**
  * Completes a loop for a specific intersection point entry curve.
+ *
  * @param expMax
  * @param takenOuts
  * @param out
@@ -7663,6 +9381,7 @@ function completeLoop(expMax, takenOuts, out) {
 /**
  * Completes the path of a disjoint set of loops, i.e. this function is called
  * for each disjoint set of paths.
+ *
  * @param intersections
  * @param takenLoops
  * @param parent
@@ -7686,77 +9405,6 @@ function completePath(expMax, initialOut, takenLoops, takenOuts) {
 }
 
 
-;// CONCATENATED MODULE: ./node_modules/flo-poly/node/basic/double/remove-leading-zeros.js
-/**
- * If the highest power coefficient of the given polynomial is 0 then
- * removeLeadingZeros can be called to remove all such highest terms so that
- * the returned array is a valid presentation of a polynomial.
- *
- * @param p a polynomial whose leading zeros should be removed
- *
- * @example
- * ```typescript
- * removeLeadingZeros([1e-18, 1e-10, 1e-1]); //=> [1e-18, 1e-10, 1e-1]
- * removeLeadingZeros([0, 1e-10, 1e-1]); //=> [1e-10, 1e-1]
- * ```
- *
- * @doc
- */
-function removeLeadingZeros(p) {
-    let lzCount = 0;
-    for (let i = 0; i <= p.length - 1; i++) {
-        if (p[i] !== 0) {
-            break;
-        }
-        lzCount++;
-    }
-    if (lzCount !== 0) {
-        p = p.slice(lzCount);
-    }
-    return p;
-}
-
-//# sourceMappingURL=remove-leading-zeros.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-poly/node/basic/double/multiply.js
-
-// We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗ Otherwise code is too slow❗
-const multiply_removeLeadingZeros = removeLeadingZeros;
-/**
- * Returns the result of multiplying 2 polynomials in double precision.
- *
- * * see [polynomial arithmetic](https://en.wikipedia.org/wiki/Polynomial_arithmetic)
- * * see [polynomial multiplication](https://en.wikipedia.org/wiki/Discrete_Fourier_transform#Polynomial_multiplication)
- * * see [polynomial multiplication](http://web.cs.iastate.edu/~cs577/handouts/polymultiply.pdf)
- *
- * @param p1 a polynomial with coefficients given densely as an array of double
- * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
- * represents the polynomial `5x^2 - 3x`
- * @param p2 another polynomial.
- * @example
- * ```typescript
- * multiply([1,2,3], [2,5,3,5]); //=> [2, 9, 19, 26, 19, 15]
- * ```
- *
- * @doc
- */
-function multiply(p1, p2) {
-    const d1 = p1.length - 1;
-    const d2 = p2.length - 1;
-    // if either or both is the zero polynomial
-    if (d1 < 0 || d2 < 0) {
-        return [];
-    }
-    const d = d1 + d2;
-    const r = new Array(d + 1).fill(0);
-    for (let i = 0; i < d1 + 1; i++) {
-        for (let j = 0; j < d2 + 1; j++) {
-            r[d - (i + j)] += (p1[d1 - i] * p2[d2 - j]);
-        }
-    }
-    return multiply_removeLeadingZeros(r);
-}
-
-//# sourceMappingURL=multiply.js.map
 ;// CONCATENATED MODULE: ./node_modules/flo-poly/node/roots/from-roots/double/from-roots.js
 
 // We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗ Otherwise code is too slow❗
@@ -8009,398 +9657,6 @@ function flatCoefficients(d, a = -1, b = +1, seed = SEED) {
 }
 
 //# sourceMappingURL=random.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-poly/node/calculus/double/differentiate.js
-/**
- * Returns the result of differentiating the given polynomial in double
- * precision.
- *
- * @param p a polynomial with coefficients given densely as an array of double
- * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
- * represents the polynomial `5x^2 - 3x`
- *
- * @example
- * ```typescript
- * differentiate([5, 4, 3, 2, 1]); //=> [20, 12, 6, 2]
- * ```
- *
- * @doc
- */
-function differentiate(p) {
-    const result = [];
-    const d = p.length - 1;
-    for (let i = 0; i < d; i++) {
-        result.push((d - i) * p[i]);
-    }
-    return result;
-}
-
-//# sourceMappingURL=differentiate.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-poly/node/roots/naive/brent-poly.js
-
-const brent_poly_Horner = Horner;
-const brent_poly_eps = Number.EPSILON;
-const brent_poly_u = brent_poly_eps / 2;
-const brent_poly_abs = Math.abs;
-const brent_poly_max = Math.max;
-/**
- * Returns a refined root given a root bracketed in the interval (a,b) of the
- * given polynomial using Brent's Method.
- *
- * * near exact implementation of the original Brent Dekker Method (also known
- * as Brent's Method), except that it is specialzed to polynomial evaluation
- *
- * * the algorithm stops once the interval width becomes equal or less than
- * `2 * Number.EPSILON/2 * max(1,abs(a),abs(b))` where `a` and `b` are the current
- * lower and upper interval limits
- *
- * * Brent's Method is an excellent root-refinement choice since:
- *  * guaranteed converge (unlike the Newton and other so-called single-point
- * methods),
- *  * converges in a reasonable number of iterations even for highly contrived
- * functions (unlike Dekker's Method) and
- *  * nearly always converges fast, i.e. super-linearly (unlike the Secant and
- * Regula-Falsi methods).
- * * unfortunately the algorithm given on [Wikipedia](https://en.wikipedia.org/wiki/Brent%27s_method)
- * works but is not precisely Brent's method and runs about 2x or more slower
- * due to it not implementing the critically important 'micro-step' (Aug 2020).
- *
- * * see [Brent (page 47)](https://maths-people.anu.edu.au/~brent/pd/rpb011i.pdf)
- *
- * @param p a polynomial with coefficients given densely as an array of double
- * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
- * represents the polynomial `5x^2 - 3x`
- * @param lb the lower limit of the search interval.
- * @param ub the upper limit of the search interval.
- * @param fa (may be left out - will be calculated automatically) the result of
- * evaluating the input polynomial at `a`
- * @param fb (may be left out - will be calculated automatically) the result of
- * evaluating the input polynomial at `b`
- *
- * @example
- * ```typescript
- * const p = fromRoots([-10,2,3,4]);  //=> [1, 1, -64, 236, -240]
- * const a = 2.2;
- * const b = 3.8;
- * brent(p,a,b); //=> 3.000000000000003
- * b = 3.1;
- * brent(p,a,b); //=> 3.000000000000001
- * ```
- *
- * @doc
- */
-function brentPoly(p, lb, ub, fa = brent_poly_Horner(p, lb), fb = brent_poly_Horner(p, ub)) {
-    // Precondition: fa, fb !== 0
-    //---- Make local copies of a and b.
-    let a = lb;
-    let b = ub;
-    let c = a;
-    let fc = fa;
-    let e = b - a;
-    let d = e;
-    while (true) {
-        if (brent_poly_abs(fc) < brent_poly_abs(fb)) {
-            a = b;
-            b = c;
-            c = a;
-            fa = fb;
-            fb = fc;
-            fc = fa;
-        }
-        const δ = 2 * brent_poly_u * brent_poly_max(1, brent_poly_abs(a), brent_poly_abs(b));
-        const m = 0.5 * (c - b);
-        //if (abs(m) <= δ || fb === 0) {
-        if (brent_poly_abs(m) <= δ) {
-            // uncomment below if range to be returned
-            //return b < c ? [b,c] : [c,b];
-            // uncomment below if leftmost guess to be returned
-            //return b < c ? b : c;
-            // uncomment below if rightmost guess to be returned
-            //return b < c ? b : c;
-            // uncomment below if any guess to be returned
-            return b;
-        }
-        if (brent_poly_abs(e) < δ || brent_poly_abs(fa) <= brent_poly_abs(fb)) {
-            e = m;
-            d = e;
-        }
-        else {
-            let s = fb / fa;
-            let p;
-            let q;
-            if (a === c) {
-                p = 2 * m * s;
-                q = 1 - s;
-            }
-            else {
-                q = fa / fc;
-                const r = fb / fc;
-                p = s * (2 * m * q * (q - r) - (b - a) * (r - 1));
-                q = (q - 1) * (r - 1) * (s - 1);
-            }
-            if (0 < p) {
-                q = -q;
-            }
-            else {
-                p = -p;
-            }
-            s = e;
-            e = d;
-            if (2 * p < 3 * m * q - brent_poly_abs(δ * q) && p < brent_poly_abs(0.5 * s * q)) {
-                d = p / q;
-            }
-            else {
-                e = m;
-                d = e;
-            }
-        }
-        a = b;
-        fa = fb;
-        if (δ < brent_poly_abs(d)) {
-            b = b + d;
-        }
-        else if (0 < m) {
-            b = b + δ;
-        }
-        else {
-            //b = b - eps;
-            b = b - δ;
-        }
-        fb = brent_poly_Horner(p, b);
-        // inlined above line:
-        //fb = p[0]; for (let i=1; i<p.length; i++) { fb = fb*b + p[i]; }
-        if (fb === 0) {
-            return b;
-        }
-        if (fb * fc > 0) {
-            c = a;
-            fc = fa;
-            e = b - a;
-            d = e;
-        }
-    }
-}
-
-//# sourceMappingURL=brent-poly.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-poly/node/roots/naive/all-roots.js
-
-
-
-
-
-
-// We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗ Otherwise code is too slow❗
-const all_roots_differentiate = differentiate;
-const all_roots_Horner = Horner;
-const all_roots_brentPoly = brentPoly;
-const all_roots_negativeRootUpperBound_LMQ = negativeRootLowerBound_LMQ;
-const all_roots_positiveRootUpperBound_LMQ = positiveRootUpperBound_LMQ;
-const all_roots_removeLeadingZeros = removeLeadingZeros;
-/**
- * Find and return all roots of the given polynomial in the given interval.
- *
- * * an empty array is returned for a constant or the zero polynomial
- *
- * * **non-exact:** roots are found 'naively' using double-precision arithmetic
- * and accuracy will thus depend on the condition number around the root - use
- * [[allRootsCertifiedSimplified]] or [[allRootsCertified]] instead if certified
- * root bounds are required (it is about 3x slower, but still very fast!)
- *
- * * close (where the definition of closeness depends on the condition
- * number) or multiple *even* roots can be returned as 0, 1 or more close
- * roots, whereas close or multiple *odd* roots are guaranteed to return *at
- * least 1 root*
- *
- * * optimized for polynomials of degree 1 to about 30
- *
- * * roots are refined using the celebrated Brent's Method (and evaluated using
- * Horner's Method) until a root interval is found with
- * width `<= eps * max(1, 2^⌈log₂r⌉)`, where `eps = Number.EPSILON` and
- * `r` is a root
- *
- * * **ordered:** the returned roots are ordered from lowest to highest
- *
- * @param p a polynomial with coefficients given densely as an array of double
- * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
- * represents the polynomial `5x^2 - 3x`
- * @param lb defaults to `Number.NEGATIVE_INFINITY`; lower bound of roots to be
- * returned
- * @param ub defaults to `Number.POSITIVE_INFINITY`; upper bound of roots to be
- * returned
- *
- * @doc
- */
-function allRoots(p, lb = Number.NEGATIVE_INFINITY, ub = Number.POSITIVE_INFINITY) {
-    p = all_roots_removeLeadingZeros(p);
-    //---- count and remove roots at zero
-    let numZerosAtZero = 0;
-    while (p[p.length - 1] === 0) {
-        p = p.slice(0, -1);
-        numZerosAtZero++;
-    }
-    //------------------------
-    // return an empty array for a constant or the zero polynomial
-    if (p.length <= 1) {
-        const roots = [];
-        for (let j = 0; j < numZerosAtZero; j++) {
-            roots.push(0);
-        }
-        return roots;
-    }
-    if (lb === Number.NEGATIVE_INFINITY) {
-        lb = all_roots_negativeRootUpperBound_LMQ(p);
-    }
-    if (ub === Number.POSITIVE_INFINITY) {
-        ub = all_roots_positiveRootUpperBound_LMQ(p);
-    }
-    // Get all derivatives, i.e. 
-    // ps === [p, dp, ddp, ..., constant]
-    //        [0,  1,   2, ..., deg     ]
-    const ps = [p];
-    for (let i = 1; i <= p.length - 1; i++) {
-        ps.push(all_roots_differentiate(ps[i - 1]));
-    }
-    //const δ = Math.max(2*eps, 2*eps * Math.max(Math.abs(lb), Math.abs(ub)));
-    /** root intervals */
-    let is = [];
-    // loop: ps[diffCount] === [linear, quadratic, ..., deg]
-    for (let diffCount = p.length - 2; diffCount >= 0; diffCount--) {
-        // Get roots within intervals:
-        // ---------------------------
-        // Finds and returns all roots of the given polynomial within the given 
-        // intervals, starting from the lower bound (lb) and ending at the upper
-        // bound (ub)
-        const p = ps[diffCount];
-        const roots = [];
-        let _a_ = lb;
-        let _A_ = all_roots_Horner(p, _a_);
-        // if lower bound value is zero and this is the last iteration with 
-        // p === the original polynomial then push the root at the lower bound
-        if (_A_ === 0 && diffCount === 0) {
-            roots.push(lb);
-        }
-        for (let i = 0; i < is.length; i++) {
-            const _b_ = is[i];
-            const _B_ = all_roots_Horner(p, _b_);
-            // if there is a root at the right interval then add it
-            if (_B_ === 0) {
-                roots.push(_b_);
-            }
-            else if (_A_ * _B_ < 0) {
-                roots.push(all_roots_brentPoly(p, _a_, _b_, _A_, _B_));
-            }
-            _a_ = _b_;
-            _A_ = _B_;
-        }
-        const _B_ = all_roots_Horner(p, ub);
-        if (_A_ * _B_ < 0) {
-            roots.push(all_roots_brentPoly(p, _a_, ub, _A_, _B_));
-        }
-        // if upper bound value is zero and this is the last iteration with 
-        // p === the original polynomial then push the root at the upper bound
-        if (_B_ === 0 && diffCount === 0) {
-            roots.push(ub);
-        }
-        is = roots;
-    }
-    if (numZerosAtZero > 0 && lb <= 0 && ub >= 0) {
-        // at this point the existing intervals, `is`, are sorted
-        // find the insertion spot and insert the zero roots to keep the roots
-        // sorted
-        const isWithZeroRoots = [];
-        let zerosInserted = false;
-        for (let i = 0; i < is.length; i++) {
-            if (!zerosInserted && is[i] >= 0) {
-                // push the zero roots
-                for (let j = 0; j < numZerosAtZero; j++) {
-                    isWithZeroRoots.push(0);
-                }
-                zerosInserted = true;
-            }
-            isWithZeroRoots.push(is[i]);
-        }
-        return isWithZeroRoots;
-    }
-    return is;
-}
-
-//# sourceMappingURL=all-roots.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/to-power-basis/to-power-basis/double/to-power-basis.js
-/**
- * Returns the power basis representation of a bezier curve of order cubic or
- * less.
- *
- * * intermediate calculations are done in double precision
- * * returns the resulting power basis x and y coordinate polynomials from
- * highest power to lowest, e.g. if `x(t) = at^2 + bt + c`
- * and `y(t) = dt^2 + et + f` then  the result is returned
- * as `[[a,b,c],[d,e,f]]`
- *
- * @param ps an order 0,1,2 or 3 bezier curve given by an ordered array of its
- * control points, e.g. `[[0,0],[1,1],[2,1],[2,0]]`
- *
- * @doc
- */
-function toPowerBasis(ps) {
-    if (ps.length === 4) {
-        return toPowerBasis3(ps);
-    }
-    if (ps.length === 3) {
-        return toPowerBasis2(ps);
-    }
-    if (ps.length === 2) {
-        return toPowerBasis1(ps);
-    }
-    if (ps.length === 1) {
-        return toPowerBasis0(ps);
-    }
-    throw new Error('The given bezier curve must be of order <= 3.');
-}
-/** @internal */
-function toPowerBasis3(ps) {
-    const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
-    return [[
-            (x3 - x0) + 3 * (x1 - x2),
-            3 * ((x2 + x0) - 2 * x1),
-            3 * (x1 - x0),
-            x0
-        ], [
-            (y3 - y0) + 3 * (y1 - y2),
-            3 * ((y2 + y0) - 2 * y1),
-            3 * (y1 - y0),
-            y0
-        ]];
-}
-/** @internal */
-function toPowerBasis2(ps) {
-    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
-    return [[
-            (x2 + x0) - 2 * x1,
-            2 * (x1 - x0),
-            x0
-        ], [
-            (y2 + y0) - 2 * y1,
-            2 * (y1 - y0),
-            y0
-        ]];
-}
-/** @internal */
-function toPowerBasis1(ps) {
-    const [[x0, y0], [x1, y1]] = ps;
-    return [[
-            x1 - x0,
-            x0,
-        ], [
-            y1 - y0,
-            y0,
-        ]];
-}
-/** @internal */
-function toPowerBasis0(ps) {
-    const [[x0, y0]] = ps;
-    return [[x0], [y0]];
-}
-
-//# sourceMappingURL=to-power-basis.js.map
 ;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/local-properties-at-t/tangent/double/tangent.js
 
 
@@ -8437,105 +9693,10 @@ function toUnitVector(p) {
 }
 
 //# sourceMappingURL=to-unit-vector.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-memoize/node/memoize.js
-/**
- * Memoize (by reference on the input parameter) the given arity 1 function.
- *
- * * the input parameter must be an `object` (so it can be used as a key to
- * `WeakMap` and thus garbage collected later; this is especially important
- * in functional programming where a lot of garbage collection takes place;
- *
- * * use `memoizePrimitive` instead if it is not important that the keys
- * will *never* be garbage collected
- */
-function memoize(f) {
-    const results = new WeakMap();
-    return function (t) {
-        let r = results.get(t);
-        if (r !== undefined) {
-            //console.log('cache hit');
-            return r;
-        }
-        //console.log('cache miss');
-        r = f(t);
-        results.set(t, r);
-        return r;
-    };
-}
-
-//# sourceMappingURL=memoize.js.map
 ;// CONCATENATED MODULE: ./src/get-bounding-box-.ts
 
 
 const getBoundingBox_ = memoize(getBoundingBox);
-
-
-;// CONCATENATED MODULE: ./node_modules/flo-bezier3/node/global-properties/bounds/get-bounds.js
-
-
-
-/**
- * Returns an axis-aligned bounding box together with the `t` values where the
- * bounds on the bezier are reached.
- *
- * @param ps an order 1,2 or 3 bezier curve given as an array of its control
- * points, e.g. `[[0,0], [1,1], [2,1], [2,0]]`
- *
- * @doc mdx
- */
-function getBounds(ps) {
-    // Roots of derivative
-    const dxy = toPowerBasis_1stDerivative(ps);
-    const rootsX = allRoots(dxy[0], 0, 1);
-    const rootsY = allRoots(dxy[1], 0, 1);
-    // Endpoints
-    rootsX.push(0, 1);
-    rootsY.push(0, 1);
-    let minX = Number.POSITIVE_INFINITY;
-    let maxX = Number.NEGATIVE_INFINITY;
-    let minY = Number.POSITIVE_INFINITY;
-    let maxY = Number.NEGATIVE_INFINITY;
-    let tMinX;
-    let tMaxX;
-    let tMinY;
-    let tMaxY;
-    // Test points
-    for (let i = 0; i < rootsX.length; i++) {
-        const t = rootsX[i];
-        const [x,] = evalDeCasteljau(ps, t);
-        if (x < minX) {
-            minX = x;
-            tMinX = t;
-        }
-        if (x > maxX) {
-            maxX = x;
-            tMaxX = t;
-        }
-    }
-    for (let i = 0; i < rootsY.length; i++) {
-        const t = rootsY[i];
-        const [, y] = evalDeCasteljau(ps, t);
-        if (y < minY) {
-            minY = y;
-            tMinY = t;
-        }
-        if (y > maxY) {
-            maxY = y;
-            tMaxY = t;
-        }
-    }
-    // `tMinX`, ... is guaranteed defined below - TS was (understandably) 
-    // unable to follow the logic.
-    const ts = [[tMinX, tMinY], [tMaxX, tMaxY]];
-    const box = [[minX, minY], [maxX, maxY]];
-    return { ts, box };
-}
-
-//# sourceMappingURL=get-bounds.js.map
-;// CONCATENATED MODULE: ./src/get-bounds-.ts
-
-
-const getBounds_ = memoize(getBounds);
 
 
 ;// CONCATENATED MODULE: ./src/calc-paths/is-loop-in-loop.ts
@@ -8594,13 +9755,13 @@ function isLoopInLoop(loop1, loop2) {
  * @param loops
  */
 function isLoopNotInLoop(loop1, loop2) {
-    const boundss = [loop1, loop2].map(getLoopBounds);
+    const boundss = [loop1, loop2].map(is_loop_in_loop_getLoopBounds);
     return (boundss[0].minX < boundss[1].minX ||
         boundss[0].maxX > boundss[1].maxX ||
         boundss[0].minY < boundss[1].minY ||
         boundss[0].maxY > boundss[1].maxY);
 }
-function getLoopBounds(pss) {
+function is_loop_in_loop_getLoopBounds(pss) {
     const bounds = pss.map(ps => getBounds_(ps));
     return {
         minX: Math.min(...bounds.map(bound => bound.box[0][0])),
@@ -20283,11 +21444,12 @@ function getRightMost(container) {
 
 ;// CONCATENATED MODULE: ./src/calc-paths/get-outermost-in-and-out.ts
 /**
- * Get initial an intersection for the given loop. The loop must be such that
+ * Get initial intersection for the given loop. The loop must be such that
  * an extreme point on the loop forms part of an outermost loop that is outside
  * all other component loops that is formed by this loop and all other loops it
  * may intersect. This extreme point is guaranteed by the initial ordering of
  * the loops by their minimum y value.
+ *
  * @param loop
  * @param parent
  */
@@ -20733,23 +21895,6 @@ function fixBezierByPointSpacing(ps, gridSpacing, sendToGrid) {
         (arePsEqual(ps[0], ps[1]) &&
             arePsEqual(ps[2], ps[3]))) {
         return fixBezierByPointSpacing([ps[0], ps[ps.length - 1]], gridSpacing, sendToGrid);
-        /*
-        // Check if first and last point are sufficiently far apart to split
-        // the bezier into a line so that all points differ.
-
-        // TODO2 - is below maybe not correct?
-        //if ((ps[0][0] - ps[3][0]) > (3+1)*gridSpacing ||
-        //    (ps[0][1] - ps[3][1]) > (3+1)*gridSpacing) {
-        if (abs(ps[0][0] - ps[3][0]) > (3+1)*gridSpacing ||
-            abs(ps[0][1] - ps[3][1]) > (3+1)*gridSpacing) {
-
-            return [ps[0], ps[ps.length-1]];
-        } else {
-            // Points are not sufficiently far apart to resolve onto grid -
-            // cannot fix it - it is basically a point.
-
-            return undefined;
-        }*/
     }
     // At this point, either:
     // * only point 0 and point 1 coincides
@@ -20988,136 +22133,6 @@ const getMaxCoordinate = memoize((loops) => {
 });
 
 
-;// CONCATENATED MODULE: ./node_modules/flo-poly/node/calculus/double/integrate.js
-/**
- * Returns the result of integrating the given polynomial in double precision.
- *
- * @param p a polynomial with coefficients given densely as an array of double
- * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
- * represents the polynomial `5x^2 - 3x`
- * @param c the constant of intergration
- *
- * @example
- * ```typescript
- * integrate([3, 2, 1]); //=> [1, 1, 1, c]
- * ```
- *
- * @doc
- */
-function integrate(p, c) {
-    const result = [];
-    const d = p.length - 1;
-    for (let i = 0; i < d + 1; i++) {
-        result.push(p[i] / (d + 1 - i));
-    }
-    result.push(c);
-    return result;
-}
-
-//# sourceMappingURL=integrate.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-poly/node/basic/double/add.js
-
-// We *have* to do the below❗ The assignee is a getter❗ The assigned is a pure function❗ Otherwise code is too slow❗
-const add_removeLeadingZeros = removeLeadingZeros;
-/**
- * Returns the result of adding two polynomials in double precision.
- *
- * @param p1 a polynomial with coefficients given densely as an array of double
- * floating point numbers from highest to lowest power, e.g. `[5,-3,0]`
- * represents the polynomial `5x^2 - 3x`
- * @param p2 another polynomial
- *
- * @example
- * ```typescript
- * add([1,2,3],[3,4]); //=> [1,5,7]
- * ```
- *
- * @doc
- */
-function add_add(p1, p2) {
-    // Initialize result array  
-    const d1 = p1.length - 1;
-    const d2 = p2.length - 1;
-    const Δd = d1 - d2;
-    const Δd1 = Δd < 0 ? +Δd : 0;
-    const Δd2 = Δd > 0 ? -Δd : 0;
-    const d = Math.max(d1, d2);
-    // Add coefficients
-    const result = [];
-    for (let i = 0; i < d + 1; i++) {
-        const c1 = p1[i + Δd1] || 0;
-        const c2 = p2[i + Δd2] || 0;
-        result.push(c1 + c2);
-    }
-    // Ensure the result is a valid polynomial representation
-    return add_removeLeadingZeros(result);
-}
-
-//# sourceMappingURL=add.js.map
-;// CONCATENATED MODULE: ./src/loop/get-loop-area.ts
-
-
-/**
- * Returns the area of the given Loop.
- * * see e.g. https://mathinsight.org/greens_theorem_find_area
- */
-function getLoopArea(loop) {
-    let totalArea = 0;
-    for (const curve of loop.curves) {
-        const ps = curve.ps;
-        const [x, y] = toPowerBasis(ps);
-        const [dx, dy] = toPowerBasis_1stDerivative(ps);
-        const xdy = multiply(x, dy);
-        const ydx = negate(multiply(y, dx));
-        const poly = integrate(add_add(xdy, ydx), 0);
-        const area = Horner(poly, 1);
-        totalArea += area;
-    }
-    return -totalArea / 2;
-}
-
-
-;// CONCATENATED MODULE: ./src/svg/beziers-to-svg-path-str.ts
-/**
- * Returns an SVG path string representation of the given bezier loop.
- * @param beziers An array of bezier curves each given as an array of
- * control points.
- */
-function beziersToSvgPathStr(beziers) {
-    let str = '';
-    for (let i = 0; i < beziers.length; i++) {
-        const ps = beziers[i];
-        if (i === 0) {
-            str = 'M ' +
-                ps[0][0].toString() + ' ' +
-                ps[0][1].toString() + '\n';
-        }
-        if (ps.length === 4) {
-            str += 'C ' +
-                ps[1][0].toString() + ' ' +
-                ps[1][1].toString() + ' ' +
-                ps[2][0].toString() + ' ' +
-                ps[2][1].toString() + ' ' +
-                ps[3][0].toString() + ' ' +
-                ps[3][1].toString() + ' ' + '\n';
-        }
-        else if (ps.length === 3) {
-            str += 'Q ' +
-                ps[1][0].toString() + ' ' +
-                ps[1][1].toString() + ' ' +
-                ps[2][0].toString() + ' ' +
-                ps[2][1].toString() + ' ' + '\n';
-        }
-        else if (ps.length === 2) {
-            str += 'L ' +
-                ps[1][0].toString() + ' ' +
-                ps[1][1].toString() + ' ' + '\n';
-        }
-    }
-    return str + ' z' + '\n';
-}
-
-
 ;// CONCATENATED MODULE: ./src/svg/loops-to-svg-path-str.ts
 
 /**
@@ -21317,1035 +22332,6 @@ function createRootInOut() {
 // TODO - Handle case where bezier tangentially touches container edge. 
 // Simply move the container boundary 1/8th or 1/16th inward and try again. 
 // This case is truly extremely rare and not hard to fix completely.
-
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/default-class.js
-const DEFAULT_CLASS = 'red thin10 nofill ';
-
-//# sourceMappingURL=default-class.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/xmlns.js
-const XMLNS = 'http://www.w3.org/2000/svg';
-
-//# sourceMappingURL=xmlns.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/circle.js
-
-
-/**
- * Draws a circle
- * @param g An SVG group element wherein to draw the circle.
- * @param circle
- * @param classes
- * @param delay
- */
-function circle(g, circle, classes = DEFAULT_CLASS, delay) {
-    const c = circle.center;
-    const r = circle.radius;
-    const $circle = document.createElementNS(XMLNS, 'circle');
-    $circle.setAttributeNS(null, "cx", c[0].toString());
-    $circle.setAttributeNS(null, "cy", c[1].toString());
-    $circle.setAttributeNS(null, "r", r.toString());
-    $circle.setAttributeNS(null, "class", classes);
-    g.appendChild($circle);
-    if (delay) {
-        setTimeout(() => $circle.remove(), delay);
-    }
-    return [$circle];
-}
-
-//# sourceMappingURL=circle.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/dot.js
-
-/**
- * Draws a dot.
- */
-function dot_dot(g, p, r = 3, color = 'red', delay) {
-    const [$dot] = circle(g, { center: p, radius: r }, 'dot ' + color, delay);
-    if (delay) {
-        setTimeout(() => $dot.remove(), delay);
-    }
-    return [$dot];
-}
-
-//# sourceMappingURL=dot.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/line.js
-
-
-
-/**
- *
- * @param snap
- * @param l
- * @param classes
- */
-function line(g, l, classes = DEFAULT_CLASS, delay = 0, controlPointClass = undefined, controlPointRadius = 0) {
-    const $line = document.createElementNS(XMLNS, 'line');
-    $line.setAttributeNS(null, "x1", l[0][0].toString());
-    $line.setAttributeNS(null, "y1", l[0][1].toString());
-    $line.setAttributeNS(null, "x2", l[1][0].toString());
-    $line.setAttributeNS(null, "y2", l[1][1].toString());
-    $line.setAttributeNS(null, "class", classes);
-    g.appendChild($line);
-    let $dots = [];
-    if (controlPointClass !== undefined) {
-        for (const p of l) {
-            $dots.push(...dot_dot(g, p, controlPointRadius, controlPointClass, delay));
-        }
-    }
-    for (const $ of $dots) {
-        g.appendChild($);
-    }
-    const $svgs = [$line, ...$dots];
-    if (delay) {
-        setTimeout(() => { for (const $ of $svgs) {
-            $.remove();
-        } }, delay);
-    }
-    return $svgs;
-}
-
-//# sourceMappingURL=line.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/cross-hair.js
-
-
-
-/**
- * Draws a crosshair.
- */
-function crossHair(g, p, classes = DEFAULT_CLASS, r = 3, delay) {
-    const circle_ = { center: p, radius: r };
-    const $circle = circle(g, circle_, classes);
-    const l1 = [[p[0] - r, p[1]], [p[0] + r, p[1]]];
-    const l2 = [[p[0], p[1] - r], [p[0], p[1] + r]];
-    const $l1 = line(g, l1, classes);
-    const $l2 = line(g, l2, classes);
-    if (delay) {
-        setTimeout(() => {
-            $circle.forEach(e => e.remove());
-            $l1.forEach(e => e.remove());
-            $l2.forEach(e => e.remove());
-        }, delay);
-    }
-    return [...$circle, ...$l1, ...$l2];
-}
-
-//# sourceMappingURL=cross-hair.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/rect.js
-
-
-function rect(g, rect, classes = DEFAULT_CLASS, delay) {
-    const [[x0, y0], [x1, y1]] = rect;
-    const x = x0 < x1 ? x0 : x1;
-    const y = y0 < y1 ? y0 : y1;
-    const width = Math.abs(x0 - x1);
-    const height = Math.abs(y0 - y1);
-    const $rect = document.createElementNS(XMLNS, 'rect');
-    $rect.setAttributeNS(null, "x", x.toString());
-    $rect.setAttributeNS(null, "y", y.toString());
-    $rect.setAttributeNS(null, "width", width.toString());
-    $rect.setAttributeNS(null, "height", height.toString());
-    if (classes) {
-        $rect.setAttributeNS(null, "class", classes);
-    }
-    g.appendChild($rect);
-    if (delay) {
-        setTimeout(() => $rect.remove(), delay);
-    }
-    return [$rect];
-}
-
-//# sourceMappingURL=rect.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/polygon.js
-
-
-/**
- * Draws a polygon
- * @param g
- * @param poly the polygon specified as an array of points - the last point does
- * not have to be specified
- * @param class_
- * @param delay
- */
-function polygon(g, poly, class_ = DEFAULT_CLASS, delay) {
-    const $path = document.createElementNS(XMLNS, 'path');
-    let d = `M${poly[0][0]} ${poly[0][1]} L`;
-    for (let i = 0; i < poly.length; i++) {
-        d += `${poly[i][0]} ${poly[i][1]} `;
-    }
-    d += ' z';
-    $path.setAttributeNS(null, "d", d);
-    if (class_) {
-        $path.setAttributeNS(null, "class", class_);
-    }
-    g.appendChild($path);
-    if (delay) {
-        setTimeout(() => $path.remove(), delay);
-    }
-    return [$path];
-}
-
-//# sourceMappingURL=polygon.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/loop.js
-
-
-function loop(g, curves, class_ = DEFAULT_CLASS, delay) {
-    if (!curves.length) {
-        return [];
-    }
-    const $path = document.createElementNS(XMLNS, 'path');
-    let d = `M${curves[0][0][0]} ${curves[0][0][1]} `;
-    for (let i = 0; i < curves.length; i++) {
-        const curve = curves[i];
-        d += `${getType(curve.length)} `;
-        for (let j = 1; j < curve.length; j++) {
-            d += `${curve[j][0]} ${curve[j][1]} `;
-        }
-    }
-    d += ' z';
-    $path.setAttributeNS(null, "d", d);
-    if (class_) {
-        $path.setAttributeNS(null, "class", class_);
-    }
-    g.appendChild($path);
-    if (delay) {
-        setTimeout(() => $path.remove(), delay);
-    }
-    return [$path];
-}
-function getType(len) {
-    if (len === 2) {
-        return 'L';
-    }
-    if (len === 3) {
-        return 'Q';
-    }
-    if (len === 4) {
-        return 'C';
-    }
-}
-
-//# sourceMappingURL=loop.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/polyline.js
-
-
-function polyline(g, poly, class_ = DEFAULT_CLASS, delay) {
-    if (poly.length < 2) {
-        return [];
-    }
-    const $path = document.createElementNS(XMLNS, 'path');
-    let d = `M${poly[0][0]} ${poly[0][1]} L`;
-    for (let i = 0; i < poly.length; i++) {
-        d += `${poly[i][0]} ${poly[i][1]} `;
-    }
-    $path.setAttributeNS(null, "d", d);
-    if (class_) {
-        $path.setAttributeNS(null, "class", class_);
-    }
-    g.appendChild($path);
-    if (delay) {
-        setTimeout(() => $path.remove(), delay);
-    }
-    return [$path];
-}
-
-//# sourceMappingURL=polyline.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/quad-bezier.js
-
-
-
-
-function quadBezier(g, ps, class_ = DEFAULT_CLASS, delay = 0, controlPointClass = undefined, controlPointRadius = 0, lineCLass = undefined) {
-    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
-    const $path = document.createElementNS(XMLNS, 'path');
-    $path.setAttributeNS(null, "d", `M${x0} ${y0} Q${x1} ${y1} ${x2} ${y2}`);
-    if (class_) {
-        $path.setAttributeNS(null, "class", class_);
-    }
-    let $dots = [];
-    if (controlPointClass !== undefined) {
-        for (const p of ps) {
-            $dots.push(...dot_dot(g, p, controlPointRadius, controlPointClass, delay));
-        }
-    }
-    let $lines = [];
-    if (lineCLass !== undefined) {
-        for (let i = 0; i < ps.length - 1; i++) {
-            $lines.push(...line(g, [ps[i], ps[i + 1]], lineCLass, delay));
-        }
-    }
-    const $svgs = [$path, ...$dots, ...$lines];
-    for (const $ of $svgs) {
-        g.appendChild($);
-    }
-    if (delay) {
-        setTimeout(() => { for (const $ of $svgs) {
-            $.remove();
-        } }, delay);
-    }
-    return $svgs;
-}
-
-//# sourceMappingURL=quad-bezier.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/cubic-bezier.js
-
-
-
-
-
-function cubicBezier(g, ps, class_ = DEFAULT_CLASS, delay = 0, controlPointClass = undefined, controlPointRadius = 0, lineCLass = undefined) {
-    const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
-    if (x0 === x3 && x1 === x3 && x2 === x3 &&
-        y0 === y3 && y1 === y3 && y2 === y3) {
-        return crossHair(g, [x0, y0], class_, 0.2, delay);
-    }
-    const $path = document.createElementNS(XMLNS, 'path');
-    $path.setAttributeNS(null, "d", `M${x0} ${y0} C${x1} ${y1} ${x2} ${y2} ${x3} ${y3}`);
-    $path.setAttributeNS(null, "class", class_);
-    let $dots = [];
-    if (controlPointClass !== undefined) {
-        for (const p of ps) {
-            $dots.push(...dot_dot(g, p, controlPointRadius, controlPointClass, delay));
-        }
-    }
-    let $lines = [];
-    if (lineCLass !== undefined) {
-        for (let i = 0; i < ps.length - 1; i++) {
-            $lines.push(...line(g, [ps[i], ps[i + 1]], lineCLass, delay));
-        }
-    }
-    const $svgs = [$path, ...$dots, ...$lines];
-    for (const $ of $svgs) {
-        g.appendChild($);
-    }
-    if (delay) {
-        setTimeout(() => { for (const $ of $svgs) {
-            $.remove();
-        } }, delay);
-    }
-    return $svgs;
-}
-
-//# sourceMappingURL=cubic-bezier.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/bezier.js
-
-
-
-
-/**
- * Draws a bezier.
- *
- * @param g
- * @param bezier
- * @param class_
- * @param delay
- * @param controlPointClass a dot at each control point will be drawn if specified
- * @param lineClass a line to each control point will be drawn if specified
- * @returns
- */
-function bezier(g, bezier, class_ = DEFAULT_CLASS, delay = 0, controlPointClass = undefined, controlPointRadius = 0, lineClass = undefined) {
-    if (bezier.length === 2) {
-        return line(g, bezier, class_, delay, controlPointClass, controlPointRadius);
-    }
-    else if (bezier.length === 3) {
-        return quadBezier(g, bezier, class_, delay, controlPointClass, controlPointRadius, lineClass);
-    }
-    else if (bezier.length === 4) {
-        return cubicBezier(g, bezier, class_, delay, controlPointClass, controlPointRadius, lineClass);
-    }
-    return [];
-}
-
-//# sourceMappingURL=bezier.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/beziers.js
-
-const COLORS = ['red', 'green', 'cyan', 'blue'];
-/**
- * Draws beziers.
- * @param snap
- * @param beziers
- * @param delay
- */
-function beziers(g, beziers, classes, delay) {
-    const alternateColors = classes === undefined;
-    const $beziers = [];
-    for (let i = 0; i < beziers.length; i++) {
-        const ps = beziers[i];
-        const color = COLORS[i % COLORS.length];
-        const class_ = alternateColors
-            ? 'thin5 nofill ' + color
-            : classes;
-        $beziers.push(...bezier(g, ps, class_));
-    }
-    if (delay) {
-        setTimeout(() => $beziers.forEach(e => e.remove()), delay);
-    }
-    return $beziers;
-}
-
-//# sourceMappingURL=beziers.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/evaluate-bezier.js
-/**
- * Returns an estimate of evaluating the given bezier at the given t value.
- * @param ps An order 1, 2 or bezier
- * @param t The parameter ∈ [0,1]
- */
-function evaluateBezier(ps, t) {
-    const s = 1 - t;
-    if (ps.length === 4) {
-        // cubic
-        const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
-        const x = x0 * s ** 3 + 3 * x1 * s ** 2 * t + 3 * x2 * s * t ** 2 + x3 * t ** 3;
-        const y = y0 * s ** 3 + 3 * y1 * s ** 2 * t + 3 * y2 * s * t ** 2 + y3 * t ** 3;
-        return [x, y];
-    }
-    if (ps.length === 3) {
-        // quadratic
-        const [[x0, y0], [x1, y1], [x2, y2]] = ps;
-        const x = x0 * s ** 2 + 2 * x1 * s * t + x2 * t ** 2;
-        const y = y0 * s ** 2 + 2 * y1 * s * t + y2 * t ** 2;
-        return [x, y];
-    }
-    if (ps.length === 2) {
-        // line
-        const [[x0, y0], [x1, y1]] = ps;
-        const x = x0 * s + x1 * t;
-        const y = y0 * s + y1 * t;
-        return [x, y];
-    }
-    return [NaN, NaN];
-}
-
-//# sourceMappingURL=evaluate-bezier.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/split-at.js
-/**
- * Returns 2 new beziers split at the given t parameter, i.e. for the ranges
- * [0,t] and [t,1].
- * @param ps
- * @param t
- */
-function splitAt(ps, t) {
-    if (ps.length === 2) {
-        return splitLineAt(ps, t);
-    }
-    else if (ps.length === 3) {
-        return splitQuadAt(ps, t);
-    }
-    else if (ps.length === 4) {
-        return splitCubicAt(ps, t);
-    }
-    return [];
-}
-/**
- * Returns 2 new cubic beziers split at the given t parameter, i.e. for the ranges
- * [0,t] and [t,1]. Uses de Casteljau's algorithm.
- *
- * A loose bound on the accuracy of the resultant points is given by:
- * |δP| = 2n*max_k(|b_k|)η, where n = 3 (cubic), b_k are the control points
- * abd η is Number.EPSILON.
- * @param ps A cubic bezier curve
- * @param t The t parameter where the curve should be split
- */
-function splitCubicAt(ps, t) {
-    const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = ps;
-    const s = 1 - t;
-    const t2 = t * t;
-    const t3 = t2 * t;
-    const s2 = s * s;
-    const s3 = s2 * s;
-    /** The split point */
-    const p = [
-        t3 * x3 + 3 * s * t2 * x2 + 3 * s2 * t * x1 + s3 * x0,
-        t3 * y3 + 3 * s * t2 * y2 + 3 * s2 * t * y1 + s3 * y0
-    ];
-    const ps1 = [
-        [x0, y0],
-        [t * x1 + s * x0,
-            t * y1 + s * y0],
-        [t2 * x2 + 2 * s * t * x1 + s2 * x0,
-            t2 * y2 + 2 * s * t * y1 + s2 * y0],
-        p
-    ];
-    const ps2 = [
-        p,
-        [t2 * x3 + 2 * t * s * x2 + s2 * x1,
-            t2 * y3 + 2 * t * s * y2 + s2 * y1],
-        [t * x3 + s * x2,
-            t * y3 + s * y2],
-        [x3, y3]
-    ];
-    return [ps1, ps2];
-}
-function splitQuadAt(ps, t) {
-    const [[x0, y0], [x1, y1], [x2, y2]] = ps;
-    const s = 1 - t;
-    /** The split point */
-    const p = [
-        s * s * x0 + 2 * s * t * x1 + t * t * x2,
-        s * s * y0 + 2 * s * t * y1 + t * t * y2
-    ];
-    const ps1 = [
-        [x0, y0],
-        [s * x0 + t * x1,
-            s * y0 + t * y1],
-        p
-    ];
-    const ps2 = [
-        p,
-        [s * x1 + t * x2,
-            s * y1 + t * y2],
-        [x2, y2]
-    ];
-    return [ps1, ps2];
-}
-function splitLineAt(ps, t) {
-    const [[x0, y0], [x1, y1]] = ps;
-    const s = 1 - t;
-    /** The split point */
-    const p = [
-        s * x0 + t * x1,
-        s * y0 + t * y1
-    ];
-    const ps1 = [
-        [x0, y0],
-        p
-    ];
-    const ps2 = [
-        p,
-        [x1, y1]
-    ];
-    return [ps1, ps2];
-}
-
-//# sourceMappingURL=split-at.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/bezier-from-bezier-piece.js
-
-
-/**
- * Returns a new bezier from the given bezier by limiting its t range.
- *
- * Duplicated here so we don't circularly depend on flo-bezier.
- *
- * Uses de Casteljau's algorithm.
- *
- * @param ps a bezier
- * @param tRange a t range
- */
-function bezierFromBezierPiece(ps, tRange) {
-    // If tRange = [0,1] then return original bezier.
-    if (tRange[0] === 0 && tRange[1] === 1) {
-        return ps;
-    }
-    // If tRange[0] === tRange[1] then return a single point degenerated bezier.
-    if (tRange[0] === tRange[1]) {
-        const p = evaluateBezier(ps, tRange[0]);
-        return [p, p, p, p];
-    }
-    if (tRange[0] === 0) {
-        return splitAt(ps, tRange[1])[0];
-    }
-    if (tRange[1] === 1) {
-        return splitAt(ps, tRange[0])[1];
-    }
-    // At this stage we know the t range is not degenerate and tRange[0] !== 0 
-    // and tRange[1] !== 1
-    return splitAt(splitAt(ps, tRange[0])[1], (tRange[1] - tRange[0]) / (1 - tRange[0]))[0];
-}
-
-//# sourceMappingURL=bezier-from-bezier-piece.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/bezier-piece.js
-
-
-
-
-
-/**
- * Draws a bezier piece, i.e. a bezier within a specified t range.
- * @param snap
- * @param bezierPiece
- * @param class
- * @param delay
- */
-function bezierPiece(g, ps_, tRange, class_ = DEFAULT_CLASS, delay) {
-    const $elems = (tRange[0] === tRange[1])
-        // Draw crosshair if t range bounds are equal.
-        ? crossHair(g, evaluateBezier(ps_, tRange[0]), class_, 1.5)
-        : bezier(g, bezierFromBezierPiece(ps_, tRange), class_);
-    if (delay) {
-        setTimeout(() => $elems.forEach(e => e.remove()), delay);
-    }
-    return $elems;
-}
-
-//# sourceMappingURL=bezier-piece.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw/text.js
-
-
-/**
- * Draws text
- * @param g a SVG group element wherein to draw
- * @param p
- * @param str
- * @param fontSize
- * @param classes
- * @param delay
- */
-function text_text(g, p, str, fontSize, classes = DEFAULT_CLASS, delay) {
-    const $text = document.createElementNS(XMLNS, 'text');
-    $text.setAttributeNS(null, "x", p[0].toString());
-    $text.setAttributeNS(null, "y", p[1].toString());
-    $text.setAttributeNS(null, "font-size", fontSize.toString());
-    $text.setAttributeNS(null, "class", classes);
-    $text.textContent = str;
-    g.appendChild($text);
-    if (delay) {
-        setTimeout(() => $text.remove(), delay);
-    }
-    return [$text];
-}
-
-//# sourceMappingURL=text.js.map
-;// CONCATENATED MODULE: ./node_modules/flo-draw/node/draw-fs.js
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const drawFs = {
-    circle: circle,
-    crossHair: crossHair,
-    dot: dot_dot,
-    line: line,
-    rect: rect,
-    beziers: beziers,
-    bezier: bezier,
-    bezierPiece: bezierPiece,
-    quadBezier: quadBezier,
-    cubicBezier: cubicBezier,
-    polygon: polygon,
-    loop: loop,
-    polyline: polyline,
-    text: text_text
-};
-
-//# sourceMappingURL=draw-fs.js.map
-;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-min-y.ts
-
-
-function drawMinY(g, pos) {
-    const p = evalDeCasteljau(pos.curve.ps, pos.t);
-    // const ps = toCubic(pos.curve.ps);
-    //console.log('x: ', getX(ps));
-    //console.log('y: ', getY(ps));
-    //console.log('t: ', pos.t);
-    const $elems = drawFs.crossHair(g, p, 'red thin10 nofill');
-    return $elems;
-}
-
-
-;// CONCATENATED MODULE: ./src/loop/get-loop-centroid.ts
-
-
-
-/**
- * Returns the approximate centroid of the given loop
- *
- * * **precondition**: loop must be a jordan curve (i.e. closed and simple)
- *
- * see https://sites.math.washington.edu/~king/coursedir/m324a10/as/centroid-green.pdf
- */
-function getLoopCentroid(loop) {
-    const A = getLoopArea(loop);
-    let cx = 0;
-    let cy = 0;
-    for (const curve of loop.curves) {
-        const ps = curve.ps;
-        const [x, y] = toPowerBasis(ps);
-        const [dx, dy] = toPowerBasis_1stDerivative(ps);
-        const polyX = integrate(multiply(multiply(x, x), dy), 0);
-        const polyY = integrate(multiply(multiply(y, y), dx), 0);
-        const _x = Horner(polyX, 1);
-        const _y = Horner(polyY, 1);
-        cx += _x;
-        cy += _y;
-    }
-    const a = 1 / (2 * A);
-    return [-a * cx, a * cy];
-}
-
-
-;// CONCATENATED MODULE: ./src/point-on-shape/point-on-shape.ts
-
-/**
- * Represents a point on the shape boundary.
- */
-class PointOnShape {
-    /**
-     * @param curve	The [[ICurve]] on the shape boundary this points belong to.
-     * @param t The bezier parameter value on the curve to identify the point
-     * coordinates.
-     */
-    constructor(curve, t) {
-        this.curve = curve;
-        this.t = t;
-        // Cache
-        this.p_ = undefined;
-    }
-    /**
-     * The planar point coordinates of this [[PointOnShape]].
-     */
-    get p() {
-        return this.p_ === undefined
-            ? this.p_ = evalDeCasteljau(this.curve.ps, this.t)
-            : this.p_;
-    }
-}
-
-
-;// CONCATENATED MODULE: ./src/loop/get-loop-bounds.ts
-
-
-
-const INF = Number.POSITIVE_INFINITY;
-/**
- * Returns the bounds of the given loop - used in tests only.
- */
-const get_loop_bounds_getLoopBounds = memoize(function (loop) {
-    const extremes = [
-        [
-            { bezier: undefined, t: undefined, val: INF },
-            { bezier: undefined, t: undefined, val: INF }
-        ],
-        [
-            { bezier: undefined, t: undefined, val: -INF },
-            { bezier: undefined, t: undefined, val: -INF }
-        ]
-    ];
-    loop.curves.forEach(function (curve) {
-        const ps = curve.ps;
-        const bounds = getBounds_(ps);
-        {
-            {
-                const v = bounds.box[0][0];
-                const x = extremes[0][0].val;
-                if (v < x || (v === x && bounds.ts[0][0] > extremes[0][0].t)) {
-                    extremes[0][0] = {
-                        bezier: curve,
-                        t: bounds.ts[0][0],
-                        val: v
-                    };
-                }
-            }
-            {
-                const v = bounds.box[0][1];
-                const x = extremes[0][1].val;
-                if (v < x || (v === x && bounds.ts[0][1] > extremes[0][1].t)) {
-                    extremes[0][1] = {
-                        bezier: curve,
-                        t: bounds.ts[0][1],
-                        val: v
-                    };
-                }
-            }
-        }
-        {
-            {
-                const v = bounds.box[1][0];
-                const x = extremes[1][0].val;
-                if (v > x || (v === x && bounds.ts[1][0] > extremes[1][0].t)) {
-                    extremes[1][0] = {
-                        bezier: curve,
-                        t: bounds.ts[1][0],
-                        val: v
-                    };
-                }
-            }
-            {
-                const v = bounds.box[1][1];
-                const x = extremes[1][1].val;
-                if (v > x || (v === x && bounds.ts[1][1] > extremes[1][1].t)) {
-                    extremes[1][1] = {
-                        bezier: curve,
-                        t: bounds.ts[1][1],
-                        val: v
-                    };
-                }
-            }
-        }
-    });
-    return {
-        minX: new PointOnShape(extremes[0][0].bezier, extremes[0][0].t),
-        minY: new PointOnShape(extremes[0][1].bezier, extremes[0][1].t),
-        maxX: new PointOnShape(extremes[1][0].bezier, extremes[1][0].t),
-        maxY: new PointOnShape(extremes[1][1].bezier, extremes[1][1].t)
-    };
-});
-
-
-;// CONCATENATED MODULE: ./src/loop/simplify-bounds.ts
-/** Used in tests only - not used in algorithm */
-function simplifyBounds(bounds) {
-    return {
-        minX: bounds.minX.p[0],
-        minY: bounds.minY.p[1],
-        maxX: bounds.maxX.p[0],
-        maxY: bounds.maxY.p[1],
-    };
-}
-
-
-;// CONCATENATED MODULE: ./src/debug/draw-elem/default-class.ts
-const default_class_DEFAULT_CLASS = 'red thin10 nofill ';
-
-
-;// CONCATENATED MODULE: ./src/debug/draw-elem/xmlns.ts
-const xmlns_XMLNS = 'http://www.w3.org/2000/svg';
-
-
-;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-shape.ts
-
-
-
-// TODO - move to flo-draw
-/**
- * Draws an SVG shape
- * @param g
- * @param shape the shape specified as an array of bezier curves
- *
- * * the last point does not have to be specified
- *
- * @param class_
- * @param delay
- */
-function drawShape(g, beziers, class_ = default_class_DEFAULT_CLASS, delay) {
-    const $path = document.createElementNS(xmlns_XMLNS, 'path');
-    const d = beziersToSvgPathStr(beziers);
-    $path.setAttributeNS(null, "d", d);
-    if (class_) {
-        $path.setAttributeNS(null, "class", class_);
-    }
-    g.appendChild($path);
-    if (delay) {
-        setTimeout(() => $path.remove(), delay);
-    }
-    return [$path];
-}
-
-
-;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-loop.ts
-
-
-
-
-
-
-function drawLoop(g, loop) {
-    const centroid = getLoopCentroid(loop);
-    const area = getLoopArea(loop);
-    const bounds = simplifyBounds(get_loop_bounds_getLoopBounds(loop));
-    drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 500);
-    return drawShape(g, loop.curves.map(curve => curve.ps), 'red thin10 fill30', undefined);
-}
-
-
-;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-loops.ts
-
-function drawLoops(g, loops) {
-    const $svgs = [];
-    for (const loop of loops) {
-        $svgs.push(...drawLoop(g, loop));
-    }
-    return $svgs;
-}
-
-
-;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-circle-percent.ts
-function drawCirclePercent(g, center, radiusPercent, classes) {
-    const XMLNS = 'http://www.w3.org/2000/svg';
-    const $circle = document.createElementNS(XMLNS, 'circle');
-    $circle.setAttributeNS(null, "cx", center[0].toString());
-    $circle.setAttributeNS(null, "cy", center[1].toString());
-    $circle.setAttributeNS(null, "r", radiusPercent.toString() + '%');
-    $circle.setAttributeNS(null, "class", classes);
-    g.appendChild($circle);
-    return $circle;
-}
-
-
-;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-intersection.ts
-
-function drawIntersection(g, x) {
-    return [drawCirclePercent(g, x.x.box[0], 0.7, 'purple thin5 nofill')];
-}
-
-
-;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-container.ts
-
-function drawContainer(g, container, classes, delay = 0) {
-    const rect = container.box;
-    const xs = container.xs;
-    const scale = 2 ** 0 * 0.0125;
-    // intersections
-    const $circles = [];
-    for (let i = 0; i < xs.length; i++) {
-        const x = xs[i];
-        $circles.push(...drawFs.circle(g, { center: x.x.box[0], radius: scale }, 'thin2 red nofill', delay));
-    }
-    // text showing intersection ordering
-    const $texts = [];
-    const inOuts = container.inOuts;
-    for (let i = 0; i < inOuts.length; i++) {
-        const inOut = inOuts[i];
-        const p = inOut.p.slice();
-        const color = inOut.dir === -1 ? 'red' : 'blue';
-        const size = scale * (1 + (0.5 * i));
-        if (inOut.idx !== undefined) {
-            $texts.push(...drawFs.text(g, p, inOut.idx.toString(), scale * 8, `thin5 nofill ${color}`, delay));
-        }
-        $circles.push(...drawFs.dot(g, inOut.p, size, `thin2 nofill ${color}`, delay));
-    }
-    // container rect
-    const $outline = drawFs.rect(g, rect, 'thin2 blue nofill', delay);
-    return [
-        ...$outline,
-        ...$circles,
-        ...$texts
-    ];
-}
-
-
-;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-loose-bounding-box.ts
-
-/** @internal */
-function drawLooseBoundingBox(g, box, classes = 'thin5 brown nofill', delay = 0) {
-    const [[x0, y0], [x1, y1]] = box;
-    box = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
-    const $box = drawFs.polygon(g, box, classes, delay);
-    return $box;
-}
-
-
-;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-tight-bounding-box.ts
-
-/** @internal */
-function drawTightBoundingBox(g, box, classes = 'thin5 pinker nofill', delay = 0) {
-    const $box = drawFs.polygon(g, box, classes, delay);
-    return $box;
-}
-
-
-;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-bounding-hull.ts
-
-/** @internal */
-function drawBoundingHull(g, hull, classes = 'thin5 black nofill', delay = 0) {
-    const $polygon = drawFs.polygon(g, hull, classes, delay);
-    return $polygon;
-}
-
-
-;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-loop-pre.ts
-
-function drawLoopPre(g, loop) {
-    //const centroid = getLoopCentroid(loop);
-    //const area     = getLoopArea(loop);
-    //const bounds   = simplifyBounds(getLoopBounds(loop));
-    //drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 0);
-    return drawShape(g, loop, 'red thin10 fill30', undefined);
-}
-
-
-;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-loops-pre.ts
-
-function drawLoopsPre(g, loops) {
-    const $svgs = [];
-    for (const loop of loops) {
-        $svgs.push(...drawLoopPre(g, loop));
-    }
-    return $svgs;
-}
-
-
-;// CONCATENATED MODULE: ./src/debug/draw-elem/draw-elem.ts
-
-
-
-
-
-
-
-
-
-
-
-const drawElemFunctions = {
-    minY: drawMinY,
-    loop: drawLoop,
-    loopPre: drawLoopPre,
-    loopsPre: drawLoopsPre,
-    loops: drawLoops,
-    intersection: drawIntersection,
-    container: drawContainer,
-    bezier_: drawFs.bezier,
-    looseBoundingBox_: drawLooseBoundingBox,
-    tightBoundingBox_: drawTightBoundingBox,
-    boundingHull_: drawBoundingHull,
-};
-
-
-;// CONCATENATED MODULE: ./src/debug/debug.ts
-
-/**
- * Returns a new debug object by spreading boolean operation debug information
- * onto the given (possibly undefined) debug object.
- * @param debug a (possibly undefined) debug object
- */
-function enableDebugForBooleanOp(debugOn) {
-    if (!debugOn) {
-        window._debug_ = undefined;
-        return;
-    }
-    const debug = window._debug_;
-    const debug_ = {
-        ...debug,
-        generated: {
-            ...(!debug ? {} : !debug.generated ? {} : debug.generated),
-            elems: {
-                ...(!debug ? {} : !debug.generated ? {} : !debug.generated.elems ? {} : debug.generated.elems),
-                minY: [],
-                loop: [],
-                loopPre: [],
-                loopsPre: [],
-                loops: [],
-                intersection: [],
-                container: [],
-                bezier_: [],
-                looseBoundingBox_: [],
-                tightBoundingBox_: [],
-                boundingHull_: [],
-            },
-            timing: {
-                ...(!debug ? {} : !debug.generated ? {} : !debug.generated.timing ? {} : debug.generated.timing),
-                normalize: 0,
-                simplifyPaths: 0,
-            }
-        },
-        fs: {
-            ...(!debug ? {} : !debug.fs ? {} : debug.fs),
-            drawElem: {
-                ...(!debug ? {} : !debug.fs ? {} : !debug.fs.drawElem ? {} : debug.fs.drawElem),
-                ...drawElemFunctions
-            }
-        }
-    };
-    window._debug_ = debug_;
-}
-
 
 ;// CONCATENATED MODULE: ./src/svg/path-state.ts
 /** @hidden */
@@ -23024,7 +23010,6 @@ function getPathsFromStr(str) {
 
 
 ;// CONCATENATED MODULE: ./src/index.ts
-
 
 
 

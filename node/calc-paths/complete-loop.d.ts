@@ -1,6 +1,7 @@
 import { InOut } from '../in-out.js';
 /**
  * Completes a loop for a specific intersection point entry curve.
+ *
  * @param expMax
  * @param takenOuts
  * @param out
