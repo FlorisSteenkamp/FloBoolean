@@ -1,4 +1,4 @@
-import { drawShape } from './draw-shape.js';
+import { drawShape } from './draw-shape';
 
 
 function drawLoopPre(

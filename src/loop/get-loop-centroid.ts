@@ -1,7 +1,7 @@
-import type { Loop } from "./loop.js";
+import type { Loop } from "./loop";
 import { toPowerBasis, toPowerBasis_1stDerivative } from "flo-bezier3";
 import { Horner, multiply, integrate } from 'flo-poly';
-import { getLoopArea } from "./get-loop-area.js";
+import { getLoopArea } from "./get-loop-area";
 
 
 /** 

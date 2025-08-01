@@ -1,12 +1,12 @@
 import { eEstimate } from "big-float-ts";
 import { allRootsCertified, RootIntervalExp, refineK1, RootInterval, rootIntervalToExp } from "flo-poly";
 import { getCoeffsBezBez, getIntervalBoxDd } from "flo-bezier3";
-import { Container } from "../../../container.js";
-import { X } from "../../../x.js";
-import { __X__ } from "../../../-x-.js";
-import { Curve } from "../../../curve/curve.js";
-import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting.js";
-import { InOut } from "../../../in-out.js";
+import { Container } from "../../../container";
+import { X } from "../../../x";
+import { __X__ } from "../../../-x-";
+import { Curve } from "../../../curve/curve";
+import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting";
+import { InOut } from "../../../in-out";
 
 
 

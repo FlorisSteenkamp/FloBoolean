@@ -1,5 +1,5 @@
-import { InOut } from "../in-out.js";
-import { containerIsBasic } from "../container.js";
+import { InOut } from "../in-out";
+import { containerIsBasic } from "../container";
 
 
 /**
@@ -8,13 +8,12 @@ import { containerIsBasic } from "../container.js";
  * @param additionalOutsToCheck 
  */
 function getNextExit(
-        expMax: number,
         in_: InOut, 
         originalOut: InOut,
         additionalOutsToCheck: InOut[],
         takenOuts: Set<InOut>) {
 
-            const markOutForChecking_ = markOutForChecking(
+    const markOutForChecking_ = markOutForChecking(
         originalOut, 
         takenOuts, 
         additionalOutsToCheck
@@ -54,7 +53,7 @@ function getNextExit(
         }
     } while (true)
 
-    if (!containerIsBasic(expMax, in_.container)) {
+    if (!containerIsBasic(in_.container)) {
         // if there is multiple intersection pairs then add an additional bezier
         additionalBezier = [in_.p, outToUse!.p];
     }

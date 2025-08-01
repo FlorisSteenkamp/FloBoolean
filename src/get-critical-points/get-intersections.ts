@@ -1,9 +1,9 @@
-import type { __X__ } from '../-x-.js';
-import type { Loop } from '../loop/loop.js';
-import type { Curve } from '../curve/curve.js';
-import { sweepLine } from '../sweep-line/sweep-line.js';
-import { getCurvesIntersections } from './get-curves-intersections.js';
-import { getBoundingBox_ } from '../get-bounding-box-.js';
+import type { __X__ } from '../-x-';
+import type { Loop } from '../loop/loop';
+import type { Curve } from '../curve/curve';
+import { sweepLine } from '../sweep-line/sweep-line';
+import { getCurvesIntersections } from './get-curves-intersections';
+import { getBoundingBox_ } from '../get-bounding-box-';
 
 
 /**

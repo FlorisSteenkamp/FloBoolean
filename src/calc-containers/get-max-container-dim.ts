@@ -1,4 +1,4 @@
-import { Container } from "../container.js";
+import { Container } from "../container";
 
 
 function getMaxContainerDim(containers: Container[]) {

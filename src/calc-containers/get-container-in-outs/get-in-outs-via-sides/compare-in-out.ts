@@ -1,6 +1,6 @@
 import { refineK1 } from "flo-poly";
 import { eCompare } from "big-float-ts";
-import { InOut } from "../../../in-out.js";
+import { InOut } from "../../../in-out";
 
 const { abs } = Math;
 

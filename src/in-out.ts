@@ -1,6 +1,6 @@
-import { __X__ } from "./-x-.js";
-import { Container } from "./container.js";
-import { X } from "./x.js";
+import { __X__ } from "./-x-";
+import { Container } from "./container";
+import { X } from "./x";
 
 
 interface InOut {

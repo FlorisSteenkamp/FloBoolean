@@ -1,0 +1,18 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+>
+    <path 
+        class="shape"
+        d="
+        M 305 2113  
+        L 35 2011, 134 1868
+        Z
+        
+        M 134 1868
+        L 134 1867
+        Q 133 1867, 134 1866
+        Z
+        "
+    />
+</svg>

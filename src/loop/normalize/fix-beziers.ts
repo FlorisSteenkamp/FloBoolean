@@ -1,6 +1,6 @@
 import { isSelfOverlapping } from "flo-bezier3";
-import { toGrid } from "./to-grid.js";
-import { fixBezierByPointSpacing } from "./fix-bezier-by-point-spacing.js";
+import { toGrid } from "./to-grid";
+import { fixBezierByPointSpacing } from "./fix-bezier-by-point-spacing";
 
 
 function sendToGrid(expMax: number, maxBitLength: number) {

@@ -16,11 +16,11 @@ interface Container {
     inOuts: InOut[];
 }
 /**
- * Returns true if the container is basic, i.e. contains only 1 interface
+ * Returns true if the container contains only 1 interface
  * intersection or contains only 1 general, extreme or loop intersection
  * (not cusp, or endpoint overlap), false otherwise.
  *
  * @param container
  */
-declare function containerIsBasic(expMax: number, container: Container): boolean;
+declare function containerIsBasic(container: Container): boolean;
 export { Container, containerIsBasic };

@@ -1,15 +1,15 @@
-import type { __X__ } from '../-x-.js';
-import type { Curve } from "../curve/curve.js";
+import type { __X__ } from '../-x-';
+import type { Curve } from "../curve/curve";
 import { orient2d } from 'big-float-ts';
 import { createRootExact, mid } from 'flo-poly';
 import { squaredDistanceBetween } from 'flo-vector2d';
 import { isPointOnBezierExtension, getBoundingHull, closestPointOnBezierCertified, equal } from "flo-bezier3";
-import { getOtherTs } from './get-other-t.js';
-import { doConvexPolygonsIntersect } from "../geometry/do-convex-polygons-intersect.js";
-import { getIntersection } from './get-intersection.js';
-import { makeSimpleX } from './make-simple-x.js';
-import { getBoundingBox_ } from '../get-bounding-box-.js';
-import { areBoxesIntersecting } from '../are-boxes-intersecting.js';
+import { getOtherTs } from './get-other-t';
+import { doConvexPolygonsIntersect } from "../geometry/do-convex-polygons-intersect";
+import { getIntersection } from './get-intersection';
+import { makeSimpleX } from './make-simple-x';
+import { getBoundingBox_ } from '../get-bounding-box-';
+import { areBoxesIntersecting } from '../are-boxes-intersecting';
 
 
 /**

@@ -1,4 +1,4 @@
-import { parseNumber } from './parse-number.js';
+import { parseNumber } from './parse-number';
 
 
 /** @hidden */

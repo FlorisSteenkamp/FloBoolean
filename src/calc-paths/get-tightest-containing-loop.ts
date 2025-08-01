@@ -1,6 +1,6 @@
-import { isLoopInLoop } from './is-loop-in-loop.js';
-import { InOut } from "../in-out.js";
-import { Loop } from '../loop/loop.js';
+import { isLoopInLoop } from './is-loop-in-loop';
+import { InOut } from "../in-out";
+import { Loop } from '../loop/loop';
 
 
 /**

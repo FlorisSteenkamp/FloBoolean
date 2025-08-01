@@ -1,4 +1,4 @@
-import { getPathsFromStr } from './get-paths-from-str.js';
+import { getPathsFromStr } from './get-paths-from-str';
 
 
 /** @hidden */

@@ -1,4 +1,7 @@
 import { Loop } from '../loop/loop.js';
+interface BooleanOptions {
+    readonly noMicroCorners?: boolean;
+}
 /**
  * Uses the algorithm of Lavanya Subramaniam: PARTITION OF A NON-SIMPLE POLYGON
  * INTO SIMPLE POLYGONS;
@@ -13,5 +16,5 @@ import { Loop } from '../loop/loop.js';
  * @param maxCoordinate optional - if not provided, it will be calculated - a
  * wrong value could cause the algorithm to fail
  */
-declare function simplifyPaths(bezierLoops: number[][][][], maxCoordinate?: number): Loop[][];
+declare function simplifyPaths(bezierLoops: number[][][][], maxCoordinate?: number, options?: BooleanOptions): Loop[][];
 export { simplifyPaths };

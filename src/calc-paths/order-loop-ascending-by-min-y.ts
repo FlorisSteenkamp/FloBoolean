@@ -1,4 +1,4 @@
-import { getBounds_ } from "../get-bounds-.js";
+import { getBounds_ } from "../get-bounds-";
 
 
 /**

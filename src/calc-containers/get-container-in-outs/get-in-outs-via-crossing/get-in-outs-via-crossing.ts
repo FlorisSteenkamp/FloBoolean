@@ -1,8 +1,8 @@
 import { orient2d } from "big-float-ts";
 import { getIntervalBox, getHodograph, evalDeCasteljau } from "flo-bezier3";
-import { Container } from "../../../container.js";
-import { InOut } from "../../../in-out.js";
-import { getInOutsViaSides } from "../get-in-outs-via-sides/get-in-outs-via-sides.js";
+import { Container } from "../../../container";
+import { InOut } from "../../../in-out";
+import { getInOutsViaSides } from "../get-in-outs-via-sides/get-in-outs-via-sides";
 
 
 /**

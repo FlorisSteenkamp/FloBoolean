@@ -1,4 +1,4 @@
-import type { X } from "../x.js";
+import type { X } from "../x";
 import type { RootInterval } from "flo-poly";
 import { intersectBoxes, bezierBezierIntersectionBoundless, getIntervalBox } from 'flo-bezier3';
 

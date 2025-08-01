@@ -1,6 +1,6 @@
-import type { Loop } from './loop.js';
+import type { Loop } from './loop';
 import { reverse } from 'flo-bezier3';
-import { loopFromBeziers } from './loop.js';
+import { loopFromBeziers } from './loop';
 
 
 /**

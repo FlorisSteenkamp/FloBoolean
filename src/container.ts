@@ -1,5 +1,5 @@
-import { __X__ } from "./-x-.js";
-import { InOut } from "./in-out.js";
+import { __X__ } from "./-x-";
+import { InOut } from "./in-out";
 
 
 /**
@@ -15,22 +15,24 @@ interface Container {
      * ordered array of incoming / outgoing curves where the order is 
      * anti-clockwise from the top right (minimum y, maximum x) corner
      */
-    // inOuts: OrderedInOut[];
     inOuts: InOut[];
 }
 
 
 /**
- * Returns true if the container is basic, i.e. contains only 1 interface 
+ * Returns true if the container contains only 1 interface 
  * intersection or contains only 1 general, extreme or loop intersection
  * (not cusp, or endpoint overlap), false otherwise.
  * 
  * @param container 
  */
-function containerIsBasic(expMax: number, container: Container) {
+function containerIsBasic(container: Container) {
     const xs = container.xs;
+    // xs.length;//?
 
     if (xs.length <= 2 && xs[0].x.kind !== 7) { return true; }
+
+    // xs.length;//?
 
     return false;
 }

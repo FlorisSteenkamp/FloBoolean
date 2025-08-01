@@ -1,27 +1,32 @@
 declare const _debug_: Debug; 
 
 import { getBoundingHull, getBoundingBoxTight } from 'flo-bezier3';
-import { Debug } from '../debug/debug.js';
-import { completePath } from './complete-path.js';
-import { getTightestContainingLoop } from './get-tightest-containing-loop.js';
-import { orderLoopAscendingByMinY } from './order-loop-ascending-by-min-y.js';
-import { splitLoopTrees } from './split-loop-trees.js';
-import { getLoopsFromTree } from './get-loops-from-tree.js';
-import { getContainers } from '../calc-containers/get-containers.js';
-import { InOut } from '../in-out.js';
-import { getOutermostInAndOut } from './get-outermost-in-and-out.js';
-import { reverseOrientation } from '../loop/reverse-orientation.js';
-import { Loop, loopFromBeziers } from '../loop/loop.js';
-import { normalizeLoops } from '../loop/normalize/normalize-loop.js';
-import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate.js';
-import { getLoopArea } from '../loop/get-loop-area.js';
-import { loopsToSvgPathStr } from '../svg/loops-to-svg-path-str.js';
+import { Debug } from '../debug/debug';
+import { completePath } from './complete-path';
+import { getTightestContainingLoop } from './get-tightest-containing-loop';
+import { orderLoopAscendingByMinY } from './order-loop-ascending-by-min-y';
+import { splitLoopTrees } from './split-loop-trees';
+import { getLoopsFromTree } from './get-loops-from-tree';
+import { getContainers } from '../calc-containers/get-containers';
+import { InOut } from '../in-out';
+import { getOutermostInAndOut } from './get-outermost-in-and-out';
+import { reverseOrientation } from '../loop/reverse-orientation';
+import { Loop, loopFromBeziers } from '../loop/loop';
+import { normalizeLoops } from '../loop/normalize/normalize-loop';
+import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate';
+import { getLoopArea } from '../loop/get-loop-area';
+import { loopsToSvgPathStr } from '../svg/loops-to-svg-path-str';
 
 // the imports below is used in the test cases - see code below
-import { getLoopCentroid } from '../loop/get-loop-centroid.js';
-import { simplifyBounds } from '../loop/simplify-bounds.js';
-import { getLoopBounds } from '../loop/get-loop-bounds.js';
-import { getBoundingBox_ } from '../get-bounding-box-.js';
+import { getLoopCentroid } from '../loop/get-loop-centroid';
+import { simplifyBounds } from '../loop/simplify-bounds';
+import { getLoopBounds } from '../loop/get-loop-bounds';
+import { getBoundingBox_ } from '../get-bounding-box-';
+
+
+interface BooleanOptions {
+    readonly noMicroCorners?: boolean;
+}
 
 
 /**
@@ -40,8 +45,10 @@ import { getBoundingBox_ } from '../get-bounding-box-.js';
  */
 function simplifyPaths(
         bezierLoops: number[][][][],
-        maxCoordinate?: number): Loop[][] {
+        maxCoordinate?: number,
+        options: BooleanOptions = {}): Loop[][] {
 
+    const { noMicroCorners = false } = options;
 
     let timingStart: number;
     if (typeof _debug_ !== 'undefined') {
@@ -216,7 +223,7 @@ function addDebugInfo1(loops: number[][][][]) {
         for (const ps of loop) {
             const lbb   = getBoundingBox_(ps);
             const tbb   = getBoundingBoxTight(ps);
-            const bhull = getBoundingHull(ps)!;
+            const bhull = getBoundingHull(ps, false)!;
             _debug_.generated.elems.bezier_          .push(ps);
             _debug_.generated.elems.looseBoundingBox_.push(lbb);
             _debug_.generated.elems.tightBoundingBox_.push(tbb);

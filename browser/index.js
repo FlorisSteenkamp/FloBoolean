@@ -9219,13 +9219,13 @@ function fromTo(ps, tS, tE) {
 //# sourceMappingURL=from-to.js.map
 ;// CONCATENATED MODULE: ./src/container.ts
 /**
- * Returns true if the container is basic, i.e. contains only 1 interface
+ * Returns true if the container contains only 1 interface
  * intersection or contains only 1 general, extreme or loop intersection
  * (not cusp, or endpoint overlap), false otherwise.
  *
  * @param container
  */
-function containerIsBasic(expMax, container) {
+function containerIsBasic(container) {
     const xs = container.xs;
     if (xs.length <= 2 && xs[0].x.kind !== 7) {
         return true;
@@ -9241,7 +9241,7 @@ function containerIsBasic(expMax, container) {
  * @param in_ the in for which the next exit should be found
  * @param additionalOutsToCheck
  */
-function getNextExit(expMax, in_, originalOut, additionalOutsToCheck, takenOuts) {
+function getNextExit(in_, originalOut, additionalOutsToCheck, takenOuts) {
     const markOutForChecking_ = markOutForChecking(originalOut, takenOuts, additionalOutsToCheck);
     let additionalBezier = undefined;
     let fromCount = 0;
@@ -9280,7 +9280,7 @@ function getNextExit(expMax, in_, originalOut, additionalOutsToCheck, takenOuts)
             }
         }
     } while (true);
-    if (!containerIsBasic(expMax, in_.container)) {
+    if (!containerIsBasic(in_.container)) {
         // if there is multiple intersection pairs then add an additional bezier
         additionalBezier = [in_.p, outToUse.p];
     }
@@ -9308,7 +9308,7 @@ function getBeziersToNextContainer(expMax, out) {
     const endT = in_._x_.x.ri.tS;
     let curCurve = out._x_.curve;
     let curT = out._x_.x.ri.tS;
-    if (!containerIsBasic(expMax, out.container)) {
+    if (!containerIsBasic(out.container)) {
         // we must clip the outgoing curve
         curT = mid(closestPointOnBezierCertified(curCurve.ps, out.p)[0].ri);
     }
@@ -9316,7 +9316,7 @@ function getBeziersToNextContainer(expMax, out) {
     let inBez;
     while (true) {
         if (curCurve === endCurve &&
-            (curT < endT || (curT === endT && beziers.length))) {
+            (curT < endT || (curT === endT && beziers.length !== 0))) {
             inBez = fromTo(curCurve.ps, curT, endT);
             return { beziers, in_, inBez };
         }
@@ -9361,7 +9361,7 @@ function completeLoop(expMax, takenOuts, out) {
         // additionalBeziers whose length is about a trillionth of the max
         // coordinate of loops
         beziers.push(...additionalBeziers);
-        ({ out_, additionalBezier } = getNextExit(expMax, in_, out, additionalOutsToCheck, takenOuts));
+        ({ out_, additionalBezier } = getNextExit(in_, out, additionalOutsToCheck, takenOuts));
         if (additionalBezier) {
             const t = mid(closestPointOnBezierCertified(inBez, additionalBezier[0])[0].ri);
             const inBez_ = fromTo(inBez, 0, t);
@@ -9371,7 +9371,7 @@ function completeLoop(expMax, takenOuts, out) {
         else {
             beziers.push(inBez);
         }
-    } while (out_ !== out /* && ii++ < 100*/);
+    } while (out_ !== out);
     return { beziers, additionalOutsToCheck };
 }
 
@@ -22179,7 +22179,8 @@ function loopsToSvgPathStr(loops) {
  * @param maxCoordinate optional - if not provided, it will be calculated - a
  * wrong value could cause the algorithm to fail
  */
-function simplifyPaths(bezierLoops, maxCoordinate) {
+function simplifyPaths(bezierLoops, maxCoordinate, options = {}) {
+    const { noMicroCorners = false } = options;
     let timingStart;
     if (typeof _debug_ !== 'undefined') {
         timingStart = performance.now();

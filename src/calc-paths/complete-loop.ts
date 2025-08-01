@@ -1,8 +1,8 @@
 import { closestPointOnBezierCertified, fromTo } from 'flo-bezier3';
 import { mid } from 'flo-poly';
-import { InOut } from '../in-out.js';
-import { getNextExit } from './get-next-exit.js';
-import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
+import { InOut } from '../in-out';
+import { getNextExit } from './get-next-exit';
+import { getBeziersToNextContainer } from './get-beziers-to-next-container';
 
 
 /** 
@@ -42,7 +42,7 @@ function completeLoop(
         beziers.push(...additionalBeziers);
 
         ({ out_, additionalBezier } = getNextExit(
-            expMax, in_!, out, additionalOutsToCheck, takenOuts
+            in_!, out, additionalOutsToCheck, takenOuts
         ));
         if (additionalBezier) {
             const t = mid(closestPointOnBezierCertified(inBez, additionalBezier[0])[0].ri);
@@ -52,7 +52,7 @@ function completeLoop(
         } else {
             beziers.push(inBez);
         }
-    } while (out_ !== out/* && ii++ < 100*/);
+    } while (out_ !== out);
 
     return { beziers, additionalOutsToCheck };
 }

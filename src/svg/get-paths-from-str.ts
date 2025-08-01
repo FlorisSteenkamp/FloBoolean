@@ -1,5 +1,5 @@
-import { getBeziersFromRawPaths } from './get-beziers-from-raw-paths.js';
-import { parsePathDataString } from './path-data-polyfill/parse-path-data-string.js';
+import { getBeziersFromRawPaths } from './get-beziers-from-raw-paths';
+import { parsePathDataString } from './path-data-polyfill/parse-path-data-string';
 
 
 /**
