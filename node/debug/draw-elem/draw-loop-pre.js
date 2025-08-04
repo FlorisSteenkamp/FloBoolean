@@ -1,4 +1,4 @@
-import { drawShape } from './draw-shape.js';
+import { drawShape } from './draw-shape';
 function drawLoopPre(g, loop) {
     //const centroid = getLoopCentroid(loop);
     //const area     = getLoopArea(loop);

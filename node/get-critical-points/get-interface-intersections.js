@@ -1,4 +1,4 @@
-import { makeSimpleX } from "./make-simple-x.js";
+import { makeSimpleX } from "./make-simple-x";
 function getInterfaceIntersections(loops) {
     /** all one-sided Xs from */
     const xs = [];
@@ -6,7 +6,7 @@ function getInterfaceIntersections(loops) {
     for (const loop of loops) {
         for (const curve of loop.curves) {
             xs.push([
-                makeSimpleX(1, curve, 4),
+                makeSimpleX(1, curve, 4), // interface
                 makeSimpleX(0, curve.next, 4), // interface
             ]);
         }

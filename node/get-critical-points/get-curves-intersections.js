@@ -2,12 +2,12 @@ import { orient2d } from 'big-float-ts';
 import { createRootExact, mid } from 'flo-poly';
 import { squaredDistanceBetween } from 'flo-vector2d';
 import { isPointOnBezierExtension, getBoundingHull, closestPointOnBezierCertified } from "flo-bezier3";
-import { getOtherTs } from './get-other-t.js';
-import { doConvexPolygonsIntersect } from "../geometry/do-convex-polygons-intersect.js";
-import { getIntersection } from './get-intersection.js';
-import { makeSimpleX } from './make-simple-x.js';
-import { getBoundingBox_ } from '../get-bounding-box-.js';
-import { areBoxesIntersecting } from '../are-boxes-intersecting.js';
+import { getOtherTs } from './get-other-t';
+import { doConvexPolygonsIntersect } from "../geometry/do-convex-polygons-intersect";
+import { getIntersection } from './get-intersection';
+import { makeSimpleX } from './make-simple-x';
+import { getBoundingBox_ } from '../get-bounding-box-';
+import { areBoxesIntersecting } from '../are-boxes-intersecting';
 /**
  * Returns the pairs of intersection `t` values between the curves. Interface
  * intersections may not be returned - they should already be caught.
@@ -33,8 +33,8 @@ function getCurvesIntersections(expMax) {
                 return checkEndpoints(curveA, curveB);
             }
             // check open bounding hulls
-            const bbHullA = getBoundingHull(psA);
-            const bbHullB = getBoundingHull(psB);
+            const bbHullA = getBoundingHull(psA, false);
+            const bbHullB = getBoundingHull(psB, false);
             const hullsIntersectOpen = doConvexPolygonsIntersect(bbHullA, bbHullB, false);
             if (!hullsIntersectOpen) {
                 return checkEndpoints(curveA, curveB);
@@ -51,8 +51,8 @@ function getCurvesIntersections(expMax) {
             return undefined;
         }
         // check closed bounding hulls
-        const bbHullA = getBoundingHull(psA);
-        const bbHullB = getBoundingHull(psB);
+        const bbHullA = getBoundingHull(psA, false);
+        const bbHullB = getBoundingHull(psB, false);
         possiblyIntersecting = doConvexPolygonsIntersect(bbHullA, bbHullB, true);
         if (!possiblyIntersecting) {
             return undefined;
@@ -149,10 +149,10 @@ function getLineLineIntersections(curveA, curveB, expMax) {
         tPair = [0, t1];
     }
     return [[
-            makeSimpleX(1, curveA, 5),
+            makeSimpleX(1, curveA, 5), // exact overlap endpoint
             makeSimpleX(0, curveB, 5), // exact overlap endpoint
         ], [
-            makeSimpleX(tPair[0], curveA, 5),
+            makeSimpleX(tPair[0], curveA, 5), // exact overlap endpoint
             makeSimpleX(tPair[1], curveB, 5) // exact overlap endpoint
         ]];
 }

@@ -1,13 +1,16 @@
 import { squaredDistanceBetween, toLength, fromTo as fromToVect, translate } from "flo-vector2d";
 // import { lengthSquaredUpperBound, isLine, isCubicReallyQuad, toQuadraticFromCubic } from "flo-bezier3";
 import { isReallyPoint, isCubicReallyQuad, cubicToQuadratic, isCollinear, equal } from "flo-bezier3";
-import { areAllPointsDifferent } from "./are-all-points-different.js";
+import { areAllPointsDifferent } from "./are-all-points-different";
 const { abs } = Math;
 /**
  * Returns the same bezier if its points are well-spaced, e.g. all points not
  * coincident, etc., else fix it, if possible, and return the fixed bezier,
  * else return undefined.
- * @param ps A bezier
+ *
+ * @param ps a bezier
+ * @param gridSpacing
+ * @param sendToGrid
  */
 function fixBezierByPointSpacing(ps, gridSpacing, sendToGrid) {
     if (ps === undefined) {
@@ -90,23 +93,6 @@ function fixBezierByPointSpacing(ps, gridSpacing, sendToGrid) {
         (arePsEqual(ps[0], ps[1]) &&
             arePsEqual(ps[2], ps[3]))) {
         return fixBezierByPointSpacing([ps[0], ps[ps.length - 1]], gridSpacing, sendToGrid);
-        /*
-        // Check if first and last point are sufficiently far apart to split
-        // the bezier into a line so that all points differ.
-
-        // TODO2 - is below maybe not correct?
-        //if ((ps[0][0] - ps[3][0]) > (3+1)*gridSpacing ||
-        //    (ps[0][1] - ps[3][1]) > (3+1)*gridSpacing) {
-        if (abs(ps[0][0] - ps[3][0]) > (3+1)*gridSpacing ||
-            abs(ps[0][1] - ps[3][1]) > (3+1)*gridSpacing) {
-
-            return [ps[0], ps[ps.length-1]];
-        } else {
-            // Points are not sufficiently far apart to resolve onto grid -
-            // cannot fix it - it is basically a point.
-
-            return undefined;
-        }*/
     }
     // At this point, either:
     // * only point 0 and point 1 coincides

@@ -20,7 +20,7 @@ function isPoint(ps) {
 function loopFromBeziers(beziers = [], idx) {
     const curves = [];
     const loop = { beziers, curves, idx };
-    if (!beziers.length) {
+    if (beziers.length === 0) {
         return loop;
     }
     let prev = undefined;

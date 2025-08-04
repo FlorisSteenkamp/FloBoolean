@@ -1,4 +1,4 @@
-import { drawElemFunctions } from './draw-elem/draw-elem.js';
+import { drawElemFunctions } from './draw-elem/draw-elem';
 /**
  * Returns a new debug object by spreading boolean operation debug information
  * onto the given (possibly undefined) debug object.

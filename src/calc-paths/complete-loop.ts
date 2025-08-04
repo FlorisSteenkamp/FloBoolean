@@ -30,8 +30,9 @@ function completeLoop(
         takenOuts.add(out_!); // Mark this intersection as taken
         
         const { beziers: additionalBeziers, in_, inBez } = 
-            getBeziersToNextContainer(expMax, out_!);
+            getBeziersToNextContainer(out_!);
         beziers.push(...additionalBeziers);
+        // additionalBeziers;//?
 
         // TODO - it will probably better to remove additionalBezier and just
         // connect the endpoints of adjacent beziers - even if we had near
@@ -44,7 +45,7 @@ function completeLoop(
         ({ out_, additionalBezier } = getNextExit(
             in_!, out, additionalOutsToCheck, takenOuts
         ));
-        if (additionalBezier) {
+        if (additionalBezier !== undefined) {
             const t = mid(closestPointOnBezierCertified(inBez, additionalBezier[0])[0].ri);
             const inBez_ = fromTo(inBez, 0, t);
             beziers.push(inBez_);

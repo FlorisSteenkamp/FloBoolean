@@ -1,4 +1,4 @@
-import { getExtreme } from "./get-extreme.js";
+import { getExtreme } from "./get-extreme";
 // TODO - include all interface points close to the extreme - they are the only
 // important interface points - or are they??
 /**

@@ -337,7 +337,7 @@ function Page(props: Props) {
 				onChanged={showDelayChanged}
 			/> */}
 			<Grid container /*justify="flex-start"*/ spacing={5}>
-				<Grid item>
+				<Grid>
 					<FormControl variant="outlined" style={{ minWidth: '200px' }}>
 					<InputLabel id="select-outlined-label">Shape</InputLabel>
 					<Select

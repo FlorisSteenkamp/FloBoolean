@@ -29,6 +29,11 @@ function completePath(
         out.children = new Set();
         const { beziers, additionalOutsToCheck } = 
             completeLoop(expMax, takenOuts, out);
+
+        // beziers;//?
+        // beziers[1][1] === beziers[2][0];//?
+        // beziers[1][1];//?
+        // beziers[2][0];//?
             
         out.beziers = beziers;
         out.parent!.children = out.parent!.children || new Set();

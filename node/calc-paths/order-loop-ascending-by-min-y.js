@@ -1,4 +1,4 @@
-import { getBounds_ } from "../get-bounds-.js";
+import { getBounds_ } from "../get-bounds-";
 /**
  * Returns < 0 if loopA's topmost point is higher (i.e. smaller) than that of
  * loopB. Using this function in a sort will sort from highest topmost (smallest

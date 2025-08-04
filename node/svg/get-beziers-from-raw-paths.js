@@ -1,22 +1,22 @@
-import { PathState } from './path-state.js';
-import { z } from './path-segment/z.js';
-import { c } from './path-segment/c.js';
-import { s } from './path-segment/s.js';
-import { l } from './path-segment/l.js';
-import { h } from './path-segment/h.js';
-import { v } from './path-segment/v.js';
-import { q } from './path-segment/q.js';
-import { t } from './path-segment/t.js';
-import { a } from './path-segment/a.js';
+import { PathState } from './path-state';
+import { z } from './path-segment/z';
+import { c } from './path-segment/c';
+import { s } from './path-segment/s';
+import { l } from './path-segment/l';
+import { h } from './path-segment/h';
+import { v } from './path-segment/v';
+import { q } from './path-segment/q';
+import { t } from './path-segment/t';
+import { a } from './path-segment/a';
 const pathFs = {
     //a, // elliptical arc
-    c,
-    h,
-    l,
-    q,
-    s,
-    t,
-    v,
+    c, // cubic bezier
+    h, // horizontal line
+    l, // line
+    q, // quadratic bezier
+    s, // cubic bezier (smooth)
+    t, // quadratic bezier (smooth)
+    v, // vertical line
     z // close path
 };
 /**

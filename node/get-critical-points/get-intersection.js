@@ -1,5 +1,5 @@
 import { getEndpointIntersections, evalDeCasteljau, bezierBezierIntersectionBoundless } from "flo-bezier3";
-import { getOtherTs } from './get-other-t.js';
+import { getOtherTs } from './get-other-t';
 /**
  *
  * @param curveA

@@ -1,11 +1,15 @@
 import { isSelfOverlapping } from "flo-bezier3";
-import { toGrid } from "./to-grid.js";
-import { fixBezierByPointSpacing } from "./fix-bezier-by-point-spacing.js";
+import { toGrid } from "./to-grid";
+import { fixBezierByPointSpacing } from "./fix-bezier-by-point-spacing";
 function sendToGrid(expMax, maxBitLength) {
-    return (p) => [
-        toGrid(p[0], expMax, maxBitLength),
-        toGrid(p[1], expMax, maxBitLength)
-    ];
+    return (p) => {
+        const x = toGrid(p[0], expMax, maxBitLength);
+        const y = toGrid(p[1], expMax, maxBitLength);
+        if (x === p[0] && y === p[1]) {
+            return p; // keep point's identity
+        }
+        return [x, y];
+    };
 }
 function sendToGridNoop(p) { return p; }
 /**

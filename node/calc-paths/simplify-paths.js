@@ -1,18 +1,18 @@
 import { getBoundingHull, getBoundingBoxTight } from 'flo-bezier3';
-import { completePath } from './complete-path.js';
-import { getTightestContainingLoop } from './get-tightest-containing-loop.js';
-import { orderLoopAscendingByMinY } from './order-loop-ascending-by-min-y.js';
-import { splitLoopTrees } from './split-loop-trees.js';
-import { getLoopsFromTree } from './get-loops-from-tree.js';
-import { getContainers } from '../calc-containers/get-containers.js';
-import { getOutermostInAndOut } from './get-outermost-in-and-out.js';
-import { reverseOrientation } from '../loop/reverse-orientation.js';
-import { loopFromBeziers } from '../loop/loop.js';
-import { normalizeLoops } from '../loop/normalize/normalize-loop.js';
-import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate.js';
-import { getLoopArea } from '../loop/get-loop-area.js';
-import { loopsToSvgPathStr } from '../svg/loops-to-svg-path-str.js';
-import { getBoundingBox_ } from '../get-bounding-box-.js';
+import { completePath } from './complete-path';
+import { getTightestContainingLoop } from './get-tightest-containing-loop';
+import { orderLoopAscendingByMinY } from './order-loop-ascending-by-min-y';
+import { splitLoopTrees } from './split-loop-trees';
+import { getLoopsFromTree } from './get-loops-from-tree';
+import { getContainers } from '../calc-containers/get-containers';
+import { getOutermostInAndOut } from './get-outermost-in-and-out';
+import { reverseOrientation } from '../loop/reverse-orientation';
+import { loopFromBeziers } from '../loop/loop';
+import { normalizeLoops } from '../loop/normalize/normalize-loop';
+import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate';
+import { getLoopArea } from '../loop/get-loop-area';
+import { loopsToSvgPathStr } from '../svg/loops-to-svg-path-str';
+import { getBoundingBox_ } from '../get-bounding-box-';
 /**
  * Uses the algorithm of Lavanya Subramaniam: PARTITION OF A NON-SIMPLE POLYGON
  * INTO SIMPLE POLYGONS;
@@ -27,7 +27,7 @@ import { getBoundingBox_ } from '../get-bounding-box-.js';
  * @param maxCoordinate optional - if not provided, it will be calculated - a
  * wrong value could cause the algorithm to fail
  */
-function simplifyPaths(bezierLoops, maxCoordinate) {
+function simplifyPaths(bezierLoops, maxCoordinate, options = {}) {
     let timingStart;
     if (typeof _debug_ !== 'undefined') {
         timingStart = performance.now();
@@ -39,18 +39,19 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
      * Higher bitlengths would increase the running time of the algorithm
      * considerably.
      */
-    const maxBitLength = 46;
-    // const maxBitLength = 32;
+    // const maxBitLength = 46;
+    // const maxBitLength = 10;
     maxCoordinate = maxCoordinate || getMaxCoordinate(bezierLoops);
     /** The exponent, e, such that 2**e >= all bezier coordinate points. */
     const expMax = Math.ceil(Math.log2(maxCoordinate));
+    const { maxBitLength = 46, noMicroCorners = false, minLoopArea = (2 ** expMax * 2 ** (-12)) ** 2 } = options;
     const gridSpacing = 2 ** expMax * 2 ** (-maxBitLength);
     /**
      * A size (based on the max value of the tangent) for the containers holding
      * critical points.
      */
     const containerSizeMultiplier = 2 ** 6;
-    // const containerSizeMultiplier = 2**34;
+    // const containerSizeMultiplier = 2**41;
     const containerDim = gridSpacing * containerSizeMultiplier;
     bezierLoops = normalizeLoops(bezierLoops, maxBitLength, expMax, false, true);
     // console.log(bezierLoops)
@@ -68,7 +69,7 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
         takenLoops.add(loop);
         const parent = getTightestContainingLoop(root, loop);
         const container = extremes.get(loop)[0].container;
-        if (!container.inOuts.length) {
+        if (container.inOuts.length === 0) {
             continue;
         }
         const initialOut = getOutermostInAndOut(container);
@@ -76,17 +77,11 @@ function simplifyPaths(bezierLoops, maxCoordinate) {
         initialOut.parent = parent;
         initialOut.windingNum = parent.windingNum + initialOut.orientation;
         initialOut.children = new Set();
-        completePath(expMax, getOutermostInAndOut(container), takenLoops, takenOuts);
+        completePath(expMax, initialOut, takenLoops, takenOuts);
     }
     const loopTrees = splitLoopTrees(root);
     const outSets = loopTrees.map(getLoopsFromTree);
     const loopss = outSets.map(outSet => outSet.map((out, idx) => loopFromOut(out, outSet[0].orientation, idx)));
-    /**
-     * Arbitrarily choose min. loop area to be equal to one square pixel on a
-     * 4096 x 4096 grid.
-     */
-    // const minLoopArea = (2**expMax * 2**(-12))**2;
-    const minLoopArea = (2 ** expMax * 2 ** (-16)) ** 2;
     const loopss_ = [];
     for (let i = 0; i < loopss.length; i++) {
         const loops = loopss[i].filter((loop) => Math.abs(getLoopArea(loop)) > minLoopArea);
@@ -156,7 +151,7 @@ function addDebugInfo1(loops) {
         for (const ps of loop) {
             const lbb = getBoundingBox_(ps);
             const tbb = getBoundingBoxTight(ps);
-            const bhull = getBoundingHull(ps);
+            const bhull = getBoundingHull(ps, false);
             _debug_.generated.elems.bezier_.push(ps);
             _debug_.generated.elems.looseBoundingBox_.push(lbb);
             _debug_.generated.elems.tightBoundingBox_.push(tbb);

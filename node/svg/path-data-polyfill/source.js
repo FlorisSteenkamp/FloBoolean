@@ -1,4 +1,4 @@
-import { parseNumber } from './parse-number.js';
+import { parseNumber } from './parse-number';
 /** @hidden */
 const COMMAND_MAP = {
     Z: "Z", M: "M", L: "L", C: "C", Q: "Q", A: "A", H: "H", V: "V", S: "S", T: "T",

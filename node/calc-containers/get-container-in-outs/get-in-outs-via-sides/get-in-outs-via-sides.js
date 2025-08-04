@@ -1,4 +1,4 @@
-import { getXInOuts } from "./get-x-in-outs.js";
+import { getXInOuts } from "./get-x-in-outs";
 /**
  * Returns the incoming / outgoing curves (as InOuts) for the given container
  * using an extremely small rectangle around the intersections.

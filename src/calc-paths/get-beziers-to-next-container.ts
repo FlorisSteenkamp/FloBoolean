@@ -5,7 +5,6 @@ import { containerIsBasic } from "../container";
 
 
 function getBeziersToNextContainer(
-        expMax: number,
         out: InOut) {
 
     const in_ = out.next!;
@@ -26,6 +25,9 @@ function getBeziersToNextContainer(
             (curT < endT || (curT === endT && beziers.length !== 0))) {
 
             inBez = fromTo(curCurve.ps, curT, endT);
+            curT;//?
+            endT;//?
+            inBez;//?
             return { beziers, in_, inBez }
         } else {
             const ps = fromTo(curCurve.ps, curT, 1);

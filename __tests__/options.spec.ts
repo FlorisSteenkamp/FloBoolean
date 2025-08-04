@@ -17,7 +17,11 @@ test('options', function() {
         const _l1 = _loopss[1];//?
         const l_ = loopss_[0][0].beziers;//?
         
-        expect(_l[0][0] === l_[0][1]).toBe(true);
+        expect(_l0[0][0] === l_[0][1]).toBe(true);
+        expect(_l0[0][0] === _l0[3][1]).toBe(true);
+        expect(_l1[2][1] === l_[4][0]).toBe(true);
+        expect(l_[3][1] === l_[4][0]).toBe(true);
+        expect(_l1[2][1] === l_[3][1]).toBe(true);
     }
 
     {

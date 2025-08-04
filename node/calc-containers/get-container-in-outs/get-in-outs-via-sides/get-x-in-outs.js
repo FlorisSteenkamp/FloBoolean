@@ -1,7 +1,7 @@
 import { eEstimate } from "big-float-ts";
 import { allRootsCertified, refineK1, rootIntervalToExp } from "flo-poly";
 import { getCoeffsBezBez, getIntervalBoxDd } from "flo-bezier3";
-import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting.js";
+import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting";
 function midBox(_x_) {
     return [
         (_x_.x.box[0][0] + _x_.x.box[1][0]) / 2,

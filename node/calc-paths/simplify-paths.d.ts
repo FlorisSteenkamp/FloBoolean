@@ -1,6 +1,14 @@
 import { Loop } from '../loop/loop';
 interface BooleanOptions {
+    /**  */
     readonly noMicroCorners?: boolean;
+    /** defaults to 46 */
+    readonly maxBitLength?: number;
+    /**
+     * * defaults to `(2**expMax * 2**(-12))**2`;
+     * * minimum area of a bezer loop before it will be discarded
+     */
+    readonly minLoopArea?: number;
 }
 /**
  * Uses the algorithm of Lavanya Subramaniam: PARTITION OF A NON-SIMPLE POLYGON

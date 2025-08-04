@@ -1,10 +1,10 @@
-import { containerIsBasic } from "../container.js";
+import { containerIsBasic } from "../container";
 /**
  *
  * @param in_ the in for which the next exit should be found
  * @param additionalOutsToCheck
  */
-function getNextExit(expMax, in_, originalOut, additionalOutsToCheck, takenOuts) {
+function getNextExit(in_, originalOut, additionalOutsToCheck, takenOuts) {
     const markOutForChecking_ = markOutForChecking(originalOut, takenOuts, additionalOutsToCheck);
     let additionalBezier = undefined;
     let fromCount = 0;
@@ -43,7 +43,7 @@ function getNextExit(expMax, in_, originalOut, additionalOutsToCheck, takenOuts)
             }
         }
     } while (true);
-    if (!containerIsBasic(expMax, in_.container)) {
+    if (!containerIsBasic(in_.container)) {
         // if there is multiple intersection pairs then add an additional bezier
         additionalBezier = [in_.p, outToUse.p];
     }
