@@ -1,9 +1,9 @@
-import type { Loop } from './loop';
-import type { Curve } from '../curve/curve';
-import type { IPointOnShape } from '../point-on-shape/point-on-shape';
-import { PointOnShape } from '../point-on-shape/point-on-shape';
+import type { Loop } from './loop.js';
+import type { Curve } from '../curve/curve.js';
+import type { IPointOnShape } from '../point-on-shape/point-on-shape.js';
+import { PointOnShape } from '../point-on-shape/point-on-shape.js';
 import { memoize } from 'flo-memoize';
-import { getBounds_ } from '../get-bounds-';
+import { getBounds_ } from '../get-bounds-.js';
 
 
 const INF = Number.POSITIVE_INFINITY;

@@ -1,7 +1,7 @@
-import type { Curve } from "../curve/curve";
-import type { __X__ } from "../-x-";
+import type { Curve } from "../curve/curve.js";
+import type { __X__ } from "../-x-.js";
 import { getEndpointIntersections, evalDeCasteljau, bezierBezierIntersectionBoundless } from "flo-bezier3";
-import { getOtherTs } from './get-other-t';
+import { getOtherTs } from './get-other-t.js';
 
 
 /**

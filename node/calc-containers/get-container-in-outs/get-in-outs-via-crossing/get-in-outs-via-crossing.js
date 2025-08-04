@@ -1,6 +1,6 @@
 import { orient2d } from "big-float-ts";
 import { getIntervalBox, getHodograph, evalDeCasteljau } from "flo-bezier3";
-import { getInOutsViaSides } from "../get-in-outs-via-sides/get-in-outs-via-sides";
+import { getInOutsViaSides } from "../get-in-outs-via-sides/get-in-outs-via-sides.js";
 /**
  * Returns the incoming / outgoing curves (as InOuts) for the given container.
  * @param container

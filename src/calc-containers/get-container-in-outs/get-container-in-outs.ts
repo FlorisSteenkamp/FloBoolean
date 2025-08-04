@@ -1,7 +1,7 @@
-import { Container } from "../../container";
-import { getInOutsViaSides } from "./get-in-outs-via-sides/get-in-outs-via-sides";
-import { getInOutsViaCrossing } from "./get-in-outs-via-crossing/get-in-outs-via-crossing";
-import { InOut } from "../../in-out";
+import { Container } from "../../container.js";
+import { getInOutsViaSides } from "./get-in-outs-via-sides/get-in-outs-via-sides.js";
+import { getInOutsViaCrossing } from "./get-in-outs-via-crossing/get-in-outs-via-crossing.js";
+import { InOut } from "../../in-out.js";
 
 
 /**

@@ -1,5 +1,5 @@
-import type { Loop } from "../loop/loop";
-import type { __X__ } from "../-x-";
+import type { Loop } from "../loop/loop.js";
+import type { __X__ } from "../-x-.js";
 /**
  *
  * @param loops

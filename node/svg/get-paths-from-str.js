@@ -1,5 +1,5 @@
-import { getBeziersFromRawPaths } from './get-beziers-from-raw-paths';
-import { parsePathDataString } from './path-data-polyfill/parse-path-data-string';
+import { getBeziersFromRawPaths } from './get-beziers-from-raw-paths.js';
+import { parsePathDataString } from './path-data-polyfill/parse-path-data-string.js';
 /**
  * Returns an array of loops with each loop consisting of an array of beziers
  * and each bezier in turn consisting of an array of control points from the

@@ -1,4 +1,4 @@
-import type { Loop } from "./loop";
+import type { Loop } from "./loop.js";
 import { toPowerBasis, toPowerBasis_1stDerivative } from "flo-bezier3";
 import { multiply, add, negate, Horner, integrate } from 'flo-poly';
 

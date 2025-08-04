@@ -1,4 +1,4 @@
-import { IntersectionResult } from '../sweep-line/sweep-line';
+import { IntersectionResult } from '../sweep-line/sweep-line.js';
 
 
 /** 

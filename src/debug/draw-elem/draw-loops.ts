@@ -1,5 +1,5 @@
-import type { Loop } from "../../loop/loop";
-import { drawLoop } from "./draw-loop";
+import type { Loop } from "../../loop/loop.js";
+import { drawLoop } from "./draw-loop.js";
 
 
 function drawLoops(

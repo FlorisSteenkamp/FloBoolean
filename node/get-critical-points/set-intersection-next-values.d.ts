@@ -1,4 +1,4 @@
-import type { __X__ } from "../-x-";
+import type { __X__ } from "../-x-.js";
 /**
  * Set each intersection on the given original loop's `next` and `prev` value.
  *

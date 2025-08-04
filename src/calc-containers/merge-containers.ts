@@ -1,5 +1,5 @@
-import { Container } from "../container";
-import { __X__ } from "../-x-";
+import { Container } from "../container.js";
+import { __X__ } from "../-x-.js";
 
 
 function mergeContainers(ccs: Container[][]) {

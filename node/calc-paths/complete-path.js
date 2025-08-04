@@ -1,4 +1,4 @@
-import { completeLoop } from './complete-loop';
+import { completeLoop } from './complete-loop.js';
 /**
  * Completes the path of a disjoint set of loops, i.e. this function is called
  * for each disjoint set of paths.

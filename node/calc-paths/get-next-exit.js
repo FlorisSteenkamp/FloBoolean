@@ -1,4 +1,4 @@
-import { containerIsBasic } from "../container";
+import { containerIsBasic } from "../container.js";
 /**
  *
  * @param in_ the in for which the next exit should be found

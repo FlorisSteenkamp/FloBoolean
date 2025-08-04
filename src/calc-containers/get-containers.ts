@@ -1,24 +1,24 @@
 declare const _debug_: Debug; 
 
-import { Debug } from '../debug/debug';
-import { Container } from "../container";
-import { areContainersIntersecting } from "./are-containers-intersecting";
-import { TGraph, addEdges, getConnectedComponents } from "../graph/get-connected-components";
-import { getIsolatedComponents } from "./get-isolated-containers";
-import { mergeContainers } from "./merge-containers";
-import { getContainerInOuts } from "./get-container-in-outs/get-container-in-outs";
-import { getIntersections } from "../get-critical-points/get-intersections";
-import { setIntersectionNextValues } from "../get-critical-points/set-intersection-next-values";
-import { Loop } from "../loop/loop";
-import { sweepLine } from "../sweep-line/sweep-line";
-import { getSelfIntersections } from '../get-critical-points/get-self-intersections';
-import { InOut } from '../in-out';
-import { getInterfaceIntersections } from '../get-critical-points/get-interface-intersections';
-import { getExcessiveCurvatures } from '../get-critical-points/get-excessive-curvatures';
-import { getExtremes } from '../get-critical-points/get-extremes';
-import { sendContainersToGrid } from './send-containers-to-grid';
-import { compareOrderedInOut } from './get-container-in-outs/get-in-outs-via-sides/compare-in-out';
-import { filterContainers } from './filter-containers';
+import { Debug } from '../debug/debug.js';
+import { Container } from "../container.js";
+import { areContainersIntersecting } from "./are-containers-intersecting.js";
+import { TGraph, addEdges, getConnectedComponents } from "../graph/get-connected-components.js";
+import { getIsolatedComponents } from "./get-isolated-containers.js";
+import { mergeContainers } from "./merge-containers.js";
+import { getContainerInOuts } from "./get-container-in-outs/get-container-in-outs.js";
+import { getIntersections } from "../get-critical-points/get-intersections.js";
+import { setIntersectionNextValues } from "../get-critical-points/set-intersection-next-values.js";
+import { Loop } from "../loop/loop.js";
+import { sweepLine } from "../sweep-line/sweep-line.js";
+import { getSelfIntersections } from '../get-critical-points/get-self-intersections.js';
+import { InOut } from '../in-out.js';
+import { getInterfaceIntersections } from '../get-critical-points/get-interface-intersections.js';
+import { getExcessiveCurvatures } from '../get-critical-points/get-excessive-curvatures.js';
+import { getExtremes } from '../get-critical-points/get-extremes.js';
+import { sendContainersToGrid } from './send-containers-to-grid.js';
+import { compareOrderedInOut } from './get-container-in-outs/get-in-outs-via-sides/compare-in-out.js';
+import { filterContainers } from './filter-containers.js';
 
 
 /**

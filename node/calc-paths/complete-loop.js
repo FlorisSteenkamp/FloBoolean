@@ -1,7 +1,7 @@
 import { closestPointOnBezierCertified, fromTo } from 'flo-bezier3';
 import { mid } from 'flo-poly';
-import { getNextExit } from './get-next-exit';
-import { getBeziersToNextContainer } from './get-beziers-to-next-container';
+import { getNextExit } from './get-next-exit.js';
+import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
 /**
  * Completes a loop for a specific intersection point entry curve.
  *

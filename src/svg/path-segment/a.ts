@@ -1,5 +1,5 @@
-import { PathState } from "../path-state";
-import { arcToCubicCurves } from "../arc-to-cubic-curves";
+import { PathState } from "../path-state.js";
+import { arcToCubicCurves } from "../arc-to-cubic-curves.js";
 
 
 /** 

@@ -1,7 +1,7 @@
 import { squaredDistanceBetween, toLength, fromTo as fromToVect, translate } from "flo-vector2d";
 // import { lengthSquaredUpperBound, isLine, isCubicReallyQuad, toQuadraticFromCubic } from "flo-bezier3";
 import { isReallyPoint, isCubicReallyQuad, cubicToQuadratic, isCollinear } from "flo-bezier3";
-import { areAllPointsDifferent } from "./are-all-points-different";
+import { areAllPointsDifferent } from "./are-all-points-different.js";
 
 const { abs } = Math;
 

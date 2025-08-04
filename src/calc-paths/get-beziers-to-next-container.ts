@@ -1,7 +1,7 @@
 import { mid } from 'flo-poly';
 import { fromTo, closestPointOnBezierCertified } from "flo-bezier3";
-import { InOut } from "../in-out";
-import { containerIsBasic } from "../container";
+import { InOut } from "../in-out.js";
+import { containerIsBasic } from "../container.js";
 
 
 function getBeziersToNextContainer(

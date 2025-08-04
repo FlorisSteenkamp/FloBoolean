@@ -1,4 +1,4 @@
-import { Container } from '../container';
+import { Container } from '../container.js';
 /**
  * Get initial intersection for the given loop. The loop must be such that
  * an extreme point on the loop forms part of an outermost loop that is outside
@@ -9,5 +9,5 @@ import { Container } from '../container';
  * @param loop
  * @param parent
  */
-declare function getOutermostInAndOut(container: Container): import("../in-out").InOut;
+declare function getOutermostInAndOut(container: Container): import("../in-out.js").InOut;
 export { getOutermostInAndOut };

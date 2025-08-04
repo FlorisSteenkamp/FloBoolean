@@ -1,7 +1,7 @@
 import { curvature, getCurvatureExtrema } from "flo-bezier3";
-import { __X__ } from "../-x-";
-import { Loop } from "../loop/loop";
-import { makeSimpleX } from "./make-simple-x";
+import { __X__ } from "../-x-.js";
+import { Loop } from "../loop/loop.js";
+import { makeSimpleX } from "./make-simple-x.js";
 
 
 const { abs } = Math;

@@ -1,6 +1,6 @@
-import { completeLoop } from './complete-loop';
-import { InOut } from '../in-out';
-import { Loop } from '../loop/loop';
+import { completeLoop } from './complete-loop.js';
+import { InOut } from '../in-out.js';
+import { Loop } from '../loop/loop.js';
 
 
 /**

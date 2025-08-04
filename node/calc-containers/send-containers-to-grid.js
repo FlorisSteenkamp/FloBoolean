@@ -1,4 +1,4 @@
-import { toGrid } from "../loop/normalize/to-grid";
+import { toGrid } from "../loop/normalize/to-grid.js";
 /**
  * Returns the containers from the given containers by sending their boxes to a
  * grid with a smaller bitlength.

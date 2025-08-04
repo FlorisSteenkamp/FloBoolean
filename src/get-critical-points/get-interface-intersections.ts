@@ -1,6 +1,6 @@
-import type { Loop } from "../loop/loop";
-import type { __X__ } from "../-x-";
-import { makeSimpleX } from "./make-simple-x";
+import type { Loop } from "../loop/loop.js";
+import type { __X__ } from "../-x-.js";
+import { makeSimpleX } from "./make-simple-x.js";
 
 
 function getInterfaceIntersections(loops: Loop[]): __X__[][] {

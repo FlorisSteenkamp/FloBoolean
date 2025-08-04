@@ -1,7 +1,7 @@
-import { type X } from './x';
-import { Container } from './container';
-import { InOut } from './in-out';
-import { Curve } from './curve/curve';
+import { type X } from './x.js';
+import { Container } from './container.js';
+import { InOut } from './in-out.js';
+import { Curve } from './curve/curve.js';
 
 
 /** 

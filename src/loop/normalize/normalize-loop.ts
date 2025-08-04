@@ -1,6 +1,6 @@
 import { bitLength } from 'big-float-ts';
-import { fixBeziers } from "./fix-beziers";
-import { toGrid } from './to-grid';
+import { fixBeziers } from "./fix-beziers.js";
+import { toGrid } from './to-grid.js';
 
 
 /**

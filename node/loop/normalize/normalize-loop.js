@@ -1,6 +1,6 @@
 import { bitLength } from 'big-float-ts';
-import { fixBeziers } from "./fix-beziers";
-import { toGrid } from './to-grid';
+import { fixBeziers } from "./fix-beziers.js";
+import { toGrid } from './to-grid.js';
 /**
  * Returns new loops from the given loops by aligning the 53-bit double
  * precision coordinates to 46-bit coordinates. This speeds up the algorithm

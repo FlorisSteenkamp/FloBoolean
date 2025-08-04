@@ -1,4 +1,4 @@
-import { InOut } from "../in-out";
+import { InOut } from "../in-out.js";
 /**
  *
  * @param in_ the in for which the next exit should be found

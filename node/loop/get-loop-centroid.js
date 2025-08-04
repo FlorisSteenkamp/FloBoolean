@@ -1,6 +1,6 @@
 import { toPowerBasis, toPowerBasis_1stDerivative } from "flo-bezier3";
 import { Horner, multiply, integrate } from 'flo-poly';
-import { getLoopArea } from "./get-loop-area";
+import { getLoopArea } from "./get-loop-area.js";
 /**
  * Returns the approximate centroid of the given loop
  *

@@ -1,14 +1,14 @@
 import { drawFs } from 'flo-draw';
-import { drawMinY } from './draw-min-y';
-import { drawLoop } from './draw-loop';
-import { drawLoops } from './draw-loops';
-import { drawIntersection } from './draw-intersection';
-import { drawContainer } from './draw-container';
-import { drawLooseBoundingBox } from './draw-loose-bounding-box';
-import { drawTightBoundingBox } from './draw-tight-bounding-box';
-import { drawBoundingHull } from './draw-bounding-hull';
-import { drawLoopPre } from './draw-loop-pre';
-import { drawLoopsPre } from './draw-loops-pre';
+import { drawMinY } from './draw-min-y.js';
+import { drawLoop } from './draw-loop.js';
+import { drawLoops } from './draw-loops.js';
+import { drawIntersection } from './draw-intersection.js';
+import { drawContainer } from './draw-container.js';
+import { drawLooseBoundingBox } from './draw-loose-bounding-box.js';
+import { drawTightBoundingBox } from './draw-tight-bounding-box.js';
+import { drawBoundingHull } from './draw-bounding-hull.js';
+import { drawLoopPre } from './draw-loop-pre.js';
+import { drawLoopsPre } from './draw-loops-pre.js';
 const drawElemFunctions = {
     minY: drawMinY,
     loop: drawLoop,

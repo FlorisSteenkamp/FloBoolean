@@ -1,4 +1,4 @@
-import { makeSimpleX } from "./make-simple-x";
+import { makeSimpleX } from "./make-simple-x.js";
 function getInterfaceIntersections(loops) {
     /** all one-sided Xs from */
     const xs = [];

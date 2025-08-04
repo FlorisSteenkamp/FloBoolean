@@ -1,5 +1,5 @@
-import { Container } from "../../container";
-import { InOut } from "../../in-out";
+import { Container } from "../../container.js";
+import { InOut } from "../../in-out.js";
 /**
  * * **warning** ioIdx will be modified by this function
  *

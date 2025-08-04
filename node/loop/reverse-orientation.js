@@ -1,5 +1,5 @@
 import { reverse } from 'flo-bezier3';
-import { loopFromBeziers } from './loop';
+import { loopFromBeziers } from './loop.js';
 /**
  * Returns a completely reversed loop of the given bezier loop.
  * @param loop

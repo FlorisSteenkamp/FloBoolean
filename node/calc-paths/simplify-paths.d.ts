@@ -1,4 +1,4 @@
-import { Loop } from '../loop/loop';
+import { Loop } from '../loop/loop.js';
 interface BooleanOptions {
     /**  */
     readonly noMicroCorners?: boolean;

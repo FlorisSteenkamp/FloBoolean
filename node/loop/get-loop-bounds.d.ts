@@ -1,5 +1,5 @@
-import type { Loop } from './loop';
-import type { IPointOnShape } from '../point-on-shape/point-on-shape';
+import type { Loop } from './loop.js';
+import type { IPointOnShape } from '../point-on-shape/point-on-shape.js';
 /**
  * Returns the bounds of the given loop - used in tests only.
  */

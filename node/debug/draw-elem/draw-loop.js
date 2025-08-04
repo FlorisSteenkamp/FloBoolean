@@ -1,9 +1,9 @@
 import { drawFs } from 'flo-draw';
-import { getLoopArea } from '../../loop/get-loop-area';
-import { getLoopCentroid } from '../../loop/get-loop-centroid';
-import { getLoopBounds } from '../../loop/get-loop-bounds';
-import { simplifyBounds } from '../../loop/simplify-bounds';
-import { drawShape } from './draw-shape';
+import { getLoopArea } from '../../loop/get-loop-area.js';
+import { getLoopCentroid } from '../../loop/get-loop-centroid.js';
+import { getLoopBounds } from '../../loop/get-loop-bounds.js';
+import { simplifyBounds } from '../../loop/simplify-bounds.js';
+import { drawShape } from './draw-shape.js';
 function drawLoop(g, loop) {
     const centroid = getLoopCentroid(loop);
     const area = getLoopArea(loop);

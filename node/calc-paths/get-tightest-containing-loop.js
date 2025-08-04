@@ -1,4 +1,4 @@
-import { isLoopInLoop } from './is-loop-in-loop';
+import { isLoopInLoop } from './is-loop-in-loop.js';
 /**
  * @param root
  * @param loop

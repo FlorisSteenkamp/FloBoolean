@@ -1,4 +1,4 @@
-import { InOut } from "../in-out";
+import { InOut } from "../in-out.js";
 /**
  * Returns an array of LoopTrees from the given LoopTree where each returned
  * LoopTree is one of the nodes of the tree. Nodes with winding number absolute

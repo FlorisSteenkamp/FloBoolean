@@ -1,8 +1,8 @@
 import { flatCoefficients, allRoots } from 'flo-poly';
 import { toPowerBasis, tangent, evalDeCasteljau } from 'flo-bezier3';
 import { toUnitVector, translate } from 'flo-vector2d';
-import { getBoundingBox_ } from '../get-bounding-box-';
-import { getBounds_ } from '../get-bounds-';
+import { getBoundingBox_ } from '../get-bounding-box-.js';
+import { getBounds_ } from '../get-bounds-.js';
 
 
 // TODO - remove delta by basing isLoopInLoop on a solid numerical analytic 

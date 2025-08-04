@@ -1,5 +1,5 @@
-import { getMinY } from "../loop/get-min-y";
-import { makeSimpleX } from "./make-simple-x";
+import { getMinY } from "../loop/get-min-y.js";
+import { makeSimpleX } from "./make-simple-x.js";
 /**
  * Get an extreme point (point with minimum y value) of the given loop.
  *

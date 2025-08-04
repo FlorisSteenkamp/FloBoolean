@@ -1,4 +1,4 @@
-import { PathState } from "../path-state";
+import { PathState } from "../path-state.js";
 
 
 /**

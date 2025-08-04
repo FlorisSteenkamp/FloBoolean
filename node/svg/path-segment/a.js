@@ -1,4 +1,4 @@
-import { arcToCubicCurves } from "../arc-to-cubic-curves";
+import { arcToCubicCurves } from "../arc-to-cubic-curves.js";
 /**
  * @hidden
  * A and a: (from www.w3.org)

@@ -1,4 +1,4 @@
-import { PathState } from '../path-state';
+import { PathState } from '../path-state.js';
 /**
  * @hidden
  * Z and z: (from www.w3.org)

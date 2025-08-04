@@ -1,5 +1,5 @@
-import { Container } from "../../../container";
-import { InOut } from "../../../in-out";
+import { Container } from "../../../container.js";
+import { InOut } from "../../../in-out.js";
 /**
  * Returns the incoming / outgoing curves (as InOuts) for the given container.
  * @param container

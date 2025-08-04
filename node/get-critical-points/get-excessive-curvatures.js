@@ -1,5 +1,5 @@
 import { curvature, getCurvatureExtrema } from "flo-bezier3";
-import { makeSimpleX } from "./make-simple-x";
+import { makeSimpleX } from "./make-simple-x.js";
 const { abs } = Math;
 function getExcessiveCurvatures(expMax, loops) {
     /** all one-sided Xs from */

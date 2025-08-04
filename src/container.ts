@@ -1,5 +1,5 @@
-import { __X__ } from "./-x-";
-import { InOut } from "./in-out";
+import { __X__ } from "./-x-.js";
+import { InOut } from "./in-out.js";
 
 
 /**

@@ -1,7 +1,7 @@
-import { __X__ } from "../-x-";
-import { Container } from "../container";
-import { IPointOnShape } from "../point-on-shape/point-on-shape";
-import { Loop } from "../loop/loop";
+import { __X__ } from "../-x-.js";
+import { Container } from "../container.js";
+import { IPointOnShape } from "../point-on-shape/point-on-shape.js";
+import { Loop } from "../loop/loop.js";
 
 
 interface IDebugElems {

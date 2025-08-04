@@ -1,5 +1,5 @@
-import { simplifyPaths } from '../src/calc-paths/simplify-paths';
-import { getPathsFromStr } from '../src/svg/get-paths-from-str';
+import { simplifyPaths } from '../src/calc-paths/simplify-paths.js';
+import { getPathsFromStr } from '../src/svg/get-paths-from-str.js';
 
 
 test('options', function() {

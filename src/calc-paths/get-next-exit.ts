@@ -1,5 +1,5 @@
-import { InOut } from "../in-out";
-import { containerIsBasic } from "../container";
+import { InOut } from "../in-out.js";
+import { containerIsBasic } from "../container.js";
 
 
 /**

@@ -1,8 +1,8 @@
 import { closestPointOnBezierCertified, fromTo } from 'flo-bezier3';
 import { mid } from 'flo-poly';
-import { InOut } from '../in-out';
-import { getNextExit } from './get-next-exit';
-import { getBeziersToNextContainer } from './get-beziers-to-next-container';
+import { InOut } from '../in-out.js';
+import { getNextExit } from './get-next-exit.js';
+import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
 
 
 /** 

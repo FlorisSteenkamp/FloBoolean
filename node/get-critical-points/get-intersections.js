@@ -1,6 +1,6 @@
-import { sweepLine } from '../sweep-line/sweep-line';
-import { getCurvesIntersections } from './get-curves-intersections';
-import { getBoundingBox_ } from '../get-bounding-box-';
+import { sweepLine } from '../sweep-line/sweep-line.js';
+import { getCurvesIntersections } from './get-curves-intersections.js';
+import { getBoundingBox_ } from '../get-bounding-box-.js';
 /**
  * Find and return all one-sided intersections on all given loops as a map from
  * each curve to an array of intersections on the curve, ordered by t value.

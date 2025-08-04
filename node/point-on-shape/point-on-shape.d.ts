@@ -1,4 +1,4 @@
-import { Curve } from '../curve/curve';
+import { Curve } from '../curve/curve.js';
 interface IPointOnShape {
     /** The Curve on the shape boundary this points belong to. */
     curve: Curve;

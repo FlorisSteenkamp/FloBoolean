@@ -1,4 +1,4 @@
-import type { Curve } from '../curve/curve';
+import type { Curve } from '../curve/curve.js';
 /**
  * Represents a two-way linked loop of [[ICurve]]s - mostly used internally to
  * conveniently represent shape boundaries.

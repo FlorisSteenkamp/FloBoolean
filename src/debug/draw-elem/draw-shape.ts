@@ -1,6 +1,6 @@
-import { DEFAULT_CLASS } from './default-class';
-import { XMLNS } from './xmlns';
-import { beziersToSvgPathStr } from '../../svg/beziers-to-svg-path-str'
+import { DEFAULT_CLASS } from './default-class.js';
+import { XMLNS } from './xmlns.js';
+import { beziersToSvgPathStr } from '../../svg/beziers-to-svg-path-str.js'
 
 
 // TODO - move to flo-draw

@@ -1,6 +1,6 @@
-import type { Loop } from "../loop/loop";
-import type { __X__ } from "../-x-";
-import { getExtreme } from "./get-extreme";
+import type { Loop } from "../loop/loop.js";
+import type { __X__ } from "../-x-.js";
+import { getExtreme } from "./get-extreme.js";
 
 
 // TODO - include all interface points close to the extreme - they are the only

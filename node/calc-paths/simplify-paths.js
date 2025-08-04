@@ -1,18 +1,18 @@
 import { getBoundingHull, getBoundingBoxTight } from 'flo-bezier3';
-import { completePath } from './complete-path';
-import { getTightestContainingLoop } from './get-tightest-containing-loop';
-import { orderLoopAscendingByMinY } from './order-loop-ascending-by-min-y';
-import { splitLoopTrees } from './split-loop-trees';
-import { getLoopsFromTree } from './get-loops-from-tree';
-import { getContainers } from '../calc-containers/get-containers';
-import { getOutermostInAndOut } from './get-outermost-in-and-out';
-import { reverseOrientation } from '../loop/reverse-orientation';
-import { loopFromBeziers } from '../loop/loop';
-import { normalizeLoops } from '../loop/normalize/normalize-loop';
-import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate';
-import { getLoopArea } from '../loop/get-loop-area';
-import { loopsToSvgPathStr } from '../svg/loops-to-svg-path-str';
-import { getBoundingBox_ } from '../get-bounding-box-';
+import { completePath } from './complete-path.js';
+import { getTightestContainingLoop } from './get-tightest-containing-loop.js';
+import { orderLoopAscendingByMinY } from './order-loop-ascending-by-min-y.js';
+import { splitLoopTrees } from './split-loop-trees.js';
+import { getLoopsFromTree } from './get-loops-from-tree.js';
+import { getContainers } from '../calc-containers/get-containers.js';
+import { getOutermostInAndOut } from './get-outermost-in-and-out.js';
+import { reverseOrientation } from '../loop/reverse-orientation.js';
+import { loopFromBeziers } from '../loop/loop.js';
+import { normalizeLoops } from '../loop/normalize/normalize-loop.js';
+import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate.js';
+import { getLoopArea } from '../loop/get-loop-area.js';
+import { loopsToSvgPathStr } from '../svg/loops-to-svg-path-str.js';
+import { getBoundingBox_ } from '../get-bounding-box-.js';
 /**
  * Uses the algorithm of Lavanya Subramaniam: PARTITION OF A NON-SIMPLE POLYGON
  * INTO SIMPLE POLYGONS;

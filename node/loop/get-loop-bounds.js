@@ -1,6 +1,6 @@
-import { PointOnShape } from '../point-on-shape/point-on-shape';
+import { PointOnShape } from '../point-on-shape/point-on-shape.js';
 import { memoize } from 'flo-memoize';
-import { getBounds_ } from '../get-bounds-';
+import { getBounds_ } from '../get-bounds-.js';
 const INF = Number.POSITIVE_INFINITY;
 /**
  * Returns the bounds of the given loop - used in tests only.

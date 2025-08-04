@@ -1,5 +1,5 @@
-import type { IDebugElems } from './debug-elem-types';
-import { TDrawElemFunctions } from './draw-elem/draw-elem';
+import type { IDebugElems } from './debug-elem-types.js';
+import { TDrawElemFunctions } from './draw-elem/draw-elem.js';
 type GeneratedElems = {
     [T in keyof IDebugElems]: IDebugElems[T][];
 };

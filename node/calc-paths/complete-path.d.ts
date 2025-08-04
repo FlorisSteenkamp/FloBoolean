@@ -1,5 +1,5 @@
-import { InOut } from '../in-out';
-import { Loop } from '../loop/loop';
+import { InOut } from '../in-out.js';
+import { Loop } from '../loop/loop.js';
 /**
  * Completes the path of a disjoint set of loops, i.e. this function is called
  * for each disjoint set of paths.

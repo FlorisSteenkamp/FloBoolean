@@ -1,4 +1,4 @@
-import { InOut } from '../in-out';
+import { InOut } from '../in-out.js';
 /**
  * Completes a loop for a specific intersection point entry curve.
  *

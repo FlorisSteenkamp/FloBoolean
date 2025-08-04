@@ -1,4 +1,4 @@
-import { drawLoop } from "./draw-loop";
+import { drawLoop } from "./draw-loop.js";
 function drawLoops(g, loops) {
     const $svgs = [];
     for (const loop of loops) {

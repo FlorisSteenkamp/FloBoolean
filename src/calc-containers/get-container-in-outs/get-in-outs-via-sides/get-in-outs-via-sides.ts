@@ -1,8 +1,8 @@
-import { Container } from "../../../container";
-import { getXInOuts } from "./get-x-in-outs";
-import { __X__ } from "../../../-x-";
-import { Curve } from "../../../curve/curve";
-import { InOut } from "../../../in-out";
+import { Container } from "../../../container.js";
+import { getXInOuts } from "./get-x-in-outs.js";
+import { __X__ } from "../../../-x-.js";
+import { Curve } from "../../../curve/curve.js";
+import { InOut } from "../../../in-out.js";
 
 
 /**

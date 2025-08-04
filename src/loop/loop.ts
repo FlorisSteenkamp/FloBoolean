@@ -1,4 +1,4 @@
-import type { Curve } from '../curve/curve';
+import type { Curve } from '../curve/curve.js';
 
 
 /**

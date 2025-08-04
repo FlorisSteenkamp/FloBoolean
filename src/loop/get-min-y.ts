@@ -1,4 +1,4 @@
-import type { Loop } from './loop';
+import type { Loop } from './loop.js';
 import { getYBoundsTight } from 'flo-bezier3';
 import { memoize } from 'flo-memoize';
 

@@ -1,4 +1,4 @@
-import { Curve } from './curve/curve';
+import { Curve } from './curve/curve.js';
 
 
 interface Maps {

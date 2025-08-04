@@ -1,4 +1,4 @@
-import { drawLoopPre } from "./draw-loop-pre";
+import { drawLoopPre } from "./draw-loop-pre.js";
 
 
 function drawLoopsPre(

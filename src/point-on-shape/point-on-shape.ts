@@ -1,5 +1,5 @@
 import { evalDeCasteljau } from 'flo-bezier3';
-import { Curve } from '../curve/curve';
+import { Curve } from '../curve/curve.js';
 
 
 interface IPointOnShape {
