@@ -3,8 +3,8 @@ declare const _debug_: Debug;
 import { squaredDistanceBetweenPointAndLineSegment } from 'flo-vector2d';
 import { evalDeCasteljau, length } from 'flo-bezier3';
 import { drawFs } from 'flo-draw';
-import { Debug } from '../../../src/debug/debug.js';
-import { Loop } from '../../../src/index.js';
+import { Debug } from '../../../src/debug/debug';
+import { Loop } from '../../../src/index';
 
 
 function logNearestLoopsPost(

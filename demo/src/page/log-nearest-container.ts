@@ -1,7 +1,7 @@
 declare const _debug_: Debug; 
 
-import { Debug } from '../../../src/debug/debug.js';
-import { Container } from '../../../src/container.js';
+import { Debug } from '../../../src/debug/debug';
+import { Container, containerIsBasic } from '../../../src/container';
 import { squaredDistanceBetween } from 'flo-vector2d';
 
 
@@ -29,6 +29,8 @@ function logNearestContainer(g: SVGGElement, p: number[], showDelay = 1000) {
             bestDistance = dSquared;
         }
     }
+
+    console.log(`isBasic: ${containerIsBasic(bestContainer!)}`);
     
     _debug_.fs.drawElem.container(/*_debug_.generated.*/g, bestContainer!, '', showDelay);
     console.log(bestContainer!);

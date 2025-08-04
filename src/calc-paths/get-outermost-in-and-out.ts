@@ -21,11 +21,11 @@ function getOutermostInAndOut(container: Container) {
         firstInOut.orientation = -1; // anti-clockwise
 
         return firstInOut;
-    } else {
-        lastInOut.orientation = +1;
-        
-        return lastInOut;
     }
+     
+    lastInOut.orientation = +1;
+        
+    return lastInOut;
 }
 
 

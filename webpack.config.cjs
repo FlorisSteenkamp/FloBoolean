@@ -1,13 +1,7 @@
 // const CircularDependencyPlugin = require('circular-dependency-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const path = require('path');
-
-
-const extensions = [
-    '.js', '.mjs', '.cjs', 
-    '.jsx', '.cjsx', '.mjsx'
-];
 
 
 const config_Basic = {
@@ -45,14 +39,14 @@ const config_Basic = {
     },
     plugins: [
         // new BundleAnalyzerPlugin({ analyzerPort: 9090 }),
-        new CircularDependencyPlugin({
-            // exclude detection of files based on a RegExp
-            exclude: /node_modules/,
-            // add errors to webpack instead of warnings
-            failOnError: true,
-            // set the current working directory for displaying module paths
-            cwd: process.cwd(),
-        })
+        // new CircularDependencyPlugin({
+        //     // exclude detection of files based on a RegExp
+        //     exclude: /node_modules/,
+        //     // add errors to webpack instead of warnings
+        //     failOnError: true,
+        //     // set the current working directory for displaying module paths
+        //     cwd: process.cwd(),
+        // })
     ],
     output: {
         path: path.resolve(__dirname, 'browser'),

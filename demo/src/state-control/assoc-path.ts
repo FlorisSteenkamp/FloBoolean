@@ -1,4 +1,4 @@
-import { assoc } from "./assoc.js";
+import { assoc } from "./assoc";
 
 
 function assocPath(

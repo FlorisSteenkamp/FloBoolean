@@ -1,4 +1,4 @@
-import type { Loop } from "../loop/loop.js";
-import type { __X__ } from "../-x-.js";
+import type { Loop } from "../loop/loop";
+import type { __X__ } from "../-x-";
 declare function getInterfaceIntersections(loops: Loop[]): __X__[][];
 export { getInterfaceIntersections };

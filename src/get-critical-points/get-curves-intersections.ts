@@ -46,8 +46,8 @@ function getCurvesIntersections(expMax: number) {
         }
         
         // check open bounding hulls
-        const bbHullA = getBoundingHull(psA)!;
-        const bbHullB = getBoundingHull(psB)!;
+        const bbHullA = getBoundingHull(psA, false)!;
+        const bbHullB = getBoundingHull(psB, false)!;
         const hullsIntersectOpen = doConvexPolygonsIntersect(
             bbHullA, bbHullB, false
         );
@@ -71,8 +71,8 @@ function getCurvesIntersections(expMax: number) {
     if (!possiblyIntersecting) { return undefined; }
 
     // check closed bounding hulls
-    const bbHullA = getBoundingHull(psA)!;
-    const bbHullB = getBoundingHull(psB)!;
+    const bbHullA = getBoundingHull(psA, false)!;
+    const bbHullB = getBoundingHull(psB, false)!;
     possiblyIntersecting = doConvexPolygonsIntersect(bbHullA, bbHullB, true);
     if (!possiblyIntersecting) { return undefined; }
 

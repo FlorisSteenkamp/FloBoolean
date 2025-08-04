@@ -1,11 +1,7 @@
-const path = require('path');
-const CircularDependencyPlugin = require('circular-dependency-plugin');
-const ResolveTypeScriptPlugin = require("resolve-typescript-plugin");
+// const CircularDependencyPlugin = require('circular-dependency-plugin');
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-const extensions = [
-    '.js', '.mjs', '.cjs', 
-    '.jsx', '.cjsx', '.mjsx'
-];
+const path = require('path');
 
 module.exports = {
     // mode: 'production',
@@ -13,19 +9,26 @@ module.exports = {
     entry: './src/app.tsx',
     devtool: 'eval-source-map',
     resolve: {
-        extensions,
-        plugins: [new ResolveTypeScriptPlugin({
-            includeNodeModules: false
-        })]
+        extensions: [
+            '.js', '.mjs', '.cjs', 
+            '.jsx', '.cjsx', '.mjsx',
+            '.tsx', '.ts', '.d.ts'
+        ],
+        extensionAlias: {
+            ".js": [".js", ".ts"],
+            ".cjs": [".cjs", ".cts"],
+            ".mjs": [".mjs", ".mts"]
+        },
+        alias: {}
     },
     module: {
-        rules: [
-            {
-                test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
-            }
-        ]
+        rules: [{
+            test: /\.tsx?$/,
+            loader: 'ts-loader',
+            options: { silent: true },
+            exclude: /node_modules/,
+            sideEffects: false
+        }]
     },
     stats: {
         // Don't display anything, then add back colors, ...

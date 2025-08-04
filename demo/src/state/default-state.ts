@@ -1,10 +1,10 @@
-import { AppState } from './app-state.js';
-// import { vectors } from './vectors.js';
-import { TransientState } from './transient-state.js';
-import { PageState } from './page-state.js';
-import { createEmptyGeneratedSvgs } from './create-empty-generated-svgs.js';
-import { IDebugElems } from '../../../src/debug/debug-elem-types.js';
-import { DeducedState } from './deduced-state.js';
+import { AppState } from './app-state';
+// import { vectors } from './vectors';
+import { TransientState } from './transient-state';
+import { PageState } from './page-state';
+import { createEmptyGeneratedSvgs } from './create-empty-generated-svgs';
+import { IDebugElems } from '../../../src/debug/debug-elem-types';
+import { DeducedState } from './deduced-state';
 
 
 const defaultTransientState: TransientState = {

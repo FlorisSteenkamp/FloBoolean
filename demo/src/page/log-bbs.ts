@@ -2,7 +2,7 @@ declare const _debug_: Debug;
 
 import { squaredDistanceBetween, centroid } from 'flo-vector2d';
 import { closestPointOnBezier } from 'flo-bezier3';
-import { Debug } from '../../../src/debug/debug.js';
+import { Debug } from '../../../src/debug/debug';
 import { drawFs } from 'flo-draw';
 
 

@@ -3,24 +3,24 @@ declare const _debug_: Debug;
 import * as React from 'react';
 import { useRef, useEffect } from 'react';
 import { Container, FormControl, InputLabel, MenuItem, Select, Grid } from '@mui/material';
-import { StateControl } from '../state-control/state-control.js';
-import { Debug, IDebugElems } from '../../../src/index.js';
-import { ToDraw } from '../state/to-draw.js';
-import { deleteSvgs } from './delete-svgs.js';
-import { Checkbox } from '../components/simple-checkbox.js';
-import { vectors } from '../state/vectors.js';
-import { ClickFor, PageState } from '../state/page-state.js';
-import { loadDeducedProps, loadPath } from './load-deduced-props.js';
-import { getViewBoxForShape, toViewBoxStr } from './viewbox.js';
-import { logNearestContainer } from './log-nearest-container.js';
-import { logNearestBezierPre, logLooseBb_, logTightBb_, logBHull_ } from './log-bbs.js';
-import { ButtonGroup } from '../components/simple-button-group.js';
-import { logNearestBezierPost } from './log-nearest-bezier-post.js';
-import { logNearestLoopsPost } from './log-nearest-loops-post.js';
-import { logNearestLoopPost } from './log-nearest-loop-post.js';
-import { logNearestLoopPre } from './log-nearest-loop-pre.js'
+import { StateControl } from '../state-control/state-control';
+import { Debug, IDebugElems } from '../../../src/index';
+import { ToDraw } from '../state/to-draw';
+import { deleteSvgs } from './delete-svgs';
+import { Checkbox } from '../components/simple-checkbox';
+import { vectors } from '../state/vectors';
+import { ClickFor, PageState } from '../state/page-state';
+import { loadDeducedProps, loadPath } from './load-deduced-props';
+import { getViewBoxForShape, toViewBoxStr } from './viewbox';
+import { logNearestContainer } from './log-nearest-container';
+import { logNearestBezierPre, logLooseBb_, logTightBb_, logBHull_ } from './log-bbs';
+import { ButtonGroup } from '../components/simple-button-group';
+import { logNearestBezierPost } from './log-nearest-bezier-post';
+import { logNearestLoopsPost } from './log-nearest-loops-post';
+import { logNearestLoopPost } from './log-nearest-loop-post';
+import { logNearestLoopPre } from './log-nearest-loop-pre'
 import { SelectChangeEvent } from '@mui/material/Select';
-import { gotoPrevViewbox } from './goto-prev-viewbox.js';
+import { gotoPrevViewbox } from './goto-prev-viewbox';
 
 
 const toDrawCheckboxStyles = { 

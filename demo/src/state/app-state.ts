@@ -1,4 +1,4 @@
-import { PageState } from "./page-state.js";
+import { PageState } from "./page-state";
 
 
 /**

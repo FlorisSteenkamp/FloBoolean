@@ -1,4 +1,4 @@
-import { InOut } from "../../../in-out.js";
+import { InOut } from "../../../in-out";
 /**
  *
  * @param inOutA

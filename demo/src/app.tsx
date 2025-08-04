@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { _upd } from './state-control/upd.js';
-import { State } from './state/state.js';
-import { StateControl } from './state-control/state-control.js';
-import { getInitialState } from './state/get-initial-state.js';
-import { defaultTransientState } from './state/default-state.js';
-import { Page } from './page/page.js';
+import { _upd } from './state-control/upd';
+import { State } from './state/state';
+import { StateControl } from './state-control/state-control';
+import { getInitialState } from './state/get-initial-state';
+import { defaultTransientState } from './state/default-state';
+import { Page } from './page/page';
 import { createRoot } from 'react-dom/client';
 
 

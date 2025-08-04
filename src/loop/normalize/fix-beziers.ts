@@ -4,10 +4,16 @@ import { fixBezierByPointSpacing } from "./fix-bezier-by-point-spacing";
 
 
 function sendToGrid(expMax: number, maxBitLength: number) {
-    return (p: number[]) => [
-        toGrid(p[0], expMax, maxBitLength),
-        toGrid(p[1], expMax, maxBitLength)
-    ];
+    return (p: number[]) => {
+        const x = toGrid(p[0], expMax, maxBitLength);
+        const y = toGrid(p[1], expMax, maxBitLength);
+
+        if (x === p[0] && y === p[1]) {
+            return p;  // keep point's identity
+        }
+
+        return [x,y];
+    };
 }
 
 

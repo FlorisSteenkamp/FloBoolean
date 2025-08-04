@@ -1,9 +1,9 @@
-import type { Loop } from './loop.js';
+import type { Loop } from './loop';
 /**
  *
  */
 declare const getMinY: (a: Loop) => {
-    curve: import("../curve/curve.js").Curve;
-    y: import("flo-bezier3/node/global-properties/bounds/bounds.js").Bound;
+    curve: import("..").Curve;
+    y: import("flo-bezier3").Bound;
 };
 export { getMinY };

@@ -31,7 +31,9 @@ function completeLoop(
         
         const { beziers: additionalBeziers, in_, inBez } = 
             getBeziersToNextContainer(expMax, out_!);
-        // TODO - it will probably better to remove additionalBeziers and just
+        beziers.push(...additionalBeziers);
+
+        // TODO - it will probably better to remove additionalBezier and just
         // connect the endpoints of adjacent beziers - even if we had near
         // exact coordinates (think quad or better precision) of intersections
         // they are still not returned as algebraic numbers so we can never have
@@ -39,8 +41,6 @@ function completeLoop(
         // intersection coordinates, hence we might as well remove 
         // additionalBeziers whose length is about a trillionth of the max
         // coordinate of loops
-        beziers.push(...additionalBeziers);
-
         ({ out_, additionalBezier } = getNextExit(
             in_!, out, additionalOutsToCheck, takenOuts
         ));

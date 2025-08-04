@@ -1,8 +1,8 @@
-import { StateControl } from '../state-control/state-control.js';
-import { getPathsFromStr, simplifyPaths } from '../../../src/index.js'
+import { StateControl } from '../state-control/state-control';
+import { getPathsFromStr, simplifyPaths } from '../../../src/index'
 // import { vectors } from '../state/vectors';
-import { updDebugGlobal } from "./upd-debug-global.js";
-import { toViewBoxStr, getViewBoxForShape } from './viewbox.js';
+import { updDebugGlobal } from "./upd-debug-global";
+import { toViewBoxStr, getViewBoxForShape } from './viewbox';
 
 
 const IS_DEBUG_ON = true;
@@ -11,7 +11,7 @@ const IS_DEBUG_ON = true;
 async function loadPath(vectorName: string) {
     // const vector = vectors.find(vector => vector === vectorName);
     // const str = await (await fetch(vector.url)).text();
-    const str = await (await fetch(`../test/vectors/${vectorName}.SVG`)).text();
+    const str = await (await fetch(`../__tests__/vectors/${vectorName}.SVG`)).text();
     
     // Find an SVG element within the given URL's HTML.
     const elem = createElemFromHtml(str);

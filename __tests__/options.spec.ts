@@ -1,32 +1,42 @@
-import * as fs from 'fs';
-import { assert, expect } from 'chai';
-import { describe } from 'mocha';
 import { simplifyPaths } from '../src/calc-paths/simplify-paths';
+import { getPathsFromStr } from '../src/svg/get-paths-from-str';
 
 
 test('options', function() {
-    let bezierLoops: number[][][][];
+    {
+        // Two overlapping squares
+        const pathStr = `
+                M 0, 0   L 2, 0   L 2, 2   L 0, 2   Z
+                M 1, 1   L 3, 1   L 3, 3   L 1, 3   Z
+        `;
 
-    // Two overlapping squares
-    const bz11 = [[0,0],[2,0]];
-    const bz12 = [[2,0],[2,2]];
-    const bz13 = [[2,2],[0,2]];
-    const bz14 = [[0,2],[0,0]];
+        const _loopss = getPathsFromStr(pathStr);
+        const loopss_ = simplifyPaths(_loopss);
 
-    const bz21 = [[1,1],[3,1]];
-    const bz22 = [[3,1],[3,3]];
-    const bz23 = [[3,3],[1,3]];
-    const bz24 = [[1,3],[1,1]];
+        const _l0 = _loopss[0];//?
+        const _l1 = _loopss[1];//?
+        const l_ = loopss_[0][0].beziers;//?
+        
+        expect(_l[0][0] === l_[0][1]).toBe(true);
+    }
 
-    const loop1 = [bz11, bz12, bz13, bz14];
-    const loop2 = [bz21, bz22, bz23, bz24];
+    {
+        // shape with topmost not at interface
+        const pathStr = `M 0 0   Q 2 1 2 0  Z`;
 
-    const loopss = simplifyPaths([loop1, loop2]);
-    loopss;
-    const loops = loopss[0];
-    loops.length;//?
-    const beziers = loops[0].beziers;
-    beziers;//?
+        const _loopss = getPathsFromStr(pathStr);
+        const loopss_ = simplifyPaths(_loopss);
+
+        const _l = _loopss[0];
+        const l_ = loopss_[0][0].beziers;
+
+        expect(_l[0][0] === l_[0][1]).toBe(true);
+        expect(_l[0][0] === l_[1][0]).toBe(true);
+        expect(_l[0][1] === l_[1][1]).toBe(true);
+        expect(_l[0][2] === _l[1][0]).toBe(true);
+        expect(_l[0][2] === l_[1][2]).toBe(true);
+    }
+
 
     // expect(v).toStrictEqual(v_);
 });

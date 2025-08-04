@@ -25,7 +25,15 @@ import { getBoundingBox_ } from '../get-bounding-box-';
 
 
 interface BooleanOptions {
+    /**  */
     readonly noMicroCorners?: boolean;
+    /** defaults to 46 */
+    readonly maxBitLength?: number;
+    /**
+     * * defaults to `(2**expMax * 2**(-12))**2`;
+     * * minimum area of a bezer loop before it will be discarded
+     */
+    readonly minLoopArea?: number;
 }
 
 
@@ -48,8 +56,6 @@ function simplifyPaths(
         maxCoordinate?: number,
         options: BooleanOptions = {}): Loop[][] {
 
-    const { noMicroCorners = false } = options;
-
     let timingStart: number;
     if (typeof _debug_ !== 'undefined') {
         timingStart = performance.now();
@@ -63,12 +69,19 @@ function simplifyPaths(
      * Higher bitlengths would increase the running time of the algorithm 
      * considerably.
      */
-    const maxBitLength = 46;
-    // const maxBitLength = 32;
+    // const maxBitLength = 46;
+    // const maxBitLength = 10;
 
     maxCoordinate = maxCoordinate || getMaxCoordinate(bezierLoops);
     /** The exponent, e, such that 2**e >= all bezier coordinate points. */
     const expMax = Math.ceil(Math.log2(maxCoordinate));
+
+    const {
+        maxBitLength = 46,
+        noMicroCorners = false,
+        minLoopArea = (2**expMax * 2**(-12))**2
+    } = options;
+
     const gridSpacing = 2**expMax * 2**(-maxBitLength);
 
     /** 
@@ -76,7 +89,7 @@ function simplifyPaths(
      * critical points.
      */
     const containerSizeMultiplier = 2**6;
-    // const containerSizeMultiplier = 2**34;
+    // const containerSizeMultiplier = 2**41;
     const containerDim = gridSpacing * containerSizeMultiplier;
 
     bezierLoops = normalizeLoops(
@@ -106,7 +119,7 @@ function simplifyPaths(
         const parent = getTightestContainingLoop(root, loop);
 
         const container = extremes.get(loop)![0].container!;
-        if (!container.inOuts.length) { continue; }
+        if (container.inOuts.length === 0) { continue; }
 
         const initialOut = getOutermostInAndOut(container);
         // Each loop generated will give rise to one componentLoop. 
@@ -116,7 +129,7 @@ function simplifyPaths(
 
         completePath(
             expMax,
-            getOutermostInAndOut(container),
+            initialOut,
             takenLoops, 
             takenOuts
         );
@@ -128,13 +141,6 @@ function simplifyPaths(
     const loopss = outSets.map(
         outSet => outSet.map((out,idx) => loopFromOut(out, outSet[0].orientation!, idx))
     );
-
-    /** 
-     * Arbitrarily choose min. loop area to be equal to one square pixel on a 
-     * 4096 x 4096 grid.
-     */
-    // const minLoopArea = (2**expMax * 2**(-12))**2;
-    const minLoopArea = (2**expMax * 2**(-16))**2;
 
     const loopss_: Loop[][] = [];
     for (let i=0; i<loopss.length; i++) {

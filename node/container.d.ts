@@ -1,5 +1,5 @@
-import { __X__ } from "./-x-.js";
-import { InOut } from "./in-out.js";
+import { __X__ } from "./-x-";
+import { InOut } from "./in-out";
 /**
  * Representation of a a small rectangular box containing close intersections.
  * All contained intersections are 'far' from the box's sides.

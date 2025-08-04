@@ -6,6 +6,7 @@ import { makeSimpleX } from "./make-simple-x";
 
 /**
  * Get an extreme point (point with minimum y value) of the given loop.
+ * 
  * @param loop 
  */
 function getExtreme(loop: Loop): __X__[] {

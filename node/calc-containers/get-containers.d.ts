@@ -1,11 +1,11 @@
-import { Container } from "../container.js";
-import { Loop } from "../loop/loop.js";
+import { Container } from "../container";
+import { Loop } from "../loop/loop";
 /**
  *
  * @param containerDim
  */
 declare function getContainers(loops: Loop[], containerDim: number, expMax: number): {
-    extremes: Map<Loop, import("../-x-.js").__X__[]>;
+    extremes: Map<Loop, import("../-x-").__X__[]>;
     containers: Container[];
 };
 export { getContainers };

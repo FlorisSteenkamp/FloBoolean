@@ -28,9 +28,25 @@ interface Container {
  */
 function containerIsBasic(container: Container) {
     const xs = container.xs;
-    // xs.length;//?
 
-    if (xs.length <= 2 && xs[0].x.kind !== 7) { return true; }
+    if (xs.length === 4) {
+        let topmostCount = 0;
+        let interfaceCount = 0;
+        for (let i=0; i<xs.length; i++) {
+            if (xs[i].x.kind === 0) { topmostCount++; }
+            if (xs[i].x.kind === 4) { interfaceCount++; }
+        }
+
+        // topmostCount;//?
+        // interfaceCount;//?
+        if (topmostCount === 2 && interfaceCount === 2) {
+            return true;
+        }
+    }
+
+    if (xs.length <= 2 && xs[0].x.kind !== 7) {
+        return true;
+    }
 
     // xs.length;//?
 

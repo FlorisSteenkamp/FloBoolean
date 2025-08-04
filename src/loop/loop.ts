@@ -49,7 +49,7 @@ function loopFromBeziers(
 
     const loop: Loop = { beziers, curves, idx };
 
-    if (!beziers.length) { return loop; }
+    if (beziers.length === 0) { return loop; }
 
     let prev: Curve | undefined = undefined;
     

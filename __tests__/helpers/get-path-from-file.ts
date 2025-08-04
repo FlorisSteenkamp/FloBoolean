@@ -1,11 +1,11 @@
 import * as fs from 'fs';
-import { getPathsFromStr } from '../../src/svg/get-paths-from-str.js';
-import { Invariants } from './invariants.js';
+import { getPathsFromStr } from '../../src/svg/get-paths-from-str';
+import { Invariants } from './invariants';
 
 
 function getPathFromFile(fileName: string) {
     let fileStr = fs.readFileSync(
-        `c:/projects/boolean/test/vectors/${fileName}.svg`, 'utf8'
+        `c:/projects/boolean/__tests__/vectors/${fileName}.svg`, 'utf8'
     );
 
     let svgStr = fileStr.match(/d="[^"]*"/)![0];
@@ -13,7 +13,6 @@ function getPathFromFile(fileName: string) {
 
     let invariantsStr = fileStr.match(/<!--[^>)]*>/)![0];
     invariantsStr = invariantsStr.substring(4, invariantsStr.length-3);
-    //console.log(invariantsStr);
     let invariants: Invariants[][] = JSON.parse(invariantsStr);
     
     return {

@@ -1,5 +1,7 @@
 
 const vectors = [
+    'topmost-no-interface',
+    'squares',
     'ring2',
     'V2',
     'Mt44',

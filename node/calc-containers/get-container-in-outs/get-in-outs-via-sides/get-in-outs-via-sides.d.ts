@@ -1,5 +1,5 @@
-import { Container } from "../../../container.js";
-import { InOut } from "../../../in-out.js";
+import { Container } from "../../../container";
+import { InOut } from "../../../in-out";
 /**
  * Returns the incoming / outgoing curves (as InOuts) for the given container
  * using an extremely small rectangle around the intersections.

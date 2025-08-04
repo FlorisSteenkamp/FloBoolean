@@ -1,4 +1,4 @@
-import { InOut } from "../in-out.js";
+import { InOut } from "../in-out";
 declare function getBeziersToNextContainer(expMax: number, out: InOut): {
     beziers: number[][][];
     in_: InOut;

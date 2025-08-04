@@ -1,11 +1,11 @@
-import { Loop } from "../../src/loop/loop.js";
-import { Invariants } from "./invariants.js";
-import { Tolerance } from "./tolerance.js";
-import { getLoopCentroid } from "../../src/loop/get-loop-centroid.js";
-import { getLoopArea } from "../../src/loop/get-loop-area.js";
-import { simplifyBounds } from "../../src/loop/simplify-bounds.js";
-import { getLoopBounds } from "../../src/loop/get-loop-bounds.js";
-import { checkInvariants } from './check-invariants.js';
+import { Loop } from "../../src/loop/loop";
+import { Invariants } from "./invariants";
+import { Tolerance } from "./tolerance";
+import { getLoopCentroid } from "../../src/loop/get-loop-centroid";
+import { getLoopArea } from "../../src/loop/get-loop-area";
+import { simplifyBounds } from "../../src/loop/simplify-bounds";
+import { getLoopBounds } from "../../src/loop/get-loop-bounds";
+import { checkInvariants } from './check-invariants';
 
 
 function checkShapes(
@@ -24,7 +24,9 @@ function checkShapes(
         });
     });
 
-    return checkInvariants(invariants_, invariants, tolerance);
+    const r = checkInvariants(invariants_, invariants, tolerance);
+
+    return r;
 }
 
 

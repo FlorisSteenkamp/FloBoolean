@@ -1,4 +1,4 @@
-import { Container } from "../container.js";
+import { Container } from "../container";
 /**
  * Returns the containers from the given containers by sending their boxes to a
  * grid with a smaller bitlength.
@@ -9,7 +9,7 @@ import { Container } from "../container.js";
  */
 declare function sendContainersToGrid(containers: Container[], expMax: number, containerDim: number): {
     box: number[][];
-    xs: import("../-x-.js").__X__[];
-    inOuts: import("../in-out.js").InOut[];
+    xs: import("../-x-").__X__[];
+    inOuts: import("../in-out").InOut[];
 }[];
 export { sendContainersToGrid };

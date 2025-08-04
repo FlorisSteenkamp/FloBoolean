@@ -1,0 +1,12 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+>
+    <path 
+        class="shape"
+        d=" M 0 0
+            Q 2 1 2 0
+            Z
+            "
+    />
+</svg>

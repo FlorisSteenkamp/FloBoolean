@@ -1,4 +1,4 @@
-import { IntersectionResult } from '../sweep-line/sweep-line.js';
+import { IntersectionResult } from '../sweep-line/sweep-line';
 /**
  * Representation of an undirectied graph as a map of adjacency lists, where
  * the map keys represent the Vertices (V) and the adjacency list the edges (E).

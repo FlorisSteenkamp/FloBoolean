@@ -1,5 +1,5 @@
 import { enableDebugDrawFs } from 'flo-draw';
-import { enableDebugForBooleanOp } from "../../../src/index.js";
+import { enableDebugForBooleanOp } from "../../../src/index";
 
 
 /** 
