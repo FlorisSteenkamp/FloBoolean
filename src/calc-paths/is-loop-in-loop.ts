@@ -2,7 +2,7 @@ import { flatCoefficients, allRoots } from 'flo-poly';
 import { toPowerBasis, tangent, evalDeCasteljau } from 'flo-bezier3';
 import { toUnitVector, translate } from 'flo-vector2d';
 import { getBoundingBox_ } from '../get-bounding-box-.js';
-import { getBounds_ } from '../get-bounds-.js';
+import { getShapeBounds } from './get-shape-bounds.js';
 
 
 // TODO - remove delta by basing isLoopInLoop on a solid numerical analytic 
@@ -51,6 +51,7 @@ function isLoopInLoop(loop1: number[][][], loop2: number[][][]) {
         const res = f(loop1, loop2, p);
         
         if (res !== undefined) {
+            // console.log(res)
             return res;
         }        
     } while (i < 100);
@@ -75,7 +76,7 @@ function isLoopInLoop(loop1: number[][][], loop2: number[][][]) {
  * @param loops
  */
 function isLoopNotInLoop(loop1: number[][][], loop2: number[][][]) {
-    const boundss = [loop1, loop2].map(getLoopBounds);
+    const boundss = [loop1, loop2].map(getShapeBounds);
     
     return (
         boundss[0].minX < boundss[1].minX || 
@@ -83,17 +84,6 @@ function isLoopNotInLoop(loop1: number[][][], loop2: number[][][]) {
         boundss[0].minY < boundss[1].minY || 
         boundss[0].maxY > boundss[1].maxY
     );
-}
-
-
-function getLoopBounds(pss: number[][][]) {
-    const bounds = pss.map(ps => getBounds_(ps))
-    return {
-		minX: Math.min(...bounds.map(bound => bound.box[0][0])),
-        maxX: Math.max(...bounds.map(bound => bound.box[1][0])),
-        minY: Math.min(...bounds.map(bound => bound.box[0][1])),
-		maxY: Math.max(...bounds.map(bound => bound.box[1][1])),
-	};
 }
 
 

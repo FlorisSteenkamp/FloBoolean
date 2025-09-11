@@ -1,10 +1,9 @@
 import { Loop } from "../../src/loop/loop";
 import { Invariants } from "./invariants";
 import { Tolerance } from "./tolerance";
-import { getLoopCentroid } from "../../src/loop/get-loop-centroid";
-import { getLoopArea } from "../../src/loop/get-loop-area";
-import { simplifyBounds } from "../../src/loop/simplify-bounds";
-import { getLoopBounds } from "../../src/loop/get-loop-bounds";
+import { getShapeCentroid } from "../../src/loop/get-loop-centroid";
+import { getShapeArea } from "../../src/loop/get-loop-area";
+import { getShapeBounds } from "../../src/calc-paths/get-shape-bounds";
 import { checkInvariants } from './check-invariants';
 
 
@@ -16,9 +15,9 @@ function checkShapes(
     /** get the shape invariants to be tested */ 
     let invariants_: Invariants[][] = shapes.map(loops => {
         return loops.map(loop => {
-            let centroid = getLoopCentroid(loop);
-            let area     = getLoopArea(loop);
-            let bounds   = simplifyBounds(getLoopBounds(loop));
+            let centroid = getShapeCentroid(loop.beziers);
+            let area     = getShapeArea(loop.beziers);
+            let bounds   = getShapeBounds(loop.beziers);
 
             return { centroid, area, bounds };
         });

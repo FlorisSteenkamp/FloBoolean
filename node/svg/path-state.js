@@ -1,12 +1,13 @@
 /** @hidden */
 class PathState {
+    initialPoint = undefined;
+    p;
+    vals = undefined;
+    // Used in conjunction with "S", "s"
+    prev2ndCubicControlPoint = undefined;
+    // Used in conjunction with "T", "t"
+    prev2ndQuadraticControlPoint = undefined;
     constructor() {
-        this.initialPoint = undefined;
-        this.vals = undefined;
-        // Used in conjunction with "S", "s"
-        this.prev2ndCubicControlPoint = undefined;
-        // Used in conjunction with "T", "t"
-        this.prev2ndQuadraticControlPoint = undefined;
         this.p = [0, 0];
     }
 }

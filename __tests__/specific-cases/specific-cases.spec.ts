@@ -1,4 +1,3 @@
-// TODO - change to jest
 import * as fs from 'fs';
 import { getPathFromFile } from '../helpers/get-path-from-file';
 import { Invariants } from '../helpers/invariants';

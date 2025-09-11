@@ -10,7 +10,7 @@ import { reverseOrientation } from '../loop/reverse-orientation.js';
 import { loopFromBeziers } from '../loop/loop.js';
 import { normalizeLoops } from '../loop/normalize/normalize-loop.js';
 import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate.js';
-import { getLoopArea } from '../loop/get-loop-area.js';
+import { getShapeArea } from '../loop/get-loop-area.js';
 import { loopsToSvgPathStr } from '../svg/loops-to-svg-path-str.js';
 import { getBoundingBox_ } from '../get-bounding-box-.js';
 /**
@@ -84,7 +84,7 @@ function simplifyPaths(bezierLoops, maxCoordinate, options = {}) {
     const loopss = outSets.map(outSet => outSet.map((out, idx) => loopFromOut(out, outSet[0].orientation, idx)));
     const loopss_ = [];
     for (let i = 0; i < loopss.length; i++) {
-        const loops = loopss[i].filter((loop) => Math.abs(getLoopArea(loop)) > minLoopArea);
+        const loops = loopss[i].filter((loop) => Math.abs(getShapeArea(loop.beziers)) > minLoopArea);
         if (loops.length) {
             loops.sort((loopA, loopB) => {
                 return orderLoopAscendingByMinY(loopA.beziers, loopB.beziers);
@@ -126,9 +126,9 @@ function addDebugInfo2(loopss) {
     // let g = document.getElementsByTagName('g')[0];
     // let invariants = loopss.map(loops => {
     //    return loops.map(loop => {
-    //        let centroid = getLoopCentroid(loop);
-    //        let area     = getLoopArea(loop);
-    //        let bounds   = simplifyBounds(getLoopBounds(loop));
+    //        let centroid = getShapeCentroid(loop);
+    //        let area     = getShapeArea(loop);
+    //        let bounds   = getShapeBounds(loop.beziers);
     //        //drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 0);
     //        return { centroid, area, bounds };
     //    });

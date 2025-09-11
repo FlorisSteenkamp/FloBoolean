@@ -1,15 +1,4 @@
-import { getBounds_ } from "../get-bounds-";
-
-
-function getLoopBounds(pss: number[][][]) {
-    const bounds = pss.map(ps => getBounds_(ps))
-    return {
-        minX: Math.min(...bounds.map(bound => bound.box[0][0])),
-        maxX: Math.max(...bounds.map(bound => bound.box[1][0])),
-        minY: Math.min(...bounds.map(bound => bound.box[0][1])),
-        maxY: Math.max(...bounds.map(bound => bound.box[1][1])),
-    };
-}
+import { getShapeBounds } from "../../../src/calc-paths/get-shape-bounds";
 
 
 function getViewBoxForShape(bezierLoops: number[][][][]) {
@@ -18,7 +7,7 @@ function getViewBoxForShape(bezierLoops: number[][][][]) {
     let maxX_ = Number.NEGATIVE_INFINITY;
     let maxY_ = Number.NEGATIVE_INFINITY;
     for (const bezierLoop of bezierLoops) {
-        const { minX, maxX, minY, maxY } = getLoopBounds(bezierLoop);
+        const { minX, maxX, minY, maxY } = getShapeBounds(bezierLoop);
         if (minX < minX_) { minX_ = minX }
         if (minY < minY_) { minY_ = minY }
         if (maxX > maxX_) { maxX_ = maxX }

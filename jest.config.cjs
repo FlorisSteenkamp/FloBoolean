@@ -19,14 +19,6 @@ module.exports = {
     testTimeout: 15000,
     transform: {
         "^.+\\.(t|j)sx?$": "@swc/jest"
-        // '^.+\\.[tj]sx?$' to process js/ts with `ts-jest`
-        // '^.+\\.m?[tj]sx?$' to process js/ts/mjs/mts with `ts-jest`
-        // '^.+\\.tsx?$': [
-        //   'ts-jest',
-        //   {
-        //     isolatedModules: true,
-        //   },
-        // ],
     },
     transformIgnorePatterns: [
         `/node_modules/(?!${esModules})`

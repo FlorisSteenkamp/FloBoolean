@@ -6,6 +6,10 @@ const COMMAND_MAP = {
 };
 /** @hidden */
 class Source {
+    _string;
+    _currentIndex;
+    _endIndex;
+    _prevCommand;
     constructor(string) {
         this._string = string;
         this._currentIndex = 0;

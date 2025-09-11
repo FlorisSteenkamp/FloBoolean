@@ -34,9 +34,7 @@ function circleToCubicBeziers(
         return pss;
     }
 
-    return (
-        pss.map( ps => ps.slice().reverse() ).slice().reverse()
-    );
+    return pss.map(ps => ps.toReversed()).toReversed();
 }
 
 
@@ -86,4 +84,4 @@ function translate(v: number[]) {
 }
 
 
-export { circleToCubicBeziers }
+export { circleToCubicBeziers, radToDeg, degToRad }

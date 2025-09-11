@@ -4,14 +4,15 @@ import { multiply, add, negate, Horner, integrate } from 'flo-poly';
 
 
 /** 
- * Returns the area of the given Loop.
+ * Returns the area of the given shape.
+ * 
  * * see e.g. https://mathinsight.org/greens_theorem_find_area
+ * 
+ * @param pss the shape given as a closed loop of bezier curves
  */
-function getLoopArea(loop: Loop) {
+function getShapeArea(pss: number[][][]) {
     let totalArea = 0;
-    for (const curve of loop.curves) {
-        const ps = curve.ps;
-
+    for (const ps of pss) {
         const [x,y] = toPowerBasis(ps);
         const [dx,dy] = toPowerBasis_1stDerivative(ps);
 
@@ -28,4 +29,32 @@ function getLoopArea(loop: Loop) {
 }
 
 
-export { getLoopArea }
+/** 
+ * @deprecated This function is deprecated. Use `getShapeArea` instead.
+ * 
+ * Returns the area of the given Loop.
+ * * see e.g. https://mathinsight.org/greens_theorem_find_area
+ */
+function getLoopArea(loop: Loop) {
+    return getShapeArea(loop.beziers);
+    // let totalArea = 0;
+    // for (const curve of loop.curves) {
+    //     const ps = curve.ps;
+
+    //     const [x,y] = toPowerBasis(ps);
+    //     const [dx,dy] = toPowerBasis_1stDerivative(ps);
+
+    //     const xdy = multiply(x, dy);
+    //     const ydx = negate(multiply(y, dx));
+
+    //     const poly = integrate(add(xdy, ydx), 0);
+    //     const area = Horner(poly, 1);
+
+    //     totalArea += area;
+    // }
+
+    // return -totalArea / 2;
+}
+
+
+export { getLoopArea, getShapeArea }

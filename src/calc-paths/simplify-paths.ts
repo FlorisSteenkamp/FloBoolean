@@ -14,14 +14,14 @@ import { reverseOrientation } from '../loop/reverse-orientation.js';
 import { Loop, loopFromBeziers } from '../loop/loop.js';
 import { normalizeLoops } from '../loop/normalize/normalize-loop.js';
 import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate.js';
-import { getLoopArea } from '../loop/get-loop-area.js';
+import { getShapeArea } from '../loop/get-loop-area.js';
 import { loopsToSvgPathStr } from '../svg/loops-to-svg-path-str.js';
+import { getBoundingBox_ } from '../get-bounding-box-.js';
 
 // the imports below is used in the test cases - see code below
-import { getLoopCentroid } from '../loop/get-loop-centroid.js';
-import { simplifyBounds } from '../loop/simplify-bounds.js';
-import { getLoopBounds } from '../loop/get-loop-bounds.js';
-import { getBoundingBox_ } from '../get-bounding-box-.js';
+import { getShapeCentroid } from '../loop/get-loop-centroid.js';
+import { getShapeBounds } from './get-shape-bounds.js';
+
 
 
 interface BooleanOptions {
@@ -145,7 +145,7 @@ function simplifyPaths(
     const loopss_: Loop[][] = [];
     for (let i=0; i<loopss.length; i++) {
         const loops = loopss[i].filter(
-            (loop: Loop) => Math.abs(getLoopArea(loop)) > minLoopArea
+            (loop: Loop) => Math.abs(getShapeArea(loop.beziers)) > minLoopArea
         );
         if (loops.length) { 
             loops.sort((loopA, loopB) => { 
@@ -200,9 +200,9 @@ function addDebugInfo2(loopss: Loop[][]) {
     // let g = document.getElementsByTagName('g')[0];
     // let invariants = loopss.map(loops => {
     //    return loops.map(loop => {
-    //        let centroid = getLoopCentroid(loop);
-    //        let area     = getLoopArea(loop);
-    //        let bounds   = simplifyBounds(getLoopBounds(loop));
+    //        let centroid = getShapeCentroid(loop);
+    //        let area     = getShapeArea(loop);
+    //        let bounds   = getShapeBounds(loop.beziers);
     //        //drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 0);
     //        return { centroid, area, bounds };
     //    });

@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
         "strict": true, 
-        "module": "es2020",
-        "target": "es2020",
+        "module": "esnext",
+        "target": "esnext",
         "declaration": true,
         "noEmitOnError": true,
         "sourceMap": true,

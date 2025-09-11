@@ -1,19 +1,18 @@
 import { toPowerBasis, toPowerBasis_1stDerivative } from "flo-bezier3";
 import { Horner, multiply, integrate } from 'flo-poly';
-import { getLoopArea } from "./get-loop-area.js";
+import { getShapeArea } from "./get-loop-area.js";
 /**
- * Returns the approximate centroid of the given loop
+ * Returns the approximate centroid of the given shape.
  *
- * * **precondition**: loop must be a jordan curve (i.e. closed and simple)
+ * * **precondition**: shape must be a jordan curve (i.e. closed and simple)
  *
  * see https://sites.math.washington.edu/~king/coursedir/m324a10/as/centroid-green.pdf
  */
-function getLoopCentroid(loop) {
-    const A = getLoopArea(loop);
+function getShapeCentroid(pss) {
+    const A = getShapeArea(pss);
     let cx = 0;
     let cy = 0;
-    for (const curve of loop.curves) {
-        const ps = curve.ps;
+    for (const ps of pss) {
         const [x, y] = toPowerBasis(ps);
         const [dx, dy] = toPowerBasis_1stDerivative(ps);
         const polyX = integrate(multiply(multiply(x, x), dy), 0);
@@ -26,5 +25,33 @@ function getLoopCentroid(loop) {
     const a = 1 / (2 * A);
     return [-a * cx, a * cy];
 }
-export { getLoopCentroid };
+/**
+ * @deprecated This function is deprecated. Use `getShapeCentroid` instead.
+ *
+ * Returns the approximate centroid of the given loop
+ *
+ * * **precondition**: loop must be a jordan curve (i.e. closed and simple)
+ *
+ * see https://sites.math.washington.edu/~king/coursedir/m324a10/as/centroid-green.pdf
+ */
+function getLoopCentroid(loop) {
+    return getShapeCentroid(loop.beziers);
+    // const A = getShapeArea(loop.beziers);
+    // let cx = 0;
+    // let cy = 0;
+    // for (const curve of loop.curves) {
+    //     const ps = curve.ps;
+    //     const [x,y] = toPowerBasis(ps);
+    //     const [dx,dy] = toPowerBasis_1stDerivative(ps);
+    //     const polyX = integrate(multiply(multiply(x, x), dy), 0);
+    //     const polyY = integrate(multiply(multiply(y, y), dx), 0);
+    //     const _x = Horner(polyX, 1);
+    //     const _y = Horner(polyY, 1);
+    //     cx += _x;
+    //     cy += _y;
+    // }
+    // const a = 1/(2*A);
+    // return [-a*cx, a*cy];
+}
+export { getLoopCentroid, getShapeCentroid };
 //# sourceMappingURL=get-loop-centroid.js.map
