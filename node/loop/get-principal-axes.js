@@ -40,6 +40,7 @@ function getPrincipalAxes(pss) {
     let v0;
     let v1;
     const roots = allRootsCertifiedSimplified(poly).map(r => (r.tS + r.tE) / 2);
+    roots.sort((a, b) => abs(a) - abs(b));
     let r0 = roots[0]; // Eigenvalue 1
     let r1 = roots[1]; // Eigenvalue 2
     // allow for floating point roundoff
@@ -68,10 +69,10 @@ function getPrincipalAxes(pss) {
         const rErrR1A = abs(r1 / (r1 - a));
         v0 = rErrR0A > rErrR0D
             ? [r0 - d, c]
-            : [b, r0 - a]; /*?*/ // Eigenvector 1
+            : [b, r0 - a]; // Eigenvector 1
         v1 = rErrR1A > rErrR1D
             ? [r1 - d, c]
-            : [b, r1 - a]; /*?*/ // Eigenvector 2
+            : [b, r1 - a]; // Eigenvector 2
     }
     return {
         eigenValues: [r0, r1],
@@ -115,6 +116,7 @@ function ddGetPrincipalAxes(pss) {
     let v0;
     let v1;
     const roots = allRootsCertified(poly, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY).map(r => (r.tS + r.tE) / 2);
+    roots.sort((a, b) => abs(a) - abs(b));
     let r0 = roots[0]; // Eigenvalue 1
     let r1 = roots[1]; // Eigenvalue 2
     // allow for floating point roundoff
