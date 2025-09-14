@@ -1,5 +1,7 @@
 import { getBounds_ } from '../get-bounds-.js';
 
+const { min, max } = Math;
+
 
 function getShapeBounds(
         pss: number[][][]): {
@@ -12,10 +14,10 @@ function getShapeBounds(
     const bounds = pss.map(getBounds_);
 
     return {
-		minX: Math.min(...bounds.map(bound => bound.box[0][0])),
-        maxX: Math.max(...bounds.map(bound => bound.box[1][0])),
-        minY: Math.min(...bounds.map(bound => bound.box[0][1])),
-		maxY: Math.max(...bounds.map(bound => bound.box[1][1])),
+		minX: min(...bounds.map(bound => bound.box[0][0])),
+        maxX: max(...bounds.map(bound => bound.box[1][0])),
+        minY: min(...bounds.map(bound => bound.box[0][1])),
+		maxY: max(...bounds.map(bound => bound.box[1][1])),
 	};
 }
 
