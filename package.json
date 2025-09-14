@@ -26,7 +26,8 @@
         "flo-gauss-quadrature": "^2.1.3",
         "flo-memoize": "^1.1.1",
         "flo-poly": "^7.0.1",
-        "flo-vector2d": "^4.0.5"
+        "flo-vector2d": "^4.0.5",
+        "squares-rng": "^2.0.3"
     },
     "devDependencies": {
         "@jest/globals": "^30.1.2",

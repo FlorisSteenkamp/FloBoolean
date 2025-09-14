@@ -1,8 +1,9 @@
-import { flatCoefficients, allRoots } from 'flo-poly';
+import { allRoots } from 'flo-poly';
 import { toPowerBasis, tangent, evalDeCasteljau } from 'flo-bezier3';
 import { toUnitVector, translate } from 'flo-vector2d';
 import { getBoundingBox_ } from '../get-bounding-box-.js';
 import { getShapeBounds } from './get-shape-bounds.js';
+import { squares } from 'squares-rng';
 
 
 // TODO - remove delta by basing isLoopInLoop on a solid numerical analytic 
@@ -26,63 +27,63 @@ type Dir =
  * @param loop2
  */
 function isLoopInLoop(loop1: number[][][], loop2: number[][][]) {
-
     let i = 0;
-    let seed = 1231; // Just some value
     do {
         i++;
 
-        // This gets us a predictable random number between 0 and 1;
-        const rand1 = flatCoefficients(1, 0, 1, seed);
-        const t = rand1.p[0];
-        seed = rand1.seed; // Get next seed.
+        // Gets a predictable random number between 0 and 1
+        const t = squares(i)/0x1_0000_0000;
         
-        // This gets us a predictable random number roughly between 0 and the 
-        // number of curves in the loop.
-        const curveCount = loop1.length;
-        const rand2 = flatCoefficients(1, 0, curveCount, seed);
-        
-        const idx = Math.floor(rand2.p[0]);
-        seed = rand2.seed; // Get next seed.
+        // Gets a predictable random number between 0 and the number of
+        // curves in the loop.
+        const idx = squares(i+1000)%loop1.length;
 
         const ps = loop1[idx];
         const p = evalDeCasteljau(ps, t);
 
-        const res = f(loop1, loop2, p);
+        const r = f(loop1, loop2, p);
         
-        if (res !== undefined) {
-            // console.log(res)
-            return res;
+        if (r !== undefined) {
+            return r;
         }        
     } while (i < 100);
 
     return undefined; // There's no chance we'll get up to this point.
 
 
-    function f(loop1: number[][][], loop2: number[][][], p: number[]) {
+    function f(
+            loop1: number[][][],
+            loop2: number[][][],
+            p: number[]) {
+
         if (isLoopNotInLoop(loop1, loop2)) {
             return false;
         }
 
         const count = getAxisAlignedRayLoopIntersections(loop2, p, 'left');
-        if (count !== undefined) { return count % 2 !== 0; }
+        if (count !== undefined) { return count%2 !== 0; }
     }
 }
 
 
 /**
- * Returns true if the first loop is not wholly within the second. The converse
+ * Returns `true` if the first loop is not wholly within the second. The converse
  * is not necessarily true. It is assumed the loops don't intersect.
+ * 
  * @param loops
  */
-function isLoopNotInLoop(loop1: number[][][], loop2: number[][][]) {
-    const boundss = [loop1, loop2].map(getShapeBounds);
+function isLoopNotInLoop(
+        loop1: number[][][],
+        loop2: number[][][]) {
+
+    const bounds1 = getShapeBounds(loop1);
+    const bounds2 = getShapeBounds(loop2);
     
     return (
-        boundss[0].minX < boundss[1].minX || 
-        boundss[0].maxX > boundss[1].maxX ||
-        boundss[0].minY < boundss[1].minY || 
-        boundss[0].maxY > boundss[1].maxY
+        bounds1.minX < bounds2.minX || 
+        bounds1.maxX > bounds2.maxX ||
+        bounds1.minY < bounds2.minY || 
+        bounds1.maxY > bounds2.maxY
     );
 }
 
@@ -128,22 +129,18 @@ function getAxisAlignedRayLoopIntersections(
         let axis;
         const dirIsDecreasing = (dir === 'left' || dir === 'up');
         if (dir === 'left' || dir === 'right') {
-            //f = getY;
             f = (ps: number[][]) => toPowerBasis(ps)[1];
             offset = [0,-y];
             axis = 0;
         } else {
-            //f = getX;
             f = (ps: number[][]) => toPowerBasis(ps)[0];
             offset = [-x,0];
             axis = 1;
         }
 
-        //let translatedPs = translate(offset, ps);
         const translatedPs = ps.map(translate(offset));
         const poly = f(translatedPs); 
-        //let ev = evalDeCasteljau(translatedPs);
-        const ts_ = allRoots(poly,0-DELTA,1+DELTA);
+        const ts_ = allRoots(poly, 0 - DELTA, 1 + DELTA);
         
         for (let i=0; i<ts_.length; i++) {
             const t = ts_[i];
@@ -154,7 +151,6 @@ function getAxisAlignedRayLoopIntersections(
                 return undefined;
             }
             
-            //let p_ = ev(t);
             const p_ = evalDeCasteljau(translatedPs,t);
             if (( dirIsDecreasing && p[axis] >= p_[axis]) || 
                 (!dirIsDecreasing && p[axis] <= p_[axis])) {
