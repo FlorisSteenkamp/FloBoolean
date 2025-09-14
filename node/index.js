@@ -15,4 +15,5 @@ export { reverseShapeOrientation } from './loop/reverse-shape-orientation.js';
 export { getTotalShapeCurvature } from './loop/get-total-shape-curvature.js';
 export { getCentroidOfWeightedPoints } from './loop/get-centroid-of-weighted-points.js';
 export { getShapeBounds } from './calc-paths/get-shape-bounds.js';
+export { isLoopInLoop } from './calc-paths/is-loop-in-loop.js';
 //# sourceMappingURL=index.js.map
