@@ -3,7 +3,7 @@ const esModules = [
     'flo-bezier3', 'flo-graham-scan',
     'flo-poly', 'flo-gauss-quadrature',
     'flo-vector2d', 'big-float-ts', 'double-double',
-    'flo-memoize'
+    'flo-memoize', 'squares-rng'
 ].join('|');
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
