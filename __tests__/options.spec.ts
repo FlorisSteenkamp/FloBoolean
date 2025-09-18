@@ -1,4 +1,4 @@
-import { simplifyPaths } from '../src/calc-paths/simplify-paths.js';
+import { simplifyPaths } from '../src/main/simplify-paths.js';
 import { getPathsFromStr } from '../src/svg/get-paths-from-str.js';
 
 

@@ -13,33 +13,32 @@ import { Loop } from '../loop/loop.js';
  * @param loop 
  */
 function completePath(
-        expMax: number,
         initialOut: InOut,
         takenLoops: Set<Loop>,
-        takenOuts: Set<InOut>) {
+        takenInOuts: Set<InOut>,
+        tight: boolean,
+        noMicroCorners: boolean) {
 
-    const outStack = [initialOut];
+    const inOutStack = [initialOut];
 
-    while (outStack.length) {
-        const out = outStack.pop()!;
-        takenLoops.add(out!._x_!.curve.loop);
+    while (inOutStack.length) {
+        const inOut = inOutStack.pop()!;
+        takenLoops.add(inOut!._x_!.curve.loop);
 
-        if (takenOuts.has(out)) { continue; }
+        if (takenInOuts.has(inOut)) { continue; }
 
-        out.children = new Set();
+        // @ts-ignore
+        inOut.children = new Set();
         const { beziers, additionalOutsToCheck } = 
-            completeLoop(expMax, takenOuts, out);
+            completeLoop(takenInOuts, inOut, tight, noMicroCorners);
 
-        // beziers;//?
-        // beziers[1][1] === beziers[2][0];//?
-        // beziers[1][1];//?
-        // beziers[2][0];//?
-            
-        out.beziers = beziers;
-        out.parent!.children = out.parent!.children || new Set();
-        out.parent!.children.add(out);
+        // @ts-ignore
+        inOut.beziers = beziers;
+        // @ts-ignore
+        inOut.parent!.children = inOut.parent!.children || new Set();
+        inOut.parent!.children.add(inOut);
 
-        outStack.push(...additionalOutsToCheck);
+        inOutStack.push(...additionalOutsToCheck);
     }
 }
 

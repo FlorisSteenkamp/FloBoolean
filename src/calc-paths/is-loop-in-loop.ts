@@ -26,7 +26,10 @@ type Dir =
  * @param loop1
  * @param loop2
  */
-function isLoopInLoop(loop1: number[][][], loop2: number[][][]) {
+function isLoopInLoop(
+        loop1: number[][][],
+        loop2: number[][][]) {
+
     let i = 0;
     do {
         i++;
@@ -45,7 +48,7 @@ function isLoopInLoop(loop1: number[][][], loop2: number[][][]) {
         
         if (r !== undefined) {
             return r;
-        }        
+        }
     } while (i < 100);
 
     return undefined; // There's no chance we'll get up to this point.
@@ -89,14 +92,14 @@ function isLoopNotInLoop(
 
 
 /**
- * @param p The point where the horizontal ray starts
- * @param toLeft The ray to the left of this point (else right)
- * @param loop A loop of curves
- * 
- * @internal
+ * @param loop a loop of curves
+ * @param p the point where the horizontal ray starts
+ * @param dir the ray direction
  */
 function getAxisAlignedRayLoopIntersections(
-        loop: number[][][], p: number[], dir: Dir) {
+        loop: number[][][],
+        p: number[],
+        dir: Dir) {
 
     const [x,y] = p;
     let count = 0;

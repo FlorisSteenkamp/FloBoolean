@@ -18,13 +18,15 @@ function getOutermostInAndOut(container: Container) {
 
     // set 'loop' direction
     if (firstInOut.dir === 1) { 
+        // @ts-ignore
         firstInOut.orientation = -1; // anti-clockwise
 
         return firstInOut;
     }
-     
+
+    // @ts-ignore
     lastInOut.orientation = +1;
-        
+
     return lastInOut;
 }
 

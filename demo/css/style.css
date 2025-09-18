@@ -40,6 +40,7 @@ body {
 .darkgreen { stroke: #080; fill: #080; }
 
 
+.thin0  { stroke-width: 0px; }
 .thin1  { stroke-width: 0.01%; }
 .thin2  { stroke-width: 0.02%; }
 .thin5  { stroke-width: 0.05%; }

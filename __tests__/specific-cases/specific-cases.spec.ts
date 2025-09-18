@@ -3,7 +3,7 @@ import { getPathFromFile } from '../helpers/get-path-from-file';
 import { Invariants } from '../helpers/invariants';
 import { makeTolerance } from '../helpers/make-tolerance';
 import { checkShapes } from '../helpers/check-shapes';
-import { simplifyPaths } from '../../src/calc-paths/simplify-paths';
+import { simplifyPaths } from '../../src/main/simplify-paths';
 
 
 test('specific cases', function() {

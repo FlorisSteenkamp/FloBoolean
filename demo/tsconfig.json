@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
         "strict": true, 
-        "module": "es2020",
-        "target": "es2020",
+        "module": "esnext",
+        "target": "esnext",
         // "declaration": true,
-        "noEmitOnError": false,
+        "noEmitOnError": true,
         "noEmit": false,
         "sourceMap": true,
         "outDir": "node",

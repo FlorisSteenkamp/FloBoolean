@@ -6,29 +6,33 @@ import { X } from "./x.js";
 interface InOut {
     /** direction, in (-1) or out (+1) */
     readonly dir: -1|1; 
-    idx?: number;
+    readonly idx?: number;
     /** intersection */
     readonly _x_?: __X__;
     readonly container: Container;
-    /** intersection point with the container box */
+    /** intersection point used for creating beziers in center of box */
     readonly p: number[];
+    /** intersection point with the container box; used for debugging only */
+    readonly pBox: number[];
 
     /** the next in from this out */
-    next?: InOut;
+    readonly next?: InOut;
+    /** the prev in from this out */
+    readonly prev?: InOut;
 
     /** the prior IInOut anti-clockwise around the container boundary */
-    prevAround?: InOut;
+    readonly prevAround?: InOut;
     /** the next IInOut anti-clockwise around the container boundary */
-    nextAround?: InOut;
+    readonly nextAround?: InOut;
 
     // not all inouts will have the below properties, only those that represent 
     // a loop
     /** +1 or -1 -> Clockwise or anti-clockwise */
-    orientation?: number;
-    windingNum?: number;
-    parent?: InOut;
-    children?: Set<InOut>;
-    beziers?: number[][][]; 
+    readonly orientation?: number;
+    readonly windingNum?: number;
+    readonly parent?: InOut;
+    readonly children?: Set<InOut>;
+    readonly beziers?: number[][][]; 
     /** 
      * the ordering around the container (anti-clockwise from bottom right) 
      * where the 'quadrant' (0 -> right edge, 1 -> top edge, 2 -> left edge, 

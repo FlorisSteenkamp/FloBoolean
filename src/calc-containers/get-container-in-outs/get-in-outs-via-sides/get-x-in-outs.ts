@@ -17,11 +17,16 @@ type SideX = {
 type WithRI = __X__ & Partial<SideX>;
 
 
-function midBox(_x_: __X__): number[] {
+function midBox(box: number[][]): number[] {
     return [
-        (_x_.x.box[0][0] + _x_.x.box[1][0])/2,
-        (_x_.x.box[0][1] + _x_.x.box[1][1])/2
+        (box[0][0] + box[1][0])/2,
+        (box[0][1] + box[1][1])/2
     ];
+}
+
+
+function midBoxX(_x_: __X__): number[] {
+    return midBox(_x_.x.box);
 }
 
 
@@ -29,7 +34,10 @@ function midBox(_x_: __X__): number[] {
  * * **warning** modifies container.xs[i].in_
  * @param container 
  */
-function getXInOuts(container: Container) {
+function getXInOuts(
+        container: Container,
+        noMicroCorners: boolean) {
+
     const [[left,top], [right,bottom]] = container.box;
 
     const sides = [
@@ -48,6 +56,9 @@ function getXInOuts(container: Container) {
         const ps = curve.ps;
 
         const xs: WithRI[] = xs_.slice();
+
+        // console.log(xs.length);
+
         for (let i=0; i<sides.length; i++) {
             const xs_ = getTs(ps, sides[i]);
 
@@ -62,6 +73,8 @@ function getXInOuts(container: Container) {
         }
 
 
+        // console.log(xs.length);
+
         //---- resolve in-outs
 
         
@@ -70,6 +83,7 @@ function getXInOuts(container: Container) {
         // the tangent magnitude of a curve can attain (no need to resort to 
         // compensated intervals)
         xs.sort((xA, xB) => xA.x.ri.tS - xB.x.ri.tS);
+        
 
         const ins: InOut[] = [];
         const outs: InOut[] = [];
@@ -82,13 +96,16 @@ function getXInOuts(container: Container) {
                 if (prevWasX === true) {
                     outs.push({
                         dir: +1, 
-                        p: midBox(x),
+                        p: noMicroCorners ? midBox(prevX?.x.box!) : midBoxX(x),
+                        pBox: midBoxX(x),
                         _x_: prevX!,
                         container,
                         idx: ++ioIdx,
                         side: x.side,
                         sideX: x.sideX!
                     });
+                    // @ts-ignore
+                    prevX.out = outs[outs.length-1];
                 }
                 prevWasX = false;
             } else {
@@ -96,13 +113,15 @@ function getXInOuts(container: Container) {
                 if (prevWasX === false) {
                     ins.push({ 
                         dir: -1, 
-                        p: midBox(prevX!),
+                        p: noMicroCorners ? midBox(container.box) : midBoxX(prevX!),
+                        pBox: midBoxX(prevX!),
                         _x_: x,
                         container,
                         idx: ++ioIdx,
                         side: prevX!.side!, 
                         sideX: prevX!.sideX!
                     });
+                    // @ts-ignore
                     x.in_ = ins[ins.length-1];
                 }
                 prevWasX = true;

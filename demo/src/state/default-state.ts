@@ -34,7 +34,7 @@ const defaultToDraw: { [T in keyof IDebugElems]: boolean } = {
 
 
 const defaultDeduced: DeducedState = {
-    path: ''
+    pathStrs: ['']
 }
 
 const defaultPageState: PageState = {

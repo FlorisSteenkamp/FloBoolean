@@ -1,6 +1,6 @@
 
 interface DeducedState {
-    path: string;
+    readonly pathStrs: string[];
 }
 
 

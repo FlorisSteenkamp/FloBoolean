@@ -31,9 +31,9 @@ function logNearestLoopPost(
         }
     }
 
-    console.log('area', getShapeArea(bestLoop!.beziers));
+    // console.log('area', getShapeArea(bestLoop!.beziers));
     for (const curve of bestLoop!.curves) {
-        drawFs.bezier(g, curve.ps, 'thin20 red nofill', showDelay);
+        drawFs.bezier(g, curve.ps, 'thin20 blue nofill', showDelay);
     }
 }
 

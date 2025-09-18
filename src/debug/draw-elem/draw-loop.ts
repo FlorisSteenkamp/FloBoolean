@@ -18,7 +18,8 @@ function drawLoop(
     return drawShape(
         g, 
         loop.curves.map(curve => curve.ps), 
-        'red thin10 fill30', 
+        // 'red thin10 fill30', 
+        'red thin0 fill30', 
         undefined
     );
 }

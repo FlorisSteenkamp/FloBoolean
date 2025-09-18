@@ -5,7 +5,7 @@ import { Container } from '../../container.js';
 function drawContainer(g: SVGGElement, container: Container, classes?: string, delay = 0) {
     const rect = container.box;
     const xs = container.xs;
-    const scale = 2**0*0.0125;
+    const scale = (2**8)*0.0125;
 
     // intersections
     const $circles: SVGCircleElement[] = [];
@@ -19,13 +19,13 @@ function drawContainer(g: SVGGElement, container: Container, classes?: string, d
     const inOuts = container.inOuts;
     for (let i=0; i<inOuts.length; i++) {
         const inOut = inOuts[i];
-        const p = inOut.p.slice();
+        const p = inOut.pBox;//.slice();
         const color = inOut.dir === -1 ? 'red' : 'blue';
         const size = scale*(1 + (0.5*i));
         if (inOut.idx !== undefined) {
-            $texts.push(...drawFs.text(g, p, inOut.idx!.toString(), scale*8, `thin5 nofill ${color}`, delay));
+            $texts.push(...drawFs.text(g, p, inOut.idx!.toString(), scale*4, `thin5 nofill ${color}`, delay));
         }
-        $circles.push(...drawFs.dot(g, inOut.p, size, `thin2 nofill ${color}`, delay)); 
+        $circles.push(...drawFs.dot(g, inOut.pBox, size, `thin2 nofill ${color}`, delay)); 
     }
 
     // container rect

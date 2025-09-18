@@ -6,20 +6,20 @@ import { getInOutsViaSides } from "../get-in-outs-via-sides/get-in-outs-via-side
 
 
 /**
- * Returns the incoming / outgoing curves (as InOuts) for the given container.
+ * Returns the incoming / outgoing curves (as `InOuts`) for the given container.
+ * 
  * @param container 
  * @param ioIdx 
  */
 function getInOutsViaCrossing(
         container: Container, 
-        ioIdx: number): {
+        ioIdx: number,
+        noMicroCorners: boolean): {
             inOuts: InOut[];
             ioIdx: number;
         } {
 
     const xs = container.xs;
-
-    const inOuts: InOut[] = [];
 
     const x1 = xs[0];
     const x2 = xs[1];
@@ -70,7 +70,7 @@ function getInOutsViaCrossing(
             if (c === 0) {
                 // too close to call 
                 // use a more accurate but slower method
-                return getInOutsViaSides(container, ioIdx);
+                return getInOutsViaSides(container, ioIdx, noMicroCorners);
             }
             if (cSign === undefined) {
                 cSign = c; continue;
@@ -78,28 +78,41 @@ function getInOutsViaCrossing(
             if (cSign !== c) {
                 // conflicting results
                 // use a more accurate but slower method
-                return getInOutsViaSides(container, ioIdx);
+                return getInOutsViaSides(container, ioIdx, noMicroCorners);
             }
         }
     }
 
+    const inOuts: InOut[] = [];
     const config1 = cSign! > 0;
     if (config1) {
         // config1 (the 1st of the 2 possible configurations)
-        inOuts.push({ dir: -1, p, _x_: x1, container });
-        inOuts.push({ dir: +1, p, _x_: x2, container });
-        inOuts.push({ dir: +1, p, _x_: x1, container });
-        inOuts.push({ dir: -1, p, _x_: x2, container });
+        inOuts.push({ dir: -1, p, _x_: x1, container, pBox: p });
+        inOuts.push({ dir: +1, p, _x_: x2, container, pBox: p });
+        inOuts.push({ dir: +1, p, _x_: x1, container, pBox: p });
+        inOuts.push({ dir: -1, p, _x_: x2, container, pBox: p });
+        // @ts-ignore
         x1.in_ = inOuts[0];
+        // @ts-ignore
         x2.in_ = inOuts[3];
+        // @ts-ignore
+        x1.out = inOuts[1];
+        // @ts-ignore
+        x2.out = inOuts[2];
     } else {
         // config2 (the 2nd of the 2 possible configurations)
-        inOuts.push({ dir: -1, p, _x_: x1, container });
-        inOuts.push({ dir: -1, p, _x_: x2, container });
-        inOuts.push({ dir: +1, p, _x_: x1, container });
-        inOuts.push({ dir: +1, p, _x_: x2, container });
+        inOuts.push({ dir: -1, p, _x_: x1, container, pBox: p });
+        inOuts.push({ dir: -1, p, _x_: x2, container, pBox: p });
+        inOuts.push({ dir: +1, p, _x_: x1, container, pBox: p });
+        inOuts.push({ dir: +1, p, _x_: x2, container, pBox: p });
+        // @ts-ignore
         x1.in_ = inOuts[0];
+        // @ts-ignore
         x2.in_ = inOuts[1];
+        // @ts-ignore
+        x1.out = inOuts[2];
+        // @ts-ignore
+        x2.out = inOuts[3];
     }
 
     return { inOuts, ioIdx };

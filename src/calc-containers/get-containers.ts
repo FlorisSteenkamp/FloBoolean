@@ -28,7 +28,8 @@ import { filterContainers } from './filter-containers.js';
 function getContainers(
         loops: Loop[],
         containerDim: number,
-        expMax: number) {
+        expMax: number,
+        noMicroCorners: boolean) {
 
     const xs1 = getIntersections(loops, expMax);
     const xs2 = getSelfIntersections(loops);
@@ -108,10 +109,11 @@ function getContainers(
     let ioIdx = 0;
     for (const container of containers) {
         for (const x of container.xs) {
+            // @ts-ignore
             x.container = container;
         }
         let inOuts: InOut[];
-        ({ inOuts, ioIdx } = getContainerInOuts(container, ioIdx));
+        ({ inOuts, ioIdx } = getContainerInOuts(container, ioIdx, noMicroCorners));
         container.inOuts = inOuts;
     }
 
@@ -121,9 +123,9 @@ function getContainers(
 
     // Connect container ins and outs
     for (const container of containers) {
-        for (const out of container.inOuts) {
-            if (out.dir === -1) { continue; }
-
+        for (const inOut of container.inOuts) {
+            if (inOut.dir === -1) { continue; }
+            const out = inOut;
             let _x_ = out._x_!;
             // move to next 'in' __X__
             while (true) {
@@ -132,8 +134,34 @@ function getContainers(
                     break;
                 }
             }
+            // @ts-ignore
             out.next = _x_.in_;
+            // @ts-ignore
             out.idx = out.next.idx;
+        }
+    }
+
+    for (const container of containers) {
+        for (const inOut of container.inOuts) {
+            // continue;
+            if (inOut.dir === +1) {
+                continue;
+            }
+
+            const in_ = inOut;
+            let _x_ = in_._x_!;
+            // // move to prev 'out' __X__
+            let ii=0;
+            while (true && ii++ < 10) {
+                _x_ = _x_.prev!;
+                if (_x_.out !== undefined) { 
+                    break;
+                }
+            }
+            // @ts-ignore
+            in_.prev = _x_.out;
+            // @ts-ignore
+            in_.idx = in_.prev!.idx;
         }
     }
 
@@ -147,7 +175,9 @@ function getContainers(
         let prevInOut = inOuts[inOuts.length-1];
         for (let i=0; i<inOuts.length; i++) {
             const inOut = inOuts[i];
+            // @ts-ignore
             inOut.prevAround = prevInOut;
+            // @ts-ignore
             prevInOut.nextAround = inOut;
             prevInOut = inOut;
         }

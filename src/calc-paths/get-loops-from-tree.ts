@@ -8,7 +8,9 @@ import { InOut } from "../in-out.js";
  * @param root 
  */
 
-function getLoopsFromTree(root: InOut) {
+function getLoopsFromTree(
+        root: InOut): InOut[] {
+
     const trees = [root];
 
     const stack = Array.from(root.children!);

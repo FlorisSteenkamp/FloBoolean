@@ -1,5 +1,6 @@
 import { InOut } from "../in-out.js";
 import { containerIsBasic } from "../container.js";
+import { markInOutForChecking } from './mark-in-out-for-checking.js';
 
 
 /**
@@ -11,9 +12,10 @@ function getNextExit(
         in_: InOut, 
         originalOut: InOut,
         additionalOutsToCheck: InOut[],
-        takenOuts: Set<InOut>) {
+        takenOuts: Set<InOut>,
+        noMicroCorners: boolean) {
 
-    const markOutForChecking_ = markOutForChecking(
+    const markOutForChecking_ = markInOutForChecking(
         originalOut, 
         takenOuts, 
         additionalOutsToCheck
@@ -23,11 +25,11 @@ function getNextExit(
     let fromCount = 0;
     let toCount = 1;
     let next = in_;
-    let outToUse = undefined;
+    let outToUse: InOut | undefined = undefined;
     do {
         next = originalOut.orientation === +1
             ? next.nextAround!
-            : next.prevAround!;
+            : next.prevAround!
 
         if (next === in_) { break; }
         fromCount = toCount;
@@ -53,28 +55,12 @@ function getNextExit(
         }
     } while (true)
 
-    if (!containerIsBasic(in_.container)) {
+    if (!containerIsBasic(in_.container) && !noMicroCorners) {
         // if there is multiple intersection pairs then add an additional bezier
         additionalBezier = [in_.p, outToUse!.p];
     }
     
-    return { out_: outToUse, additionalBezier };
-}
-
-
-function markOutForChecking(
-        originalOut: InOut,
-        takenOuts: Set<InOut>,
-        additionalOutsToCheck: InOut[]) {
-            
-    return (out: InOut, parity: number, parent: InOut) => {
-        if (!takenOuts.has(out) && !out.orientation) {
-            out.orientation = parity * originalOut.orientation!;
-            out.parent = parent;
-            out.windingNum = parent.windingNum! + out.orientation;
-            additionalOutsToCheck.push(out);
-        }
-    }
+    return { inOutToUse: outToUse!, additionalBezier };
 }
 
 

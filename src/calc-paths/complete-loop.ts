@@ -3,36 +3,40 @@ import { mid } from 'flo-poly';
 import { InOut } from '../in-out.js';
 import { getNextExit } from './get-next-exit.js';
 import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
+import { getBeziersToPrevContainer } from './get-beziers-to-prev-container.js';
+import { getTightNextExit } from './get-tight-next-exit.js';
 
 
 /** 
  * Completes a loop for a specific intersection point entry curve.
  * 
  * @param expMax
- * @param takenOuts
+ * @param takenInOuts
  * @param out
  */
 function completeLoop(
-        expMax: number,
-        takenOuts: Set<InOut>,
-        out: InOut): { beziers: number[][][], additionalOutsToCheck: InOut[] } {
+        takenInOuts: Set<InOut>,
+        out: InOut,
+        tight: boolean,
+        noMicroCorners: boolean): { beziers: number[][][], additionalOutsToCheck: InOut[] } {
 
     const additionalOutsToCheck: InOut[] = [];
     const beziers: number[][][] = [];
 
     // Move immediately to the outgoing start of the loop
-    let out_: InOut | undefined = out;
+    let inOutToUse: InOut = out;
     let additionalBezier: number[][] | undefined;
 
-    // console.log(out_);
-
     do {
-        takenOuts.add(out_!); // Mark this intersection as taken
+        takenInOuts.add(inOutToUse!); // Mark this intersection as taken
         
-        const { beziers: additionalBeziers, in_, inBez } = 
-            getBeziersToNextContainer(out_!);
+        const beziersToNextContainer = inOutToUse.dir === +1
+            ? getBeziersToNextContainer(inOutToUse!, takenInOuts, noMicroCorners)
+            : getBeziersToPrevContainer(inOutToUse!, takenInOuts)
+
+        const { beziers: additionalBeziers, inOut, bez } = beziersToNextContainer;
+
         beziers.push(...additionalBeziers);
-        // additionalBeziers;//?
 
         // TODO - it will probably better to remove additionalBezier and just
         // connect the endpoints of adjacent beziers - even if we had near
@@ -42,18 +46,23 @@ function completeLoop(
         // intersection coordinates, hence we might as well remove 
         // additionalBeziers whose length is about a trillionth of the max
         // coordinate of loops
-        ({ out_, additionalBezier } = getNextExit(
-            in_!, out, additionalOutsToCheck, takenOuts
-        ));
+        const nextExit = !tight
+            ? getNextExit(inOut!, out, additionalOutsToCheck, takenInOuts, noMicroCorners)
+            : getTightNextExit(inOut!, out, additionalOutsToCheck, takenInOuts);
+
+        ({ inOutToUse, additionalBezier } = nextExit);
+
+
+
         if (additionalBezier !== undefined) {
-            const t = mid(closestPointOnBezierCertified(inBez, additionalBezier[0])[0].ri);
-            const inBez_ = fromTo(inBez, 0, t);
+            const t = mid(closestPointOnBezierCertified(bez, additionalBezier[0])[0].ri);
+            const inBez_ = fromTo(bez, 0, t);
             beziers.push(inBez_);
             beziers.push(additionalBezier);
         } else {
-            beziers.push(inBez);
+            beziers.push(bez);
         }
-    } while (out_ !== out);
+    } while (inOutToUse !== out);
 
     return { beziers, additionalOutsToCheck };
 }

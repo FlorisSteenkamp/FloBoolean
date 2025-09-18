@@ -8,7 +8,6 @@ import type { Loop } from "../loop/loop.js";
  * @param xPairs
  */
 function setIntersectionNextValues(xPairs: __X__[][]) {
-
     const xsByLoop: Map<Loop, __X__[]> = new Map();
     for (const xPair of xPairs) {
         for (const x_ of xPair) {
@@ -26,16 +25,19 @@ function setIntersectionNextValues(xPairs: __X__[][]) {
         if (!xs || !xs.length) { continue; }
 
         xs.sort((xA, xB) => {
-            let res = xA.curve.idx - xB.curve.idx;
-            if (res !== 0) { return res; }
-            res = xA.x.ri.tS - xB.x.ri.tS;
-            if (res !== 0) { return res; }
+            let r = xA.curve.idx - xB.curve.idx;
+            if (r !== 0) { return r; }
+            r = xA.x.ri.tS - xB.x.ri.tS;
+            if (r !== 0) { return r; }
             return xA.in_ !== undefined ? -1 : +1;
         });
 
         const len = xs.length;
         for (let i=0; i<len; i++) {
+            // @ts-ignore
             xs[i].next = xs[(i+1)%len];
+            // @ts-ignore
+            xs[i].prev = xs[(i-1+len)%len];
         }
     }
 }

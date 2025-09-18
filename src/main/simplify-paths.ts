@@ -1,27 +1,23 @@
 declare const _debug_: Debug; 
 
-import { getBoundingHull, getBoundingBoxTight } from 'flo-bezier3';
 import { Debug } from '../debug/debug.js';
-import { completePath } from './complete-path.js';
-import { getTightestContainingLoop } from './get-tightest-containing-loop.js';
-import { orderLoopAscendingByMinY } from './order-loop-ascending-by-min-y.js';
-import { splitLoopTrees } from './split-loop-trees.js';
-import { getLoopsFromTree } from './get-loops-from-tree.js';
+import { completePath } from '../calc-paths/complete-path.js';
+import { getTightestContainingLoop } from '../calc-paths/get-tightest-containing-loop.js';
+import { orderLoopAscendingByMinY } from '../calc-paths/order-loop-ascending-by-min-y.js';
+import { splitLoopTrees } from '../calc-paths/split-loop-trees.js';
+import { getLoopsFromTree } from '../calc-paths/get-loops-from-tree.js';
 import { getContainers } from '../calc-containers/get-containers.js';
 import { InOut } from '../in-out.js';
-import { getOutermostInAndOut } from './get-outermost-in-and-out.js';
-import { reverseOrientation } from '../loop/reverse-orientation.js';
+import { getOutermostInAndOut } from '../calc-paths/get-outermost-in-and-out.js';
 import { Loop, loopFromBeziers } from '../loop/loop.js';
 import { normalizeLoops } from '../loop/normalize/normalize-loop.js';
 import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate.js';
 import { getShapeArea } from '../loop/get-loop-area.js';
-import { loopsToSvgPathStr } from '../svg/loops-to-svg-path-str.js';
-import { getBoundingBox_ } from '../get-bounding-box-.js';
-
-// the imports below is used in the test cases - see code below
-import { getShapeCentroid } from '../loop/get-loop-centroid.js';
-import { getShapeBounds } from './get-shape-bounds.js';
-
+import { addDebugInfo1 } from './add-debug-info-1.js';
+import { addDebugInfo2 } from './add-debug-info-2.js';
+import { loopFromOut } from './loop-from-out.js';
+import { createRootInOut } from './create-root-in-out.js';
+import { reverseShapeOrientation } from '../loop/reverse-shape-orientation.js';
 
 
 interface BooleanOptions {
@@ -61,8 +57,9 @@ function simplifyPaths(
         timingStart = performance.now();
     }
 
-    // bezierLoops = bezierLoops.map(loopFromBeziers).map(reverseOrientation).map(loops => loops.beziers);
+    // bezierLoops = bezierLoops.map(reverseShapeOrientation);
     // console.log(loopsToSvgPathStr(bezierLoops));
+    // console.log(bezierLoops);
 
     /** 
      * All bezier coordinates will be truncated to this (bit-aligned) bitlength.
@@ -100,13 +97,11 @@ function simplifyPaths(
         true,
     );
 
-    // console.log(bezierLoops)
-
     addDebugInfo1(bezierLoops);
     bezierLoops.sort(orderLoopAscendingByMinY);
 
     const loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));
-    const { extremes } = getContainers(loops, containerDim, expMax);
+    const { extremes } = getContainers(loops, containerDim, expMax, noMicroCorners);
 
     const root = createRootInOut();
     const takenLoops: Set<Loop> = new Set();
@@ -123,15 +118,19 @@ function simplifyPaths(
 
         const initialOut = getOutermostInAndOut(container);
         // Each loop generated will give rise to one componentLoop. 
+        // @ts-ignore
         initialOut.parent = parent;
+        // @ts-ignore
         initialOut.windingNum = parent.windingNum! + initialOut.orientation!;
+        // @ts-ignore
         initialOut.children = new Set();
 
         completePath(
-            expMax,
             initialOut,
             takenLoops, 
-            takenOuts
+            takenOuts,
+            false,
+            noMicroCorners
         );
     }
 
@@ -155,6 +154,8 @@ function simplifyPaths(
         }
     }
 
+    // console.log(loopss_.map(loops => loops.map(loop => loop.beziers)));
+
     addDebugInfo2(loopss_);
 
     if (typeof _debug_ !== 'undefined') {
@@ -164,92 +165,6 @@ function simplifyPaths(
 
     // console.log(loopsToSvgPathStr(loopss_[0].map(loop => loop.beziers)));
     return loopss_;
-}
-
-
-/**
- * 
- * @param out 
- * @param orientation 
- * @param idx identifies the loop during debugging
- */
-function loopFromOut(
-        out: InOut,
-        orientation: number,
-        idx: number) {
-
-    const loop = orientation < 0
-        ? loopFromBeziers(out.beziers, idx)
-        : reverseOrientation(loopFromBeziers(out.beziers, idx));
-
-    return loop;
-}
-
-
-function addDebugInfo2(loopss: Loop[][]) {
-    if (typeof _debug_ === 'undefined') { return; }
-
-    for (const loops of loopss) {
-        _debug_.generated.elems.loop.push(...loops);
-        _debug_.generated.elems.loops.push(loops);
-        //console.log(loopsToSvgPathStr(loops.map(loop => loop.beziers)));
-    }
-
-    // Don't delete below commented lines - it is for creating test cases.
-    // if (typeof document === 'undefined') { return; }
-    // let g = document.getElementsByTagName('g')[0];
-    // let invariants = loopss.map(loops => {
-    //    return loops.map(loop => {
-    //        let centroid = getShapeCentroid(loop);
-    //        let area     = getShapeArea(loop);
-    //        let bounds   = getShapeBounds(loop.beziers);
-    //        //drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 0);
-    //        return { centroid, area, bounds };
-    //    });
-    // });
-    // console.log(JSON.stringify(invariants, undefined, '    '));
-}
-
-
-function addDebugInfo1(loops: number[][][][]) {
-    if (typeof _debug_ === 'undefined') { return; }
-
-    // Modifies the displayed SVG to reflect changes caused by `normalizeLoops`.
-    if (typeof document !== 'undefined') { 
-        const pathStr = loopsToSvgPathStr(loops); 
-        const $svg = document.getElementsByClassName('shape')[0]; 
-        $svg.setAttributeNS(null, 'd', pathStr); 
-    }
-
-    
-    for (const loop of loops) {
-        _debug_.generated.elems.loopPre.push(...loops);
-        _debug_.generated.elems.loopsPre.push(loops);
-
-        for (const ps of loop) {
-            const lbb   = getBoundingBox_(ps);
-            const tbb   = getBoundingBoxTight(ps);
-            const bhull = getBoundingHull(ps, false)!;
-            _debug_.generated.elems.bezier_          .push(ps);
-            _debug_.generated.elems.looseBoundingBox_.push(lbb);
-            _debug_.generated.elems.tightBoundingBox_.push(tbb);
-            _debug_.generated.elems.boundingHull_    .push(bhull);
-        }
-    }
-}
-
-
-function createRootInOut(): InOut {
-    return {
-        dir: undefined!,
-        idx: 0,
-        parent: undefined,
-        children: new Set(),
-        windingNum: 0,
-        p: undefined!,
-        _x_: undefined,
-        container: undefined!
-    };
 }
 
 

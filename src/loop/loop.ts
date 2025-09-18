@@ -2,16 +2,15 @@ import type { Curve } from '../curve/curve.js';
 
 
 /**
- * Represents a two-way linked loop of [[ICurve]]s - mostly used internally to 
- * conveniently represent shape boundaries.
+ * Represents a two-way linked loop of `Curve`s.
  */
 interface Loop {
     /** The curves that represent the shape boundary as an array. */
-    curves: Curve[];
+    readonly curves: Curve[];
     /** A pre-ordered array of bezier curves to add initially.*/
-    beziers: number[][][];
+    readonly beziers: number[][][];
     /** A reference to the loop */
-    idx?: number;
+    readonly idx?: number;
 }
 
 
@@ -66,6 +65,7 @@ function loopFromBeziers(
             idx: j
         };
 
+        // @ts-ignore
         if (prev) { prev.next = curve; }
         prev = curve; 
 
@@ -75,7 +75,9 @@ function loopFromBeziers(
 
     // close loop
     const lastCurve = curves[curves.length-1];
+    // @ts-ignore
     curves[0].prev = lastCurve;
+    // @ts-ignore
     lastCurve.next = curves[0];
 
     lastCurve.ps[lastCurve.ps.length-1] = curves[0].ps[0];

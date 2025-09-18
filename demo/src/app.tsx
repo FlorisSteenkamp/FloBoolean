@@ -11,7 +11,6 @@ import { createRoot } from 'react-dom/client';
 
 function App() {
     const [appState, setAppState] = useState(getInitialState);
-    //const [transientState, setTransientState] = useState(() => defaultTransientState);
     const [state] = useState((): State => ({ appState }));
     const [{upd, upd$}] = useState(() => _upd(state, setAppState));
     const [stateControl] = useState((): StateControl => ({ 
