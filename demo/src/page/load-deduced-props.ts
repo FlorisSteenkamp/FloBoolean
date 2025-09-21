@@ -10,7 +10,7 @@ const IS_DEBUG_ON = true;
 async function loadDeducedProps(
         stateControl: StateControl,
         pathStrs: string[]) {
-        
+
     const bezierLoopss = pathStrs.map(getPathsFromStr);
     const viewbox = getViewBoxForShapes(bezierLoopss);
     let timingAll: number;

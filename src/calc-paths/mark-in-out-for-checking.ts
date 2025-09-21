@@ -7,12 +7,18 @@ function markInOutForChecking(
         additionalOutsToCheck: InOut[]) {
             
     return (inOut: InOut,
-            parity: number,
+            orientation: number,
             parent: InOut) => {
 
-        if (!takenInOuts.has(inOut) && !inOut.orientation) {
+        // TODO - remove
+        // if (inOut.orientation !== undefined) {
+        //     inOut.orientation;                //?
+        //     orientation!;//?
+        //     takenInOuts.has(inOut);//?
+        // }
+        if (!takenInOuts.has(inOut)) {
             // @ts-ignore
-            inOut.orientation = parity * originalOut.orientation!;
+            inOut.orientation = orientation;
             // @ts-ignore
             inOut.parent = parent;
             // @ts-ignore

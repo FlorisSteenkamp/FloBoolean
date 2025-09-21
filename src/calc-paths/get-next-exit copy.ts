@@ -25,7 +25,7 @@ function getNextExit(
     let toCount = 1;
     let next = in_;
     let outToUse: InOut | undefined = undefined;
-    let curOrientation = originalOut.orientation!;
+    let curParity = originalOut.orientation!;
     do {
         next = originalOut.orientation! === +1
             ? next.nextAround!
@@ -34,12 +34,10 @@ function getNextExit(
         if (next === in_) { break; }
 
         const prevToCount = toCount;
-        // [next.idx, next.dir];//?
         toCount = toCount - next.dir;
 
-        // curOrientation;//?
         if (toCount === 1) {
-            curOrientation *= -1;
+            curParity *= -1;
         }
 
         if (next.dir === -1) { continue; }
@@ -48,18 +46,20 @@ function getNextExit(
             // we are still rotating on the inside of the loop
             if (toCount === 0) {
                 outToUse = next;
-            } else if (toCount === 1) {
-                // ...must have the same orientation (see complexish2.svg in tests)
-                markOutForChecking_(next, originalOut.orientation!, originalOut);
-                // [next.idx, next.dir];//?
+            // } else if (toCount === 1) {
+            } else {
+                // the outermost inner loop must have the same orientation
+                // markOutForChecking_(next, +1, originalOut);
+                markOutForChecking_(next, curParity, originalOut);
             }
         } else {
             // else we are rotating on the outside of the loop
-            if (prevToCount === 1 && toCount === 0) {
-                markOutForChecking_(next, originalOut.orientation!, originalOut.parent!);
-            } else if (prevToCount === 0 && toCount === -1) {
-                markOutForChecking_(next, -originalOut.orientation!, originalOut.parent!);
-            }
+            // if (prevToCount === 1 && toCount === 0) {
+            //     markOutForChecking_(next, +1, originalOut.parent!);
+            // } else if (prevToCount === 0 && toCount === -1) {
+            //     markOutForChecking_(next, -1, originalOut.parent!);
+            // }
+            markOutForChecking_(next, curParity, originalOut.parent!);
         }
     } while (true)
 

@@ -95,12 +95,12 @@ function getXInOuts(
                 // it is a sideX
                 if (prevWasX === true) {
                     outs.push({
+                        idx: ++ioIdx,
                         dir: +1, 
                         p: noMicroCorners ? midBox(prevX?.x.box!) : midBoxX(x),
                         pBox: midBoxX(x),
                         _x_: prevX!,
                         container,
-                        idx: ++ioIdx,
                         side: x.side,
                         sideX: x.sideX!
                     });
@@ -112,12 +112,12 @@ function getXInOuts(
                 // it is a proper X
                 if (prevWasX === false) {
                     ins.push({ 
+                        idx: ++ioIdx,
                         dir: -1, 
                         p: noMicroCorners ? midBox(container.box) : midBoxX(prevX!),
                         pBox: midBoxX(prevX!),
                         _x_: x,
                         container,
-                        idx: ++ioIdx,
                         side: prevX!.side!, 
                         sideX: prevX!.sideX!
                     });

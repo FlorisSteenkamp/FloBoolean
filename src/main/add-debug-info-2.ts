@@ -6,6 +6,7 @@ import { Loop } from '../loop/loop.js';
 // the imports below is used in the test cases - see code below
 import { getShapeCentroid } from '../loop/get-loop-centroid.js';
 import { getShapeBounds } from '../calc-paths/get-shape-bounds.js';
+import { getShapeArea } from '../loop/get-loop-area.js';
 
 
 function addDebugInfo2(loopss: Loop[][]) {
@@ -22,8 +23,8 @@ function addDebugInfo2(loopss: Loop[][]) {
     // let g = document.getElementsByTagName('g')[0];
     // let invariants = loopss.map(loops => {
     //    return loops.map(loop => {
-    //        let centroid = getShapeCentroid(loop);
-    //        let area     = getShapeArea(loop);
+    //        let centroid = getShapeCentroid(loop.beziers);
+    //        let area     = getShapeArea(loop.beziers);
     //        let bounds   = getShapeBounds(loop.beziers);
     //        //drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 0);
     //        return { centroid, area, bounds };

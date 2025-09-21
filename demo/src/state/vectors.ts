@@ -1,8 +1,13 @@
 
 const vectors = [
+    'squares',
+    'few-xs-at-min-y',
+    'multiple-xs-at-min-y',
+    'complexish',
+    'complexish2',
+    'complexish3',
     'p',
     'topmost-no-interface',
-    'squares',
     'ring2',
     'V2',
     'Mt44',
@@ -11,8 +16,6 @@ const vectors = [
     'koldat51',
     'bold-b',
     'square',
-    'multiple-xs-at-min-y',
-    'complexish',
     'B',
     'same-k-family-lines',
     'multi-level-reversed-orientation',

@@ -141,6 +141,7 @@ function getContainers(
         }
     }
 
+
     for (const container of containers) {
         for (const inOut of container.inOuts) {
             // continue;
@@ -150,9 +151,8 @@ function getContainers(
 
             const in_ = inOut;
             let _x_ = in_._x_!;
-            // // move to prev 'out' __X__
-            let ii=0;
-            while (true && ii++ < 10) {
+            // move to prev 'out' __X__
+            while (true) {
                 _x_ = _x_.prev!;
                 if (_x_.out !== undefined) { 
                     break;

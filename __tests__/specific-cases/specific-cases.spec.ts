@@ -4,10 +4,15 @@ import { Invariants } from '../helpers/invariants';
 import { makeTolerance } from '../helpers/make-tolerance';
 import { checkShapes } from '../helpers/check-shapes';
 import { simplifyPaths } from '../../src/main/simplify-paths';
+import { enableDebugDrawFs } from 'flo-draw';
+import { enableDebugForBooleanOp } from '../../src/debug/debug';
 
 
 test('specific cases', function() {
+    // updDebugGlobal(true);  // enable to check invariants
+
     testIt('square', 'simple square -> should decompose correctly (no decompisition)');
+    testIt('few-xs-at-min-y', 'multiple intersections at minimum y value -> should decompose correctly');
     testIt('multiple-xs-at-min-y', 'multiple intersections at minimum y value -> should decompose correctly');
     testIt('complexish', 'somewhat complex shape -> should decompose correctly');
     testIt('B', 'B shape with quad beziers -> should decompose correctly');
@@ -22,6 +27,10 @@ test('specific cases', function() {
     testIt('new2', 'edge case that caused same bug as bold-b -> should decompose correctly');
     testIt('bold-b', 'edge case that caused bug -> should decompose correctly');
 
+    // TODO - add complexish2 and 3 invariants
+    // testIt('complexish2', 'somewhat complex shape -> should decompose correctly');
+    // testIt('complexish3', 'somewhat complex shape -> should decompose correctly');
+
     function testIt(fileName: string, description: string) {
         const { bezierLoops, invariants } = getPathFromFile(fileName); 
 
@@ -33,3 +42,14 @@ test('specific cases', function() {
         ).toBe(true);
     }
 });
+
+
+function updDebugGlobal(debugOn: boolean) {
+    (globalThis as any)._debug_ = {};
+
+    // enableDebugDrawFs(debugOn);
+    enableDebugForBooleanOp(debugOn);
+
+    // console shortcut
+    (globalThis as any).d = (globalThis as any)._debug_;
+}

@@ -1,3 +1,6 @@
+declare const _debug_: Debug;
+
+import type { Debug } from '../debug/debug.js';
 import { closestPointOnBezierCertified, fromTo } from 'flo-bezier3';
 import { mid } from 'flo-poly';
 import { InOut } from '../in-out.js';
@@ -27,6 +30,10 @@ function completeLoop(
     let inOutToUse: InOut = out;
     let additionalBezier: number[][] | undefined;
 
+    if (typeof _debug_ !== 'undefined') {
+        console.log('----');
+        console.log([inOutToUse.idx, inOutToUse.dir]);
+    }
     do {
         takenInOuts.add(inOutToUse!); // Mark this intersection as taken
         
@@ -48,7 +55,7 @@ function completeLoop(
         // coordinate of loops
         const nextExit = !tight
             ? getNextExit(inOut!, out, additionalOutsToCheck, takenInOuts, noMicroCorners)
-            : getTightNextExit(inOut!, out, additionalOutsToCheck, takenInOuts);
+            : getTightNextExit(inOut!, out, additionalOutsToCheck, takenInOuts, noMicroCorners);
 
         ({ inOutToUse, additionalBezier } = nextExit);
 

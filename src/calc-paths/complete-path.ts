@@ -23,6 +23,7 @@ function completePath(
 
     while (inOutStack.length) {
         const inOut = inOutStack.pop()!;
+        [inOut.idx, inOut.dir, inOut.orientation];
         takenLoops.add(inOut!._x_!.curve.loop);
 
         if (takenInOuts.has(inOut)) { continue; }
@@ -31,6 +32,8 @@ function completePath(
         inOut.children = new Set();
         const { beziers, additionalOutsToCheck } = 
             completeLoop(takenInOuts, inOut, tight, noMicroCorners);
+        // additionalOutsToCheck.map(v => [v.idx!, v.dir])//?
+        
 
         // @ts-ignore
         inOut.beziers = beziers;

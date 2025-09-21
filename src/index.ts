@@ -8,7 +8,7 @@ export type { _X_ } from './-x-.js';
 export { enableDebugForBooleanOp } from './debug/debug.js';
 export { getPathsFromStr } from './svg/get-paths-from-str.js';
 export { beziersToSvgPathStr } from './svg/beziers-to-svg-path-str.js';
-export { loopFromBeziers } from './loop/loop.js';
+export { loopFromBeziers } from './loop/loop-from-beziers.js';
 export { sweepLine } from './sweep-line/sweep-line.js';
 export { doConvexPolygonsIntersect } from './geometry/do-convex-polygons-intersect.js';
 export { getIntersections } from './get-critical-points/get-intersections.js';

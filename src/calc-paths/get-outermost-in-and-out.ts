@@ -17,7 +17,7 @@ function getOutermostInAndOut(container: Container) {
     const lastInOut = inOuts[inOuts.length-1];
 
     // set 'loop' direction
-    if (firstInOut.dir === 1) { 
+    if (firstInOut.dir === 1) {
         // @ts-ignore
         firstInOut.orientation = -1; // anti-clockwise
 

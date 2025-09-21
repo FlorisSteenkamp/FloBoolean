@@ -16,7 +16,7 @@ function checkInvariant(
     let { area, centroid, bounds } =  invariantReq;
 
     if (Math.abs(area - area_) > tolerance.area) {
-        throw new Error('Area not within tolerance.');
+        throw new Error(`Area not within tolerance. Found ${area_} - should be ${area}`);
     }
     if (Math.abs(centroid[0] - centroid_[0]) > tolerance.centroid ||
         Math.abs(centroid[1] - centroid_[1]) > tolerance.centroid) {

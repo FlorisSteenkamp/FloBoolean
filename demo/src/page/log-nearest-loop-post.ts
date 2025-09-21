@@ -16,7 +16,7 @@ function logNearestLoopPost(
         g: SVGGElement, 
         p: number[], showDelay = 1000) {
 
-    let bestLoop: Loop;
+    let bestLoop: Loop = undefined!;
     let bestDistance = Number.POSITIVE_INFINITY;
 
     const generated = _debug_.generated;
@@ -31,7 +31,8 @@ function logNearestLoopPost(
         }
     }
 
-    // console.log('area', getShapeArea(bestLoop!.beziers));
+    console.log('area', getShapeArea(bestLoop!.beziers));
+    // console.log(bestLoop);
     for (const curve of bestLoop!.curves) {
         drawFs.bezier(g, curve.ps, 'thin20 blue nofill', showDelay);
     }

@@ -12,7 +12,8 @@ function getTightNextExit(
         inOut: InOut, 
         originalInOut: InOut,
         additionalOutsToCheck: InOut[],
-        takenInOuts: Set<InOut>) {
+        takenInOuts: Set<InOut>,
+        noMicroCorners: boolean) {
 
     const markInOutForChecking_ = markInOutForChecking(
         originalInOut, 
@@ -20,21 +21,25 @@ function getTightNextExit(
         additionalOutsToCheck
     );
 
+    console.log([inOut.idx, inOut.dir]);
     let additionalBezier: number[][] | undefined = undefined;
-    let next = inOut;
-    let inOutToUse = originalInOut.dir * originalInOut.orientation! === +1
-        ? next.nextAround!
-        : next.prevAround!;
-    next = inOutToUse;
+
+    const tightAround = originalInOut.dir * originalInOut.orientation!;
+    let inOutToUse = tightAround === +1
+        ? inOut.nextAround!
+        : inOut.prevAround!;
+
+    let next = inOutToUse;
+    // let next = inOut;
 
     do {
-        next = originalInOut.orientation === +1
+        next = tightAround === +1
             ? next.nextAround!
             : next.prevAround!;
 
         if (next === inOut) { break; }
 
-        markInOutForChecking_(next, originalInOut.dir * originalInOut.orientation!, originalInOut);
+        markInOutForChecking_(next, tightAround, originalInOut);
     } while (true)
 
     if (!containerIsBasic(inOut.container)) {
@@ -62,7 +67,7 @@ function markInOutForChecking(
             inOut.parent = parent;
             // @ts-ignore
             inOut.windingNum = parent.windingNum! + inOut.orientation;
-            additionalOutsToCheck.push(inOut);
+            additionalOutsToCheck.unshift(inOut);
         }
     }
 }

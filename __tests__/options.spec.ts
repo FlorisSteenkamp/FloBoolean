@@ -13,9 +13,9 @@ test('options', function() {
         const _loopss = getPathsFromStr(pathStr);
         const loopss_ = simplifyPaths(_loopss);
 
-        const _l0 = _loopss[0];//?
-        const _l1 = _loopss[1];//?
-        const l_ = loopss_[0][0].beziers;//?
+        const _l0 = _loopss[0];
+        const _l1 = _loopss[1];
+        const l_ = loopss_[0][0].beziers;
         
         expect(_l0[0][0] === l_[0][1]).toBe(true);
         expect(_l0[0][0] === _l0[3][1]).toBe(true);

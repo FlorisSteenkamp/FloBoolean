@@ -237,7 +237,7 @@ function Page(props: Props) {
 
     function onClick(event: React.MouseEvent<SVGSVGElement, MouseEvent>) {
         if (event.shiftKey) { 
-            gotoPrevViewbox(stateControl); 
+            gotoPrevViewbox(stateControl);
             return;
         }
 

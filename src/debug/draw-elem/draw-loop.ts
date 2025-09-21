@@ -15,6 +15,8 @@ function drawLoop(
     // const bounds   = getShapeBounds(loop);
     drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 500);
 
+    
+
     return drawShape(
         g, 
         loop.curves.map(curve => curve.ps), 

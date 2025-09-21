@@ -8,23 +8,22 @@ function checkInvariants(
         invariantsReq: Invariants[][], 
         tolerance: Tolerance) {
 
-    // invariantsCalc.length;//?
-    // invariantsReq.length;//?
     if (invariantsCalc.length !== invariantsReq.length) {
+        invariantsCalc.length;//?
+        invariantsReq.length;//?
         throw new Error(`loopss lengths differ`);
     }
-    // invariantsCalc.map(v => v.length);//?
-    // invariantsReq.map(v => v.length);//?
-    // invariantsCalc[0];//?
 
     for (let i=0; i<invariantsCalc.length; i++) {
         let invariantCalc = invariantsCalc[i];
         let invariantReq  = invariantsReq[i];
-        invariantCalc.length;//?
-        invariantReq.length;//?
+        invariantCalc.length;
+        invariantReq.length;
 
         if (invariantCalc.length !== invariantReq.length) {
-            throw new Error(`a loopset of loopss lengths differ`);
+            invariantCalc.length;//?
+            invariantReq.length;//?
+            throw new Error(`A loopset of loopss lengths differ: calculated ${invariantCalc.length}, required ${invariantReq.length}`);
         }
 
         for (let i=0; i<invariantCalc.length; i++) {

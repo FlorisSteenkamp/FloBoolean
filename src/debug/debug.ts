@@ -36,11 +36,11 @@ interface Debug {
  */
 function enableDebugForBooleanOp(debugOn: boolean) {
     if (!debugOn) { 
-        (window as any)._debug_ = undefined; 
+        (globalThis as any)._debug_ = undefined; 
         return;
     }
 
-    const debug: Debug = (window as any)._debug_;
+    const debug: Debug = (globalThis as any)._debug_;
 
     const debug_: Debug = { 
         ...debug,
@@ -75,7 +75,7 @@ function enableDebugForBooleanOp(debugOn: boolean) {
         }
     };
 
-    (window as any)._debug_ = debug_;
+    (globalThis as any)._debug_ = debug_;
 }   
 
 

@@ -1,5 +1,5 @@
 import type { Loop } from './loop.js';
-import { loopFromBeziers } from './loop.js';
+import { loopFromBeziers } from './loop-from-beziers.js';
 import { reverseShapeOrientation } from './reverse-shape-orientation.js';
 
 

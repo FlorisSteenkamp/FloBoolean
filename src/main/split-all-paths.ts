@@ -8,7 +8,8 @@ import { orderLoopAscendingByMinY } from '../calc-paths/order-loop-ascending-by-
 import { getContainers } from '../calc-containers/get-containers.js';
 import { InOut } from '../in-out.js';
 import { getOutermostInAndOut } from '../calc-paths/get-outermost-in-and-out.js';
-import { Loop, loopFromBeziers } from '../loop/loop.js';
+import { Loop } from '../loop/loop.js';
+import { loopFromBeziers } from '../loop/loop-from-beziers.js';
 import { normalizeLoops } from '../loop/normalize/normalize-loop.js';
 import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate.js';
 import { getShapeArea } from '../loop/get-loop-area.js';
@@ -47,17 +48,16 @@ interface BooleanOptions {
  * * uses an algorithm similirar to that of Lavanya Subramaniam: PARTITION OF A
  * NON-SIMPLE POLYGON INTO SIMPLE POLYGONS (see `simplifyPaths`); 
  * 
- * @param loops an array of possibly intersecting paths
- * @param maxCoordinate optional - if not provided, it will be calculated - a
- * wrong value could cause the algorithm to fail
+ * @param bezierLoopss an array of possibly intersecting loops
+ * @param options options
  */
 function splitAllPaths(
         bezierLoopss: number[][][][][],
         options: BooleanOptions = {}): Loop[][] {
 
     if (typeof _debug_ !== 'undefined') {
-        (window as any)._debug_temp = _debug_;
-        (window as any)._debug_ = undefined;
+        (globalThis as any)._debug_temp = _debug_;
+        (globalThis as any)._debug_ = undefined;
     }
     
     const maxCoordinate = Math.max(...bezierLoopss.map(getMaxCoordinate));
@@ -84,29 +84,37 @@ function splitAllPaths(
         false, true,
     ));
 
-    const bezierLoops = bezierLoopss.map(
-        bezierLoops => {
-            const r = simplifyPaths(bezierLoops, maxCoordinate, {
-                maxBitLength, minLoopArea, noMicroCorners: true
-            }).flat().map(v => v.beziers);
+    const bezierLoops: number[][][][] = [];
+    for (let i=0; i<bezierLoopss.length; i++) {
+        const _simpLoops = bezierLoopss[i];
 
-            // return r;
-            return r.map(reverseShapeOrientation);
+        const simpLoops = simplifyPaths(_simpLoops, maxCoordinate, {
+            maxBitLength, minLoopArea, noMicroCorners: true
+        }).flat().map(v => v.beziers);
+
+        for (let j=0; j<simpLoops.length; j++) {
+            const simpLoop = simpLoops[j];
+            // @ts-ignore
+            simpLoop.loopsIdx = i;
+            bezierLoops.push(simpLoop);
         }
-    ).flat();
-    // const bezierLoops = bezierLoopss.flat();
+    }
+
     console.log(bezierLoops);
 
     if (typeof _debug_temp !== 'undefined') {
-        (window as any)._debug_ = _debug_temp;
-        (window as any)._debug_temp = undefined;
+        (globalThis as any)._debug_ = _debug_temp;
+        (globalThis as any)._debug_temp = undefined;
     }
     // throw 'a';
 
     addDebugInfo1(bezierLoops);
     bezierLoops.sort(orderLoopAscendingByMinY);
 
-    const loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));
+    // const loops = bezierLoops.map((beziers, i) => loopFromBeziers(beziers, i));
+    // @ts-ignore
+    const loops = bezierLoops.map(beziers => loopFromBeziers(beziers, beziers.loopsIdx));
+    // console.log(loops);
     const { extremes } = getContainers(loops, containerDim, expMax, true);
 
     const root = createRootInOut();
@@ -137,7 +145,7 @@ function splitAllPaths(
             takenLoops,
             takenInOuts,
             true,  // take the tightest loop around
-            true  // noMicroCorners
+            true   // noMicroCorners
         );
     }
 

@@ -11,7 +11,7 @@ function drawContainer(g: SVGGElement, container: Container, classes?: string, d
     const $circles: SVGCircleElement[] = [];
     for (let i=0; i<xs.length; i++) {
         const x = xs[i];
-        $circles.push(...drawFs.circle(g, { center: x.x.box[0], radius: scale }, 'thin2 red nofill', delay));
+        $circles.push(...drawFs.circle(g, { center: x.x.box[0], radius: scale/4 }, 'thin2 red nofill', delay));
     }
 
     // text showing intersection ordering
@@ -23,9 +23,10 @@ function drawContainer(g: SVGGElement, container: Container, classes?: string, d
         const color = inOut.dir === -1 ? 'red' : 'blue';
         const size = scale*(1 + (0.5*i));
         if (inOut.idx !== undefined) {
-            $texts.push(...drawFs.text(g, p, inOut.idx!.toString(), scale*4, `thin5 nofill ${color}`, delay));
+            // $texts.push(...drawFs.text(g, p, inOut.idx!.toString(), scale/2, `thin5 nofill ${color}`, delay));
+            $texts.push(...drawFs.text(g, p, inOut.idx!.toString(), scale*2, `thin5 ${color}`, delay));
         }
-        $circles.push(...drawFs.dot(g, inOut.pBox, size, `thin2 nofill ${color}`, delay)); 
+        $circles.push(...drawFs.dot(g, inOut.pBox, size/8, `thin5 nofill ${color}`, delay)); 
     }
 
     // container rect
