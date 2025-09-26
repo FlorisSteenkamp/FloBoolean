@@ -1,4 +1,4 @@
-import { InOut } from "../in-out";
+import type { InOut } from "../containers/in-out/in-out";
 
 
 function createRootInOut(): InOut {
@@ -11,7 +11,9 @@ function createRootInOut(): InOut {
         p: undefined!,
         pBox: undefined!,
         _x_: undefined,
-        container: undefined!
+        container: undefined!,
+        loopsIdxs: new Set(),
+        orientation: -1
     };
 }
 

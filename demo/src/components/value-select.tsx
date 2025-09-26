@@ -13,7 +13,6 @@ interface Props {
         label?: React.CSSProperties;
         input?: React.CSSProperties;
     };
-    //mergeStyles: boolean; // TODO
     value: number;
     onChanged: (value: number) => void;
 }

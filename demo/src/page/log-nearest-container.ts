@@ -5,9 +5,6 @@ import { Container, containerIsBasic } from '../../../src/container';
 import { squaredDistanceBetween } from 'flo-vector2d';
 
 
-// import { getClosestSquareDistanceToRect } from 'flo-bezier3';
-// TODO - this function was somehow lost and a sloppy version recreated below
-// to get it working
 function getClosestSquareDistanceToRect(rect: number[][], p: number[]) {
     const tl = rect[0];
     const br = rect[1];

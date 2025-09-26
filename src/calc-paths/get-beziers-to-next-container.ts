@@ -1,16 +1,18 @@
 import { mid } from 'flo-poly';
 import { fromTo, closestPointOnBezierCertified } from "flo-bezier3";
-import { InOut } from "../in-out.js";
+import { InOut } from "../containers/in-out/in-out.js";
 import { containerIsBasic } from "../container.js";
+import { DualSet, dualSetAdd } from '../dual-set.js';
 
 
 function getBeziersToNextContainer(
         out: InOut,
-        takenInOuts: Set<InOut>,
+        takenInOuts: DualSet<InOut, number>,
         noMicroCorners: boolean) {
 
     const in_ = out.next!;
-    takenInOuts.add(in_);
+
+    dualSetAdd(takenInOuts, in_, 1);
     const endCurve = in_._x_!.curve;
     const endT = in_._x_!.x.ri.tS;
     

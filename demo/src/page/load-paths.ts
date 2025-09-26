@@ -1,9 +1,6 @@
 
-async function loadPaths(vectorName: string) {
-    // const vector = vectors.find(vector => vector === vectorName);
-    // const str = await (await fetch(vector.url)).text();
-    const str = await (await fetch(`../__tests__/vectors/${vectorName}.SVG`)).text();
-    
+
+function getPaths(str: string) {
     // Find an SVG element within the given URL's HTML.
     const elem = createElemFromHtml(str);
     const svgElems = findSvgsFromElems(elem);
@@ -24,7 +21,14 @@ async function loadPaths(vectorName: string) {
         }
     }
 
-    return { pathStrs };
+    return pathStrs;
+}
+
+
+async function loadPaths(vectorName: string, forBoolean: boolean) {
+    const str = await (await fetch(`../__tests__/vectors${forBoolean ? '-boolean' : ''}/${vectorName}.SVG`)).text();
+    
+    return getPaths(str);
 }
 
 
@@ -51,4 +55,4 @@ function createElemFromHtml(str: string) {
 }
 
 
-export { loadPaths }
+export { loadPaths, getPaths }

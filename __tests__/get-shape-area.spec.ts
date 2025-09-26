@@ -1,0 +1,16 @@
+import { ddGetShapeArea, getShapeArea } from "../src/loop/get-loop-area";
+
+
+test('getShapeArea', function() {
+    {
+        const pss = [
+            [[0, 0], [10, 0]],
+            [[10, 0], [10, 10]],
+            [[10, 10], [0, 10]],
+            [[0, 10], [0, 0]]
+        ];
+
+        expect(getShapeArea(pss)).toStrictEqual(100);
+        expect(ddGetShapeArea(pss)).toStrictEqual([0,100]);
+    }
+});

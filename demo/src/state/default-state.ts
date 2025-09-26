@@ -19,23 +19,23 @@ const defaultTransientState: TransientState = {
 
 
 const defaultToDraw: { [T in keyof IDebugElems]: boolean } = {
+    loopPre              : false,
+    loopsPre             : false,
+    loops                : false,
     minY                 : false,
     bezier_              : false,
     looseBoundingBox_    : false,
     tightBoundingBox_    : true,
     boundingHull_        : false,
     loop                 : false,
-    loops                : false,
     intersection         : false,
     container            : false,
-    loopPre              : false,
-    loopsPre             : false,
 }
 
 
 const defaultDeduced: DeducedState = {
     pathStrs: ['']
-}
+};
 
 const defaultPageState: PageState = {
     deduced: defaultDeduced,
@@ -43,8 +43,11 @@ const defaultPageState: PageState = {
     clickFor: 'bezier',
     toDraw: defaultToDraw,
     viewbox: [[0,0],[100.100]],
-    vectorName : 'holy poly',
-}
+    vectorName : 'square',
+    vectorNameBoolean: 'squares',
+    forBoolean: true,
+    booleanOp: 'AND'
+};
 
 
 const defaultAppState: AppState = {

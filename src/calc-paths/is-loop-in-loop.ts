@@ -6,8 +6,7 @@ import { getShapeBounds } from './get-shape-bounds.js';
 import { squares } from 'squares-rng';
 
 
-// TODO - remove delta by basing isLoopInLoop on a solid numerical analytic 
-// basis - isLoopInLoop is the only sub-algorithm left having a DELTA.
+// FUTURE - remove delta; probably not necessary
 const DELTA = 1e-6;
 
 
@@ -22,7 +21,8 @@ type Dir =
  * Returns true if the first loop is wholly contained within the second loop's
  * boundary. 
  * 
- * Precondition: the loop is either wholly contained inside the loop or is wholly outside.
+ * * precondition: the loop must either wholly contained inside the loop or is wholly outside.
+ * 
  * @param loop1
  * @param loop2
  */

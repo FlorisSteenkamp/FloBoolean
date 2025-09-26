@@ -1,7 +1,7 @@
-import { type X } from './x.js';
-import { Container } from './container.js';
-import { InOut } from './in-out.js';
-import { Curve } from './curve/curve.js';
+import type { X } from './x.js';
+import type { Container } from './container.js';
+import type { InOut } from './containers/in-out/in-out.js';
+import type { Curve } from './curve/curve.js';
 
 
 /** 
@@ -29,4 +29,4 @@ interface __X__ extends _X_ {
 }
 
 
-export { _X_, __X__ }
+export type { _X_, __X__ }

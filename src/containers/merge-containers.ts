@@ -23,7 +23,8 @@ function mergeContainers(ccs: Container[][]) {
         const container: Container = {
             box: [[minLeft,minTop], [maxRight,maxBottom]],
             xs: xs,
-            inOuts: undefined!
+            inOuts: undefined!,
+            beenOrdered: false
         };
 
         containers.push(container);

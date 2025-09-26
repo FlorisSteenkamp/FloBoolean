@@ -12,13 +12,14 @@ import { setIntersectionNextValues } from "../get-critical-points/set-intersecti
 import { Loop } from "../loop/loop.js";
 import { sweepLine } from "../sweep-line/sweep-line.js";
 import { getSelfIntersections } from '../get-critical-points/get-self-intersections.js';
-import { InOut } from '../in-out.js';
+import { InOut } from './in-out/in-out.js';
 import { getInterfaceIntersections } from '../get-critical-points/get-interface-intersections.js';
 import { getExcessiveCurvatures } from '../get-critical-points/get-excessive-curvatures.js';
 import { getExtremes } from '../get-critical-points/get-extremes.js';
 import { sendContainersToGrid } from './send-containers-to-grid.js';
-import { compareOrderedInOut } from './get-container-in-outs/get-in-outs-via-sides/compare-in-out.js';
+import { compareInOut } from './get-container-in-outs/get-in-outs-via-sides/compare-in-out.js';
 import { filterContainers } from './filter-containers.js';
+import { orderInOuts } from './order-in-outs.js';
 
 
 /**
@@ -60,11 +61,12 @@ function getContainers(
     let containers: Container[] = xPairs.map(xPair => ({
         xs: xPair,
         box: [
-            // TODO xs[0].box -> combine xs[0] and xs[1] boxes
+            // FUTURE xs[0].box -> combine xs[0] and xs[1] boxes
             [xPair[0].x.box[0][0] - containerDim, xPair[0].x.box[0][1] - containerDim],
             [xPair[0].x.box[1][0] + containerDim, xPair[0].x.box[1][1] + containerDim]
         ],
-        inOuts: undefined! // to be set later
+        inOuts: undefined!, // to be set later
+        beenOrdered: false
     }));
 
 
@@ -114,6 +116,7 @@ function getContainers(
         }
         let inOuts: InOut[];
         ({ inOuts, ioIdx } = getContainerInOuts(container, ioIdx, noMicroCorners));
+        // @ts-ignore
         container.inOuts = inOuts;
     }
 
@@ -165,23 +168,10 @@ function getContainers(
         }
     }
 
-    for (const container of containers) {
-        container.inOuts.sort(compareOrderedInOut);
-    }
-
-    // set `next` and `prev` around container for each `inOut` for each `container`
-    for (const container of containers) {
-        const inOuts = container.inOuts;
-        let prevInOut = inOuts[inOuts.length-1];
-        for (let i=0; i<inOuts.length; i++) {
-            const inOut = inOuts[i];
-            // @ts-ignore
-            inOut.prevAround = prevInOut;
-            // @ts-ignore
-            prevInOut.nextAround = inOut;
-            prevInOut = inOut;
-        }
-    }
+    // set `nextAround` and `prevAround` within container for each `inOut` for each `Container`
+    // for (const container of containers) {
+    //     orderInOuts(container);
+    // }
 
     return { extremes, containers };
 }

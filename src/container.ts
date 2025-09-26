@@ -1,5 +1,5 @@
 import { __X__ } from "./-x-.js";
-import { InOut } from "./in-out.js";
+import { InOut } from "./containers/in-out/in-out.js";
 
 
 /**
@@ -8,14 +8,15 @@ import { InOut } from "./in-out.js";
  */
 interface Container {
     /** the box enclosing the intersections */
-    box: number[][];
+    readonly box: number[][];
     /** an array of enclosed intersections */
-    xs: __X__[];
+    readonly xs: __X__[];
     /** 
      * ordered array of incoming / outgoing curves where the order is 
      * anti-clockwise from the top right (minimum y, maximum x) corner
      */
-    inOuts: InOut[];
+    readonly inOuts: InOut[];
+    beenOrdered: boolean;
 }
 
 

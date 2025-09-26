@@ -1,4 +1,4 @@
-import type { InOut } from "../in-out";
+import type { InOut } from "../containers/in-out/in-out";
 import { loopFromBeziers } from '../loop/loop-from-beziers.js';
 import { reverseShapeOrientation } from "../loop/reverse-shape-orientation";
 
@@ -7,22 +7,22 @@ import { reverseShapeOrientation } from "../loop/reverse-shape-orientation";
  * 
  * @param out 
  * @param orientation 
- * @param idx identifies the loop during debugging
+ * @param loopIdx identifies the loop during debugging
  */
 function loopFromOut(
         out: InOut,
         orientation: number,
-        idx: number) {
+        loopIdx: number) {
 
     const _beziers = out.beziers;
-    if (_beziers === undefined) { return loopFromBeziers([], idx)}
+    if (_beziers === undefined) { return loopFromBeziers([], loopIdx)}
     // console.log(orientation);
 
     const beziers = orientation < 0
-        ? _beziers
-        : reverseShapeOrientation(_beziers);
+        ? reverseShapeOrientation(_beziers)
+        : _beziers;
 
-    const loop = loopFromBeziers(beziers, idx)
+    const loop = loopFromBeziers(beziers, loopIdx)
 
     return loop;
 }

@@ -1,23 +1,28 @@
-import { __X__ } from "./-x-.js";
-import { Container } from "./container.js";
-import { X } from "./x.js";
+import type { __X__ } from "../../-x-.js";
+import type { Container } from "../../container.js";
+import type { X } from "../../x.js";
 
 
 interface InOut {
-    /** direction, in (-1) or out (+1) */
-    readonly dir: -1|1; 
+    /** direction at container interface, in (-1) or out (+1) */
+    readonly dir: -1|1;
+    /**
+     * identification index; two `InOuts` will have the same index (one with
+     * `dir === -1` and one with `dir === +1`)
+     */
     readonly idx?: number;
-    /** intersection */
+    /** intersection; the actuale one, not the "box side" intersection */
     readonly _x_?: __X__;
+    /** the `Container` this `InOut` belongs to */
     readonly container: Container;
-    /** intersection point used for creating beziers in center of box */
+    /** intersection point used for creating beziers in center of `Container` */
     readonly p: number[];
-    /** intersection point with the container box; used for debugging only */
+    /** intersection point with the `Container` box; used for debugging only */
     readonly pBox: number[];
 
     /** the next in from this out */
     readonly next?: InOut;
-    /** the prev in from this out */
+    /** the prev out from this in */
     readonly prev?: InOut;
 
     /** the prior IInOut anti-clockwise around the container boundary */
@@ -47,6 +52,11 @@ interface InOut {
      * [side, sideT] it forms a well-ordering of the InOut.
      */
     readonly sideX?: X | undefined;
+    /**
+     * Set of indexes indicating which loops belongs to this `InOut` when
+     * seen as a loop
+     */
+    readonly loopsIdxs: Set<number>;
 }
 
 

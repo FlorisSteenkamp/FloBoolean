@@ -1,6 +1,13 @@
 import { getInterfaceRotation, tangent, totalCurvature } from "flo-bezier3";
 
 
+/**
+ * Returns the total curvature around the shape.
+ * 
+ * * the returned value will be a multiple of 2𝜋
+ * 
+ * @param pss 
+ */
 function getTotalShapeCurvature(
         pss: number[][][]): number {
 

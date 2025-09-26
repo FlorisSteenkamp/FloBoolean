@@ -6,7 +6,7 @@ import { X } from "../../../x.js";
 import { __X__ } from "../../../-x-.js";
 import { Curve } from "../../../curve/curve.js";
 import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting.js";
-import { InOut } from "../../../in-out.js";
+import { InOut } from "../../../containers/in-out/in-out.js";
 
 
 
@@ -102,7 +102,8 @@ function getXInOuts(
                         _x_: prevX!,
                         container,
                         side: x.side,
-                        sideX: x.sideX!
+                        sideX: x.sideX!,
+                        loopsIdxs: new Set()
                     });
                     // @ts-ignore
                     prevX.out = outs[outs.length-1];
@@ -119,7 +120,8 @@ function getXInOuts(
                         _x_: x,
                         container,
                         side: prevX!.side!, 
-                        sideX: prevX!.sideX!
+                        sideX: prevX!.sideX!,
+                        loopsIdxs: new Set()
                     });
                     // @ts-ignore
                     x.in_ = ins[ins.length-1];
@@ -223,7 +225,7 @@ function getTs(
                 if (areBoxesIntersectingDd(true)(boxPsI, boxPsJ)) {
                     const _risPs: RootIntervalExp[] = [];
                     for (const riPs of risPs) {
-                        // TODO - below we're converting riPs (using getXs0) to RootIntervalExp and below back to 
+                        // FUTURE - below we're converting riPs (using getXs0) to RootIntervalExp and below back to 
                         // RootInterval again - not necessary - fix
                         _risPs.push(
                             ...refineK1(
@@ -281,7 +283,7 @@ function getTs(
         const boxPs = boxesPs![i];
         for (let j=0; j<risSide.length; j++) {
             const boxSide = boxesSide![j];
-            // TODO - investigate if below commented code would improve algorithm
+            // FUTURE - investigate if below commented code would improve algorithm
             //const box = intersectBoxes(boxPs,boxSide);
             //if (box !== undefined) {
             if (areBoxesIntersectingDd(true)(boxPs, boxSide)) {

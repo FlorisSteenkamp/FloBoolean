@@ -34,7 +34,7 @@ function getShapeCentroid(pss: number[][][]) {
 
     const a = 1/(2*A);
 
-    return [-a*cx, a*cy];
+    return [a*cx, -a*cy];
 }
 
 
@@ -47,9 +47,6 @@ function getShapeCentroid(pss: number[][][]) {
  * see https://sites.math.washington.edu/~king/coursedir/m324a10/as/centroid-green.pdf
  */
 function ddGetShapeCentroid(pss: number[][][]) {
-    const A = ddGetShapeArea(pss);
-    const A2 = ddMultBy2(A);
-
     let cx = [0,0];
     let cy = [0,0];
     for (const ps of pss) {
@@ -66,8 +63,11 @@ function ddGetShapeCentroid(pss: number[][][]) {
         cy = ddAddDd(cy, _y);
     }
 
-    const CX = ddDivDd([0,-1],A2);
-    const CY = ddDivDd([0,1],A2);
+    const A = ddGetShapeArea(pss);
+    const A2 = ddMultBy2(A);
+
+    const CX = ddDivDd([0,1],A2);
+    const CY = ddDivDd([0,-1],A2);
     const X = ddMultDd(CX,cx);
     const Y = ddMultDd(CY,cy);
 

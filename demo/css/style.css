@@ -54,6 +54,7 @@ body {
 .thin1k { stroke-width: 10%; }
 .thin2k { stroke-width: 20%; }
 
+.fill10 { fill-opacity: 0.1; }
 .fill30 { fill-opacity: 0.3; }
 .nofill { fill-opacity: 0.0; }
 .nostroke { fill-opacity: 1.0; stroke-width: 0px; }

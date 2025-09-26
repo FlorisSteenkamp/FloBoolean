@@ -1,0 +1,25 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+>
+    <!-- orientation: negative (clockwise; shows anti-clockwise) -->
+    <path 
+        class="shape"
+        d=" M -50, -50
+            L -50, 350
+            L 350, 350
+            L 350, -50
+            Z
+        "
+    />
+    <!-- orientation: positive (anti-clockwise; shows clockwise) -->
+    <path 
+        class="shape"
+        d=" M 50, 0
+            L 200, 0
+            L 200, 200
+            L 0, 200
+            Z
+        "
+    />
+</svg>

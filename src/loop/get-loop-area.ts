@@ -26,7 +26,7 @@ function getShapeArea(pss: number[][][]) {
         totalArea += area;
     }
 
-    return -totalArea / 2;
+    return totalArea / 2;
 }
 
 
@@ -49,7 +49,7 @@ function ddGetShapeArea(pss: number[][][]) {
         const poly = ddIntegrate(ddAdd(xdy, ydx), [0,0]);
         const area = ddHorner(poly, 1);
 
-        totalArea = ddDiffDd(totalArea, area);
+        totalArea = ddAddDd(totalArea, area);
     }
 
     return [totalArea[0]/2, totalArea[1]/2];
@@ -68,18 +68,3 @@ function getLoopArea(loop: Loop) {
 
 
 export { getLoopArea, getShapeArea, ddGetShapeArea }
-
-
-// Quokka tests
-// {
-//     const pss = [
-//         [ [ 0, -236.73825503355692 ], [ 16, 42.261744966443075 ] ],
-//         [ [ 16, 42.261744966443075 ], [ 16, 126.26174496644308 ] ],
-//         [ [ 16, 126.26174496644308 ], [ -16, 126.26174496644308 ] ],
-//         [ [ -16, 126.26174496644308 ], [ -16, 42.261744966443075 ] ],
-//         [ [ -16, 42.261744966443075 ], [ 0, -236.73825503355692 ] ]
-//     ];
-
-//     getShapeArea(pss);//?
-//     ddGetShapeArea(pss);//?
-// }

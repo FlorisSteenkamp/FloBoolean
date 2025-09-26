@@ -1,4 +1,4 @@
-import { InOut } from "../in-out.js";
+import type { InOut } from "../containers/in-out/in-out.js";
 
 
 /**

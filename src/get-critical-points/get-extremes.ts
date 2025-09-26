@@ -3,7 +3,7 @@ import type { __X__ } from "../-x-.js";
 import { getExtreme } from "./get-extreme.js";
 
 
-// TODO - include all interface points close to the extreme - they are the only
+// FUTURE - include all interface points close to the extreme - they are the only
 // important interface points - or are they??
 /**
  * 

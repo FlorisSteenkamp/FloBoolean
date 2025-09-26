@@ -23,7 +23,7 @@ function getSelfIntersections(loops: Loop[]): __X__[][] {
                 ? 3/*cusp*/
                 : 2/*self-intersection*/;
                 
-            // TODO - fix box - must combine 2 boxes and bezierSelfIntersection must return intervals
+            // FUTURE - fix box - must combine 2 boxes and bezierSelfIntersection must return intervals
             const t0S = ts[0] - eps;
             const t0E = ts[0] + eps;
             const t1S = ts[1] - eps;
@@ -33,7 +33,7 @@ function getSelfIntersections(loops: Loop[]): __X__[][] {
             const box1 = getIntervalBox(ps,[t1S,t1E]);  // ts are within 1 upls accurate
 
             xs.push([
-                // TODO - multiplicity relevant??
+                // FUTURE - multiplicity relevant??
                 { x: { ri: { tS: t0S, tE: t0E, multiplicity: 1 }, box: box0, kind }, curve },
                 { x: { ri: { tS: t1S, tE: t1E, multiplicity: 1 }, box: box1, kind }, curve }
             ]);

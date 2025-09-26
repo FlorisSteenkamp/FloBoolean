@@ -1,6 +1,7 @@
-import { InOut } from "../in-out.js";
+import type { InOut } from "../containers/in-out/in-out.js";
 import { containerIsBasic } from "../container.js";
-import { markInOutForChecking } from './mark-in-out-for-checking.js';
+import { DualSet, dualSetHas } from "../dual-set.js";
+import { orderInOuts } from "../containers/order-in-outs.js";
 
 
 /**
@@ -12,14 +13,18 @@ function getNextExit(
         in_: InOut, 
         originalOut: InOut,
         additionalOutsToCheck: InOut[],
-        takenOuts: Set<InOut>,
+        takenOuts: DualSet<InOut, number>,
         noMicroCorners: boolean) {
 
     const markOutForChecking_ = markInOutForChecking(
-        originalOut, 
-        takenOuts, 
+        takenOuts,
         additionalOutsToCheck
     );
+
+    // the ordering below also ensures ins comes before outs
+    orderInOuts(in_.container, originalOut.orientation!);
+
+    // console.log([in_.idx, in_.dir]);
 
     let additionalBezier: number[][] | undefined = undefined;
     let toCount = 1;
@@ -34,10 +39,8 @@ function getNextExit(
         if (next === in_) { break; }
 
         const prevToCount = toCount;
-        // [next.idx, next.dir];//?
         toCount = toCount - next.dir;
 
-        // curOrientation;//?
         if (toCount === 1) {
             curOrientation *= -1;
         }
@@ -48,10 +51,10 @@ function getNextExit(
             // we are still rotating on the inside of the loop
             if (toCount === 0) {
                 outToUse = next;
+                // console.log([outToUse.idx, outToUse.dir], 'used');
             } else if (toCount === 1) {
                 // ...must have the same orientation (see complexish2.svg in tests)
                 markOutForChecking_(next, originalOut.orientation!, originalOut);
-                // [next.idx, next.dir];//?
             }
         } else {
             // else we are rotating on the outside of the loop
@@ -69,6 +72,27 @@ function getNextExit(
     }
     
     return { inOutToUse: outToUse!, additionalBezier };
+}
+
+
+function markInOutForChecking(
+        takenInOuts: DualSet<InOut, number>,
+        additionalOutsToCheck: InOut[]) {
+            
+    return (inOut: InOut,
+            orientation: number,
+            origParent: InOut) => {
+
+        if (!dualSetHas(takenInOuts, inOut, 1)) {
+            // @ts-ignore
+            inOut.orientation = orientation;
+            // @ts-ignore
+            inOut.parent = origParent;
+            // @ts-ignore
+            inOut.windingNum = origParent.windingNum! + inOut.orientation;
+            additionalOutsToCheck.push(inOut);
+        }
+    }
 }
 
 

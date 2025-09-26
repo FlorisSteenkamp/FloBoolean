@@ -1,6 +1,6 @@
-import { InOut } from "../in-out.js";
-import { containerIsBasic } from "../container.js";
-// import { markInOutForChecking } from './mark-in-out-for-checking.js';
+import { InOut } from "../containers/in-out/in-out.js";
+import { orderInOuts } from "../containers/order-in-outs.js";
+import { DualSet, dualSetHas } from "../dual-set.js";
 
 
 /**
@@ -10,67 +10,81 @@ import { containerIsBasic } from "../container.js";
  */
 function getTightNextExit(
         inOut: InOut, 
-        originalInOut: InOut,
+        origInOut: InOut,
         additionalOutsToCheck: InOut[],
-        takenInOuts: Set<InOut>,
+        takenInOuts: DualSet<InOut, number>,
         noMicroCorners: boolean) {
 
     const markInOutForChecking_ = markInOutForChecking(
-        originalInOut, 
-        takenInOuts, 
+        origInOut,
+        takenInOuts,
         additionalOutsToCheck
     );
 
-    console.log([inOut.idx, inOut.dir]);
+    orderInOuts(inOut.container, 1);
+
+    // console.log([inOut.idx, inOut.dir]);
     let additionalBezier: number[][] | undefined = undefined;
 
-    const tightAround = originalInOut.dir * originalInOut.orientation!;
-    let inOutToUse = tightAround === +1
-        ? inOut.nextAround!
-        : inOut.prevAround!;
+    let inOutToUse = inOut.nextAround!;
+    // console.log([inOutToUse.idx, inOutToUse.dir], 'used');
 
-    let next = inOutToUse;
-    // let next = inOut;
+    let next = inOut;
 
+    const curLoopsIdxs = new Set(origInOut.loopsIdxs);
     do {
-        next = tightAround === +1
-            ? next.nextAround!
-            : next.prevAround!;
+        next = next.nextAround!;
 
         if (next === inOut) { break; }
 
-        markInOutForChecking_(next, tightAround, originalInOut);
+        // [next.idx, next.dir];//?
+
+        markInOutForChecking_(next, origInOut.dir, origInOut, curLoopsIdxs);
+
+        if (next.dir === -1) {
+            curLoopsIdxs?.add(next._x_?.curve.loop.idx!);
+        } else {
+            curLoopsIdxs.delete(next._x_?.curve.loop.idx!);
+        }
     } while (true)
 
-    if (!containerIsBasic(inOut.container)) {
-        // if there is multiple intersection pairs then add an additional bezier
-        // additionalBezier = [inOut.p, inOutToUse!.p];  // TODO noMicroCorners
-    }
-    
     return { inOutToUse, additionalBezier };
 }
 
 
 function markInOutForChecking(
         originalOut: InOut,
-        takenInOuts: Set<InOut>,
+        takenInOuts: DualSet<InOut, number>,
         additionalOutsToCheck: InOut[]) {
             
     return (inOut: InOut,
             parity: number,
-            parent: InOut) => {
+            origInOut: InOut,
+            curLoopsIdxs: Set<number>) => {
 
-        if (!takenInOuts.has(inOut) && !inOut.orientation) {
+        if (!dualSetHas(takenInOuts, inOut, 1) && inOut.dir === 1) {
+            // @ts-ignore
+            inOut.loopsIdxs = new Set(curLoopsIdxs);//?
+
             // @ts-ignore
             inOut.orientation = parity * originalOut.orientation!;
             // @ts-ignore
-            inOut.parent = parent;
+            inOut.parent = origInOut.parent;
             // @ts-ignore
-            inOut.windingNum = parent.windingNum! + inOut.orientation;
+            inOut.windingNum = origInOut.windingNum! + inOut.orientation;
             additionalOutsToCheck.unshift(inOut);
         }
     }
 }
+
+
+// function toggleSet<T>(set: Set<T>, t: T) {
+//     if (set.has(t)) {
+//         set.delete(t);
+//     } else {
+//         set.add(t);
+//     }
+// }
 
 
 export { getTightNextExit }

@@ -3,11 +3,12 @@ declare const _debug_: Debug;
 import type { Debug } from '../debug/debug.js';
 import { closestPointOnBezierCertified, fromTo } from 'flo-bezier3';
 import { mid } from 'flo-poly';
-import { InOut } from '../in-out.js';
+import { InOut } from '../containers/in-out/in-out.js';
 import { getNextExit } from './get-next-exit.js';
 import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
 import { getBeziersToPrevContainer } from './get-beziers-to-prev-container.js';
 import { getTightNextExit } from './get-tight-next-exit.js';
+import { DualSet, dualSetAdd } from '../dual-set.js';
 
 
 /** 
@@ -15,11 +16,11 @@ import { getTightNextExit } from './get-tight-next-exit.js';
  * 
  * @param expMax
  * @param takenInOuts
- * @param out
+ * @param origInOut
  */
 function completeLoop(
-        takenInOuts: Set<InOut>,
-        out: InOut,
+        takenInOuts: DualSet<InOut, number>,
+        origInOut: InOut,
         tight: boolean,
         noMicroCorners: boolean): { beziers: number[][][], additionalOutsToCheck: InOut[] } {
 
@@ -27,38 +28,30 @@ function completeLoop(
     const beziers: number[][][] = [];
 
     // Move immediately to the outgoing start of the loop
-    let inOutToUse: InOut = out;
+    let inOutToUse: InOut = origInOut;
     let additionalBezier: number[][] | undefined;
 
-    if (typeof _debug_ !== 'undefined') {
-        console.log('----');
-        console.log([inOutToUse.idx, inOutToUse.dir]);
-    }
+    // if (typeof _debug_ !== 'undefined') {
+    //     console.log('----');
+    //     console.log([inOutToUse.idx, inOutToUse.dir]);
+    // }
+
     do {
-        takenInOuts.add(inOutToUse!); // Mark this intersection as taken
+        dualSetAdd(takenInOuts, inOutToUse, 1);
         
         const beziersToNextContainer = inOutToUse.dir === +1
             ? getBeziersToNextContainer(inOutToUse!, takenInOuts, noMicroCorners)
-            : getBeziersToPrevContainer(inOutToUse!, takenInOuts)
+            : getBeziersToPrevContainer(inOutToUse!, takenInOuts);
 
         const { beziers: additionalBeziers, inOut, bez } = beziersToNextContainer;
 
         beziers.push(...additionalBeziers);
 
-        // TODO - it will probably better to remove additionalBezier and just
-        // connect the endpoints of adjacent beziers - even if we had near
-        // exact coordinates (think quad or better precision) of intersections
-        // they are still not returned as algebraic numbers so we can never have
-        // a perfect algorithm anyway without returning algebraic numbers as 
-        // intersection coordinates, hence we might as well remove 
-        // additionalBeziers whose length is about a trillionth of the max
-        // coordinate of loops
-        const nextExit = !tight
-            ? getNextExit(inOut!, out, additionalOutsToCheck, takenInOuts, noMicroCorners)
-            : getTightNextExit(inOut!, out, additionalOutsToCheck, takenInOuts, noMicroCorners);
+        const getNextExit_ = tight ? getTightNextExit : getNextExit;
+
+        const nextExit = getNextExit_(inOut!, origInOut, additionalOutsToCheck, takenInOuts, noMicroCorners);
 
         ({ inOutToUse, additionalBezier } = nextExit);
-
 
 
         if (additionalBezier !== undefined) {
@@ -69,7 +62,11 @@ function completeLoop(
         } else {
             beziers.push(bez);
         }
-    } while (inOutToUse !== out);
+    } while (inOutToUse !== origInOut);
+
+    if (tight) {
+        // throw 'a';
+    }
 
     return { beziers, additionalOutsToCheck };
 }

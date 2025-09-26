@@ -18,6 +18,7 @@ function addDebugInfo2(loopss: Loop[][]) {
         //console.log(loopsToSvgPathStr(loops.map(loop => loop.beziers)));
     }
 
+    // ---------------------------------------------------------------------
     // Don't delete below commented lines - it is for creating test cases.
     // if (typeof document === 'undefined') { return; }
     // let g = document.getElementsByTagName('g')[0];
@@ -31,6 +32,7 @@ function addDebugInfo2(loopss: Loop[][]) {
     //    });
     // });
     // console.log(JSON.stringify(invariants, undefined, '    '));
+    // ---------------------------------------------------------------------
 }
 
 

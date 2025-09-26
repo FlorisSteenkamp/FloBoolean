@@ -10,7 +10,8 @@ function drawLoopPre(
     //const bounds   = getShapeBounds(loop.beziers);
     //drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 0);
 
-    return drawShape(g, loop, 'red thin10 fill30', undefined);
+    // return drawShape(g, loop, 'red thin10 fill30', undefined);
+    return drawShape(g, [loop], 'shape', undefined);
 }
 
 

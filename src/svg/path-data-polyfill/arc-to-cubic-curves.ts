@@ -1,5 +1,5 @@
 
-// TODO - use better function for arcToCubicCurves, e.g. start with a circular
+// FUTURE - use better function for arcToCubicCurves, e.g. start with a circular
 // arc (easily approximated by a cubic bezier) and apply transformations as 
 // required
 

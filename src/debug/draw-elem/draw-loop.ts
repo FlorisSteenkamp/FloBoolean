@@ -4,6 +4,7 @@ import { drawFs } from 'flo-draw';
 import { getShapeCentroid } from '../../loop/get-loop-centroid.js'
 // import { getShapeBounds } from '../../loop/get-loop-bounds.js';
 import { drawShape } from './draw-shape.js';
+import { getWindingNumber } from "../../loop/get-winding-number.js";
 
 
 function drawLoop(
@@ -13,15 +14,21 @@ function drawLoop(
     const centroid = getShapeCentroid(loop.beziers);
     // const area     = getShapeArea(loop.beziers);
     // const bounds   = getShapeBounds(loop);
-    drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 500);
+    // drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 500);
+    drawFs.crossHair(g, centroid, 'thin10 red nofill', 1, 5000);
 
-    
+    const { beziers } = loop;
+    const windingNum = getWindingNumber(beziers);
 
     return drawShape(
         g, 
-        loop.curves.map(curve => curve.ps), 
+        // loop.curves.map(curve => curve.ps), 
+        [beziers],
         // 'red thin10 fill30', 
-        'red thin0 fill30', 
+          windingNum > 0 ? 'red thin0 fill10' :
+          windingNum < 0 ? 'blue thin0 fill10' :
+          'black thin0 fill10',
+
         undefined
     );
 }

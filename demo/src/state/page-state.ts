@@ -16,16 +16,22 @@ type ClickFor =
     | 'loopPre'
 
 
+type BooleanOp = 'AND' | 'OR' | 'XOR';
+
+
 interface PageState {
     /** Won't be save to localstorage */
-    deduced    : DeducedState | undefined;
-    showDelay  : number;
-    clickFor   : ClickFor;
-    viewbox    : number[][];
-    toDraw     : ToDraw;
+    deduced: DeducedState | undefined;
+    showDelay: number;
+    clickFor: ClickFor;
+    viewbox: number[][];
+    toDraw: ToDraw;
     vectorName: string;
+    vectorNameBoolean: string;
+    forBoolean: boolean;
+    booleanOp: BooleanOp;
 }
 
 
 
-export { PageState, ClickFor }
+export type { PageState, ClickFor, BooleanOp }

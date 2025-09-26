@@ -1,7 +1,7 @@
 import { Container } from "../../container.js";
 import { getInOutsViaSides } from "./get-in-outs-via-sides/get-in-outs-via-sides.js";
 import { getInOutsViaCrossing } from "./get-in-outs-via-crossing/get-in-outs-via-crossing.js";
-import { InOut } from "../../in-out.js";
+import { InOut } from "../../containers/in-out/in-out.js";
 
 
 /**
@@ -31,8 +31,7 @@ function getContainerInOuts(
         if (xs[0].x.kind === 1 && xs[1].x.kind === 1 &&
             xs[0].x.ri.multiplicity%2 === 1 && xs[1].x.ri.multiplicity%2 === 1) {
                 
-            // TODO - put back!!!
-            // return getInOutsViaCrossing(container, ioIdx, noMicroCorners);
+            return getInOutsViaCrossing(container, ioIdx, noMicroCorners);
         }
     }
 

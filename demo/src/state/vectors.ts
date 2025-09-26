@@ -1,11 +1,26 @@
 
+const vectorsBoolean = [
+    'lamina',
+    'two-squares',
+    'three-squares',
+    'one-square-inside-a',
+    'one-square-inside-b',
+    'two-squares-inside',
+    'one-square-inside-lamina',
+    'two-squares-inside-lamina',
+    'lamina-inside-square'
+];
+
 const vectors = [
-    'squares',
+    'snuggle-1',
     'few-xs-at-min-y',
     'multiple-xs-at-min-y',
     'complexish',
     'complexish2',
     'complexish3',
+    'koldat51',
+    'koldat52',
+    'sq-in-sq-in-sq-in-sq',
     'p',
     'topmost-no-interface',
     'ring2',
@@ -13,7 +28,6 @@ const vectors = [
     'Mt44',
     'new1',
     'new2',
-    'koldat51',
     'bold-b',
     'square',
     'B',
@@ -27,4 +41,4 @@ const vectors = [
 ];
 
 
-export { vectors }
+export { vectors, vectorsBoolean }

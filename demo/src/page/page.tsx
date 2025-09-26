@@ -1,27 +1,21 @@
-declare const _debug_: Debug; 
-
 import * as React from 'react';
 import { useRef, useEffect } from 'react';
-import { Container, FormControl, InputLabel, MenuItem, Select, Grid } from '@mui/material';
+import { Container, FormControl, InputLabel, MenuItem, Select, Grid, Button } from '@mui/material';
 import { StateControl } from '../state-control/state-control';
-import { Debug, IDebugElems } from '../../../src/index';
 import { ToDraw } from '../state/to-draw';
-import { deleteSvgs } from './delete-svgs';
 import { Checkbox } from '../components/simple-checkbox';
-import { vectors } from '../state/vectors';
-import { ClickFor, PageState } from '../state/page-state';
-import { loadDeducedProps } from './load-deduced-props';
-import { getViewBoxForShape, toViewBoxStr } from './viewbox';
-import { logNearestContainer } from './log-nearest-container';
-import { logNearestBezierPre, logLooseBb_, logTightBb_, logBHull_ } from './log-bbs';
+import { vectors, vectorsBoolean } from '../state/vectors';
+import { BooleanOp, ClickFor, PageState } from '../state/page-state';
+import { toViewBoxStr } from './viewbox';
 import { ButtonGroup } from '../components/simple-button-group';
-import { logNearestBezierPost } from './log-nearest-bezier-post';
-import { logNearestLoopsPost } from './log-nearest-loops-post';
-import { logNearestLoopPost } from './log-nearest-loop-post';
-import { logNearestLoopPre } from './log-nearest-loop-pre'
 import { SelectChangeEvent } from '@mui/material/Select';
-import { gotoPrevViewbox } from './goto-prev-viewbox';
-import { loadPaths } from './load-paths';
+import { onMouseUp } from './on-mouse-up';
+import { onClick } from './on-click.js';
+import { toDrawKeyToText } from './to-draw-key-to-text';
+import { onMouseMove } from './on-mouse-move';
+import { onMouseDown } from './on-mouse-down';
+import { drawElements } from './draw-elements';
+import { lazyLoadDeduced } from './lazy-load-deduced';
 
 
 const toDrawCheckboxStyles = { 
@@ -29,7 +23,7 @@ const toDrawCheckboxStyles = {
         display: 'inline-block', 
         marginBottom: '5px', 
         fontWeight: 400,
-        width: '200px'
+        width: '160px'
     }
 }
 
@@ -40,257 +34,75 @@ interface Props {
 }
 
 
-const toDrawKeyToText: { [P in keyof ToDraw]?: string } = {
-    // ------
-    // Pre
-    // ------
-    boundingHull_: "hulls",
-    bezier_: "Bezier",
-
-    // ------
-    // Post
-    // ------
-    loop: "Loop",
-    loops: "Loops",    
-
-    // ------
-    // Other
-    // ------
-    looseBoundingBox_: "Loose bbs",
-    tightBoundingBox_: "Tight bbs",
-    container: "Containers",
-    intersection: "Intersections",
-    minY: "min y",
-}
-
-
 function Page(props: Props) {
     // Props
     const { stateControl, pageState } = props;
-    const { state, upd, upd$, transientState } = stateControl;
-    const { appState } = state;
-    const { $svgs } = transientState;
-    const { toDraw } = pageState;
+    const { upd } = stateControl;
+    const { toDraw, forBoolean } = pageState;
 
     // Hooks
-    // const classes = useStyles();
     const ref = useRef<SVGSVGElement>(null);
     const refX = useRef<HTMLSpanElement>(null);
     const refY = useRef<HTMLSpanElement>(null);
-    useEffect(function() { lazyLoadDeduced(false) }, []); // run only once
-    //const [{x,y}, setXY] = useState({x: 0, y: 0});
+    useEffect(function() { lazyLoadDeduced(stateControl, ref, false, forBoolean) }, []); // run only once
     
-    
-    function mouseMove(event: React.MouseEvent<SVGSVGElement, MouseEvent>) {
-        const svg$ = ref.current;
-        if (!svg$) { return; }
-
-        const { state, transientState } = stateControl;
-        const { pageState } = state.appState;
-        const { zoomState } = transientState;
-
-        // Pixel coordinates
-        const pixelsX = event.nativeEvent.offsetX;
-        const pixelsY = event.nativeEvent.offsetY;
-        
-        const [viewboxX,viewboxY] = 
-            getViewboxXY(svg$, pageState.viewbox, pixelsX, pixelsY);
-
-        const spanX = refX.current;
-        if (spanX) { spanX.innerHTML = viewboxX.toFixed(2); }
-        const spanY = refY.current;
-        if (spanY) { spanY.innerHTML = viewboxY.toFixed(2); }
-
-        if (!zoomState.mouseIsDown) { return; }
-    
-        if (zoomState.zoomRect) { zoomState.zoomRect.remove(); }
-        const prevViewboxXY = zoomState.prevViewboxXY!;
-
-        const newZoomRect = [
-            prevViewboxXY, 
-            [viewboxX, viewboxY]
-        ];
-
-        const g$ = svg$.getElementsByTagName('g')[0];
-        zoomState.zoomRect = drawRect(g$, newZoomRect);
-
-        //setXY({x,y});
-    }
-
-
-    function mouseDown(event: React.MouseEvent<SVGSVGElement, MouseEvent>) {
-        if (event.shiftKey || event.ctrlKey || event.altKey) { return; }
-        
-        const svg$ = ref.current;
-        if (!svg$) { return; }
-        
-        const ox = event.nativeEvent.offsetX;
-        const oy = event.nativeEvent.offsetY;
-        const viewboxXY = getViewboxXY(svg$, pageState.viewbox, ox, oy);
-        
-        clickedForNewViewboxFirst(stateControl, viewboxXY);
-    }
-
-
-    function mouseUp(event: React.MouseEvent<SVGSVGElement, MouseEvent>) {
-        if (event.shiftKey || event.ctrlKey || event.altKey) { return; }
-
-        const svg$ = ref.current;
-        if (!svg$) { return; }
-
-        const ox = event.nativeEvent.offsetX;
-        const oy = event.nativeEvent.offsetY;
-        const viewboxXY = getViewboxXY(svg$, pageState.viewbox, ox, oy);
-        
-        clickedForNewViewboxSecond(stateControl, viewboxXY);
-    }
-
-
+  
     function toDrawChanged(key: keyof ToDraw) {
         return (shouldDraw: boolean) => {
             upd(pageState.toDraw, { [key]: shouldDraw });
-            drawElements(stateControl.state.appState.pageState.toDraw)
+            drawElements(stateControl, ref, stateControl.state.appState.pageState.toDraw)
         }
-    }
-
-
-    async function drawElements(toDraws: ToDraw) {
-        if (typeof _debug_ === 'undefined') { return; }
-
-        const svg$ = ref.current!;
-        const g = svg$.getElementsByTagName('g')[0];
-
-        const elemss$: SVGElement[][][] = [];
-        for (const elemType_ in toDraws) {
-            const elemType = elemType_ as keyof IDebugElems;
-
-            const toDraw = toDraws[elemType];
-
-            const $elems = $svgs[elemType];
-            deleteSvgs($elems);
-     
-            if (!toDraw) { continue; }
-
-            const generated = _debug_.generated;
-            
-            if (generated.elems[elemType] === undefined) { 
-                continue; 
-            }
-            
-            for (const elem of generated.elems[elemType]) {
-                const drawElem = _debug_.fs.drawElem[elemType] as (g: SVGGElement, elem: any) => SVGElement[];
-                $elems.push(drawElem(g, elem));
-            }
-            
-            elemss$.push($elems);
-        }
-        
-        return elemss$;
-    }
-
-
-    async function lazyLoadDeduced(changeViewbox: boolean) {
-        let pageState: PageState;
-
-        ({ pageState } = stateControl.state.appState);
-        const { vectorName } = pageState;
-
-        const { pathStrs } = await loadPaths(vectorName);
-
-        ({ pageState } = stateControl.state.appState);
-        upd(pageState.deduced!, { pathStrs: pathStrs });
-
-        const { viewbox, timingAll } = await loadDeducedProps(stateControl, pathStrs);
-
-        console.log(`All took: ${timingAll.toFixed(0)} milliseconds.`);
-
-        if (typeof _debug_ !== 'undefined') {
-            // logSomeStuff(timingAll);
-        }
-
-        const elems$ = drawElements(toDraw);
-
-        ({ pageState } = stateControl.state.appState);
-
-        upd(stateControl.state.appState.pageState, { 
-            ...(changeViewbox ? { viewbox } : {}),
-            deduced: { pathStrs }
-        });
     }
 
 
     //function vectorChanged(vectorName: string) {
-    function vectorChanged(
-        event: SelectChangeEvent<string>,
-        child: React.ReactNode) {
+    function onVectorChanged(
+            event: SelectChangeEvent<string>,
+            child: React.ReactNode) {
 
         const vectorName = event.target.value as string;
-        upd(pageState, { vectorName });
-        lazyLoadDeduced(true);
+        upd(pageState, { vectorName, forBoolean: false });
+        lazyLoadDeduced(stateControl, ref, true, false);
     }
 
-    function onClickForChanged(key: ClickFor | 'spacer'): void {
-        if (key === 'spacer') { return; }
-        upd(pageState, { clickFor: key });
+    function onVectorSelected() {
+
+    }
+
+    function onRefreshClicked() {
+        lazyLoadDeduced(stateControl, ref, true, stateControl.state.appState.pageState.forBoolean);
+    }
+
+    function onVectorChangedBoolean(
+            event: SelectChangeEvent<string>,
+            child: React.ReactNode) {
+
+        const vectorNameBoolean = event.target.value as string;
+        upd(pageState, { vectorNameBoolean, forBoolean: true });
+        lazyLoadDeduced(stateControl, ref, true, true);
     }
 
 
-    function onClick(event: React.MouseEvent<SVGSVGElement, MouseEvent>) {
-        if (event.shiftKey) { 
-            gotoPrevViewbox(stateControl);
-            return;
-        }
-
-        const { state } = stateControl;
-        const { pageState } = state.appState;
-        const { clickFor, showDelay } = pageState;
-        
-        const svg$ = ref.current;
-        if (!svg$) { return; }
-        const g = svg$.getElementsByTagName('g')[0];
-
-        // Pixel coordinates
-        const ox = event.nativeEvent.offsetX;
-        const oy = event.nativeEvent.offsetY;
-
-        // SVG actual coordinates
-        const viewboxXY = getViewboxXY(svg$, pageState.viewbox, ox, oy);
-        const [x,y] = viewboxXY;
-
-        const fs: { [T in ClickFor]: ((g: SVGGElement, p: number[], delay: number) => void) | undefined } = {
-            bezier_           : logNearestBezierPre,
-            loopPre           : logNearestLoopPre,
-
-            bezier            : logNearestBezierPost,
-            loopPost          : logNearestLoopPost,
-            loopsPost         : logNearestLoopsPost,
-
-            minY: undefined!,
-            container         : logNearestContainer,
-            // loops: undefined!,
-            intersection      : undefined,
-            
-            looseBoundingBox_ : logLooseBb_,
-            tightBoundingBox_ : logTightBb_,
-            boundingHull_     : logBHull_,
-            // loopset           : logNearestLoopSet,
-            
-        }
-
-        const f = fs[clickFor];
-
-        if (f === undefined) { return; }
-
-        f(g, [x,y], showDelay);
+    function onClickForChanged(clickFor: ClickFor | 'spacer'): void {
+        if (clickFor === 'spacer') { return; }
+        upd(pageState, { clickFor });
     }
+
+
+    function onBooleanOpChanged(booleanOp: BooleanOp | 'spacer'): void {
+        if (booleanOp === 'spacer') { return; }
+        upd(pageState, { booleanOp });
+        lazyLoadDeduced(stateControl, ref, true, true);
+    }
+
 
     const pathStrs = pageState.deduced!.pathStrs;
+
 
     return (<>
         <Container
             maxWidth="md"
-            // className={classes.container}
-            sx={{ height: 'calc(100%)', padding: '10px' }}
+            style={{ height: 'calc(100%)', padding: '10px' }}
         >
             {Object
             .keys(toDraw)
@@ -307,20 +119,21 @@ function Page(props: Props) {
                     />
                 );
             })}
-            <hr style={{ 
+            {/* <hr style={{ 
                 display: 'block',  height: '1px', 
                 border: '0',  borderTop: '1px solid #ccc', 
-                margin: '1em 0', padding: 0, color: '#eee' }} 
-            />
+                margin: '1px 0', padding: 0, color: '#eee' }} 
+            /> */}
+            <br/>
             <ButtonGroup<ClickFor | 'spacer'>
                 label='Click'
-                styles={{ div: { display: 'inline-block', margin: '20px' } }}
+                styles={{ div: { display: 'inline-block', marginTop: '10px' } }}
                 options={{
+                    loopPre: { text: 'loop pre' },
                     bezier_: { text: 'bezier' },
                     looseBoundingBox_: { text: 'lbb' },
                     tightBoundingBox_: { text: 'tbb' },
                     boundingHull_: { text: 'bh' },
-                    loopPre: { text: 'loop' },
                     spacer: { text: '•' },
                     bezier: { text: 'bezier' },
                     container: { text: 'container' },
@@ -338,22 +151,55 @@ function Page(props: Props) {
                 step={250}
                 onChanged={showDelayChanged}
             /> */}
-            <Grid container /*justify="flex-start"*/ spacing={5}>
+            <Grid container spacing={5}>
                 <Grid>
-                    <FormControl variant="outlined" style={{ minWidth: '200px' }}>
-                    <InputLabel id="select-outlined-label">Shape</InputLabel>
-                    <Select
-                        labelId="select-outlined-label"
-                        id="select-outlined"
-                        value={pageState.vectorName}
-                        onChange={vectorChanged}
-                        label="Shape"
-                    >
-                        {vectors.map(v => 
-                            <MenuItem key={v} value={v}>{v}</MenuItem>
-                        )}
-                    </Select>
+                    <FormControl size='small' variant="outlined" style={{ minWidth: '200px', marginRight: '10px', verticalAlign: 'middle' }}>
+                        <InputLabel id="select-outlined-label">Shape</InputLabel>
+                        <Select
+                            labelId="select-outlined-label"
+                            id="select-outlined"
+                            value={pageState.vectorName}
+                            onChange={onVectorChanged}
+                            onSelect={onVectorSelected}
+                            label="Shape"
+                        >
+                            {vectors.map(v => 
+                                <MenuItem key={v} value={v}>{v}</MenuItem>
+                            )}
+                        </Select>
                     </FormControl>
+                    <FormControl size='small' variant="outlined" style={{ minWidth: '200px', verticalAlign: 'middle' }}>
+                        <InputLabel id="select-outlined-label-bool">Shapes</InputLabel>
+                        <Select
+                            labelId="select-outlined-label-bool"
+                            id="select-outlined-bool"
+                            value={pageState.vectorNameBoolean}
+                            onChange={onVectorChangedBoolean}
+                            label="Shapes"
+                        >
+                            {vectorsBoolean.map(v => 
+                                <MenuItem key={v} value={v}>{v}</MenuItem>
+                            )}
+                        </Select>
+                    </FormControl>
+                    <ButtonGroup<BooleanOp | 'spacer'>
+                        label='Boolean Op'
+                        styles={{ div: { display: 'inline-block', margin: '20px', verticalAlign: 'middle' } }}
+                        options={{
+                            AND: { text: 'AND' },
+                            OR: { text: 'OR' },
+                            XOR: { text: 'XOR' },
+                        }}
+                        value={pageState.booleanOp}
+                        onChanged={onBooleanOpChanged}
+                    />
+                    <div style={{ verticalAlign: 'middle', display: 'inline-block' }}>
+                        <Button
+                            onClick={onRefreshClicked}
+                        >
+                            Refresh
+                        </Button>
+                    </div>
                 </Grid>
             </Grid>
             <span ref={refX} style={{ userSelect: 'none', position: 'absolute', bottom: '13px', left: '10px' }} />
@@ -368,12 +214,12 @@ function Page(props: Props) {
                     y="0px"
                     viewBox={toViewBoxStr(pageState.viewbox)}
                     style={{ width: '100%' }}
-                    onMouseDown={mouseDown}
-                    onMouseUp={mouseUp}
-                    onMouseMove={mouseMove}
-                    onClick={onClick}
+                    onMouseDown={onMouseDown(stateControl, ref)}
+                    onMouseUp={onMouseUp(stateControl, ref)}
+                    onMouseMove={onMouseMove(stateControl, ref, refX, refY)}
+                    onClick={onClick(stateControl, ref)}
                 >
-                    {pathStrs.map((pathStr,idx) => {
+                    {/* {pathStrs.map((pathStr,idx) => {
                         return (
                             <path 
                                 key={idx}
@@ -382,112 +228,12 @@ function Page(props: Props) {
                                 d={pathStr}
                             />
                         )
-                    })}
+                    })} */}
                     <g />
                 </svg>
             };
         </Container>
     </>);
-}
-
-
-function clickedForNewViewboxFirst(
-        stateControl: StateControl, 
-        viewboxXY: number[]) {
-
-    const { transientState } = stateControl;
-    const { zoomState } = transientState;
-
-    // Just make sure previous rect is removed
-    if (zoomState.zoomRect) { zoomState.zoomRect.remove(); }
-
-    transientState.zoomState = { 
-        mouseIsDown: true,
-        prevViewboxXY: viewboxXY,
-        zoomRect: undefined
-    };
-}
-
-
-function clickedForNewViewboxSecond(
-        stateControl: StateControl, 
-        viewboxXY: number[]) {
-
-    // Get info
-    const { state, upd, transientState } = stateControl;
-    const { pageState } = state.appState;
-    const { viewbox } = pageState;
-    const { zoomState } = transientState;
-    const { prevViewboxXY } = zoomState;
-
-    // Update transient info
-    zoomState.mouseIsDown = false;
-    if (zoomState.zoomRect) { zoomState.zoomRect.remove(); }
-
-    // Swap if necessary
-    if (viewboxXY[0] < prevViewboxXY![0]) {
-        [viewboxXY[0], prevViewboxXY![0]] = [prevViewboxXY![0], viewboxXY[0]];
-    }
-    if (viewboxXY[1] < prevViewboxXY![1]) {
-        [viewboxXY[1], prevViewboxXY![1]] = [prevViewboxXY![1], viewboxXY[1]];
-    }
-
-    const newViewbox = [prevViewboxXY!, viewboxXY];
-
-    const viewboxW = viewbox[1][0] - viewbox[0][0];
-    const viewboxH = viewbox[1][1] - viewbox[0][1];
-    const newViewboxW = viewboxXY[0] - prevViewboxXY![0];
-    const newViewboxH = viewboxXY[1] - prevViewboxXY![1];
-
-    const relWidth = newViewboxW / viewboxW;
-    const relHeight = newViewboxH / viewboxH;
-
-    if (relWidth < 0.01 || relHeight < 0.01) { return; }
-
-    transientState.viewboxStack.push(viewbox);
-    upd(pageState, { viewbox: newViewbox });
-}
-
-
-function getViewboxXY(
-        svg$: SVGSVGElement,
-        viewbox: number[][], 
-        pixelsX: number, 
-        pixelsY: number): number[] {
-
-    const boundingRect = svg$.getBoundingClientRect(); 
-    const pixelsW = boundingRect.width;
-    const pixelsH = boundingRect.height;
-
-    const viewboxW = viewbox[1][0] - viewbox[0][0];
-    const viewboxH = viewbox[1][1] - viewbox[0][1];
-
-    const viewboxX = ((pixelsX/pixelsW) * viewboxW) + viewbox[0][0];
-    const viewboxY = ((pixelsY/pixelsH) * viewboxH) + viewbox[0][1];
-
-    return [viewboxX, viewboxY];
-}
-
-
-function drawRect(g: SVGGElement, rect: number[][]) {
-    const XMLNS = 'http://www.w3.org/2000/svg';
-
-    const [[x0,y0],[x1,y1]] = rect;
-    const x = x0 < x1 ? x0 : x1;
-    const y = y0 < y1 ? y0 : y1;
-    const width = Math.abs(x0-x1);
-    const height = Math.abs(y0-y1);
-
-    const $rect = document.createElementNS(XMLNS, 'rect');
-    $rect.setAttributeNS(null, "x", x.toString());
-    $rect.setAttributeNS(null, "y", y.toString());
-    $rect.setAttributeNS(null, "width",  width.toString());
-    $rect.setAttributeNS(null, "height", height.toString());
-    $rect.setAttributeNS(null, "class", 'zoomrect');
-
-    g.appendChild($rect);
-
-    return $rect;
 }
 
 

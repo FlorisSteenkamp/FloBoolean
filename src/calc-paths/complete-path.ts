@@ -1,6 +1,7 @@
 import { completeLoop } from './complete-loop.js';
-import { InOut } from '../in-out.js';
-import { Loop } from '../loop/loop.js';
+import type { InOut } from '../containers/in-out/in-out.js';
+import type { Loop } from '../loop/loop.js';
+import { DualSet, dualSetHas } from '../dual-set.js';
 
 
 /**
@@ -13,33 +14,29 @@ import { Loop } from '../loop/loop.js';
  * @param loop 
  */
 function completePath(
-        initialOut: InOut,
+        inOutStack: InOut[],
         takenLoops: Set<Loop>,
-        takenInOuts: Set<InOut>,
+        takenInOuts: DualSet<InOut, number>,
         tight: boolean,
         noMicroCorners: boolean) {
 
-    const inOutStack = [initialOut];
-
     while (inOutStack.length) {
-        const inOut = inOutStack.pop()!;
-        [inOut.idx, inOut.dir, inOut.orientation];
-        takenLoops.add(inOut!._x_!.curve.loop);
+        const origInOut = inOutStack.pop()!;
+        // origInOut.;
+        takenLoops.add(origInOut!._x_!.curve.loop);
 
-        if (takenInOuts.has(inOut)) { continue; }
+        if (dualSetHas(takenInOuts, origInOut, 1)) { continue; }
 
         // @ts-ignore
-        inOut.children = new Set();
+        origInOut.children = new Set();
         const { beziers, additionalOutsToCheck } = 
-            completeLoop(takenInOuts, inOut, tight, noMicroCorners);
-        // additionalOutsToCheck.map(v => [v.idx!, v.dir])//?
-        
+            completeLoop(takenInOuts, origInOut, tight, noMicroCorners);
 
         // @ts-ignore
-        inOut.beziers = beziers;
+        origInOut.beziers = beziers;
         // @ts-ignore
-        inOut.parent!.children = inOut.parent!.children || new Set();
-        inOut.parent!.children.add(inOut);
+        origInOut.parent!.children = origInOut.parent!.children || new Set();
+        origInOut.parent!.children.add(origInOut);
 
         inOutStack.push(...additionalOutsToCheck);
     }

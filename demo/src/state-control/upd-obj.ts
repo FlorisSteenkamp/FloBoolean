@@ -3,7 +3,6 @@ import { assocPath } from "ramda";
 import { getObjPath } from "./get-obj-path";
 
 
-// TODO - change getObjPath below to do depth-first traversal - should be much quicker to find relevant value
 function _updObj(
         state: { [key:string]: any }, 
         map: Map<any,string[]>,

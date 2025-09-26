@@ -1,7 +1,7 @@
 import { orient2d } from "big-float-ts";
 import { getIntervalBox, getHodograph, evalDeCasteljau } from "flo-bezier3";
-import { Container } from "../../../container.js";
-import { InOut } from "../../../in-out.js";
+import type { Container } from "../../../container.js";
+import type { InOut } from "../../../containers/in-out/in-out.js";
 import { getInOutsViaSides } from "../get-in-outs-via-sides/get-in-outs-via-sides.js";
 
 
@@ -61,7 +61,7 @@ function getInOutsViaCrossing(
     // config1: i1 o2 o1 i2 ==== i2 i1 o2 o1 ==== etc.
     // config2: i1 i2 o1 o2 ==== o2 i1 i2 o1 ==== etc.
     let cSign: number | undefined = undefined;
-    // TODO - investigate faster method by finding and using the 2 extreme points only
+    // FUTURE - investigate faster method by finding and using the 2 extreme points only
     for (let i=0; i<v1s.length; i++) {
         for (let j=0; j<v2s.length; j++) {
             // we use orient2d below since it is completely robust (cross is not)
@@ -87,10 +87,10 @@ function getInOutsViaCrossing(
     const config1 = cSign! > 0;
     if (config1) {
         // config1 (the 1st of the 2 possible configurations)
-        inOuts.push({ dir: -1, p, _x_: x1, container, pBox: p });
-        inOuts.push({ dir: +1, p, _x_: x2, container, pBox: p });
-        inOuts.push({ dir: +1, p, _x_: x1, container, pBox: p });
-        inOuts.push({ dir: -1, p, _x_: x2, container, pBox: p });
+        inOuts.push({ dir: -1, p, _x_: x1, container, pBox: p, loopsIdxs: new Set() });
+        inOuts.push({ dir: +1, p, _x_: x2, container, pBox: p, loopsIdxs: new Set() });
+        inOuts.push({ dir: +1, p, _x_: x1, container, pBox: p, loopsIdxs: new Set() });
+        inOuts.push({ dir: -1, p, _x_: x2, container, pBox: p, loopsIdxs: new Set() });
         // @ts-ignore
         x1.in_ = inOuts[0];
         // @ts-ignore
@@ -101,10 +101,10 @@ function getInOutsViaCrossing(
         x2.out = inOuts[2];
     } else {
         // config2 (the 2nd of the 2 possible configurations)
-        inOuts.push({ dir: -1, p, _x_: x1, container, pBox: p });
-        inOuts.push({ dir: -1, p, _x_: x2, container, pBox: p });
-        inOuts.push({ dir: +1, p, _x_: x1, container, pBox: p });
-        inOuts.push({ dir: +1, p, _x_: x2, container, pBox: p });
+        inOuts.push({ dir: -1, p, _x_: x1, container, pBox: p, loopsIdxs: new Set() });
+        inOuts.push({ dir: -1, p, _x_: x2, container, pBox: p, loopsIdxs: new Set() });
+        inOuts.push({ dir: +1, p, _x_: x1, container, pBox: p, loopsIdxs: new Set() });
+        inOuts.push({ dir: +1, p, _x_: x2, container, pBox: p, loopsIdxs: new Set() });
         // @ts-ignore
         x1.in_ = inOuts[0];
         // @ts-ignore

@@ -29,8 +29,8 @@ function getExtreme(loop: Loop): __X__[] {
     }
 
     return [
-        // TODO - should multiplicity be undefined in these cases?
-        // TODO - do we need 2 intersections???
+        // FUTURE - should multiplicity be undefined in these cases?
+        // FUTURE - do we need 2 intersections???
         { 
             x: { 
                 ri: { tS: ts[0], tE: ts[1], multiplicity: 1 }, 
