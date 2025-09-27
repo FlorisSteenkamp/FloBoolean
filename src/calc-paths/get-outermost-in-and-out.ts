@@ -1,6 +1,7 @@
 import type { Container } from '../container.js';
-import { orderInOuts } from '../containers/order-in-outs.js';
 import type { InOut } from '../containers/in-out/in-out.js';
+import type { Loop } from '../loop/loop.js';
+import { orderInOuts } from '../containers/order-in-outs.js';
 
 
 /**
@@ -15,7 +16,8 @@ import type { InOut } from '../containers/in-out/in-out.js';
  */
 function getOutermostInAndOut(
         container: Container,
-        parent: InOut) {
+        parent: InOut,
+        loop: Loop) {
 
     orderInOuts(container, 1);  // `snugDir` doesn't really matters here
 
@@ -23,31 +25,31 @@ function getOutermostInAndOut(
     const firstInOut = inOuts[0];
     const lastInOut = inOuts[inOuts.length-1];
 
-    // @ts-ignore
-    firstInOut.orientation = -1*firstInOut.dir;
-    // @ts-ignore
-    firstInOut.parent = parent;
-    // @ts-ignore
-    firstInOut.windingNum = parent.windingNum! + firstInOut.orientation!;
+    const initialOut = firstInOut.dir === 1
+        ? firstInOut
+        : lastInOut;
+
+    const orientation = lastInOut.dir;
 
     const set: Set<number> = parent.idx === 0
         ? new Set()
-        : parent.orientation === 1 ? parent.loopsIdxs : new Set();
+        : parent.orientation === 1 ? parent.loopsIdxs! : new Set();
 
     // @ts-ignore
-    firstInOut.loopsIdxs = new Set(set);
+    initialOut.orientation = orientation;
+    // @ts-ignore
+    initialOut.parent = parent;
+    // @ts-ignore
+    initialOut.windingNum = parent.windingNum! + initialOut.orientation!;
+    // @ts-ignore
+    initialOut.loopsIdxs = new Set(set);
+    // @ts-ignore
+    initialOut.children = new Set();
+    if (initialOut.orientation === 1) {
+        initialOut.loopsIdxs?.add(loop.idx!);
+    }
 
-    // @ts-ignore
-    lastInOut.orientation = 1*lastInOut.dir;
-    lastInOut.orientation;//?
-    // @ts-ignore
-    lastInOut.parent = parent;
-    // @ts-ignore
-    lastInOut.windingNum = parent.windingNum! + lastInOut.orientation!;
-    // @ts-ignore
-    lastInOut.loopsIdxs = new Set(set);
-
-    return { firstInOut, lastInOut };
+    return initialOut;
 }
 
 

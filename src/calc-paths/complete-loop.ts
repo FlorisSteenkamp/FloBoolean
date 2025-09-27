@@ -39,8 +39,8 @@ function completeLoop(
         takenInOuts.add(inOutToUse);
         
         const beziersToNextContainer = inOutToUse.dir === +1
-            ? getBeziersToNextContainer(inOutToUse!, takenInOuts, noMicroCorners)
-            : getBeziersToPrevContainer(inOutToUse!, takenInOuts);
+            ? getBeziersToNextContainer(inOutToUse!, takenInOuts, noMicroCorners)!
+            : getBeziersToPrevContainer(inOutToUse!, takenInOuts)!;
 
         const { beziers: additionalBeziers, inOut, bez } = beziersToNextContainer;
 
@@ -62,10 +62,6 @@ function completeLoop(
             beziers.push(bez);
         }
     } while (inOutToUse !== origInOut);
-
-    if (tight) {
-        // throw 'a';
-    }
 
     return { beziers, additionalOutsToCheck };
 }

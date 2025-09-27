@@ -18,7 +18,7 @@ import { addDebugInfo1 } from './add-debug-info-1.js';
 import { addDebugInfo2 } from './add-debug-info-2.js';
 import { loopFromOut } from './loop-from-out.js';
 import { createRootInOut } from './create-root-in-out.js';
-import { gotoNextContainer } from './goto-next-container.js';
+// import { gotoNextContainer } from './goto-next-container.js';
 // import { reverseShapeOrientation } from '../loop/reverse-shape-orientation.js';
 
 
@@ -95,7 +95,7 @@ function simplifyPaths(
      */
     //==================================================================
     const containerSizeMultiplier = 2**6;
-    // const containerSizeMultiplier = 2**41;
+    // const containerSizeMultiplier = 2**37;
     //==================================================================
     const containerDim = gridSpacing * containerSizeMultiplier;
 
@@ -127,27 +127,42 @@ function simplifyPaths(
         const container = extremes.get(loop)![0].container!;
         if (container.inOuts.length === 0) { continue; }
 
-        const { firstInOut, lastInOut } = getOutermostInAndOut(container, parent);
-        let initialOut = firstInOut.dir === 1 ? firstInOut : lastInOut;
+        const initialOut = getOutermostInAndOut(container, parent, loop);
 
         // Each loop generated will give rise to one componentLoop. 
-        // @ts-ignore
-        initialOut.children = new Set();
-        const inOutStack = [initialOut];
 
-        if (container.inOuts.length === 2) {
-            // we can ignore this container; go to next one and remove this one
-            // aaa
-            initialOut = gotoNextContainer(initialOut);
+        if (container.inOuts.length === 2 &&
+            container.inOuts[0].nextOrPrev === container.inOuts[1]) {
+            // short-circuit `completePath` for Jordan curves
+            // @ts-ignore
+            initialOut.beziers = loop.beziers;
+            // @ts-ignore
+            initialOut.parent!.children = initialOut.parent!.children || new Set();
+            initialOut.parent!.children.add(initialOut);
+            continue;
         }
 
         completePath(
-            inOutStack,
+            initialOut,
             takenLoops,
             takenOuts,
             false,
             noMicroCorners
         );
+
+        if (container.inOuts.length === 2 &&
+            container.xs.length === 2 &&
+            container.xs[0].x.kind === 0 && container.xs[1].x.kind === 0 &&  // just for good measure
+            initialOut.beziers !== undefined) {
+
+            // combine first and last bezier so not to have an extraneous bezier
+            const { beziers } = initialOut;
+            const bezier = initialOut._x_?.curve.ps!;
+
+            // beziers.shift();
+            // beziers.pop();
+            // beziers.unshift(bezier);
+        }
     }
 
     const loopTrees = splitLoopTrees(root);

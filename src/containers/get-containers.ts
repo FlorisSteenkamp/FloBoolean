@@ -138,9 +138,9 @@ function getContainers(
                 }
             }
             // @ts-ignore
-            out.next = _x_.in_;
+            out.nextOrPrev = _x_.in_;
             // @ts-ignore
-            out.idx = out.next.idx;
+            out.idx = out.nextOrPrev.idx;
         }
     }
 
@@ -162,9 +162,11 @@ function getContainers(
                 }
             }
             // @ts-ignore
-            in_.prev = _x_.out;
+            in_.nextOrPrev = _x_.out;
+            // in_.prev = _x_.out;
             // @ts-ignore
-            in_.idx = in_.prev!.idx;
+            // in_.idx = in_.prev!.idx;
+            in_.idx = in_.nextOrPrev!.idx;
         }
     }
 

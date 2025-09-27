@@ -13,15 +13,16 @@ import type { Loop } from '../loop/loop.js';
  * @param loop 
  */
 function completePath(
-        inOutStack: InOut[],
+        initialOut: InOut,
         takenLoops: Set<Loop>,
         takenInOuts: Set<InOut>,
         tight: boolean,
         noMicroCorners: boolean) {
 
+    const inOutStack = [initialOut];
+
     while (inOutStack.length) {
         const origInOut = inOutStack.pop()!;
-        // origInOut.;
         takenLoops.add(origInOut!._x_!.curve.loop);
 
         if (takenInOuts.has(origInOut)) { continue; }

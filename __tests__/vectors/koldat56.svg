@@ -1,0 +1,15 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+>
+    <path 
+        class="shape"
+        d="
+        M 92 97
+        C 73 76  63 67  51 72 
+        C 51 73  58 66  70 67 
+        L 93 97
+        Z
+        "
+    />
+</svg>

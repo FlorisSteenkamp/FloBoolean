@@ -21,17 +21,20 @@ interface InOut {
     readonly pBox: number[];
 
     /** the next in from this out */
-    readonly next?: InOut;
+    readonly nextOrPrev?: InOut;
     /** the prev out from this in */
-    readonly prev?: InOut;
+    // readonly prev?: InOut;
 
     /** the prior IInOut anti-clockwise around the container boundary */
     readonly prevAround?: InOut;
     /** the next IInOut anti-clockwise around the container boundary */
     readonly nextAround?: InOut;
 
-    // not all inouts will have the below properties, only those that represent 
-    // a loop
+    //--------------------------------------------------------------------------
+    // Not all inouts will have the below properties,
+    // **only** those that represent a loop.
+    //--------------------------------------------------------------------------
+
     /** +1 or -1 -> Clockwise or anti-clockwise */
     readonly orientation?: number;
     readonly windingNum?: number;
@@ -53,10 +56,10 @@ interface InOut {
      */
     readonly sideX?: X | undefined;
     /**
-     * Set of indexes indicating which loops belongs to this `InOut` when
-     * seen as a loop
+     * used in `boolean` only; Set of indexes indicating which loops belongs
+     * to this `InOut` when seen as a loop
      */
-    readonly loopsIdxs: Set<number>;
+    readonly loopsIdxs?: Set<number>;
 }
 
 

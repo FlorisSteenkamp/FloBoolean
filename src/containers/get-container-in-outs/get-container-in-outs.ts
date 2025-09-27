@@ -27,13 +27,15 @@ function getContainerInOuts(
     // we can use a faster check. Also in the bit less common case where all
     // curves are joining at an interface we can do a fast ccw (the ccw part
     // has not been implemented yet).
-    if (xs.length === 2) {
-        if (xs[0].x.kind === 1 && xs[1].x.kind === 1 &&
-            xs[0].x.ri.multiplicity%2 === 1 && xs[1].x.ri.multiplicity%2 === 1) {
+
+    // FUTURE; Removed below for now; not necessary but causes issues with `boolean`
+    // if (xs.length === 2) {
+    //     if (xs[0].x.kind === 1 && xs[1].x.kind === 1 &&
+    //         xs[0].x.ri.multiplicity%2 === 1 && xs[1].x.ri.multiplicity%2 === 1) {
                 
-            return getInOutsViaCrossing(container, ioIdx, noMicroCorners);
-        }
-    }
+    //         return getInOutsViaCrossing(container, ioIdx, noMicroCorners);
+    //     }
+    // }
 
     return getInOutsViaSides(container, ioIdx, noMicroCorners);
 }

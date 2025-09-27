@@ -9,7 +9,7 @@ function getBeziersToNextContainer(
         takenInOuts: Set<InOut>,
         noMicroCorners: boolean) {
 
-    const in_ = out.next!;
+    const in_ = out.nextOrPrev!;
 
     takenInOuts.add(in_);
     const endCurve = in_._x_!.curve;
@@ -24,7 +24,8 @@ function getBeziersToNextContainer(
 
     const beziers: number[][][] = [];
     let bez: number[][];
-    while (true) {
+    let ii=0;  // TODO - remove here and in toprevcontainer
+    while (true && ii++<100) {
         if (curCurve === endCurve && 
             (curT < endT || (curT === endT && beziers.length !== 0))) {
 

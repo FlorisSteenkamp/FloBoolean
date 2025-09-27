@@ -92,7 +92,7 @@ function boolean(
      * critical points.
      */
     // const containerSizeMultiplier = 2**6;
-    const containerSizeMultiplier = 2**41;
+    const containerSizeMultiplier = 2**33;
     const containerDim = gridSpacing * containerSizeMultiplier;
 
     bezierLoopss = bezierLoopss.map(bezierLoops => normalizeLoops(
@@ -149,25 +149,21 @@ function boolean(
         const container = extremes.get(loop)![0].container!;
         if (container.inOuts.length === 0) { continue; }
 
-        const { firstInOut, lastInOut } = getOutermostInAndOut(container, parent);
+        const initialOut = getOutermostInAndOut(container, parent, loop);
 
-        // @ts-ignore
-        firstInOut.children = new Set();  // FUTURE - check if this is really needed for `splitAllPaths`
-        // @ts-ignore
-        lastInOut.children = new Set();  // FUTURE - check if this is really needed for `splitAllPaths`
-
-        if (firstInOut.dir * firstInOut.orientation! === 1) {
-            firstInOut.loopsIdxs?.add(loop.idx!);
+        if (container.inOuts.length === 2 &&
+            container.inOuts[0].nextOrPrev === container.inOuts[1]) {
+            // short-circuit `completePath` for Jordan curves
+            // @ts-ignore
+            initialOut.beziers = loop.beziers;
+            // @ts-ignore
+            initialOut.parent!.children = initialOut.parent!.children || new Set();
+            initialOut.parent!.children.add(initialOut);
+            continue;
         }
-        if (lastInOut.dir * lastInOut.orientation! === 1) {
-            lastInOut.loopsIdxs?.add(loop.idx!);
-        }
-        // const inOutStack = [firstInOut, lastInOut];
-        const initialOut = firstInOut.dir === 1 ? firstInOut : lastInOut;
-        const inOutStack = [initialOut];
 
         completePath(
-            inOutStack,
+            initialOut,
             takenLoops,
             takenInOuts,
             true,  // take the tightest loop around
@@ -176,7 +172,7 @@ function boolean(
     }
 
     const outSet = getAllLoopsFromTree(root);
-    outSet.map(io => ({ loopsIdxs: io.loopsIdxs, idx: io.idx, dir: io.dir }));
+    // outSet.map(io => ({ loopsIdxs: io.loopsIdxs, idx: io.idx, dir: io.dir }));
     // outSet.length;//?
 
     const inOuts = outSet.map(inOut => {
@@ -196,7 +192,7 @@ function boolean(
                 parent.orientation === 1) {
 
                 const parentBits = new Array(bezierLoopss.length).fill(0).map(
-                    (_,idx) => parent.loopsIdxs.has(idx)
+                    (_,idx) => parent.loopsIdxs!.has(idx)
                 );
                 const includeParent = booleanOperator(parentBits);
 
@@ -214,7 +210,7 @@ function boolean(
 
                 // `parent.parent` cannot be the root at this point
                 const parentParentBits = new Array(bezierLoopss.length).fill(0).map(
-                    (_,idx) => parent.parent!.loopsIdxs.has(idx)
+                    (_,idx) => parent.parent!.loopsIdxs!.has(idx)
                 );
                 const includeParentParent = booleanOperator(parentParentBits);
 

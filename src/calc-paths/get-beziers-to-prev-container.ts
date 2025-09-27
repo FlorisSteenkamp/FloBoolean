@@ -8,7 +8,8 @@ function getBeziersToPrevContainer(
         in_: InOut,
         takenInOuts: Set<InOut>) {
 
-    const out = in_.prev!;
+    // const out = in_.prev!;
+    const out = in_.nextOrPrev!;
 
     takenInOuts.add(out);
     const endCurve = out._x_!.curve;
@@ -24,7 +25,8 @@ function getBeziersToPrevContainer(
 
     const beziers: number[][][] = [];
     let bez: number[][];
-    while (true) {
+    let ii=0;
+    while (true && ii++<100) {
         if (curCurve === endCurve && 
             (curT > endT || (curT === endT && beziers.length !== 0))) {
 

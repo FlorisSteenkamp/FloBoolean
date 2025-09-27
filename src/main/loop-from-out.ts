@@ -16,7 +16,6 @@ function loopFromOut(
 
     const _beziers = out.beziers;
     if (_beziers === undefined) { return loopFromBeziers([], loopIdx)}
-    // console.log(orientation);
 
     const beziers = orientation < 0
         ? reverseShapeOrientation(_beziers)

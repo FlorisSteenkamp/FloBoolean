@@ -1,0 +1,14 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+>
+    <path 
+        class="shape"
+        d="
+            M 0 0
+            C 100 50   200 60  300 2
+            C 200 -50  100 -70 0 0
+            Z
+        "
+    />
+</svg>
