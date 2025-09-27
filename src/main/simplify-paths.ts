@@ -18,7 +18,7 @@ import { addDebugInfo1 } from './add-debug-info-1.js';
 import { addDebugInfo2 } from './add-debug-info-2.js';
 import { loopFromOut } from './loop-from-out.js';
 import { createRootInOut } from './create-root-in-out.js';
-import { DualSet } from '../dual-set.js';
+import { gotoNextContainer } from './goto-next-container.js';
 // import { reverseShapeOrientation } from '../loop/reverse-shape-orientation.js';
 
 
@@ -116,7 +116,7 @@ function simplifyPaths(
     const root = createRootInOut();
     // `takenLoops` is important in rare cases such as in the 'koldat52' vector
     const takenLoops: Set<Loop> = new Set();
-    const takenOuts: DualSet<InOut, number> = new Map();  // Taken intersections
+    const takenOuts: Set<InOut> = new Set();  // Taken intersections
 
     for (const loop of loops) {
         if (takenLoops.has(loop)) { continue; }
@@ -128,14 +128,18 @@ function simplifyPaths(
         if (container.inOuts.length === 0) { continue; }
 
         const { firstInOut, lastInOut } = getOutermostInAndOut(container, parent);
-        const initialOut = firstInOut.dir === 1 ? firstInOut : lastInOut;
-
-        // aaa
+        let initialOut = firstInOut.dir === 1 ? firstInOut : lastInOut;
 
         // Each loop generated will give rise to one componentLoop. 
         // @ts-ignore
         initialOut.children = new Set();
         const inOutStack = [initialOut];
+
+        if (container.inOuts.length === 2) {
+            // we can ignore this container; go to next one and remove this one
+            // aaa
+            initialOut = gotoNextContainer(initialOut);
+        }
 
         completePath(
             inOutStack,

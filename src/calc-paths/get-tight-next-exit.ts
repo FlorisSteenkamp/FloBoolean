@@ -1,6 +1,5 @@
 import { InOut } from "../containers/in-out/in-out.js";
 import { orderInOuts } from "../containers/order-in-outs.js";
-import { DualSet, dualSetHas } from "../dual-set.js";
 
 
 /**
@@ -12,7 +11,7 @@ function getTightNextExit(
         inOut: InOut, 
         origInOut: InOut,
         additionalOutsToCheck: InOut[],
-        takenInOuts: DualSet<InOut, number>,
+        takenInOuts: Set<InOut>,
         noMicroCorners: boolean) {
 
     const markInOutForChecking_ = markInOutForChecking(
@@ -54,7 +53,7 @@ function getTightNextExit(
 
 function markInOutForChecking(
         originalOut: InOut,
-        takenInOuts: DualSet<InOut, number>,
+        takenInOuts: Set<InOut>,
         additionalOutsToCheck: InOut[]) {
             
     return (inOut: InOut,
@@ -62,7 +61,7 @@ function markInOutForChecking(
             origInOut: InOut,
             curLoopsIdxs: Set<number>) => {
 
-        if (!dualSetHas(takenInOuts, inOut, 1) && inOut.dir === 1) {
+        if (!takenInOuts.has(inOut) && inOut.dir === 1) {
             // @ts-ignore
             inOut.loopsIdxs = new Set(curLoopsIdxs);//?
 

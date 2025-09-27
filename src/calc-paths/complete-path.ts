@@ -1,7 +1,6 @@
 import { completeLoop } from './complete-loop.js';
 import type { InOut } from '../containers/in-out/in-out.js';
 import type { Loop } from '../loop/loop.js';
-import { DualSet, dualSetHas } from '../dual-set.js';
 
 
 /**
@@ -16,7 +15,7 @@ import { DualSet, dualSetHas } from '../dual-set.js';
 function completePath(
         inOutStack: InOut[],
         takenLoops: Set<Loop>,
-        takenInOuts: DualSet<InOut, number>,
+        takenInOuts: Set<InOut>,
         tight: boolean,
         noMicroCorners: boolean) {
 
@@ -25,7 +24,7 @@ function completePath(
         // origInOut.;
         takenLoops.add(origInOut!._x_!.curve.loop);
 
-        if (dualSetHas(takenInOuts, origInOut, 1)) { continue; }
+        if (takenInOuts.has(origInOut)) { continue; }
 
         // @ts-ignore
         origInOut.children = new Set();

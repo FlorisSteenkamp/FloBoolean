@@ -8,7 +8,6 @@ import { getNextExit } from './get-next-exit.js';
 import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
 import { getBeziersToPrevContainer } from './get-beziers-to-prev-container.js';
 import { getTightNextExit } from './get-tight-next-exit.js';
-import { DualSet, dualSetAdd } from '../dual-set.js';
 
 
 /** 
@@ -19,7 +18,7 @@ import { DualSet, dualSetAdd } from '../dual-set.js';
  * @param origInOut
  */
 function completeLoop(
-        takenInOuts: DualSet<InOut, number>,
+        takenInOuts: Set<InOut>,
         origInOut: InOut,
         tight: boolean,
         noMicroCorners: boolean): { beziers: number[][][], additionalOutsToCheck: InOut[] } {
@@ -37,7 +36,7 @@ function completeLoop(
     // }
 
     do {
-        dualSetAdd(takenInOuts, inOutToUse, 1);
+        takenInOuts.add(inOutToUse);
         
         const beziersToNextContainer = inOutToUse.dir === +1
             ? getBeziersToNextContainer(inOutToUse!, takenInOuts, noMicroCorners)

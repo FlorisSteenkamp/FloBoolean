@@ -1,6 +1,5 @@
 import type { InOut } from "../containers/in-out/in-out.js";
 import { containerIsBasic } from "../container.js";
-import { DualSet, dualSetHas } from "../dual-set.js";
 import { orderInOuts } from "../containers/order-in-outs.js";
 
 
@@ -13,7 +12,7 @@ function getNextExit(
         in_: InOut, 
         originalOut: InOut,
         additionalOutsToCheck: InOut[],
-        takenOuts: DualSet<InOut, number>,
+        takenOuts: Set<InOut>,
         noMicroCorners: boolean) {
 
     const markOutForChecking_ = markInOutForChecking(
@@ -76,14 +75,14 @@ function getNextExit(
 
 
 function markInOutForChecking(
-        takenInOuts: DualSet<InOut, number>,
+        takenInOuts: Set<InOut>,
         additionalOutsToCheck: InOut[]) {
             
     return (inOut: InOut,
             orientation: number,
             origParent: InOut) => {
 
-        if (!dualSetHas(takenInOuts, inOut, 1)) {
+        if (!takenInOuts.has(inOut)) {
             // @ts-ignore
             inOut.orientation = orientation;
             // @ts-ignore

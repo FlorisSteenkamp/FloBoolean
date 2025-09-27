@@ -2,7 +2,6 @@ declare const _debug_: Debug;
 declare const _debug_temp: Debug;
 
 import type { Debug } from '../debug/debug.js';
-import type { DualSet } from '../dual-set.js';
 import { completePath } from '../calc-paths/complete-path.js';
 import { getTightestContainingLoop } from '../calc-paths/get-tightest-containing-loop.js';
 import { orderLoopAscendingByMinY } from '../calc-paths/order-loop-ascending-by-min-y.js';
@@ -112,9 +111,6 @@ function boolean(
 
         const simpLoops = _simpLoops.flat().map(v => v.beziers);
         
-        // console.log(simpLoops.map(getWindingNumber));
-        // console.log(simpLoops);
-
         for (let j=0; j<simpLoops.length; j++) {
             const simpLoop = simpLoops[j];
             // @ts-ignore
@@ -140,7 +136,7 @@ function boolean(
     const root = createRootInOut();
     // `takenLoops` is important in rare cases such as in the 'koldat52' vector
     const takenLoops: Set<Loop> = new Set();
-    const takenInOuts: DualSet<InOut, number> = new Map();  // Taken intersections
+    const takenInOuts: Set<InOut> = new Set();  // Taken intersections
 
     for (let i=0; i<loops.length; i++) {
         const loop = loops[i];
@@ -149,13 +145,11 @@ function boolean(
         takenLoops.add(loop);
 
         const parent = getTightestContainingLoop(root, loop);
-        // console.log(parent);
 
         const container = extremes.get(loop)![0].container!;
         if (container.inOuts.length === 0) { continue; }
 
         const { firstInOut, lastInOut } = getOutermostInAndOut(container, parent);
-        // firstInOut.loopsIdxs?.add(loop.idx!);
 
         // @ts-ignore
         firstInOut.children = new Set();  // FUTURE - check if this is really needed for `splitAllPaths`
