@@ -31,8 +31,7 @@ import { __X__ } from '../-x-.js';
 function getContainers(
         loops: Loop[],
         containerDim: number,
-        expMax: number,
-        noMicroCorners: boolean) {
+        expMax: number) {
 
     const xs1 = getIntersections(loops, expMax);
     const xs2 = getSelfIntersections(loops);
@@ -67,8 +66,7 @@ function getContainers(
             [xPair[0].x.box[0][0] - containerDim, xPair[0].x.box[0][1] - containerDim],
             [xPair[0].x.box[1][0] + containerDim, xPair[0].x.box[1][1] + containerDim]
         ],
-        inOuts: undefined!, // to be set later
-        beenOrdered: false
+        inOuts: undefined! // to be set later
     }));
 
 
@@ -116,7 +114,7 @@ function getContainers(
             (x as Mutable<__X__>).container = container;
         }
         let inOuts: InOut[];
-        ({ inOuts, ioIdx } = getContainerInOuts(container, ioIdx, noMicroCorners));
+        ({ inOuts, ioIdx } = getContainerInOuts(container, ioIdx));
         (container as Mutable<Container>).inOuts = inOuts;
     }
 

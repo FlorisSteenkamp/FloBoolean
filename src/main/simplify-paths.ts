@@ -1,15 +1,16 @@
 declare const _debug_: Debug; 
 
-import { Debug } from '../debug/debug.js';
+import type { Debug } from '../debug/debug.js';
+import type { Mutable } from '../types/mutable.js';
+import type { InOut } from '../containers/in-out/in-out.js';
+import type { Loop } from '../loop/loop.js';
 import { completePath } from '../calc-paths/complete-path.js';
 import { getTightestContainingLoop } from '../calc-paths/get-tightest-containing-loop.js';
 import { orderLoopAscendingByMinY } from '../calc-paths/order-loop-ascending-by-min-y.js';
 import { splitLoopTrees } from '../calc-paths/split-loop-trees.js';
 import { getLoopsFromTree } from '../calc-paths/get-loops-from-tree.js';
 import { getContainers } from '../containers/get-containers.js';
-import { InOut } from '../containers/in-out/in-out.js';
 import { getOutermostInAndOut } from '../calc-paths/get-outermost-in-and-out.js';
-import { Loop } from '../loop/loop.js';
 import { loopFromBeziers } from '../loop/loop-from-beziers.js';
 import { normalizeLoops } from '../loop/normalize/normalize-loop.js';
 import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate.js';
@@ -19,14 +20,15 @@ import { addDebugInfo2 } from './add-debug-info-2.js';
 import { loopFromOut } from './loop-from-out.js';
 import { createRootInOut } from './create-root-in-out.js';
 import { bezierToBezierPiece } from '../calc-paths/bezier-to-bezier-piece.js';
-import { Mutable } from '../types/mutable.js';
-// import { gotoNextContainer } from './goto-next-container.js';
-// import { reverseShapeOrientation } from '../loop/reverse-shape-orientation.js';
+import { removeMicroCorners } from './remove-micro-corners.js';
+import { BezierPiece } from 'flo-bezier3';
+
+const { abs, max } = Math;
 
 
 interface SimplifyOptions {
     /**  */
-    readonly noMicroCorners?: boolean;
+    readonly inclMicroCorners?: boolean;
     /** defaults to 46 */
     readonly maxBitLength?: number;
     /**
@@ -84,7 +86,7 @@ function simplifyPaths(
 
     const {
         maxBitLength = 46,
-        noMicroCorners = false,
+        inclMicroCorners = true,
         minLoopArea = (2**expMax * 2**(-12))**2,
         orientationPositive = false
     } = options;
@@ -96,8 +98,8 @@ function simplifyPaths(
      * critical points.
      */
     //==================================================================
-    const containerSizeMultiplier = 2**6;
-    // const containerSizeMultiplier = 2**37;
+    // const containerSizeMultiplier = 2**4;
+    const containerSizeMultiplier = 2**4;
     //==================================================================
     const containerDim = gridSpacing * containerSizeMultiplier;
 
@@ -113,7 +115,7 @@ function simplifyPaths(
     bezierLoops.sort(orderLoopAscendingByMinY);
 
     const loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));
-    const { extremes } = getContainers(loops, containerDim, expMax, noMicroCorners);
+    const { extremes, containers } = getContainers(loops, containerDim, expMax);
 
     const root = createRootInOut();
     // `takenLoops` is important in rare cases such as in the 'koldat52' vector
@@ -133,9 +135,17 @@ function simplifyPaths(
 
         // Each loop generated will give rise to one componentLoop. 
 
-        if (container.inOuts.length === 2 &&
-            container.inOuts[0].nextOrPrev === container.inOuts[1]) {
-            // short-circuit `completePath` for Jordan curves
+        const containerIsSimpleExtreme =
+            // container.xs[0].x.kind === 0 && container.xs[1].x.kind === 0 &&  // kind === extreme
+            container.inOuts.length === 2 &&  // only 2 InOuts
+            container.xs.length === 2;  // only 2 Xs
+
+        if (containerIsSimpleExtreme &&
+            container.inOuts[0].nextOrPrev === container.inOuts[1]) { 
+
+            //---------------------------------------------------
+            // It's a Jordan curve: short-circuit `completePath`
+            //---------------------------------------------------
             initialOut.bezierPieces = loop.beziers.map(bezierToBezierPiece);
             (initialOut.parent! as Mutable<InOut>).children = initialOut.parent!.children || new Set();
             initialOut.parent!.children!.add(initialOut);
@@ -146,25 +156,29 @@ function simplifyPaths(
             initialOut,
             takenLoops,
             takenOuts,
-            false,
-            noMicroCorners
+            false
         );
 
-        if (container.inOuts.length === 2 &&
-            container.xs.length === 2 &&
-            container.xs[0].x.kind === 0 && container.xs[1].x.kind === 0 &&  // just for good measure
+        if (containerIsSimpleExtreme &&
             initialOut.bezierPieces !== undefined) {
 
+            //-------------------------------------------------------------------
             // combine first and last bezier so not to have an extraneous bezier
-            const { bezierPieces } = initialOut;
-            const bezierPiece = {
-                ps: initialOut._x_?.curve.ps!,
-                ts: [0,1]
-            };
+            //-------------------------------------------------------------------
+            const { bezierPieces: bps } = initialOut;
 
-            // bezierPieces.shift();
-            // bezierPieces.pop();
-            // bezierPieces.unshift(bezierPiece);
+            const bp1 = bps[bps.length - 1];
+            const bp2 = bps[0];
+
+            if (bp1.ps === bp2.ps) {
+                const bp: BezierPiece = {
+                    ps: bp1.ps,
+                    ts: [bp1.ts[0], bp2.ts[1]]
+                }
+                bps.shift();
+                bps.pop();
+                bps.unshift(bp);
+            }
         }
     }
 
@@ -192,16 +206,32 @@ function simplifyPaths(
         }
     }
 
-    addDebugInfo2(loopss_);  // adds debug info used within __tests__ (and the demo)
-
     if (typeof _debug_ !== 'undefined') {
         const timing = _debug_.generated.timing;
         timing.simplifyPaths = performance.now() - timingStart!;
     }
 
+    const _loopss_ = inclMicroCorners
+        ? loopss_
+        : loopss_.map(loops => loops.map(loop => {
+            const { beziers } = loop;
+            const lengthTol= max(
+                ...containers.map(
+                    container => abs(container.box[0][0] - container.box[1][0])
+                ),
+                ...containers.map(
+                    container => abs(container.box[0][1] - container.box[1][1])
+                )
+            );
+            const beziers_ = removeMicroCorners(beziers, lengthTol);
+            return loopFromBeziers(beziers_, loop.idx!);
+        }));
+
+    addDebugInfo2(_loopss_);  // adds debug info used within __tests__ (and the demo)
+
     // console.log(loopss_);
 
-    return loopss_;
+    return _loopss_;
 }
 
 

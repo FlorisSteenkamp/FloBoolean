@@ -6,8 +6,7 @@ import { containerIsBasic } from "../container.js";
 
 function getBeziersToPrevContainer(
         in_: InOut,
-        takenInOuts: Set<InOut>,
-        noMicroCorners: boolean): {
+        takenInOuts: Set<InOut>): {
             bezierPieces: BezierPiece[];
             inOut: InOut;
         } {
@@ -30,28 +29,26 @@ function getBeziersToPrevContainer(
     let curT = tS;
 
     if (!containerIsBasic(in_.container)) {
-        if (!noMicroCorners) {
-            // we must clip the outgoing curve
-            curT = mid(closestPointOnBezierCertified(curCurve.ps, in_.p)[0].ri);
-        }
+        // we must clip the outgoing curve
+        curT = mid(closestPointOnBezierCertified(curCurve.ps, in_.p)[0].ri);
     }
 
     const bezierPieces: BezierPiece[] = [];
     while (true) {
+        const ps = curCurve.ps;
+
         if (curCurve === curveE && 
             (curT > tE || (curT === tE && bezierPieces.length !== 0))) {
 
-            const lastBezPiece: BezierPiece = {
-                ps: curCurve.ps,
-                ts: [curT, tE]
-            };
-            bezierPieces.push(lastBezPiece);
+            const ts = [curT, tE];
+
+            bezierPieces.push({ ps, ts });
+
             return { bezierPieces, inOut: out }
         } else {
-            bezierPieces.push({
-                ps: curCurve.ps,
-                ts: [curT, 0]
-            });
+            const ts = [curT, 0];
+
+            bezierPieces.push({ ps, ts });
         }
 
         curT = 1;

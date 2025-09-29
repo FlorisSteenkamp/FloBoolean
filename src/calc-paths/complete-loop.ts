@@ -1,9 +1,10 @@
 declare const _debug_: Debug;
 
+import type { BezierPiece } from 'flo-bezier3';
 import type { Debug } from '../debug/debug.js';
-import { BezierPiece, closestPointOnBezierCertified } from 'flo-bezier3';
+import type { InOut } from '../containers/in-out/in-out.js';
+import { closestPointOnBezierCertified } from 'flo-bezier3';
 import { mid } from 'flo-poly';
-import { InOut } from '../containers/in-out/in-out.js';
 import { getNextExit } from './get-next-exit.js';
 import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
 import { getBeziersToPrevContainer } from './get-beziers-to-prev-container.js';
@@ -21,8 +22,7 @@ import { bezierPieceToBezier } from './bezier-piece-to-bezier.js';
 function completeLoop(
         takenInOuts: Set<InOut>,
         origInOut: InOut,
-        tight: boolean,
-        noMicroCorners: boolean): {
+        tight: boolean): {
             bezierPieces: BezierPiece[],
             additionalOutsToCheck: InOut[]
         } {
@@ -43,52 +43,28 @@ function completeLoop(
         takenInOuts.add(inOutToUse);
         
         const beziersToNextContainer = inOutToUse.dir === +1
-            ? getBeziersToNextContainer(inOutToUse!, takenInOuts, noMicroCorners)!
-            : getBeziersToPrevContainer(inOutToUse!, takenInOuts, noMicroCorners)!;
+            ? getBeziersToNextContainer(inOutToUse!, takenInOuts)!
+            : getBeziersToPrevContainer(inOutToUse!, takenInOuts)!;
 
-        const { bezierPieces: additionalBeziers, inOut/*, bez*/ } = beziersToNextContainer;
+        const { bezierPieces: additionalBeziers, inOut } = beziersToNextContainer;
 
         bezierPieces.push(...additionalBeziers);
 
         const getNextExit_ = tight ? getTightNextExit : getNextExit;
 
-        const nextExit = getNextExit_(inOut!, origInOut, additionalOutsToCheck, takenInOuts, noMicroCorners);
+        const nextExit = getNextExit_(inOut!, origInOut, additionalOutsToCheck, takenInOuts);
 
         ({ inOutToUse, additionalBezier } = nextExit);
 
 
-        // console.log(additionalBezier);
         if (additionalBezier !== undefined) {
-            if (!noMicroCorners) {
-                const lastBezPiece = bezierPieces[bezierPieces.length - 1];
-                const lastBez = bezierPieceToBezier(lastBezPiece);
-                const t = mid(closestPointOnBezierCertified(lastBez, additionalBezier[0])[0].ri);
-                const inBez_: BezierPiece = { ps: lastBez, ts: [0,t] };
-                bezierPieces.pop();
-                bezierPieces.push(inBez_);
-                bezierPieces.push({ ps: additionalBezier, ts: [0,1] });
-            } else {
-                console.log('a')
-                const lastBezPiece = bezierPieces[bezierPieces.length - 1];
-                const lastBez = bezierPieceToBezier(lastBezPiece).map(
-                    ps => ps.slice()
-                );
-                const lastP = lastBez[lastBez.length - 1];
-                const lastPA = additionalBezier[additionalBezier.length - 1];
-                lastP[0] = lastPA[0];
-                lastP[1] = lastPA[1];
-                // const t = mid(closestPointOnBezierCertified(lastBez, additionalBezier[0])[0].ri);
-                // const inBez_: BezierPiece = { ps: lastBez, ts: [0,t] };
-                const lastBezPiece_: BezierPiece = {
-                    ps: lastBez,
-                    ts: [0,1]
-                };
-                // const inBez_: BezierPiece = { ps: lastBez, ts: [0,t] };
-                const inBez_ = lastBezPiece_;
-                bezierPieces.pop();
-                bezierPieces.push(inBez_);
-                // bezierPieces.push({ ps: additionalBezier, ts: [0,1] });
-            }
+            const lastBezPiece = bezierPieces[bezierPieces.length - 1];
+            const lastBez = bezierPieceToBezier(lastBezPiece);
+            const t = mid(closestPointOnBezierCertified(lastBez, additionalBezier[0])[0].ri);
+            const inBez_: BezierPiece = { ps: lastBez, ts: [0,t] };
+            bezierPieces.pop();
+            bezierPieces.push(inBez_);
+            bezierPieces.push({ ps: additionalBezier, ts: [0,1] });
         }
     } while (inOutToUse !== origInOut);
 

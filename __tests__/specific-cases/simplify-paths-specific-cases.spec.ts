@@ -8,7 +8,7 @@ import { enableDebugForBooleanOp } from '../../src/debug/debug';
 test('`simplifyPaths` specific cases', function() {
     // updDebugGlobal(true);  // enable to check invariants
 
-    // testIt('koldat55', 'should decompose correctly', true);
+    testIt('koldat56', 'should decompose correctly', true);
 
     testIt('square', 'simple square -> should decompose correctly (no decompisition)');
     testIt('few-xs-at-min-y', 'multiple intersections at minimum y value -> should decompose correctly');
@@ -34,9 +34,9 @@ test('`simplifyPaths` specific cases', function() {
     function testIt(fileName: string, description: string, skipInvariantsCheck = false) {
         const { bezierLoops, invariants } = getPathFromFile(fileName, skipInvariantsCheck); 
 
-        const loopss = simplifyPaths(bezierLoops);
-        // const loopss = simplifyPaths(bezierLoops, undefined, { noMicroCorners: false });
-        // const loopss = simplifyPaths(bezierLoops, undefined, { noMicroCorners: true });
+        // const loopss = simplifyPaths(bezierLoops);
+        // const loopss = simplifyPaths(bezierLoops, undefined, { inclMicroCorners: false });
+        const loopss = simplifyPaths(bezierLoops, undefined, { inclMicroCorners: true });
 
         if (skipInvariantsCheck) {
             return;

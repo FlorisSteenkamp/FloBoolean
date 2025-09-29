@@ -15,8 +15,7 @@ import { __X__ } from "../../../-x-.js";
  */
 function getInOutsViaCrossing(
         container: Container, 
-        ioIdx: number,
-        noMicroCorners: boolean): {
+        ioIdx: number): {
             inOuts: InOut[];
             ioIdx: number;
         } {
@@ -72,7 +71,7 @@ function getInOutsViaCrossing(
             if (c === 0) {
                 // too close to call 
                 // use a more accurate but slower method
-                return getInOutsViaSides(container, ioIdx, noMicroCorners);
+                return getInOutsViaSides(container, ioIdx);
             }
             if (cSign === undefined) {
                 cSign = c; continue;
@@ -80,7 +79,7 @@ function getInOutsViaCrossing(
             if (cSign !== c) {
                 // conflicting results
                 // use a more accurate but slower method
-                return getInOutsViaSides(container, ioIdx, noMicroCorners);
+                return getInOutsViaSides(container, ioIdx);
             }
         }
     }
@@ -89,20 +88,20 @@ function getInOutsViaCrossing(
     const config1 = cSign! > 0;
     if (config1) {
         // config1 (the 1st of the 2 possible configurations)
-        inOuts.push({ dir: -1, p, _x_: x1, container, pBox: p, loopsIdxs: new Set() });
-        inOuts.push({ dir: +1, p, _x_: x2, container, pBox: p, loopsIdxs: new Set() });
-        inOuts.push({ dir: +1, p, _x_: x1, container, pBox: p, loopsIdxs: new Set() });
-        inOuts.push({ dir: -1, p, _x_: x2, container, pBox: p, loopsIdxs: new Set() });
+        inOuts.push({ dir: -1, p, _x_: x1, container, loopsIdxs: new Set() });
+        inOuts.push({ dir: +1, p, _x_: x2, container, loopsIdxs: new Set() });
+        inOuts.push({ dir: +1, p, _x_: x1, container, loopsIdxs: new Set() });
+        inOuts.push({ dir: -1, p, _x_: x2, container, loopsIdxs: new Set() });
         (x1 as Mutable<__X__>).in_ = inOuts[0];
         (x2 as Mutable<__X__>).in_ = inOuts[3];
         (x1 as Mutable<__X__>).out = inOuts[1];
         (x2 as Mutable<__X__>).out = inOuts[2];
     } else {
         // config2 (the 2nd of the 2 possible configurations)
-        inOuts.push({ dir: -1, p, _x_: x1, container, pBox: p, loopsIdxs: new Set() });
-        inOuts.push({ dir: -1, p, _x_: x2, container, pBox: p, loopsIdxs: new Set() });
-        inOuts.push({ dir: +1, p, _x_: x1, container, pBox: p, loopsIdxs: new Set() });
-        inOuts.push({ dir: +1, p, _x_: x2, container, pBox: p, loopsIdxs: new Set() });
+        inOuts.push({ dir: -1, p, _x_: x1, container, loopsIdxs: new Set() });
+        inOuts.push({ dir: -1, p, _x_: x2, container, loopsIdxs: new Set() });
+        inOuts.push({ dir: +1, p, _x_: x1, container, loopsIdxs: new Set() });
+        inOuts.push({ dir: +1, p, _x_: x2, container, loopsIdxs: new Set() });
         (x1 as Mutable<__X__>).in_ = inOuts[0];
         (x2 as Mutable<__X__>).in_ = inOuts[1];
         (x1 as Mutable<__X__>).out = inOuts[2];

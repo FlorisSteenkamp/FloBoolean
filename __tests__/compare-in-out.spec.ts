@@ -1,5 +1,5 @@
-import type { InOut } from '../src/in-out';
-import { compareInOut } from '../src/calc-containers/get-container-in-outs/get-in-outs-via-sides/compare-in-out';
+import type { InOut } from '../src/containers/in-out/in-out.js';
+import { compareInOut } from '../src/containers/get-container-in-outs/get-in-outs-via-sides/compare-in-out.js';
 
 
 test('`compareInOut`', function() {
@@ -14,8 +14,7 @@ test('`compareInOut`', function() {
         dir: -1,
         idx: 0,
         container: undefined!,  // not used in `compareInOut`
-        p: undefined!,          // not used in `compareInOut`
-        pBox: undefined!        // not used in `compareInOut`
+        p: undefined!           // not used in `compareInOut`
     }
 
     const inOutB: InOut = {
@@ -29,12 +28,11 @@ test('`compareInOut`', function() {
         dir: -1,
         idx: 0,
         container: undefined!,  // not used in `compareInOut`
-        p: undefined!,          // not used in `compareInOut`
-        pBox: undefined!        // not used in `compareInOut`
+        p: undefined!           // not used in `compareInOut`
     }
 
-    const rAB = compareInOut(inOutA, inOutB);
-    const rBA = compareInOut(inOutB, inOutA);
+    const rAB = compareInOut(1)(inOutA, inOutB);
+    const rBA = compareInOut(1)(inOutB, inOutA);
 
     expect(rAB).toBeLessThan(0);
     expect(rBA).toBeGreaterThan(0);

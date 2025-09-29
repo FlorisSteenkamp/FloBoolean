@@ -18,13 +18,9 @@ interface InOut {
     readonly container: Container;
     /** intersection point used for creating beziers in center of `Container` */
     readonly p: number[];
-    /** intersection point with the `Container` box; used for debugging only */
-    readonly pBox: number[];
 
-    /** the next in from this out */
+    /** the next in or previous out from this InOut */
     readonly nextOrPrev?: InOut;
-    /** the prev out from this in */
-    // readonly prev?: InOut;
 
     /** the prior IInOut anti-clockwise around the container boundary */
     readonly prevAround?: InOut;

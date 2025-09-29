@@ -36,8 +36,7 @@ function midBoxX(_x_: __X__): number[] {
  * @param container 
  */
 function getXInOuts(
-        container: Container,
-        noMicroCorners: boolean) {
+        container: Container) {
 
     const [[left,top], [right,bottom]] = container.box;
 
@@ -98,10 +97,7 @@ function getXInOuts(
                     outs.push({
                         idx: ++ioIdx,
                         dir: +1, 
-                        // p: noMicroCorners ? midBox(prevX?.x.box!) : midBoxX(x),
-                        p: noMicroCorners ? midBox(container.box) : midBoxX(x),
-                        // p: midBoxX(x),
-                        pBox: midBoxX(x),
+                        p: midBoxX(x),
                         _x_: prevX!,
                         container,
                         side: x.side,
@@ -117,9 +113,7 @@ function getXInOuts(
                     ins.push({ 
                         idx: ++ioIdx,
                         dir: -1, 
-                        p: noMicroCorners ? midBox(container.box) : midBoxX(prevX!),
-                        // p: midBoxX(prevX!),
-                        pBox: midBoxX(prevX!),
+                        p: midBoxX(prevX!),
                         _x_: x,
                         container,
                         side: prevX!.side!, 

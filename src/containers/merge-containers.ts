@@ -4,6 +4,7 @@ import { __X__ } from "../-x-.js";
 
 function mergeContainers(ccs: Container[][]) {
     const containers: Container[] = [];
+
     for (const cc of ccs) {
         let minLeft = Number.POSITIVE_INFINITY;
         let minTop = Number.POSITIVE_INFINITY;
@@ -19,12 +20,10 @@ function mergeContainers(ccs: Container[][]) {
             xs.push(...c.xs);
         }
 
-        // console.log(minLeft)
         const container: Container = {
             box: [[minLeft,minTop], [maxRight,maxBottom]],
             xs: xs,
-            inOuts: undefined!,
-            beenOrdered: false
+            inOuts: undefined!
         };
 
         containers.push(container);

@@ -14,8 +14,7 @@ import { InOut } from "../../../containers/in-out/in-out.js";
  */
 function getInOutsViaSides(
         container: Container, 
-        ioIdx: number,
-        noMicroCorners: boolean): {
+        ioIdx: number): {
             inOuts: InOut[];
             ioIdx: number;
         } {
@@ -41,7 +40,7 @@ function getInOutsViaSides(
         }
     }
 
-    const getXInOuts_ = getXInOuts(container, noMicroCorners);
+    const getXInOuts_ = getXInOuts(container);
     for (const entry of xMap) {
         const [curve, xs] = entry;
 

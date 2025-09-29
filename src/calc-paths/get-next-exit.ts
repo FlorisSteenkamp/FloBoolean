@@ -1,20 +1,21 @@
 import type { InOut } from "../containers/in-out/in-out.js";
+import type { Mutable } from "../types/mutable.js";
 import { containerIsBasic } from "../container.js";
 import { orderInOuts } from "../containers/order-in-outs.js";
-import { Mutable } from "../types/mutable.js";
 
 
 /**
  * 
  * @param in_ the in for which the next exit should be found
+ * @param originalOut
  * @param additionalOutsToCheck 
+ * @param takenOuts
  */
 function getNextExit(
         in_: InOut, 
         originalOut: InOut,
         additionalOutsToCheck: InOut[],
-        takenOuts: Set<InOut>,
-        noMicroCorners: boolean): {
+        takenOuts: Set<InOut>): {
             inOutToUse: InOut;
             additionalBezier: number[][] | undefined;
         } {
@@ -29,7 +30,6 @@ function getNextExit(
 
     // console.log([in_.idx, in_.dir]);
 
-    let additionalBezier: number[][] | undefined = undefined;
     let toCount = 1;
     let next = in_;
     let outToUse: InOut | undefined = undefined;
@@ -69,15 +69,10 @@ function getNextExit(
         }
     } while (true)
 
+    let additionalBezier: number[][] | undefined = undefined;
     if (!containerIsBasic(in_.container)) {
-        if (!noMicroCorners) {
-            // if there is multiple intersection pairs then add an additional bezier
-            // additionalBezier = [in_.p, outToUse!.p];
-            // in_.p[0] - outToUse!.p[0];//?
-            // if (in_.p[0] !== outToUse!.p[0] || in_.p[1] !== outToUse!.p[1]) {
-                additionalBezier = [in_.p, outToUse!.p];
-            // }
-        }
+        // add a "micro corner"
+        additionalBezier = [in_.p, outToUse!.p];
     }
     
     return { inOutToUse: outToUse!, additionalBezier };

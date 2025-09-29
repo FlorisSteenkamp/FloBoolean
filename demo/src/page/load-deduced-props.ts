@@ -23,7 +23,7 @@ async function loadDeducedProps(
         const op = booleanOp === 'AND' ? AND : booleanOp === 'OR' ? OR : XOR;
         const loopss = forBoolean
             ? boolean(bezierLoopss, op)
-            : simplifyPaths(bezierLoopss[0], undefined, { orientationPositive: true, noMicroCorners: false });
+            : simplifyPaths(bezierLoopss[0], undefined, { orientationPositive: true, inclMicroCorners: true });
         
         stateControl.transientState.bezierLoopss = loopss;
     } catch (e) {

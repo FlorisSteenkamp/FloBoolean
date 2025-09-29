@@ -16,7 +16,6 @@ interface Container {
      * anti-clockwise from the top right (minimum y, maximum x) corner
      */
     readonly inOuts: InOut[];
-    beenOrdered: boolean;
 }
 
 

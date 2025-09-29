@@ -37,7 +37,7 @@ function logNearestLoopPost(
     }
 
     console.log(`winding number: ${getWindingNumber(bestLoop.beziers)}, area: ${getShapeArea(bestLoop!.beziers)}`);
-    // console.log(bestLoop);
+    console.log(bestLoop);
     for (const curve of bestLoop!.curves) {
         drawFs.bezier(g, curve.ps, 'thin20 blue nofill', showDelay);
     }

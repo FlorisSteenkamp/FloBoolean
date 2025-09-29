@@ -9,7 +9,6 @@ function createRootInOut(): InOut {
         children: new Set(),
         windingNum: 0,
         p: undefined!,
-        pBox: undefined!,
         _x_: undefined,
         container: undefined!,
         loopsIdxs: new Set(),

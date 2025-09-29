@@ -13,7 +13,8 @@ test('`boolean` specific cases', function() {
     updDebugGlobal(true);
 
     // testIt('one-square-inside-b', '-> should boolean correctly');
-    testIt('koldat52-over-square', '-> should boolean correctly');
+    // testIt('koldat52-over-square', '-> should boolean correctly');
+    testIt('three-squares', '-> should boolean correctly');
 
     function testIt(fileName: string, description: string) {
         const { bezierLoopss } = getPathsFromFile(fileName); 

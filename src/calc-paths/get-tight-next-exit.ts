@@ -2,6 +2,7 @@ import { BezierPiece } from "flo-bezier3";
 import { InOut } from "../containers/in-out/in-out.js";
 import { orderInOuts } from "../containers/order-in-outs.js";
 import { Mutable } from "../types/mutable.js";
+import { containerIsBasic } from "../container.js";
 
 
 /**
@@ -13,8 +14,7 @@ function getTightNextExit(
         inOut: InOut, 
         origInOut: InOut,
         additionalOutsToCheck: InOut[],
-        takenInOuts: Set<InOut>,
-        noMicroCorners: boolean): {
+        takenInOuts: Set<InOut>): {
             inOutToUse: InOut;
             additionalBezier: number[][] | undefined;
         } {
@@ -28,7 +28,6 @@ function getTightNextExit(
     orderInOuts(inOut.container, 1);
 
     // console.log([inOut.idx, inOut.dir]);
-    // let additionalBezier: number[][] | undefined = undefined;
 
     let inOutToUse = inOut.nextAround!;
     // console.log([inOutToUse.idx, inOutToUse.dir], 'used');
@@ -41,8 +40,6 @@ function getTightNextExit(
 
         if (next === inOut) { break; }
 
-        // [next.idx, next.dir];//?
-
         markInOutForChecking_(next, origInOut.dir, origInOut, curLoopsIdxs);
 
         if (next.dir === -1) {
@@ -52,7 +49,13 @@ function getTightNextExit(
         }
     } while (true)
 
-    return { inOutToUse, additionalBezier: undefined };
+    let additionalBezier: number[][] | undefined = undefined;
+    if (!containerIsBasic(inOut.container)) {
+        // add a "micro corner"
+        additionalBezier = [inOut.p, inOutToUse!.p];
+    }
+
+    return { inOutToUse, additionalBezier };
 }
 
 
@@ -67,7 +70,7 @@ function markInOutForChecking(
             curLoopsIdxs: Set<number>) => {
 
         if (!takenInOuts.has(inOut) && inOut.dir === 1) {
-            inOut.loopsIdxs = new Set(curLoopsIdxs);//?
+            inOut.loopsIdxs = new Set(curLoopsIdxs);
 
             inOut.orientation = parity * originalOut.orientation!;
             inOut.parent = origInOut.parent;

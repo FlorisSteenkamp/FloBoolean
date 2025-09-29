@@ -9,8 +9,7 @@ import { containerIsBasic } from "../container.js";
 
 function getBeziersToNextContainer(
         out: InOut,
-        takenInOuts: Set<InOut>,
-        noMicroCorners: boolean): {
+        takenInOuts: Set<InOut>): {
             bezierPieces: BezierPiece[];
             inOut: InOut;
         } {
@@ -33,10 +32,8 @@ function getBeziersToNextContainer(
     let curT = tS;
 
     if (!containerIsBasic(out.container)) {
-        if (!noMicroCorners) {
-            // we must clip the outgoing curve
-            curT = mid(closestPointOnBezierCertified(curveS.ps, out.p)[0].ri);
-        }
+        // we must clip the outgoing curve
+        curT = mid(closestPointOnBezierCertified(curveS.ps, out.p)[0].ri);
     }
 
     const bezierPieces: BezierPiece[] = [];

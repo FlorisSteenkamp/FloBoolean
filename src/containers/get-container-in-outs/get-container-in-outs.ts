@@ -12,8 +12,7 @@ import { InOut } from "../../containers/in-out/in-out.js";
  */
 function getContainerInOuts(
         container: Container, 
-        ioIdx: number,
-        noMicroCorners: boolean): {
+        ioIdx: number): {
             inOuts: InOut[];
             ioIdx: number;
         } {
@@ -33,11 +32,11 @@ function getContainerInOuts(
     //     if (xs[0].x.kind === 1 && xs[1].x.kind === 1 &&
     //         xs[0].x.ri.multiplicity%2 === 1 && xs[1].x.ri.multiplicity%2 === 1) {
                 
-    //         return getInOutsViaCrossing(container, ioIdx, noMicroCorners);
+    //         return getInOutsViaCrossing(container, ioIdx);
     //     }
     // }
 
-    return getInOutsViaSides(container, ioIdx, noMicroCorners);
+    return getInOutsViaSides(container, ioIdx);
 }
 
 

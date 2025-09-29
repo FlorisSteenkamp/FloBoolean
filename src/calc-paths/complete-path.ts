@@ -17,8 +17,7 @@ function completePath(
         initialOut: InOut,
         takenLoops: Set<Loop>,
         takenInOuts: Set<InOut>,
-        tight: boolean,
-        noMicroCorners: boolean) {
+        tight: boolean) {
 
     const inOutStack = [initialOut];
 
@@ -30,7 +29,7 @@ function completePath(
 
         (origInOut as Mutable<InOut>).children = new Set();
         const { bezierPieces, additionalOutsToCheck } = 
-            completeLoop(takenInOuts, origInOut, tight, noMicroCorners);
+            completeLoop(takenInOuts, origInOut, tight);
 
         (origInOut as Mutable<InOut>).bezierPieces = bezierPieces;
         (origInOut.parent! as Mutable<InOut>).children = origInOut.parent!.children || new Set();

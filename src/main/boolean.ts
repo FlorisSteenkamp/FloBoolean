@@ -95,8 +95,8 @@ function boolean(
      * A size (based on the max value of the tangent) for the containers holding 
      * critical points.
      */
-    // const containerSizeMultiplier = 2**7;
-    const containerSizeMultiplier = 2**7;
+    const containerSizeMultiplier = 2**5;
+    // const containerSizeMultiplier = 2**41;
     const containerDim = gridSpacing * containerSizeMultiplier;
 
     bezierLoopss = bezierLoopss.map(bezierLoops => normalizeLoops(
@@ -110,7 +110,7 @@ function boolean(
 
         /** Each `_simpLoops` represents an independent shape (possibly with holes) */
         const _simpLoops = simplifyPaths(__simpLoops, maxCoordinate, {
-            maxBitLength, minLoopArea, noMicroCorners: true, orientationPositive: true
+            maxBitLength, minLoopArea, inclMicroCorners: true, orientationPositive: true
         });
 
         const simpLoops = _simpLoops.flat().map(v => v.beziers);
@@ -136,7 +136,7 @@ function boolean(
 
     // @ts-ignore
     const loops = bezierLoops.map(beziers => loopFromBeziers(beziers, beziers.loopsIdx));
-    const { extremes } = getContainers(loops, containerDim, expMax, true);
+    const { extremes } = getContainers(loops, containerDim, expMax);
     // extremes.size;//?
 
     const root = createRootInOut();
@@ -152,7 +152,6 @@ function boolean(
 
         const parent = getTightestContainingLoop(root, loop);
 
-        extremes.get(loop)![0].container;//?
         const container = extremes.get(loop)![0].container!;
         if (container.inOuts.length === 0) { continue; }
 
@@ -176,23 +175,19 @@ function boolean(
             takenLoops,
             takenInOuts,
             true,  // take the tightest loop around
-            true   // noMicroCorners
         );
     }
 
     const outSet = getAllLoopsFromTree(root);
-    // outSet;//?
 
     const inOuts = outSet.map(inOut => {
         const { loopsIdxs } = inOut;
         if (loopsIdxs === undefined || loopsIdxs.size === 0) { return undefined; }
 
-        // console.log(loopsIdxs);
         const bits = new Array(bezierLoopss.length).fill(0).map(
             (_,idx) => loopsIdxs.has(idx)
         );
-        // inOut.bezierPieces?.map(bezierPieceToBezier);//?
-        const include = booleanOperator(bits);//?
+        const include = booleanOperator(bits);
 
         const parent = inOut.parent!;
 
@@ -205,14 +200,11 @@ function boolean(
                 );
                 const includeParent = booleanOperator(parentBits);//?
 
-                // inOut.bezierPieces;//?
-
                 if (includeParent) {
                     return {
                         ...inOut,
                         orientation: -1,
                         // must make a hole so reverse
-                        // bezierPieces: reverseShapeOrientation(inOut.bezierPieces!)
                         bezierPieces: reverseBezierPieces(inOut.bezierPieces!)
                     };
                 }
@@ -242,20 +234,15 @@ function boolean(
     })
     .filter(v => v !== undefined);
 
-    // inOuts.map(io => io.orientation);//?
     const loops_ = inOuts.map((out,idx) => {
         // `outSet[0].orientation` === 1 always at this stage
         return loopFromOut(out, outSet[0].orientation!, idx);
     });
-    // loops_.map(l => l.beziers);//?
 
     /** loops after splitting all */
     const loops__ = loops_.filter(
         (loop: Loop) => Math.abs(getShapeArea(loop.beziers)) > minLoopArea
     );
-    // loops__.length;//?
-
-    // console.log(loops__);
 
     if (typeof _debug_ !== 'undefined') {
         (globalThis as any)._debug_temp = _debug_;
@@ -263,15 +250,11 @@ function boolean(
     }
 
     const paths = loops__.map(l => l.beziers);
-    // paths.map(path => getWindingNumber(path));//?
-    // paths[1];//?
-    paths.map(getWindingNumber);//?
     const loopss_ = simplifyPaths(
         paths,
         maxCoordinate,
-        { noMicroCorners: false, orientationPositive: true }
+        { inclMicroCorners: true, orientationPositive: true }
     );
-    // console.log(loops__.map(l => l.beziers))
 
     if (typeof _debug_temp !== 'undefined') {
         (globalThis as any)._debug_ = _debug_temp;
@@ -279,7 +262,7 @@ function boolean(
     }
 
     addDebugInfo2(loopss_);
-    console.log(loopss_.map(loops => loops.map(l => l.beziers)));
+    // console.log(loopss_.map(loops => loops.map(l => l.beziers)));
 
     return loopss_;
 }

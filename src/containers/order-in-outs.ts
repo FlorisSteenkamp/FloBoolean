@@ -15,8 +15,6 @@ function orderInOuts(
         container: Container,
         snugDir: number) {
 
-    container.beenOrdered = true;
-
     const inOuts = container.inOuts;
 
     inOuts.sort(compareInOut(snugDir));
