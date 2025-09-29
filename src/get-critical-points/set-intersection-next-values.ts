@@ -1,5 +1,6 @@
 import type { __X__ } from "../-x-.js";
 import type { Loop } from "../loop/loop.js";
+import { Mutable } from "../types/mutable.js";
 
 
 /**
@@ -34,10 +35,8 @@ function setIntersectionNextValues(xPairs: __X__[][]) {
 
         const len = xs.length;
         for (let i=0; i<len; i++) {
-            // @ts-ignore
-            xs[i].next = xs[(i+1)%len];
-            // @ts-ignore
-            xs[i].prev = xs[(i-1+len)%len];
+            (xs[i] as Mutable<__X__>).next = xs[(i+1)%len];
+            (xs[i] as Mutable<__X__>).prev = xs[(i-1+len)%len];
         }
     }
 }

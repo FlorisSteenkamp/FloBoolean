@@ -2,6 +2,7 @@ import { isLoopInLoop } from './is-loop-in-loop.js';
 import type { InOut } from "../containers/in-out/in-out.js";
 import type { Loop } from '../loop/loop.js';
 import { BezierPiece } from 'flo-bezier3';
+import { bezierPieceToBezier } from './bezier-piece-to-bezier.js';
 
 
 /**
@@ -22,7 +23,8 @@ function getTightestContainingLoop(
     return containingLoop!;
 
     function f(parent: InOut) {
-        if (parent === root || isLoopInLoop(loop.beziers, parent.beziers!)) {
+        // if (parent === root || isLoopInLoop(loop.beziers, parent.bezierPieces!)) {
+        if (parent === root || isLoopInLoop(loop.beziers, parent.bezierPieces!.map(bezierPieceToBezier))) {
             containingLoop = parent;
 
             for (const child of parent.children!) {

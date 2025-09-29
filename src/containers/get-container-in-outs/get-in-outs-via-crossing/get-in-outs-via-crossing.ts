@@ -1,8 +1,10 @@
-import { orient2d } from "big-float-ts";
-import { getIntervalBox, getHodograph, evalDeCasteljau } from "flo-bezier3";
 import type { Container } from "../../../container.js";
 import type { InOut } from "../../../containers/in-out/in-out.js";
+import type { Mutable } from "../../../types/mutable.js";
+import { orient2d } from "big-float-ts";
+import { getIntervalBox, getHodograph, evalDeCasteljau } from "flo-bezier3";
 import { getInOutsViaSides } from "../get-in-outs-via-sides/get-in-outs-via-sides.js";
+import { __X__ } from "../../../-x-.js";
 
 
 /**
@@ -91,28 +93,20 @@ function getInOutsViaCrossing(
         inOuts.push({ dir: +1, p, _x_: x2, container, pBox: p, loopsIdxs: new Set() });
         inOuts.push({ dir: +1, p, _x_: x1, container, pBox: p, loopsIdxs: new Set() });
         inOuts.push({ dir: -1, p, _x_: x2, container, pBox: p, loopsIdxs: new Set() });
-        // @ts-ignore
-        x1.in_ = inOuts[0];
-        // @ts-ignore
-        x2.in_ = inOuts[3];
-        // @ts-ignore
-        x1.out = inOuts[1];
-        // @ts-ignore
-        x2.out = inOuts[2];
+        (x1 as Mutable<__X__>).in_ = inOuts[0];
+        (x2 as Mutable<__X__>).in_ = inOuts[3];
+        (x1 as Mutable<__X__>).out = inOuts[1];
+        (x2 as Mutable<__X__>).out = inOuts[2];
     } else {
         // config2 (the 2nd of the 2 possible configurations)
         inOuts.push({ dir: -1, p, _x_: x1, container, pBox: p, loopsIdxs: new Set() });
         inOuts.push({ dir: -1, p, _x_: x2, container, pBox: p, loopsIdxs: new Set() });
         inOuts.push({ dir: +1, p, _x_: x1, container, pBox: p, loopsIdxs: new Set() });
         inOuts.push({ dir: +1, p, _x_: x2, container, pBox: p, loopsIdxs: new Set() });
-        // @ts-ignore
-        x1.in_ = inOuts[0];
-        // @ts-ignore
-        x2.in_ = inOuts[1];
-        // @ts-ignore
-        x1.out = inOuts[2];
-        // @ts-ignore
-        x2.out = inOuts[3];
+        (x1 as Mutable<__X__>).in_ = inOuts[0];
+        (x2 as Mutable<__X__>).in_ = inOuts[1];
+        (x1 as Mutable<__X__>).out = inOuts[2];
+        (x2 as Mutable<__X__>).out = inOuts[3];
     }
 
     return { inOuts, ioIdx };

@@ -15,6 +15,7 @@ function checkShapes(
     /** get the shape invariants to be tested */ 
     let invariants_: Invariants[][] = shapes.map(loops => {
         return loops.map(loop => {
+            // loop.beziers;//?
             let centroid = getShapeCentroid(loop.beziers);
             let area     = getShapeArea(loop.beziers);
             let bounds   = getShapeBounds(loop.beziers);

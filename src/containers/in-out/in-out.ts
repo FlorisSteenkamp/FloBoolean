@@ -1,3 +1,4 @@
+import { BezierPiece } from "flo-bezier3";
 import type { __X__ } from "../../-x-.js";
 import type { Container } from "../../container.js";
 import type { X } from "../../x.js";
@@ -40,7 +41,7 @@ interface InOut {
     readonly windingNum?: number;
     readonly parent?: InOut;
     readonly children?: Set<InOut>;
-    readonly beziers?: number[][][]; 
+    readonly bezierPieces?: BezierPiece[]; 
     /** 
      * the ordering around the container (anti-clockwise from bottom right) 
      * where the 'quadrant' (0 -> right edge, 1 -> top edge, 2 -> left edge, 

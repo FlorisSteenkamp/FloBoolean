@@ -7,6 +7,7 @@ import { __X__ } from "../../../-x-.js";
 import { Curve } from "../../../curve/curve.js";
 import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting.js";
 import { InOut } from "../../../containers/in-out/in-out.js";
+import { Mutable } from "../../../types/mutable.js";
 
 
 
@@ -97,7 +98,9 @@ function getXInOuts(
                     outs.push({
                         idx: ++ioIdx,
                         dir: +1, 
-                        p: noMicroCorners ? midBox(prevX?.x.box!) : midBoxX(x),
+                        // p: noMicroCorners ? midBox(prevX?.x.box!) : midBoxX(x),
+                        p: noMicroCorners ? midBox(container.box) : midBoxX(x),
+                        // p: midBoxX(x),
                         pBox: midBoxX(x),
                         _x_: prevX!,
                         container,
@@ -105,8 +108,7 @@ function getXInOuts(
                         sideX: x.sideX!,
                         loopsIdxs: new Set()
                     });
-                    // @ts-ignore
-                    prevX.out = outs[outs.length-1];
+                    (prevX as Mutable<WithRI>).out = outs[outs.length-1];
                 }
                 prevWasX = false;
             } else {
@@ -116,6 +118,7 @@ function getXInOuts(
                         idx: ++ioIdx,
                         dir: -1, 
                         p: noMicroCorners ? midBox(container.box) : midBoxX(prevX!),
+                        // p: midBoxX(prevX!),
                         pBox: midBoxX(prevX!),
                         _x_: x,
                         container,
@@ -123,8 +126,7 @@ function getXInOuts(
                         sideX: prevX!.sideX!,
                         loopsIdxs: new Set()
                     });
-                    // @ts-ignore
-                    x.in_ = ins[ins.length-1];
+                    (x as Mutable<WithRI>).in_ = ins[ins.length-1];
                 }
                 prevWasX = true;
             }

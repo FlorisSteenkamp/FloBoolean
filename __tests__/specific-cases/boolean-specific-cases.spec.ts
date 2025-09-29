@@ -2,19 +2,23 @@ import * as fs from 'fs';
 import { getPathsFromFile } from '../helpers/get-paths-from-file';
 import { makeTolerance } from '../helpers/make-tolerance';
 import { checkShapes } from '../helpers/check-shapes';
-import { boolean } from '../../src/main/boolean';
+import { boolean, XOR } from '../../src/main/boolean';
 import { enableDebugForBooleanOp } from '../../src/debug/debug';
 
 
 test('`boolean` specific cases', function() {
     // updDebugGlobal(true);  // enable to check invariants
 
-    testIt('squares', 'squares -> should split correctly');
+    // testIt('squares', 'squares -> should split correctly');
+    updDebugGlobal(true);
+
+    // testIt('one-square-inside-b', '-> should boolean correctly');
+    testIt('koldat52-over-square', '-> should boolean correctly');
 
     function testIt(fileName: string, description: string) {
         const { bezierLoopss } = getPathsFromFile(fileName); 
 
-        const loopss = boolean(bezierLoopss);
+        const loopss = boolean(bezierLoopss, XOR);
         loopss[0]?.length;//?
         // const tolerancePower = -20;
         // const tolerance = makeTolerance(tolerancePower, bezierLoops);

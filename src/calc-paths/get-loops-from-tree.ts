@@ -11,11 +11,9 @@ import type { InOut } from "../containers/in-out/in-out.js";
 function getLoopsFromTree(
         root: InOut): InOut[] {
 
-    // console.log(root);
     const trees = [root];
 
     const stack = Array.from(root.children!);
-    // const stack = Array.from(root.children!).filter(c => Math.abs(c.windingNum!) <= 1);
     while (stack.length) {
         const tree = stack.pop()!;
 
@@ -24,12 +22,9 @@ function getLoopsFromTree(
         }
 
         for (const child of tree.children!) {
-            // if (Math.abs(child.windingNum!) <= 1) {
-                stack.push(child);
-            // }
+            stack.push(child);
         }
     }
-    // console.log(trees);
 
     return trees;
 }

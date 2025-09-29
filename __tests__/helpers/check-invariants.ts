@@ -9,11 +9,12 @@ function checkInvariants(
         tolerance: Tolerance) {
 
     if (invariantsCalc.length !== invariantsReq.length) {
-        invariantsCalc.length;//?
-        invariantsReq.length;//?
+        invariantsCalc.length;
+        invariantsReq.length;
         throw new Error(`loopss lengths differ`);
     }
 
+    // invariantsCalc;//?
     for (let i=0; i<invariantsCalc.length; i++) {
         let invariantCalc = invariantsCalc[i];
         let invariantReq  = invariantsReq[i];

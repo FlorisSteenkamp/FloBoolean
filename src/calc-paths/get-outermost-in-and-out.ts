@@ -2,6 +2,7 @@ import type { Container } from '../container.js';
 import type { InOut } from '../containers/in-out/in-out.js';
 import type { Loop } from '../loop/loop.js';
 import { orderInOuts } from '../containers/order-in-outs.js';
+import { Mutable } from '../types/mutable.js';
 
 
 /**
@@ -22,10 +23,10 @@ function getOutermostInAndOut(
     orderInOuts(container, 1);  // `snugDir` doesn't really matters here
 
     const inOuts = container.inOuts;
-    const firstInOut = inOuts[0];
-    const lastInOut = inOuts[inOuts.length-1];
+    const firstInOut: Mutable<InOut> = inOuts[0];
+    const lastInOut: Mutable<InOut> = inOuts[inOuts.length-1];
 
-    const initialOut = firstInOut.dir === 1
+    const initialOut: Mutable<InOut> = firstInOut.dir === 1
         ? firstInOut
         : lastInOut;
 
@@ -34,20 +35,26 @@ function getOutermostInAndOut(
     const set: Set<number> = parent.idx === 0
         ? new Set()
         : parent.orientation === 1 ? parent.loopsIdxs! : new Set();
+        
 
-    // @ts-ignore
-    initialOut.orientation = orientation;
-    // @ts-ignore
-    initialOut.parent = parent;
-    // @ts-ignore
-    initialOut.windingNum = parent.windingNum! + initialOut.orientation!;
-    // @ts-ignore
-    initialOut.loopsIdxs = new Set(set);
-    // @ts-ignore
-    initialOut.children = new Set();
-    if (initialOut.orientation === 1) {
-        initialOut.loopsIdxs?.add(loop.idx!);
+    firstInOut.orientation = orientation;
+    firstInOut.parent = parent;
+    firstInOut.windingNum = parent.windingNum! + orientation!;
+    firstInOut.loopsIdxs = new Set(set);
+    firstInOut.children = new Set();
+    if (orientation === 1) {
+        firstInOut.loopsIdxs?.add(loop.idx!);
     }
+
+    lastInOut.orientation = orientation;
+    lastInOut.parent = parent;
+    lastInOut.windingNum = parent.windingNum! + orientation!;
+    lastInOut.loopsIdxs = new Set(set);
+    lastInOut.children = new Set();
+    if (orientation === 1) {
+        lastInOut.loopsIdxs?.add(loop.idx!);
+    }
+
 
     return initialOut;
 }

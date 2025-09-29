@@ -1,6 +1,7 @@
 import { completeLoop } from './complete-loop.js';
 import type { InOut } from '../containers/in-out/in-out.js';
 import type { Loop } from '../loop/loop.js';
+import { Mutable } from '../types/mutable.js';
 
 
 /**
@@ -27,16 +28,13 @@ function completePath(
 
         if (takenInOuts.has(origInOut)) { continue; }
 
-        // @ts-ignore
-        origInOut.children = new Set();
-        const { beziers, additionalOutsToCheck } = 
+        (origInOut as Mutable<InOut>).children = new Set();
+        const { bezierPieces, additionalOutsToCheck } = 
             completeLoop(takenInOuts, origInOut, tight, noMicroCorners);
 
-        // @ts-ignore
-        origInOut.beziers = beziers;
-        // @ts-ignore
-        origInOut.parent!.children = origInOut.parent!.children || new Set();
-        origInOut.parent!.children.add(origInOut);
+        (origInOut as Mutable<InOut>).bezierPieces = bezierPieces;
+        (origInOut.parent! as Mutable<InOut>).children = origInOut.parent!.children || new Set();
+        origInOut.parent!.children!.add(origInOut);
 
         inOutStack.push(...additionalOutsToCheck);
     }

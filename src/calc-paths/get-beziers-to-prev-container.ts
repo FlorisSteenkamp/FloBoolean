@@ -1,40 +1,57 @@
 import { mid } from 'flo-poly';
-import { fromTo, closestPointOnBezierCertified } from "flo-bezier3";
+import { closestPointOnBezierCertified, BezierPiece } from "flo-bezier3";
 import { InOut } from "../containers/in-out/in-out.js";
 import { containerIsBasic } from "../container.js";
 
 
 function getBeziersToPrevContainer(
         in_: InOut,
-        takenInOuts: Set<InOut>) {
+        takenInOuts: Set<InOut>,
+        noMicroCorners: boolean): {
+            bezierPieces: BezierPiece[];
+            inOut: InOut;
+        } {
 
-    // const out = in_.prev!;
     const out = in_.nextOrPrev!;
 
     takenInOuts.add(out);
-    const endCurve = out._x_!.curve;
-    const endT = out._x_!.x.ri.tS;
-    
+
+    const outX = out._x_!;
     const inX = in_._x_!;
-    let curCurve = inX.curve;
-    let curT = inX.x.ri.tS;
+    
+    //----------------------------
+    const curveS = inX.curve;
+    const tS = inX.x.ri.tS;
+
+    const curveE = outX.curve;
+    const tE = outX.x.ri.tS;
+
+    let curCurve = curveS;
+    let curT = tS;
+
     if (!containerIsBasic(in_.container)) {
-        // we must clip the outgoing curve
-        curT = mid(closestPointOnBezierCertified(curCurve.ps, in_.p)[0].ri);
+        if (!noMicroCorners) {
+            // we must clip the outgoing curve
+            curT = mid(closestPointOnBezierCertified(curCurve.ps, in_.p)[0].ri);
+        }
     }
 
-    const beziers: number[][][] = [];
-    let bez: number[][];
-    let ii=0;
-    while (true && ii++<100) {
-        if (curCurve === endCurve && 
-            (curT > endT || (curT === endT && beziers.length !== 0))) {
+    const bezierPieces: BezierPiece[] = [];
+    while (true) {
+        if (curCurve === curveE && 
+            (curT > tE || (curT === tE && bezierPieces.length !== 0))) {
 
-            bez = fromTo(curCurve.ps, endT, curT).toReversed();
-            return { beziers, inOut: out, bez }
+            const lastBezPiece: BezierPiece = {
+                ps: curCurve.ps,
+                ts: [curT, tE]
+            };
+            bezierPieces.push(lastBezPiece);
+            return { bezierPieces, inOut: out }
         } else {
-            const ps = fromTo(curCurve.ps, 0, curT).toReversed();
-            beziers.push(ps);
+            bezierPieces.push({
+                ps: curCurve.ps,
+                ts: [curT, 0]
+            });
         }
 
         curT = 1;

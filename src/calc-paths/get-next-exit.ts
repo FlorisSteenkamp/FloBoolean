@@ -1,6 +1,7 @@
 import type { InOut } from "../containers/in-out/in-out.js";
 import { containerIsBasic } from "../container.js";
 import { orderInOuts } from "../containers/order-in-outs.js";
+import { Mutable } from "../types/mutable.js";
 
 
 /**
@@ -13,7 +14,10 @@ function getNextExit(
         originalOut: InOut,
         additionalOutsToCheck: InOut[],
         takenOuts: Set<InOut>,
-        noMicroCorners: boolean) {
+        noMicroCorners: boolean): {
+            inOutToUse: InOut;
+            additionalBezier: number[][] | undefined;
+        } {
 
     const markOutForChecking_ = markInOutForChecking(
         takenOuts,
@@ -65,9 +69,15 @@ function getNextExit(
         }
     } while (true)
 
-    if (!containerIsBasic(in_.container) && !noMicroCorners) {
-        // if there is multiple intersection pairs then add an additional bezier
-        additionalBezier = [in_.p, outToUse!.p];
+    if (!containerIsBasic(in_.container)) {
+        if (!noMicroCorners) {
+            // if there is multiple intersection pairs then add an additional bezier
+            // additionalBezier = [in_.p, outToUse!.p];
+            // in_.p[0] - outToUse!.p[0];//?
+            // if (in_.p[0] !== outToUse!.p[0] || in_.p[1] !== outToUse!.p[1]) {
+                additionalBezier = [in_.p, outToUse!.p];
+            // }
+        }
     }
     
     return { inOutToUse: outToUse!, additionalBezier };
@@ -83,12 +93,9 @@ function markInOutForChecking(
             origParent: InOut) => {
 
         if (!takenInOuts.has(inOut)) {
-            // @ts-ignore
-            inOut.orientation = orientation;
-            // @ts-ignore
-            inOut.parent = origParent;
-            // @ts-ignore
-            inOut.windingNum = origParent.windingNum! + inOut.orientation;
+            (inOut as Mutable<InOut>).orientation = orientation;
+            (inOut as Mutable<InOut>).parent = origParent;
+            (inOut as Mutable<InOut>).windingNum = origParent.windingNum! + inOut.orientation!;
             additionalOutsToCheck.push(inOut);
         }
     }

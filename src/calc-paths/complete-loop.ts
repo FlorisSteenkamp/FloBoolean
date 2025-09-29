@@ -1,13 +1,14 @@
 declare const _debug_: Debug;
 
 import type { Debug } from '../debug/debug.js';
-import { closestPointOnBezierCertified, fromTo } from 'flo-bezier3';
+import { BezierPiece, closestPointOnBezierCertified } from 'flo-bezier3';
 import { mid } from 'flo-poly';
 import { InOut } from '../containers/in-out/in-out.js';
 import { getNextExit } from './get-next-exit.js';
 import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
 import { getBeziersToPrevContainer } from './get-beziers-to-prev-container.js';
 import { getTightNextExit } from './get-tight-next-exit.js';
+import { bezierPieceToBezier } from './bezier-piece-to-bezier.js';
 
 
 /** 
@@ -21,10 +22,13 @@ function completeLoop(
         takenInOuts: Set<InOut>,
         origInOut: InOut,
         tight: boolean,
-        noMicroCorners: boolean): { beziers: number[][][], additionalOutsToCheck: InOut[] } {
+        noMicroCorners: boolean): {
+            bezierPieces: BezierPiece[],
+            additionalOutsToCheck: InOut[]
+        } {
 
     const additionalOutsToCheck: InOut[] = [];
-    const beziers: number[][][] = [];
+    const bezierPieces: BezierPiece[] = [];
 
     // Move immediately to the outgoing start of the loop
     let inOutToUse: InOut = origInOut;
@@ -40,11 +44,11 @@ function completeLoop(
         
         const beziersToNextContainer = inOutToUse.dir === +1
             ? getBeziersToNextContainer(inOutToUse!, takenInOuts, noMicroCorners)!
-            : getBeziersToPrevContainer(inOutToUse!, takenInOuts)!;
+            : getBeziersToPrevContainer(inOutToUse!, takenInOuts, noMicroCorners)!;
 
-        const { beziers: additionalBeziers, inOut, bez } = beziersToNextContainer;
+        const { bezierPieces: additionalBeziers, inOut/*, bez*/ } = beziersToNextContainer;
 
-        beziers.push(...additionalBeziers);
+        bezierPieces.push(...additionalBeziers);
 
         const getNextExit_ = tight ? getTightNextExit : getNextExit;
 
@@ -53,17 +57,42 @@ function completeLoop(
         ({ inOutToUse, additionalBezier } = nextExit);
 
 
+        // console.log(additionalBezier);
         if (additionalBezier !== undefined) {
-            const t = mid(closestPointOnBezierCertified(bez, additionalBezier[0])[0].ri);
-            const inBez_ = fromTo(bez, 0, t);
-            beziers.push(inBez_);
-            beziers.push(additionalBezier);
-        } else {
-            beziers.push(bez);
+            if (!noMicroCorners) {
+                const lastBezPiece = bezierPieces[bezierPieces.length - 1];
+                const lastBez = bezierPieceToBezier(lastBezPiece);
+                const t = mid(closestPointOnBezierCertified(lastBez, additionalBezier[0])[0].ri);
+                const inBez_: BezierPiece = { ps: lastBez, ts: [0,t] };
+                bezierPieces.pop();
+                bezierPieces.push(inBez_);
+                bezierPieces.push({ ps: additionalBezier, ts: [0,1] });
+            } else {
+                console.log('a')
+                const lastBezPiece = bezierPieces[bezierPieces.length - 1];
+                const lastBez = bezierPieceToBezier(lastBezPiece).map(
+                    ps => ps.slice()
+                );
+                const lastP = lastBez[lastBez.length - 1];
+                const lastPA = additionalBezier[additionalBezier.length - 1];
+                lastP[0] = lastPA[0];
+                lastP[1] = lastPA[1];
+                // const t = mid(closestPointOnBezierCertified(lastBez, additionalBezier[0])[0].ri);
+                // const inBez_: BezierPiece = { ps: lastBez, ts: [0,t] };
+                const lastBezPiece_: BezierPiece = {
+                    ps: lastBez,
+                    ts: [0,1]
+                };
+                // const inBez_: BezierPiece = { ps: lastBez, ts: [0,t] };
+                const inBez_ = lastBezPiece_;
+                bezierPieces.pop();
+                bezierPieces.push(inBez_);
+                // bezierPieces.push({ ps: additionalBezier, ts: [0,1] });
+            }
         }
     } while (inOutToUse !== origInOut);
 
-    return { beziers, additionalOutsToCheck };
+    return { bezierPieces, additionalOutsToCheck };
 }
 
 

@@ -24,7 +24,6 @@ function logNearestBezierPost(
 
     for (const loops of _debug_.generated.elems.loops) {
         const bezierLoops = loops;
-        const generated = _debug_.generated;
 
         for (const loop of bezierLoops) {
             const beziers = loop.beziers;
@@ -33,7 +32,6 @@ function logNearestBezierPost(
                 const d = squaredDistanceBetween(bezierPoint.p, p);
                 
                 if (d < bestDistance) {
-                    //g = generated.g;
                     bestPs = ps;
                     bestDistance = d;
                 }

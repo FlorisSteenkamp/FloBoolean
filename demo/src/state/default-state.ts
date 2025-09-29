@@ -21,13 +21,13 @@ const defaultTransientState: TransientState = {
 const defaultToDraw: { [T in keyof IDebugElems]: boolean } = {
     loopPre              : false,
     loopsPre             : false,
-    loops                : false,
+    loops                : true,
     minY                 : false,
     bezier_              : false,
     looseBoundingBox_    : false,
-    tightBoundingBox_    : true,
+    tightBoundingBox_    : false,
     boundingHull_        : false,
-    loop                 : false,
+    loop                 : true,
     intersection         : false,
     container            : false,
 }
@@ -39,7 +39,7 @@ const defaultDeduced: DeducedState = {
 
 const defaultPageState: PageState = {
     deduced: defaultDeduced,
-    showDelay: 1000,
+    showDelay: 2000,
     clickFor: 'bezier',
     toDraw: defaultToDraw,
     viewbox: [[0,0],[100.100]],

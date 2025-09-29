@@ -1,5 +1,7 @@
 import type { Container } from "../container";
+import { Mutable } from "../types/mutable";
 import { compareInOut } from "./get-container-in-outs/get-in-outs-via-sides/compare-in-out";
+import { InOut } from "./in-out/in-out";
 
 
 /**
@@ -22,10 +24,8 @@ function orderInOuts(
     let prevInOut = inOuts[inOuts.length-1];
     for (let i=0; i<inOuts.length; i++) {
         const inOut = inOuts[i];
-        // @ts-ignore
-        inOut.prevAround = prevInOut;
-        // @ts-ignore
-        prevInOut.nextAround = inOut;
+        (inOut as Mutable<InOut>).prevAround = prevInOut;
+        (prevInOut as Mutable<InOut>).nextAround = inOut;
         prevInOut = inOut;
     }
 }

@@ -18,6 +18,8 @@ import { addDebugInfo1 } from './add-debug-info-1.js';
 import { addDebugInfo2 } from './add-debug-info-2.js';
 import { loopFromOut } from './loop-from-out.js';
 import { createRootInOut } from './create-root-in-out.js';
+import { bezierToBezierPiece } from '../calc-paths/bezier-to-bezier-piece.js';
+import { Mutable } from '../types/mutable.js';
 // import { gotoNextContainer } from './goto-next-container.js';
 // import { reverseShapeOrientation } from '../loop/reverse-shape-orientation.js';
 
@@ -134,11 +136,9 @@ function simplifyPaths(
         if (container.inOuts.length === 2 &&
             container.inOuts[0].nextOrPrev === container.inOuts[1]) {
             // short-circuit `completePath` for Jordan curves
-            // @ts-ignore
-            initialOut.beziers = loop.beziers;
-            // @ts-ignore
-            initialOut.parent!.children = initialOut.parent!.children || new Set();
-            initialOut.parent!.children.add(initialOut);
+            initialOut.bezierPieces = loop.beziers.map(bezierToBezierPiece);
+            (initialOut.parent! as Mutable<InOut>).children = initialOut.parent!.children || new Set();
+            initialOut.parent!.children!.add(initialOut);
             continue;
         }
 
@@ -153,15 +153,18 @@ function simplifyPaths(
         if (container.inOuts.length === 2 &&
             container.xs.length === 2 &&
             container.xs[0].x.kind === 0 && container.xs[1].x.kind === 0 &&  // just for good measure
-            initialOut.beziers !== undefined) {
+            initialOut.bezierPieces !== undefined) {
 
             // combine first and last bezier so not to have an extraneous bezier
-            const { beziers } = initialOut;
-            const bezier = initialOut._x_?.curve.ps!;
+            const { bezierPieces } = initialOut;
+            const bezierPiece = {
+                ps: initialOut._x_?.curve.ps!,
+                ts: [0,1]
+            };
 
-            // beziers.shift();
-            // beziers.pop();
-            // beziers.unshift(bezier);
+            // bezierPieces.shift();
+            // bezierPieces.pop();
+            // bezierPieces.unshift(bezierPiece);
         }
     }
 

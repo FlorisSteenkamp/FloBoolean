@@ -1,5 +1,7 @@
+import { BezierPiece } from "flo-bezier3";
 import { InOut } from "../containers/in-out/in-out.js";
 import { orderInOuts } from "../containers/order-in-outs.js";
+import { Mutable } from "../types/mutable.js";
 
 
 /**
@@ -12,7 +14,10 @@ function getTightNextExit(
         origInOut: InOut,
         additionalOutsToCheck: InOut[],
         takenInOuts: Set<InOut>,
-        noMicroCorners: boolean) {
+        noMicroCorners: boolean): {
+            inOutToUse: InOut;
+            additionalBezier: number[][] | undefined;
+        } {
 
     const markInOutForChecking_ = markInOutForChecking(
         origInOut,
@@ -23,7 +28,7 @@ function getTightNextExit(
     orderInOuts(inOut.container, 1);
 
     // console.log([inOut.idx, inOut.dir]);
-    let additionalBezier: number[][] | undefined = undefined;
+    // let additionalBezier: number[][] | undefined = undefined;
 
     let inOutToUse = inOut.nextAround!;
     // console.log([inOutToUse.idx, inOutToUse.dir], 'used');
@@ -47,7 +52,7 @@ function getTightNextExit(
         }
     } while (true)
 
-    return { inOutToUse, additionalBezier };
+    return { inOutToUse, additionalBezier: undefined };
 }
 
 
@@ -56,34 +61,21 @@ function markInOutForChecking(
         takenInOuts: Set<InOut>,
         additionalOutsToCheck: InOut[]) {
             
-    return (inOut: InOut,
+    return (inOut: Mutable<InOut>,
             parity: number,
             origInOut: InOut,
             curLoopsIdxs: Set<number>) => {
 
         if (!takenInOuts.has(inOut) && inOut.dir === 1) {
-            // @ts-ignore
             inOut.loopsIdxs = new Set(curLoopsIdxs);//?
 
-            // @ts-ignore
             inOut.orientation = parity * originalOut.orientation!;
-            // @ts-ignore
             inOut.parent = origInOut.parent;
-            // @ts-ignore
             inOut.windingNum = origInOut.windingNum! + inOut.orientation;
             additionalOutsToCheck.unshift(inOut);
         }
     }
 }
-
-
-// function toggleSet<T>(set: Set<T>, t: T) {
-//     if (set.has(t)) {
-//         set.delete(t);
-//     } else {
-//         set.add(t);
-//     }
-// }
 
 
 export { getTightNextExit }

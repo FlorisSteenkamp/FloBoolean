@@ -1,4 +1,5 @@
 import { Curve } from "../curve/curve";
+import { Mutable } from "../types/mutable";
 import { Loop } from "./loop";
 
 
@@ -31,8 +32,7 @@ function loopFromBeziers(
             idx: j
         };
 
-        // @ts-ignore
-        if (prev) { prev.next = curve; }
+        if (prev) { (prev as Mutable<Curve>).next = curve; }
         prev = curve; 
 
         curves.push(curve);
@@ -41,10 +41,8 @@ function loopFromBeziers(
 
     // close loop
     const lastCurve = curves[curves.length-1];
-    // @ts-ignore
-    curves[0].prev = lastCurve;
-    // @ts-ignore
-    lastCurve.next = curves[0];
+    (curves[0] as Mutable<Curve>).prev = lastCurve;
+    (lastCurve as Mutable<Curve>).next = curves[0];
 
     lastCurve.ps[lastCurve.ps.length-1] = curves[0].ps[0];
 

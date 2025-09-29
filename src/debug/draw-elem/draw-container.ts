@@ -13,7 +13,7 @@ function drawContainer(g: SVGGElement, container: Container, classes?: string, d
     const $circles: SVGCircleElement[] = [];
     for (let i=0; i<xs.length; i++) {
         const x = xs[i];
-        $circles.push(...drawFs.circle(g, { center: x.x.box[0], radius: scale/4 }, 'thin2 red nofill', delay));
+        // $circles.push(...drawFs.circle(g, { center: x.x.box[0], radius: scale/4 }, 'thin2 red nofill', delay));
     }
 
     // text showing intersection ordering

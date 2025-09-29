@@ -2,27 +2,31 @@ declare const _debug_: Debug;
 declare const _debug_temp: Debug;
 
 import type { Debug } from '../debug/debug.js';
+import type { Mutable } from '../types/mutable.js';
+import type { Loop } from '../loop/loop.js';
+import type { InOut } from '../containers/in-out/in-out.js';
 import { completePath } from '../calc-paths/complete-path.js';
 import { getTightestContainingLoop } from '../calc-paths/get-tightest-containing-loop.js';
 import { orderLoopAscendingByMinY } from '../calc-paths/order-loop-ascending-by-min-y.js';
 import { getContainers } from '../containers/get-containers.js';
-import { InOut } from '../containers/in-out/in-out.js';
 import { getOutermostInAndOut } from '../calc-paths/get-outermost-in-and-out.js';
-import { Loop } from '../loop/loop.js';
 import { loopFromBeziers } from '../loop/loop-from-beziers.js';
 import { normalizeLoops } from '../loop/normalize/normalize-loop.js';
 import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate.js';
 import { getShapeArea } from '../loop/get-loop-area.js';
 import { getAllLoopsFromTree } from './get-all-loops-from-tree.js';
+import { reverseBezierPieces } from './reverse-bezier-pieces.js';
+import { simplifyPaths } from './simplify-paths.js';
+import { createRootInOut } from './create-root-in-out.js';
+import { loopFromOut } from './loop-from-out.js';
 
 // the imports below is used in the test cases - see code below
-import { simplifyPaths } from './simplify-paths.js';
-import { addDebugInfo1 } from './add-debug-info-1.js';
-import { loopFromOut } from './loop-from-out.js';
 import { reverseShapeOrientation } from '../loop/reverse-shape-orientation.js';
-import { createRootInOut } from './create-root-in-out.js';
-import { addDebugInfo2 } from './add-debug-info-2.js';
 import { getWindingNumber } from '../loop/get-winding-number.js';
+import { addDebugInfo1 } from './add-debug-info-1.js';
+import { addDebugInfo2 } from './add-debug-info-2.js';
+import { bezierToBezierPiece } from '../calc-paths/bezier-to-bezier-piece.js';
+import { bezierPieceToBezier } from '../calc-paths/bezier-piece-to-bezier.js';
 
 
 interface BooleanOptions {
@@ -69,7 +73,7 @@ function XOR(bits: boolean[]) {
  */
 function boolean(
         bezierLoopss: number[][][][][],
-        booleanOperator = AND,
+        booleanOperator: (bits: boolean[]) => boolean,
         options: BooleanOptions = {}): Loop[][] {
 
     if (typeof _debug_ !== 'undefined') {
@@ -91,8 +95,8 @@ function boolean(
      * A size (based on the max value of the tangent) for the containers holding 
      * critical points.
      */
-    // const containerSizeMultiplier = 2**6;
-    const containerSizeMultiplier = 2**33;
+    // const containerSizeMultiplier = 2**7;
+    const containerSizeMultiplier = 2**7;
     const containerDim = gridSpacing * containerSizeMultiplier;
 
     bezierLoopss = bezierLoopss.map(bezierLoops => normalizeLoops(
@@ -126,12 +130,14 @@ function boolean(
         (globalThis as any)._debug_temp = undefined;
     }
 
+
     addDebugInfo1(bezierLoops);
     bezierLoops.sort(orderLoopAscendingByMinY);
 
     // @ts-ignore
     const loops = bezierLoops.map(beziers => loopFromBeziers(beziers, beziers.loopsIdx));
     const { extremes } = getContainers(loops, containerDim, expMax, true);
+    // extremes.size;//?
 
     const root = createRootInOut();
     // `takenLoops` is important in rare cases such as in the 'koldat52' vector
@@ -146,21 +152,24 @@ function boolean(
 
         const parent = getTightestContainingLoop(root, loop);
 
+        extremes.get(loop)![0].container;//?
         const container = extremes.get(loop)![0].container!;
         if (container.inOuts.length === 0) { continue; }
 
         const initialOut = getOutermostInAndOut(container, parent, loop);
 
+        //---------------------------------------------------
+        // short-circuit `completePath` for Jordan curves
+        //---------------------------------------------------
         if (container.inOuts.length === 2 &&
             container.inOuts[0].nextOrPrev === container.inOuts[1]) {
-            // short-circuit `completePath` for Jordan curves
-            // @ts-ignore
-            initialOut.beziers = loop.beziers;
-            // @ts-ignore
-            initialOut.parent!.children = initialOut.parent!.children || new Set();
-            initialOut.parent!.children.add(initialOut);
+
+            (initialOut as Mutable<InOut>).bezierPieces = loop.beziers.map(bezierToBezierPiece);
+            (initialOut.parent! as Mutable<InOut>).children = initialOut.parent!.children! || new Set();
+            initialOut.parent!.children!.add(initialOut);
             continue;
         }
+        
 
         completePath(
             initialOut,
@@ -172,8 +181,7 @@ function boolean(
     }
 
     const outSet = getAllLoopsFromTree(root);
-    // outSet.map(io => ({ loopsIdxs: io.loopsIdxs, idx: io.idx, dir: io.dir }));
-    // outSet.length;//?
+    // outSet;//?
 
     const inOuts = outSet.map(inOut => {
         const { loopsIdxs } = inOut;
@@ -183,7 +191,8 @@ function boolean(
         const bits = new Array(bezierLoopss.length).fill(0).map(
             (_,idx) => loopsIdxs.has(idx)
         );
-        const include = booleanOperator(bits);
+        // inOut.bezierPieces?.map(bezierPieceToBezier);//?
+        const include = booleanOperator(bits);//?
 
         const parent = inOut.parent!;
 
@@ -194,14 +203,17 @@ function boolean(
                 const parentBits = new Array(bezierLoopss.length).fill(0).map(
                     (_,idx) => parent.loopsIdxs!.has(idx)
                 );
-                const includeParent = booleanOperator(parentBits);
+                const includeParent = booleanOperator(parentBits);//?
+
+                // inOut.bezierPieces;//?
 
                 if (includeParent) {
                     return {
                         ...inOut,
                         orientation: -1,
                         // must make a hole so reverse
-                        beziers: reverseShapeOrientation(inOut.beziers!)
+                        // bezierPieces: reverseShapeOrientation(inOut.bezierPieces!)
+                        bezierPieces: reverseBezierPieces(inOut.bezierPieces!)
                     };
                 }
             }
@@ -219,7 +231,8 @@ function boolean(
                         ...inOut,
                         orientation: +1,
                         // must make a hole so reverse
-                        beziers: reverseShapeOrientation(inOut.beziers!)
+                        // bezierPieces: reverseShapeOrientation(inOut.bezierPieces!)
+                        bezierPieces: reverseBezierPieces(inOut.bezierPieces!)
                     };
                 }
             }
@@ -229,15 +242,18 @@ function boolean(
     })
     .filter(v => v !== undefined);
 
+    // inOuts.map(io => io.orientation);//?
     const loops_ = inOuts.map((out,idx) => {
         // `outSet[0].orientation` === 1 always at this stage
         return loopFromOut(out, outSet[0].orientation!, idx);
     });
+    // loops_.map(l => l.beziers);//?
 
     /** loops after splitting all */
     const loops__ = loops_.filter(
         (loop: Loop) => Math.abs(getShapeArea(loop.beziers)) > minLoopArea
     );
+    // loops__.length;//?
 
     // console.log(loops__);
 
@@ -246,10 +262,14 @@ function boolean(
         (globalThis as any)._debug_ = undefined;
     }
 
+    const paths = loops__.map(l => l.beziers);
+    // paths.map(path => getWindingNumber(path));//?
+    // paths[1];//?
+    paths.map(getWindingNumber);//?
     const loopss_ = simplifyPaths(
-        loops__.map(l => l.beziers),
+        paths,
         maxCoordinate,
-        { noMicroCorners: true, orientationPositive: true }
+        { noMicroCorners: false, orientationPositive: true }
     );
     // console.log(loops__.map(l => l.beziers))
 
@@ -259,8 +279,7 @@ function boolean(
     }
 
     addDebugInfo2(loopss_);
-    console.log(loopss_)
-    // addDebugInfo2([loops__]);
+    console.log(loopss_.map(loops => loops.map(l => l.beziers)));
 
     return loopss_;
 }

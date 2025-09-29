@@ -14,6 +14,7 @@ const vectorsBoolean = [
 
 const vectors = [
     'snuggle-1',
+    'same-k-family-lines-2',
     'koldat52-over-square',
     'few-xs-at-min-y',
     'multiple-xs-at-min-y',

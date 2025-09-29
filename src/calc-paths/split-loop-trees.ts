@@ -1,4 +1,5 @@
 import { InOut } from "../containers/in-out/in-out.js";
+import { Mutable } from "../types/mutable.js";
 
 
 /**
@@ -17,17 +18,15 @@ function splitLoopTrees(
     while (stack.length) {
         const tree = stack.pop()!;
 
-        // @ts-ignore
-        tree.children = tree.children || new Set<InOut>();
-        for (const child of tree.children) {
+        (tree as Mutable<InOut>).children = tree.children || new Set<InOut>();
+        for (const child of tree.children!) {
             if (tree.windingNum === 0) {
                 loopTrees.push(child);
             }
             stack.push(child);
         }
         if (tree.windingNum === 0) {
-            // @ts-ignore
-            tree.children = new Set();  // Make it a leaf
+            (tree as Mutable<InOut>).children = new Set();  // Make it a leaf
         }
     }
 

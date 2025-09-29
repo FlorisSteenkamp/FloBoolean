@@ -20,6 +20,8 @@ import { sendContainersToGrid } from './send-containers-to-grid.js';
 import { compareInOut } from './get-container-in-outs/get-in-outs-via-sides/compare-in-out.js';
 import { filterContainers } from './filter-containers.js';
 import { orderInOuts } from './order-in-outs.js';
+import { Mutable } from '../types/mutable.js';
+import { __X__ } from '../-x-.js';
 
 
 /**
@@ -111,13 +113,11 @@ function getContainers(
     let ioIdx = 0;
     for (const container of containers) {
         for (const x of container.xs) {
-            // @ts-ignore
-            x.container = container;
+            (x as Mutable<__X__>).container = container;
         }
         let inOuts: InOut[];
         ({ inOuts, ioIdx } = getContainerInOuts(container, ioIdx, noMicroCorners));
-        // @ts-ignore
-        container.inOuts = inOuts;
+        (container as Mutable<Container>).inOuts = inOuts;
     }
 
     // remove xs not belonging to a container (caused by filterContainers)
@@ -137,10 +137,8 @@ function getContainers(
                     break;
                 }
             }
-            // @ts-ignore
-            out.nextOrPrev = _x_.in_;
-            // @ts-ignore
-            out.idx = out.nextOrPrev.idx;
+            (out as Mutable<InOut>).nextOrPrev = _x_.in_;
+            (out as Mutable<InOut>).idx = out.nextOrPrev!.idx;
         }
     }
 
@@ -161,12 +159,8 @@ function getContainers(
                     break;
                 }
             }
-            // @ts-ignore
-            in_.nextOrPrev = _x_.out;
-            // in_.prev = _x_.out;
-            // @ts-ignore
-            // in_.idx = in_.prev!.idx;
-            in_.idx = in_.nextOrPrev!.idx;
+            (in_ as Mutable<InOut>).nextOrPrev = _x_.out;
+            (in_ as Mutable<InOut>).idx = in_.nextOrPrev!.idx;
         }
     }
 
