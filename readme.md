@@ -1,3 +1,11 @@
+[![npm][1]][2] [![install size][3]][4] [![downloads][5]][2]
+
+[1]: https://img.shields.io/npm/v/flo-boolean "FloBoolean, npm badge"
+[2]: https://www.npmjs.com/package/flo-boolean "FloBoolean, npm link"
+[3]: https://packagephobia.now.sh/badge?p=flo-boolean "FloBoolean size, badge"
+[4]: https://packagephobia.now.sh/result?p=flo-boolean "FloBoolean size, link"
+[5]: https://badgen.now.sh/npm/dm/flo-boolean "FloBoolean downloads, badge"
+
 # Boolean operations and path simplification on shapes
 
 This library performs shape simplification via `simplifyPaths` and boolean operations
