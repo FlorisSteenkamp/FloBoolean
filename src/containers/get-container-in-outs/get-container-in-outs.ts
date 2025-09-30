@@ -1,6 +1,6 @@
 import { Container } from "../../container.js";
 import { getInOutsViaSides } from "./get-in-outs-via-sides/get-in-outs-via-sides.js";
-import { getInOutsViaCrossing } from "./get-in-outs-via-crossing/get-in-outs-via-crossing.js";
+// import { getInOutsViaCrossing } from "./get-in-outs-via-crossing/get-in-outs-via-crossing.js";
 import { InOut } from "../../containers/in-out/in-out.js";
 
 
@@ -18,7 +18,7 @@ function getContainerInOuts(
         } {
 
     // We check one __X__ for each curve with an intersection within this container
-    const xs = container.xs;
+    // const xs = container.xs;
 
     // console.log(xs);
 
@@ -27,7 +27,7 @@ function getContainerInOuts(
     // curves are joining at an interface we can do a fast ccw (the ccw part
     // has not been implemented yet).
 
-    // FUTURE; Removed below for now; not necessary but causes issues with `boolean`
+    // FUTURE; Removed below for now; not necessary and causes issues with `boolean`
     // if (xs.length === 2) {
     //     if (xs[0].x.kind === 1 && xs[1].x.kind === 1 &&
     //         xs[0].x.ri.multiplicity%2 === 1 && xs[1].x.ri.multiplicity%2 === 1) {

@@ -137,7 +137,6 @@ function boolean(
     // @ts-ignore
     const loops = bezierLoops.map(beziers => loopFromBeziers(beziers, beziers.loopsIdx));
     const { extremes } = getContainers(loops, containerDim, expMax);
-    // extremes.size;//?
 
     const root = createRootInOut();
     // `takenLoops` is important in rare cases such as in the 'koldat52' vector
