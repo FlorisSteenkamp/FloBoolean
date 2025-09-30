@@ -1,8 +1,7 @@
 export { enableDebugForBooleanOp } from './debug/debug.js';
-export { simplifyPaths } from './calc-paths/simplify-paths.js';
 export { getPathsFromStr } from './svg/get-paths-from-str.js';
 export { beziersToSvgPathStr } from './svg/beziers-to-svg-path-str.js';
-export { loopFromBeziers } from './loop/loop.js';
+export { loopFromBeziers } from './loop/loop-from-beziers.js';
 export { sweepLine } from './sweep-line/sweep-line.js';
 export { doConvexPolygonsIntersect } from './geometry/do-convex-polygons-intersect.js';
 export { getIntersections } from './get-critical-points/get-intersections.js';
@@ -13,7 +12,10 @@ export { get2ndMomentOfInertia, getProdMomentOfInertia, ddGet2ndMomentOfInertia,
 export { getPrincipalAxes } from './loop/get-principal-axes.js';
 export { reverseShapeOrientation } from './loop/reverse-shape-orientation.js';
 export { getTotalShapeCurvature } from './loop/get-total-shape-curvature.js';
+export { getWindingNumber } from './loop/get-winding-number.js';
 export { getCentroidOfWeightedPoints } from './loop/get-centroid-of-weighted-points.js';
 export { getShapeBounds } from './calc-paths/get-shape-bounds.js';
 export { isLoopInLoop } from './calc-paths/is-loop-in-loop.js';
+export { simplifyPaths } from './main/simplify-paths.js';
+export { boolean, AND, OR, XOR } from './main/boolean.js';
 //# sourceMappingURL=index.js.map

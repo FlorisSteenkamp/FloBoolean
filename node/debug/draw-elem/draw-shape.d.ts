@@ -8,5 +8,5 @@
  * @param class_
  * @param delay
  */
-declare function drawShape(g: SVGGElement, beziers: number[][][], class_?: string, delay?: number): SVGPathElement[];
+declare function drawShape(g: SVGGElement, bezierLoops: number[][][][], class_?: string, delay?: number): SVGPathElement[];
 export { drawShape };

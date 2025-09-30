@@ -1,5 +1,5 @@
 import { intersectBoxes, bezierBezierIntersectionBoundless, getIntervalBox } from 'flo-bezier3';
-// TODO - could this come from flo-bezier3
+// FUTURE - could this come from flo-bezier3
 function getOtherTs(ps1, ps2, ts2) {
     if (ts2 === undefined) {
         // infinite number of intersections
@@ -25,7 +25,7 @@ function getOtherTs(ps1, ps2, ts2) {
             const box2 = is2[j];
             const box = intersectBoxes(box1, box2);
             if (box !== undefined) {
-                // TODO important - combine boxes to make sense, i.e. combine better
+                // FUTURE important - combine boxes to make sense, i.e. combine better
                 // e.g. two odd multiplicity boxes should combine to a single even, etc. etc.
                 const x1 = { ri: ts1[i], box, kind: 1 };
                 const x2 = { ri: ts2[j], box, kind: 1 };

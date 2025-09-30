@@ -1,30 +1,35 @@
 import { mid } from 'flo-poly';
-import { fromTo, closestPointOnBezierCertified } from "flo-bezier3";
+import { closestPointOnBezierCertified } from "flo-bezier3";
 import { containerIsBasic } from "../container.js";
-function getBeziersToNextContainer(out) {
-    const in_ = out.next;
-    const endCurve = in_._x_.curve;
-    const endT = in_._x_.x.ri.tS;
-    let curCurve = out._x_.curve;
-    let curT = out._x_.x.ri.tS;
+function getBeziersToNextContainer(out, takenInOuts) {
+    const in_ = out.nextOrPrev;
+    takenInOuts.add(in_);
+    const outX = out._x_;
+    const inX = in_._x_;
+    //----------------------------
+    const curveS = outX.curve;
+    const tS = outX.x.ri.tS;
+    const curveE = inX.curve;
+    const tE = inX.x.ri.tS;
+    let curCurve = curveS;
+    let curT = tS;
     if (!containerIsBasic(out.container)) {
         // we must clip the outgoing curve
-        curT = mid(closestPointOnBezierCertified(curCurve.ps, out.p)[0].ri);
+        curT = mid(closestPointOnBezierCertified(curveS.ps, out.p)[0].ri);
     }
-    const beziers = [];
-    let inBez;
+    const bezierPieces = [];
     while (true) {
-        if (curCurve === endCurve &&
-            (curT < endT || (curT === endT && beziers.length !== 0))) {
-            inBez = fromTo(curCurve.ps, curT, endT);
-            curT; //?
-            endT; //?
-            inBez; //?
-            return { beziers, in_, inBez };
+        if (curCurve === curveE &&
+            (curT < tE || (curT === tE && bezierPieces.length !== 0))) {
+            const ps = curCurve.ps;
+            const ts = [curT, tE];
+            bezierPieces.push({ ps, ts });
+            return { bezierPieces, inOut: in_ };
         }
         else {
-            const ps = fromTo(curCurve.ps, curT, 1);
-            beziers.push(ps);
+            const ps = curCurve.ps;
+            const ts = [curT, 1];
+            bezierPieces.push({ ps, ts });
         }
         curT = 0;
         curCurve = curCurve.next;

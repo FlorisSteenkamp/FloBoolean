@@ -1,5 +1,5 @@
-import { InOut } from '../in-out.js';
-import { Loop } from '../loop/loop.js';
+import type { InOut } from '../containers/in-out/in-out.js';
+import type { Loop } from '../loop/loop.js';
 /**
  * Completes the path of a disjoint set of loops, i.e. this function is called
  * for each disjoint set of paths.
@@ -9,5 +9,5 @@ import { Loop } from '../loop/loop.js';
  * @param parent
  * @param loop
  */
-declare function completePath(expMax: number, initialOut: InOut, takenLoops: Set<Loop>, takenOuts: Set<InOut>): void;
+declare function completePath(initialOut: InOut, takenLoops: Set<Loop>, takenInOuts: Set<InOut>, tight: boolean): void;
 export { completePath };

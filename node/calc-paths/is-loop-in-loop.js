@@ -4,14 +4,14 @@ import { toUnitVector, translate } from 'flo-vector2d';
 import { getBoundingBox_ } from '../get-bounding-box-.js';
 import { getShapeBounds } from './get-shape-bounds.js';
 import { squares } from 'squares-rng';
-// TODO - remove delta by basing isLoopInLoop on a solid numerical analytic 
-// basis - isLoopInLoop is the only sub-algorithm left having a DELTA.
+// FUTURE - remove delta; probably not necessary
 const DELTA = 1e-6;
 /**
  * Returns true if the first loop is wholly contained within the second loop's
  * boundary.
  *
- * Precondition: the loop is either wholly contained inside the loop or is wholly outside.
+ * * precondition: the loop must either wholly contained inside the loop or is wholly outside.
+ *
  * @param loop1
  * @param loop2
  */
@@ -57,11 +57,9 @@ function isLoopNotInLoop(loop1, loop2) {
         bounds1.maxY > bounds2.maxY);
 }
 /**
- * @param p The point where the horizontal ray starts
- * @param toLeft The ray to the left of this point (else right)
- * @param loop A loop of curves
- *
- * @internal
+ * @param loop a loop of curves
+ * @param p the point where the horizontal ray starts
+ * @param dir the ray direction
  */
 function getAxisAlignedRayLoopIntersections(loop, p, dir) {
     const [x, y] = p;

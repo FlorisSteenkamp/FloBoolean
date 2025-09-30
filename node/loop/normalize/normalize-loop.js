@@ -19,6 +19,7 @@ import { toGrid } from './to-grid.js';
  *   are seperated. (this prevents infinite curvature at the endpoints, etc).
  *   (this condition is not necessary for this algorithm but may help algorithms
  *    down the line that needs such guarantees)
+ *
  * @param bezierLoops
  * @param maxBitLength
  * @param expMax

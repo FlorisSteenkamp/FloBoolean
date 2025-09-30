@@ -6,10 +6,10 @@ import { drawElemFunctions } from './draw-elem/draw-elem.js';
  */
 function enableDebugForBooleanOp(debugOn) {
     if (!debugOn) {
-        window._debug_ = undefined;
+        globalThis._debug_ = undefined;
         return;
     }
-    const debug = window._debug_;
+    const debug = globalThis._debug_;
     const debug_ = {
         ...debug,
         generated: {
@@ -42,7 +42,7 @@ function enableDebugForBooleanOp(debugOn) {
             }
         }
     };
-    window._debug_ = debug_;
+    globalThis._debug_ = debug_;
 }
 export { enableDebugForBooleanOp };
 //# sourceMappingURL=debug.js.map

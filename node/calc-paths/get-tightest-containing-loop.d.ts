@@ -1,5 +1,5 @@
-import { InOut } from "../in-out.js";
-import { Loop } from '../loop/loop.js';
+import type { InOut } from "../containers/in-out/in-out.js";
+import type { Loop } from '../loop/loop.js';
 /**
  * @param root
  * @param loop

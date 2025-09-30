@@ -1,4 +1,7 @@
-import { Container } from '../container.js';
+import type { Container } from '../container.js';
+import type { InOut } from '../containers/in-out/in-out.js';
+import type { Loop } from '../loop/loop.js';
+import { Mutable } from '../types/mutable.js';
 /**
  * Get initial intersection for the given loop. The loop must be such that
  * an extreme point on the loop forms part of an outermost loop that is outside
@@ -9,5 +12,5 @@ import { Container } from '../container.js';
  * @param loop
  * @param parent
  */
-declare function getOutermostInAndOut(container: Container): import("../in-out.js").InOut;
+declare function getOutermostInAndOut(container: Container, parent: InOut, loop: Loop): Mutable<InOut>;
 export { getOutermostInAndOut };

@@ -1,46 +1,48 @@
-import { closestPointOnBezierCertified, fromTo } from 'flo-bezier3';
+import { closestPointOnBezierCertified } from 'flo-bezier3';
 import { mid } from 'flo-poly';
 import { getNextExit } from './get-next-exit.js';
 import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
+import { getBeziersToPrevContainer } from './get-beziers-to-prev-container.js';
+import { getTightNextExit } from './get-tight-next-exit.js';
+import { bezierPieceToBezier } from './bezier-piece-to-bezier.js';
 /**
  * Completes a loop for a specific intersection point entry curve.
  *
  * @param expMax
- * @param takenOuts
- * @param out
+ * @param takenInOuts
+ * @param origInOut
  */
-function completeLoop(expMax, takenOuts, out) {
+function completeLoop(takenInOuts, origInOut, tight) {
     const additionalOutsToCheck = [];
-    const beziers = [];
+    const bezierPieces = [];
     // Move immediately to the outgoing start of the loop
-    let out_ = out;
+    let inOutToUse = origInOut;
     let additionalBezier;
-    // console.log(out_);
+    // if (typeof _debug_ !== 'undefined') {
+    //     console.log('----');
+    //     console.log([inOutToUse.idx, inOutToUse.dir]);
+    // }
     do {
-        takenOuts.add(out_); // Mark this intersection as taken
-        const { beziers: additionalBeziers, in_, inBez } = getBeziersToNextContainer(out_);
-        beziers.push(...additionalBeziers);
-        // additionalBeziers;//?
-        // TODO - it will probably better to remove additionalBezier and just
-        // connect the endpoints of adjacent beziers - even if we had near
-        // exact coordinates (think quad or better precision) of intersections
-        // they are still not returned as algebraic numbers so we can never have
-        // a perfect algorithm anyway without returning algebraic numbers as 
-        // intersection coordinates, hence we might as well remove 
-        // additionalBeziers whose length is about a trillionth of the max
-        // coordinate of loops
-        ({ out_, additionalBezier } = getNextExit(in_, out, additionalOutsToCheck, takenOuts));
+        takenInOuts.add(inOutToUse);
+        const beziersToNextContainer = inOutToUse.dir === +1
+            ? getBeziersToNextContainer(inOutToUse, takenInOuts)
+            : getBeziersToPrevContainer(inOutToUse, takenInOuts);
+        const { bezierPieces: additionalBeziers, inOut } = beziersToNextContainer;
+        bezierPieces.push(...additionalBeziers);
+        const getNextExit_ = tight ? getTightNextExit : getNextExit;
+        const nextExit = getNextExit_(inOut, origInOut, additionalOutsToCheck, takenInOuts);
+        ({ inOutToUse, additionalBezier } = nextExit);
         if (additionalBezier !== undefined) {
-            const t = mid(closestPointOnBezierCertified(inBez, additionalBezier[0])[0].ri);
-            const inBez_ = fromTo(inBez, 0, t);
-            beziers.push(inBez_);
-            beziers.push(additionalBezier);
+            const lastBezPiece = bezierPieces[bezierPieces.length - 1];
+            const lastBez = bezierPieceToBezier(lastBezPiece);
+            const t = mid(closestPointOnBezierCertified(lastBez, additionalBezier[0])[0].ri);
+            const inBez_ = { ps: lastBez, ts: [0, t] };
+            bezierPieces.pop();
+            bezierPieces.push(inBez_);
+            bezierPieces.push({ ps: additionalBezier, ts: [0, 1] });
         }
-        else {
-            beziers.push(inBez);
-        }
-    } while (out_ !== out);
-    return { beziers, additionalOutsToCheck };
+    } while (inOutToUse !== origInOut);
+    return { bezierPieces, additionalOutsToCheck };
 }
 export { completeLoop };
 //# sourceMappingURL=complete-loop.js.map

@@ -1,13 +1,14 @@
-import { InOut } from '../in-out.js';
+import type { BezierPiece } from 'flo-bezier3';
+import type { InOut } from '../containers/in-out/in-out.js';
 /**
  * Completes a loop for a specific intersection point entry curve.
  *
  * @param expMax
- * @param takenOuts
- * @param out
+ * @param takenInOuts
+ * @param origInOut
  */
-declare function completeLoop(expMax: number, takenOuts: Set<InOut>, out: InOut): {
-    beziers: number[][][];
+declare function completeLoop(takenInOuts: Set<InOut>, origInOut: InOut, tight: boolean): {
+    bezierPieces: BezierPiece[];
     additionalOutsToCheck: InOut[];
 };
 export { completeLoop };

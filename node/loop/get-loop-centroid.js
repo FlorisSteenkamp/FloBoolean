@@ -25,7 +25,7 @@ function getShapeCentroid(pss) {
         cy += _y;
     }
     const a = 1 / (2 * A);
-    return [-a * cx, a * cy];
+    return [a * cx, -a * cy];
 }
 /**
  * Returns the approximate centroid of the given shape.
@@ -36,8 +36,6 @@ function getShapeCentroid(pss) {
  * see https://sites.math.washington.edu/~king/coursedir/m324a10/as/centroid-green.pdf
  */
 function ddGetShapeCentroid(pss) {
-    const A = ddGetShapeArea(pss);
-    const A2 = ddMultBy2(A);
     let cx = [0, 0];
     let cy = [0, 0];
     for (const ps of pss) {
@@ -50,8 +48,10 @@ function ddGetShapeCentroid(pss) {
         cx = ddAddDd(cx, _x);
         cy = ddAddDd(cy, _y);
     }
-    const CX = ddDivDd([0, -1], A2);
-    const CY = ddDivDd([0, 1], A2);
+    const A = ddGetShapeArea(pss);
+    const A2 = ddMultBy2(A);
+    const CX = ddDivDd([0, 1], A2);
+    const CY = ddDivDd([0, -1], A2);
     const X = ddMultDd(CX, cx);
     const Y = ddMultDd(CY, cy);
     return [X, Y];

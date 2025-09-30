@@ -1,4 +1,4 @@
-import { ddDiffDd } from "double-double";
+import { ddAddDd } from "double-double";
 import { toPowerBasis, toPowerBasis_1stDerivative, toPowerBasis_1stDerivativeDd, toPowerBasisDd } from "flo-bezier3";
 import { multiply, add, negate, Horner, integrate, ddMultiply, ddNegate, ddIntegrate, ddAdd, ddHorner } from 'flo-poly';
 /**
@@ -19,7 +19,7 @@ function getShapeArea(pss) {
         const area = Horner(poly, 1);
         totalArea += area;
     }
-    return -totalArea / 2;
+    return totalArea / 2;
 }
 /**
  * Returns the area of the given shape.
@@ -37,7 +37,7 @@ function ddGetShapeArea(pss) {
         const ydx = ddNegate(ddMultiply(y, dx));
         const poly = ddIntegrate(ddAdd(xdy, ydx), [0, 0]);
         const area = ddHorner(poly, 1);
-        totalArea = ddDiffDd(totalArea, area);
+        totalArea = ddAddDd(totalArea, area);
     }
     return [totalArea[0] / 2, totalArea[1] / 2];
 }
@@ -51,16 +51,4 @@ function getLoopArea(loop) {
     return getShapeArea(loop.beziers);
 }
 export { getLoopArea, getShapeArea, ddGetShapeArea };
-// Quokka tests
-// {
-//     const pss = [
-//         [ [ 0, -236.73825503355692 ], [ 16, 42.261744966443075 ] ],
-//         [ [ 16, 42.261744966443075 ], [ 16, 126.26174496644308 ] ],
-//         [ [ 16, 126.26174496644308 ], [ -16, 126.26174496644308 ] ],
-//         [ [ -16, 126.26174496644308 ], [ -16, 42.261744966443075 ] ],
-//         [ [ -16, 42.261744966443075 ], [ 0, -236.73825503355692 ] ]
-//     ];
-//     getShapeArea(pss);//?
-//     ddGetShapeArea(pss);//?
-// }
 //# sourceMappingURL=get-loop-area.js.map

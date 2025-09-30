@@ -1,4 +1,5 @@
 import { isLoopInLoop } from './is-loop-in-loop.js';
+import { bezierPieceToBezier } from './bezier-piece-to-bezier.js';
 /**
  * @param root
  * @param loop
@@ -12,7 +13,8 @@ function getTightestContainingLoop(root, loop) {
     }
     return containingLoop;
     function f(parent) {
-        if (parent === root || isLoopInLoop(loop.beziers, parent.beziers)) {
+        // if (parent === root || isLoopInLoop(loop.beziers, parent.bezierPieces!)) {
+        if (parent === root || isLoopInLoop(loop.beziers, parent.bezierPieces.map(bezierPieceToBezier))) {
             containingLoop = parent;
             for (const child of parent.children) {
                 stack.push(child);

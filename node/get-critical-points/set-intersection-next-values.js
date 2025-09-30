@@ -21,19 +21,20 @@ function setIntersectionNextValues(xPairs) {
             continue;
         }
         xs.sort((xA, xB) => {
-            let res = xA.curve.idx - xB.curve.idx;
-            if (res !== 0) {
-                return res;
+            let r = xA.curve.idx - xB.curve.idx;
+            if (r !== 0) {
+                return r;
             }
-            res = xA.x.ri.tS - xB.x.ri.tS;
-            if (res !== 0) {
-                return res;
+            r = xA.x.ri.tS - xB.x.ri.tS;
+            if (r !== 0) {
+                return r;
             }
             return xA.in_ !== undefined ? -1 : +1;
         });
         const len = xs.length;
         for (let i = 0; i < len; i++) {
             xs[i].next = xs[(i + 1) % len];
+            xs[i].prev = xs[(i - 1 + len) % len];
         }
     }
 }

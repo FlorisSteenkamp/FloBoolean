@@ -1,0 +1,28 @@
+import { getBoundingBoxTight, getBoundingHull } from 'flo-bezier3';
+import { getBoundingBox_ } from '../get-bounding-box-.js';
+function addDebugInfo1(bezierLoops) {
+    if (typeof _debug_ === 'undefined') {
+        return;
+    }
+    // Modifies the displayed SVG to reflect changes caused by `normalizeLoops`.
+    // if (typeof document !== 'undefined') { 
+    //     const pathStr = loopsToSvgPathStr(bezierLoops); 
+    //     const $svg = document.getElementsByClassName('shape')[0]; 
+    //     $svg.setAttributeNS(null, 'd', pathStr); 
+    // }
+    for (const loop of bezierLoops) {
+        _debug_.generated.elems.loopPre.push(...bezierLoops);
+        _debug_.generated.elems.loopsPre.push(bezierLoops);
+        for (const ps of loop) {
+            const lbb = getBoundingBox_(ps);
+            const tbb = getBoundingBoxTight(ps);
+            const bhull = getBoundingHull(ps, false);
+            _debug_.generated.elems.bezier_.push(ps);
+            _debug_.generated.elems.looseBoundingBox_.push(lbb);
+            _debug_.generated.elems.tightBoundingBox_.push(tbb);
+            _debug_.generated.elems.boundingHull_.push(bhull);
+        }
+    }
+}
+export { addDebugInfo1 };
+//# sourceMappingURL=add-debug-info-1.js.map

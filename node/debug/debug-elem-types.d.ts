@@ -3,16 +3,16 @@ import { Container } from "../container.js";
 import { IPointOnShape } from "../point-on-shape/point-on-shape.js";
 import { Loop } from "../loop/loop.js";
 interface IDebugElems {
-    minY: IPointOnShape;
-    loop: Loop;
-    loopPre: number[][][];
-    loops: Loop[];
-    loopsPre: number[][][][];
-    intersection: __X__;
+    readonly minY: IPointOnShape;
+    readonly loop: Loop;
+    readonly loopPre: number[][][];
+    readonly loops: Loop[];
+    readonly loopsPre: number[][][][];
+    readonly intersection: __X__;
     container: Container;
-    bezier_: number[][];
-    looseBoundingBox_: number[][];
-    tightBoundingBox_: number[][];
-    boundingHull_: number[][];
+    readonly bezier_: number[][];
+    readonly looseBoundingBox_: number[][];
+    readonly tightBoundingBox_: number[][];
+    readonly boundingHull_: number[][];
 }
 export { IDebugElems };

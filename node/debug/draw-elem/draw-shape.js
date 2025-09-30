@@ -1,7 +1,6 @@
 import { DEFAULT_CLASS } from './default-class.js';
 import { XMLNS } from './xmlns.js';
 import { beziersToSvgPathStr } from '../../svg/beziers-to-svg-path-str.js';
-// TODO - move to flo-draw
 /**
  * Draws an SVG shape
  * @param g
@@ -12,9 +11,13 @@ import { beziersToSvgPathStr } from '../../svg/beziers-to-svg-path-str.js';
  * @param class_
  * @param delay
  */
-function drawShape(g, beziers, class_ = DEFAULT_CLASS, delay) {
+function drawShape(g, bezierLoops, class_ = DEFAULT_CLASS, delay) {
     const $path = document.createElementNS(XMLNS, 'path');
-    const d = beziersToSvgPathStr(beziers);
+    let d = '';
+    for (let i = 0; i < bezierLoops.length; i++) {
+        d += beziersToSvgPathStr(bezierLoops[i]);
+        d += '\n\n';
+    }
     $path.setAttributeNS(null, "d", d);
     if (class_) {
         $path.setAttributeNS(null, "class", class_);
