@@ -1,5 +1,5 @@
 import { controlPointLinesLength } from "flo-bezier3";
-import { getWindingNumber } from "../loop/get-winding-number";
+import { getWindingNumber } from "../loop/get-winding-number.js";
 
 function removeMicroCorners(
         pss: number[][][],

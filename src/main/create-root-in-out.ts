@@ -1,4 +1,4 @@
-import type { InOut } from "../containers/in-out/in-out";
+import type { InOut } from "../containers/in-out/in-out.js";
 
 
 function createRootInOut(): InOut {

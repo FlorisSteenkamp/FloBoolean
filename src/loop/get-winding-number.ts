@@ -1,4 +1,4 @@
-import { getTotalShapeCurvature } from "./get-total-shape-curvature";
+import { getTotalShapeCurvature } from "./get-total-shape-curvature.js";
 
 const { round, PI } = Math;
 

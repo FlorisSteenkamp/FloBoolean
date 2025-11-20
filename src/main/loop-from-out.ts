@@ -1,10 +1,10 @@
 declare const _debug_: Debug;
 import type { Debug } from '../debug/debug.js';
 
-import type { InOut } from "../containers/in-out/in-out";
-import { bezierPieceToBezier } from "../calc-paths/bezier-piece-to-bezier";
+import type { InOut } from "../containers/in-out/in-out.js";
+import { bezierPieceToBezier } from "../calc-paths/bezier-piece-to-bezier.js";
 import { loopFromBeziers } from '../loop/loop-from-beziers.js';
-import { reverseShapeOrientation } from "../loop/reverse-shape-orientation";
+import { reverseShapeOrientation } from "../loop/reverse-shape-orientation.js";
 
 
 /**

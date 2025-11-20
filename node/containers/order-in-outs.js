@@ -1,4 +1,4 @@
-import { compareInOut } from "./get-container-in-outs/get-in-outs-via-sides/compare-in-out";
+import { compareInOut } from "./get-container-in-outs/get-in-outs-via-sides/compare-in-out.js";
 /**
  * Orders the `InOut`s within the container.
  *

@@ -1,4 +1,4 @@
-import type { Container } from "../container";
+import type { Container } from "../container.js";
 /**
  * Orders the `InOut`s within the container.
  *

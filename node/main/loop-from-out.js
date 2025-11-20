@@ -1,6 +1,6 @@
-import { bezierPieceToBezier } from "../calc-paths/bezier-piece-to-bezier";
+import { bezierPieceToBezier } from "../calc-paths/bezier-piece-to-bezier.js";
 import { loopFromBeziers } from '../loop/loop-from-beziers.js';
-import { reverseShapeOrientation } from "../loop/reverse-shape-orientation";
+import { reverseShapeOrientation } from "../loop/reverse-shape-orientation.js";
 /**
  *
  * @param out
