@@ -16,7 +16,7 @@ type ClickFor =
     | 'loopPre'
 
 
-type BooleanOp = 'AND' | 'OR' | 'XOR';
+type BooleanOp = 'AND' | 'OR' | 'XOR' | 'aNOTb';
 
 
 interface PageState {

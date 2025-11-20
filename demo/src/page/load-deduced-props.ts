@@ -7,6 +7,12 @@ import { getViewBoxForShapes } from './viewbox';
 const IS_DEBUG_ON = true;
 
 
+function aNOTb(bits: boolean[]) {
+    return bits[0] && !bits[1];
+}
+const strToBooleanOp = { AND, OR, XOR, aNOTb }
+
+
 async function loadDeducedProps(
         stateControl: StateControl,
         pathStrs: string[],
@@ -20,7 +26,7 @@ async function loadDeducedProps(
         // Resets _debug_
         updDebugGlobal(IS_DEBUG_ON);
         const { booleanOp } = stateControl.state.appState.pageState;
-        const op = booleanOp === 'AND' ? AND : booleanOp === 'OR' ? OR : XOR;
+        const op = strToBooleanOp[booleanOp];
         const loopss = forBoolean
             ? boolean(bezierLoopss, op)
             : simplifyPaths(bezierLoopss[0], undefined, { orientationPositive: true, inclMicroCorners: true });

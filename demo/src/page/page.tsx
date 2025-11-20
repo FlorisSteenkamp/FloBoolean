@@ -189,6 +189,7 @@ function Page(props: Props) {
                             AND: { text: 'AND' },
                             OR: { text: 'OR' },
                             XOR: { text: 'XOR' },
+                            aNOTb: { text: 'aNOTb' },
                         }}
                         value={pageState.booleanOp}
                         onChanged={onBooleanOpChanged}

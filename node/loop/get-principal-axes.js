@@ -1,8 +1,8 @@
+import { ddAddDd, ddDiffDd, ddMultDd, ddNegativeOf } from 'double-double';
 import { allRootsCertified, allRootsCertifiedSimplified } from 'flo-poly';
 import { ddGet2ndMomentOfInertia, ddGetProdMomentOfInertia, get2ndMomentOfInertia, getProdMomentOfInertia } from "./get-2nd-moment-of-inertia.js";
 import { reverseShapeOrientation } from "./reverse-shape-orientation.js";
 import { getTotalShapeCurvature } from "./get-total-shape-curvature.js";
-import { ddAddDd, ddDiffDd, ddMultDd, ddNegativeOf } from 'double-double';
 const { abs } = Math;
 /**
  * Returns the two principal axes of the shape (and some other data).
