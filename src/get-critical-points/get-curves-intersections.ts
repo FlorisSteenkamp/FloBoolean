@@ -8,7 +8,7 @@ import { getOtherTs } from './get-other-t.js';
 import { doConvexPolygonsIntersect } from "../geometry/do-convex-polygons-intersect.js";
 import { getIntersection } from './get-intersection.js';
 import { makeSimpleX } from './make-simple-x.js';
-import { getBoundingBox_ } from '../get-bounding-box-.js';
+import { getBoundingBox$ } from '../get-bounding-box-.js';
 import { areBoxesIntersecting } from '../are-boxes-intersecting.js';
 
 
@@ -38,8 +38,8 @@ function getCurvesIntersections(expMax: number) {
         // check open bounding boxes
         const aabbsIntersectOpen = areBoxesIntersecting(false,
         // const aabbsIntersectOpen = areBoxesIntersecting(true,
-            getBoundingBox_(psA),
-            getBoundingBox_(psB)
+            getBoundingBox$(psA),
+            getBoundingBox$(psB)
         );
         if (!aabbsIntersectOpen) {
             return checkEndpoints(curveA, curveB);
@@ -65,8 +65,8 @@ function getCurvesIntersections(expMax: number) {
 
     // check closed bounding boxes
     let possiblyIntersecting = areBoxesIntersecting(true,
-        getBoundingBox_(psA),
-        getBoundingBox_(psB)
+        getBoundingBox$(psA),
+        getBoundingBox$(psB)
     );
     if (!possiblyIntersecting) { return undefined; }
 
@@ -136,8 +136,8 @@ function getLineLineIntersections(
     let psA = curveA.ps;
     let psB = curveB.ps;
     
-    const bbA = getBoundingBox_(psA);
-    const bbB = getBoundingBox_(psB);
+    const bbA = getBoundingBox$(psA);
+    const bbB = getBoundingBox$(psB);
 
     // if (equal(psA,[[4,8],[4,7]]) && equal(psB,[[4,6],[4,8]])) {
     //     console.log('testing');

@@ -1,7 +1,7 @@
 import { allRoots } from 'flo-poly';
 import { toPowerBasis, tangent, evalDeCasteljau } from 'flo-bezier3';
 import { toUnitVector, translate } from 'flo-vector2d';
-import { getBoundingBox_ } from '../get-bounding-box-.js';
+import { getBoundingBox$ } from '../get-bounding-box-.js';
 import { getShapeBounds } from './get-shape-bounds.js';
 import { squares } from 'squares-rng';
 
@@ -110,7 +110,7 @@ function getAxisAlignedRayLoopIntersections(
         //------------------------------------------------------/
         //---- Check if ray intersects bezier bounding box -----/
         //------------------------------------------------------/
-        const [[minX,minY],[maxX,maxY]] = getBoundingBox_(ps);
+        const [[minX,minY],[maxX,maxY]] = getBoundingBox$(ps);
         let notIntersecting = 
             ((dir === 'left' || dir === 'right') && (minY > y || maxY < y)) ||
             ((dir === 'up'   || dir === 'down' ) && (minX > x || maxX < x));

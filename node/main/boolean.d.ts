@@ -5,6 +5,10 @@ interface BooleanOptions {
      * * minimum area of a bezer loop before it will be discarded
      */
     readonly minLoopArea?: number;
+    /**
+     * defaults to `false` (for historic reasons);
+     */
+    readonly keepOriginalOrientation?: boolean;
 }
 declare function AND(bits: boolean[]): boolean;
 declare function OR(bits: boolean[]): boolean;

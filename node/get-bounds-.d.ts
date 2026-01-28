@@ -1,5 +1,5 @@
-declare const getBounds_: (a: number[][]) => {
+declare const getBounds$: (a: number[][]) => {
     ts: number[][];
     box: number[][];
 };
-export { getBounds_ };
+export { getBounds$ };

@@ -35,9 +35,9 @@ function sweepLine(items, getLeftmost, getRightmost, predicate) {
     /** A list of pairs of items that passed the predicate */
     const pairedItems = [];
     for (const event of events) {
-        const item = event.item;
-        if (event.type === EVENT_LEFT) {
-            for (const activeItem of activeItems.values()) {
+        const { item, type } = event;
+        if (type === EVENT_LEFT) {
+            for (const activeItem of activeItems) {
                 const result = predicate(item, activeItem);
                 if (result) {
                     pairedItems.push({
@@ -49,8 +49,8 @@ function sweepLine(items, getLeftmost, getRightmost, predicate) {
             }
             activeItems.add(item);
         }
-        else if (event.type === EVENT_RIGHT) {
-            activeItems.delete(event.item);
+        else if (type === EVENT_RIGHT) {
+            activeItems.delete(item);
         }
     }
     return pairedItems;

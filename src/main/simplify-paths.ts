@@ -43,6 +43,10 @@ interface SimplifyOptions {
      * oriented, else, if `false` the reverse is true.
      */
     readonly orientationPositive?: boolean;
+    /**
+     * defaults to `false` (for historic reasons);
+     */
+    readonly keepOriginalOrientation?: boolean;
 }
 
 
@@ -88,7 +92,8 @@ function simplifyPaths(
         maxBitLength = 46,
         inclMicroCorners = true,
         minLoopArea = (2**expMax * 2**(-12))**2,
-        orientationPositive = false
+        orientationPositive = false,
+        keepOriginalOrientation = false
     } = options;
 
     const gridSpacing = 2**expMax * 2**(-maxBitLength);
@@ -185,24 +190,33 @@ function simplifyPaths(
     const loopTrees = splitLoopTrees(root);
     const outSets = loopTrees.map(getLoopsFromTree);
 
+    //----------------------------------------
+    // Give outer loop a positive orientation
+    //----------------------------------------
     const loopss = outSets.map(outSet => {
         const outerLoopOrientation =
-            (orientationPositive ? +1 : -1) * outSet[0].orientation!;
+            (orientationPositive || keepOriginalOrientation ? +1 : -1) * outSet[0].orientation!;
 
-        return outSet.map((out,idx) => loopFromOut(out, outerLoopOrientation, idx));
+        return outSet.map((out,idx) => loopFromOut(out, outerLoopOrientation, keepOriginalOrientation, idx));
     });
 
+
+    //----------------------------------------------------------
+    // Filter each `loops` in `loopss` by min allowed loop area
+    //----------------------------------------------------------
     const loopss_: Loop[][] = [];
     for (let i=0; i<loopss.length; i++) {
-        const loops = loopss[i].filter(
-            (loop: Loop) => Math.abs(getShapeArea(loop.beziers)) > minLoopArea
+        const loops = loopss[i];
+
+        const loops_ = loops.filter(
+            loop => Math.abs(getShapeArea(loop.beziers)) > minLoopArea
         );
 
-        if (loops.length) { 
-            loops.sort((loopA, loopB) => { 
+        if (loops_.length) { 
+            loops_.sort((loopA, loopB) => { 
                 return orderLoopAscendingByMinY(loopA.beziers, loopB.beziers) 
             });
-            loopss_.push(loops); 
+            loopss_.push(loops_); 
         }
     }
 
@@ -211,11 +225,14 @@ function simplifyPaths(
         timing.simplifyPaths = performance.now() - timingStart!;
     }
 
+    //-------------------------------------
+    // Remove "micro corners" if requested
+    //-------------------------------------
     const _loopss_ = inclMicroCorners
         ? loopss_
         : loopss_.map(loops => loops.map(loop => {
             const { beziers } = loop;
-            const lengthTol= max(
+            const lengthTol = max(
                 ...containers.map(
                     container => abs(container.box[0][0] - container.box[1][0])
                 ),

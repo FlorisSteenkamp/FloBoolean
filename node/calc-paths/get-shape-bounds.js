@@ -1,7 +1,7 @@
-import { getBounds_ } from '../get-bounds-.js';
+import { getBounds$ } from '../get-bounds-.js';
 const { min, max } = Math;
 function getShapeBounds(pss) {
-    const bounds = pss.map(getBounds_);
+    const bounds = pss.map(getBounds$);
     return {
         minX: min(...bounds.map(bound => bound.box[0][0])),
         maxX: max(...bounds.map(bound => bound.box[1][0])),

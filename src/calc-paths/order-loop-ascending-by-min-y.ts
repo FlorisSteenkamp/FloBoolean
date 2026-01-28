@@ -1,4 +1,4 @@
-import { getBounds_ } from "../get-bounds-.js";
+import { getBounds$ } from "../get-bounds-.js";
 
 
 /**
@@ -19,7 +19,7 @@ function orderLoopAscendingByMinY(
 function getMinY(pss: number[][][]) {	
     let minY = Number.POSITIVE_INFINITY;
     for (const ps of pss) {
-        const y = getBounds_(ps).box[0][1];
+        const y = getBounds$(ps).box[0][1];
         if (y < minY) { minY = y; }
 	}
 

@@ -1,10 +1,10 @@
 type IntersectionResult<T, U> = {
     /** the first item checked for possible intersection */
-    a: T;
+    readonly a: T;
     /** the second item checked for possible intersection */
-    b: T;
+    readonly b: T;
     /** the result of the predicate */
-    u: U;
+    readonly u: U;
 };
 /**
  * Generalized sweepline algorithm.

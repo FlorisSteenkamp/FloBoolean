@@ -2,7 +2,7 @@ declare const _debug_: Debug;
 
 import { getBoundingBoxTight, getBoundingHull } from 'flo-bezier3';
 import { Debug } from '../debug/debug.js';
-import { getBoundingBox_ } from '../get-bounding-box-.js';
+import { getBoundingBox$ } from '../get-bounding-box-.js';
 import { loopsToSvgPathStr } from '../svg/loops-to-svg-path-str.js';
 
 
@@ -22,7 +22,7 @@ function addDebugInfo1(bezierLoops: number[][][][]) {
         _debug_.generated.elems.loopsPre.push(bezierLoops);
 
         for (const ps of loop) {
-            const lbb   = getBoundingBox_(ps);
+            const lbb   = getBoundingBox$(ps);
             const tbb   = getBoundingBoxTight(ps);
             const bhull = getBoundingHull(ps, false)!;
             _debug_.generated.elems.bezier_          .push(ps);

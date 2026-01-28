@@ -12,6 +12,7 @@ import { reverseBezierPieces } from './reverse-bezier-pieces.js';
 import { simplifyPaths } from './simplify-paths.js';
 import { createRootInOut } from './create-root-in-out.js';
 import { loopFromOut } from './loop-from-out.js';
+// the imports below is used in the test cases - see code below
 import { addDebugInfo1 } from './add-debug-info-1.js';
 import { addDebugInfo2 } from './add-debug-info-2.js';
 import { bezierToBezierPiece } from '../calc-paths/bezier-to-bezier-piece.js';
@@ -52,7 +53,7 @@ function boolean(bezierLoopss, booleanOperator, options = {}) {
     /** The exponent, e, such that 2**e >= all bezier coordinate points. */
     const expMax = Math.ceil(Math.log2(maxCoordinate));
     const maxBitLength = 46;
-    const { minLoopArea = (2 ** expMax * 2 ** (-12)) ** 2 } = options;
+    const { minLoopArea = (2 ** expMax * 2 ** (-12)) ** 2, keepOriginalOrientation = false } = options;
     const gridSpacing = 2 ** expMax * 2 ** (-maxBitLength);
     /**
      * A size (based on the max value of the tangent) for the containers holding
@@ -159,7 +160,7 @@ function boolean(bezierLoopss, booleanOperator, options = {}) {
         .filter(v => v !== undefined);
     const loops_ = inOuts.map((out, idx) => {
         // `outSet[0].orientation` === 1 always at this stage
-        return loopFromOut(out, outSet[0].orientation, idx);
+        return loopFromOut(out, outSet[0].orientation, keepOriginalOrientation, idx);
     });
     /** loops after splitting all */
     const loops__ = loops_.filter((loop) => Math.abs(getShapeArea(loop.beziers)) > minLoopArea);

@@ -1,11 +1,11 @@
 
 type IntersectionResult<T,U> = {
     /** the first item checked for possible intersection */
-    a: T;
+    readonly a: T;
     /** the second item checked for possible intersection */
-    b: T;
+    readonly b: T;
     /** the result of the predicate */
-    u: U;
+    readonly u: U;
 }
 
 
@@ -16,15 +16,15 @@ type RIGHT = 1;
 /** 
  * Represents an event
  */
-interface IEvent<T> {
+interface Event<T> {
     /** type --> -1 === left side, +1 === right side */
-    type: LEFT | RIGHT;
+    readonly type: LEFT | RIGHT;
 
     /** The item */
-    item: T;
+    readonly item: T;
 
     /** A point. */
-    x: number;
+    readonly x: number;
 }
 
 
@@ -54,7 +54,7 @@ function sweepLine<T,U>(
         predicate: (item1: T, item2: T) => U): IntersectionResult<T,U>[] {
 
     // Initialize event queue to contain all endpoints.
-    const events: IEvent<T>[] = [];
+    const events: Event<T>[] = [];
 	for (const item of items) {
 		events.push({ 
             type: EVENT_LEFT, 
@@ -75,10 +75,10 @@ function sweepLine<T,U>(
     /** A list of pairs of items that passed the predicate */
 	const pairedItems: IntersectionResult<T,U>[] = [];
 	for (const event of events) {
-    	const item = event.item;
+    	const { item, type } = event;
     	
-   		if (event.type === EVENT_LEFT) {
-   			for (const activeItem of activeItems.values()) {
+   		if (type === EVENT_LEFT) {
+   			for (const activeItem of activeItems) {
                 const result = predicate(item, activeItem);
    				if (result) { 
                     pairedItems.push({ 
@@ -90,8 +90,8 @@ function sweepLine<T,U>(
    			}
 
    			activeItems.add(item);
-   		} else if (event.type === EVENT_RIGHT) {
-   			activeItems.delete(event.item);
+   		} else if (type === EVENT_RIGHT) {
+   			activeItems.delete(item);
    		}
 	}
 	
@@ -104,7 +104,7 @@ function sweepLine<T,U>(
  * @param a An event
  * @param b Another event
  */
-function compare<T>(a: IEvent<T>, b: IEvent<T>) {
+function compare<T>(a: Event<T>, b: Event<T>) {
     const res = a.x - b.x;
 
     if (res !== 0) { return res; }

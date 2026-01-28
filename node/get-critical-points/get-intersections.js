@@ -1,6 +1,6 @@
 import { sweepLine } from '../sweep-line/sweep-line.js';
 import { getCurvesIntersections } from './get-curves-intersections.js';
-import { getBoundingBox_ } from '../get-bounding-box-.js';
+import { getBoundingBox$ } from '../get-bounding-box-.js';
 /**
  * Find and return all one-sided intersections on all given loops as a map from
  * each curve to an array of intersections on the curve, ordered by t value.
@@ -14,7 +14,7 @@ function getIntersections(loops, expMax) {
         }
     }
     // Filter curves so that we eliminate those that can definitely not intersect
-    const _xs = sweepLine(curves, curve => getBoundingBox_(curve.ps)[0][0], curve => getBoundingBox_(curve.ps)[1][0], getCurvesIntersections(expMax));
+    const _xs = sweepLine(curves, curve => getBoundingBox$(curve.ps)[0][0], curve => getBoundingBox$(curve.ps)[1][0], getCurvesIntersections(expMax));
     const xs = [];
     for (const _x of _xs) {
         for (const x of _x.u) {

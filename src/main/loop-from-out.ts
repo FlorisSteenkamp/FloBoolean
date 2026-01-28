@@ -1,6 +1,3 @@
-declare const _debug_: Debug;
-import type { Debug } from '../debug/debug.js';
-
 import type { InOut } from "../containers/in-out/in-out.js";
 import { bezierPieceToBezier } from "../calc-paths/bezier-piece-to-bezier.js";
 import { loopFromBeziers } from '../loop/loop-from-beziers.js';
@@ -16,21 +13,15 @@ import { reverseShapeOrientation } from "../loop/reverse-shape-orientation.js";
 function loopFromOut(
         out: InOut,
         orientation: number,
+        keepOriginalOrientation: boolean,
         loopIdx: number) {
 
-    // if (typeof _debug_ !== 'undefined') {
-    //     out.bezierPieces;//?
-    // }
     const _beziers = out.bezierPieces?.map(bezierPieceToBezier);
     if (_beziers === undefined) { return loopFromBeziers([], loopIdx); }
 
-    // if (typeof _debug_ !== 'undefined') {
-    //     _beziers;//?
-    // }
-
-    const beziers = orientation < 0
-        ? reverseShapeOrientation(_beziers)
-        : _beziers;
+    const beziers = orientation >= 0 || keepOriginalOrientation
+        ? _beziers
+        : reverseShapeOrientation(_beziers);
 
     const loop = loopFromBeziers(beziers, loopIdx)
 

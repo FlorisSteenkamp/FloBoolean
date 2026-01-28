@@ -3,7 +3,7 @@ import type { Loop } from '../loop/loop.js';
 import type { Curve } from '../curve/curve.js';
 import { sweepLine } from '../sweep-line/sweep-line.js';
 import { getCurvesIntersections } from './get-curves-intersections.js';
-import { getBoundingBox_ } from '../get-bounding-box-.js';
+import { getBoundingBox$ } from '../get-bounding-box-.js';
 
 
 /**
@@ -25,8 +25,8 @@ function getIntersections(
     // Filter curves so that we eliminate those that can definitely not intersect
     const _xs = sweepLine(
         curves, 
-        curve => getBoundingBox_(curve.ps)[0][0],
-        curve => getBoundingBox_(curve.ps)[1][0],
+        curve => getBoundingBox$(curve.ps)[0][0],
+        curve => getBoundingBox$(curve.ps)[1][0],
         getCurvesIntersections(expMax)
     );
 

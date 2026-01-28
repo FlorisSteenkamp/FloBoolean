@@ -16,6 +16,10 @@ interface SimplifyOptions {
      * oriented, else, if `false` the reverse is true.
      */
     readonly orientationPositive?: boolean;
+    /**
+     * defaults to `false` (for historic reasons);
+     */
+    readonly keepOriginalOrientation?: boolean;
 }
 /**
  * Returns the result of simplifying the given bezier loops so that the returned

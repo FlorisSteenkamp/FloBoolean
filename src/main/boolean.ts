@@ -21,12 +21,9 @@ import { createRootInOut } from './create-root-in-out.js';
 import { loopFromOut } from './loop-from-out.js';
 
 // the imports below is used in the test cases - see code below
-import { reverseShapeOrientation } from '../loop/reverse-shape-orientation.js';
-import { getWindingNumber } from '../loop/get-winding-number.js';
 import { addDebugInfo1 } from './add-debug-info-1.js';
 import { addDebugInfo2 } from './add-debug-info-2.js';
 import { bezierToBezierPiece } from '../calc-paths/bezier-to-bezier-piece.js';
-import { bezierPieceToBezier } from '../calc-paths/bezier-piece-to-bezier.js';
 
 
 interface BooleanOptions {
@@ -35,6 +32,10 @@ interface BooleanOptions {
      * * minimum area of a bezer loop before it will be discarded
      */
     readonly minLoopArea?: number;
+    /**
+     * defaults to `false` (for historic reasons);
+     */
+    readonly keepOriginalOrientation?: boolean;
 }
 
 
@@ -87,7 +88,10 @@ function boolean(
     const expMax = Math.ceil(Math.log2(maxCoordinate));
 
     const maxBitLength = 46;
-    const { minLoopArea = (2**expMax * 2**(-12))**2 } = options;
+    const {
+        minLoopArea = (2**expMax * 2**(-12))**2,
+        keepOriginalOrientation = false
+    } = options;
 
     const gridSpacing = 2**expMax * 2**(-maxBitLength);
 
@@ -235,7 +239,7 @@ function boolean(
 
     const loops_ = inOuts.map((out,idx) => {
         // `outSet[0].orientation` === 1 always at this stage
-        return loopFromOut(out, outSet[0].orientation!, idx);
+        return loopFromOut(out, outSet[0].orientation!, keepOriginalOrientation, idx);
     });
 
     /** loops after splitting all */
