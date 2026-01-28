@@ -53,7 +53,7 @@ function boolean(bezierLoopss, booleanOperator, options = {}) {
     /** The exponent, e, such that 2**e >= all bezier coordinate points. */
     const expMax = Math.ceil(Math.log2(maxCoordinate));
     const maxBitLength = 46;
-    const { minLoopArea = (2 ** expMax * 2 ** (-12)) ** 2, inclMicroCorners = true, orientationPositive = false, keepOriginalOrientation = false } = options;
+    const { minLoopArea = (2 ** expMax * 2 ** (-12)) ** 2, orientationPositive = false, keepOriginalOrientation = false, } = options;
     const gridSpacing = 2 ** expMax * 2 ** (-maxBitLength);
     /**
      * A size (based on the max value of the tangent) for the containers holding
@@ -70,11 +70,8 @@ function boolean(bezierLoopss, booleanOperator, options = {}) {
         const _simpLoops = simplifyPaths(__simpLoops, maxCoordinate, {
             maxBitLength,
             minLoopArea,
-            // inclMicroCorners: true,
-            // orientationPositive: true
-            inclMicroCorners,
-            orientationPositive,
-            keepOriginalOrientation
+            inclMicroCorners: true,
+            orientationPositive: true
         });
         const simpLoops = _simpLoops.flat().map(v => v.beziers);
         for (let j = 0; j < simpLoops.length; j++) {
@@ -177,7 +174,7 @@ function boolean(bezierLoopss, booleanOperator, options = {}) {
     const paths = loops__.map(l => l.beziers);
     const loopss_ = simplifyPaths(paths, maxCoordinate, {
         minLoopArea,
-        inclMicroCorners,
+        inclMicroCorners: true,
         orientationPositive,
         keepOriginalOrientation,
     });

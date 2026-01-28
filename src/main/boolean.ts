@@ -99,9 +99,8 @@ function boolean(
     const maxBitLength = 46;
     const {
         minLoopArea = (2**expMax * 2**(-12))**2,
-        inclMicroCorners = true,
         orientationPositive = false,
-        keepOriginalOrientation = false
+        keepOriginalOrientation = false,
     } = options;
 
     const gridSpacing = 2**expMax * 2**(-maxBitLength);
@@ -127,11 +126,8 @@ function boolean(
         const _simpLoops = simplifyPaths(__simpLoops, maxCoordinate, {
             maxBitLength,
             minLoopArea,
-            // inclMicroCorners: true,
-            // orientationPositive: true
-            inclMicroCorners,
-            orientationPositive,
-            keepOriginalOrientation
+            inclMicroCorners: true,
+            orientationPositive: true
         });
 
         const simpLoops = _simpLoops.flat().map(v => v.beziers);
@@ -275,7 +271,7 @@ function boolean(
         maxCoordinate,
         {
             minLoopArea,
-            inclMicroCorners,
+            inclMicroCorners: true,
             orientationPositive,
             keepOriginalOrientation,
         }
