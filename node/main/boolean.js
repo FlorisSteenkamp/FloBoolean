@@ -53,7 +53,7 @@ function boolean(bezierLoopss, booleanOperator, options = {}) {
     /** The exponent, e, such that 2**e >= all bezier coordinate points. */
     const expMax = Math.ceil(Math.log2(maxCoordinate));
     const maxBitLength = 46;
-    const { minLoopArea = (2 ** expMax * 2 ** (-12)) ** 2, keepOriginalOrientation = false } = options;
+    const { minLoopArea = (2 ** expMax * 2 ** (-12)) ** 2, inclMicroCorners = true, orientationPositive = false, keepOriginalOrientation = false } = options;
     const gridSpacing = 2 ** expMax * 2 ** (-maxBitLength);
     /**
      * A size (based on the max value of the tangent) for the containers holding
@@ -68,7 +68,13 @@ function boolean(bezierLoopss, booleanOperator, options = {}) {
         const __simpLoops = bezierLoopss[i];
         /** Each `_simpLoops` represents an independent shape (possibly with holes) */
         const _simpLoops = simplifyPaths(__simpLoops, maxCoordinate, {
-            maxBitLength, minLoopArea, inclMicroCorners: true, orientationPositive: true
+            maxBitLength,
+            minLoopArea,
+            // inclMicroCorners: true,
+            // orientationPositive: true
+            inclMicroCorners,
+            orientationPositive,
+            keepOriginalOrientation
         });
         const simpLoops = _simpLoops.flat().map(v => v.beziers);
         for (let j = 0; j < simpLoops.length; j++) {
@@ -169,7 +175,12 @@ function boolean(bezierLoopss, booleanOperator, options = {}) {
         globalThis._debug_ = undefined;
     }
     const paths = loops__.map(l => l.beziers);
-    const loopss_ = simplifyPaths(paths, maxCoordinate, { inclMicroCorners: true, orientationPositive: true });
+    const loopss_ = simplifyPaths(paths, maxCoordinate, {
+        minLoopArea,
+        inclMicroCorners,
+        orientationPositive,
+        keepOriginalOrientation,
+    });
     if (typeof _debug_temp !== 'undefined') {
         globalThis._debug_ = _debug_temp;
         globalThis._debug_temp = undefined;

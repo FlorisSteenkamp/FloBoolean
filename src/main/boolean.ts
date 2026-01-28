@@ -27,11 +27,20 @@ import { bezierToBezierPiece } from '../calc-paths/bezier-to-bezier-piece.js';
 
 
 interface BooleanOptions {
+    /**  */
+    readonly inclMicroCorners?: boolean;
     /**
      * * defaults to `(2**expMax * 2**(-12))**2`;
      * * minimum area of a bezer loop before it will be discarded
      */
     readonly minLoopArea?: number;
+    /**
+     * defaults to `false` (for historic reasons); if `true` then the returned
+     * paths all have a positive (counter-clockwise) orientation for each single
+     * outermost loop (with the set of returned loops) with the rest being negatively
+     * oriented, else, if `false` the reverse is true.
+     */
+    readonly orientationPositive?: boolean;
     /**
      * defaults to `false` (for historic reasons);
      */
@@ -90,6 +99,8 @@ function boolean(
     const maxBitLength = 46;
     const {
         minLoopArea = (2**expMax * 2**(-12))**2,
+        inclMicroCorners = true,
+        orientationPositive = false,
         keepOriginalOrientation = false
     } = options;
 
@@ -114,7 +125,13 @@ function boolean(
 
         /** Each `_simpLoops` represents an independent shape (possibly with holes) */
         const _simpLoops = simplifyPaths(__simpLoops, maxCoordinate, {
-            maxBitLength, minLoopArea, inclMicroCorners: true, orientationPositive: true
+            maxBitLength,
+            minLoopArea,
+            // inclMicroCorners: true,
+            // orientationPositive: true
+            inclMicroCorners,
+            orientationPositive,
+            keepOriginalOrientation
         });
 
         const simpLoops = _simpLoops.flat().map(v => v.beziers);
@@ -256,7 +273,12 @@ function boolean(
     const loopss_ = simplifyPaths(
         paths,
         maxCoordinate,
-        { inclMicroCorners: true, orientationPositive: true }
+        {
+            minLoopArea,
+            inclMicroCorners,
+            orientationPositive,
+            keepOriginalOrientation,
+        }
     );
 
     if (typeof _debug_temp !== 'undefined') {
