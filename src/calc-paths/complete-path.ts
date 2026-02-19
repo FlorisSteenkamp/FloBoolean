@@ -35,7 +35,10 @@ function completePath(
         (origInOut.parent! as Mutable<InOut>).children = origInOut.parent!.children || new Set();
         origInOut.parent!.children!.add(origInOut);
 
-        inOutStack.push(...additionalOutsToCheck);
+        additionalOutsToCheck.map(v => v.idx);
+        for (let i=additionalOutsToCheck.length - 1; i>=0; i--) {
+            inOutStack.push(additionalOutsToCheck[i]);
+        }
     }
 }
 

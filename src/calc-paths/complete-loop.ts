@@ -34,25 +34,26 @@ function completeLoop(
     let inOutToUse: InOut = origInOut;
     let additionalBezier: number[][] | undefined;
 
-    // if (typeof _debug_ !== 'undefined') {
-    //     console.log('----');
-    //     console.log([inOutToUse.idx, inOutToUse.dir]);
-    // }
+    const tiosIdxs: number[] = [];
 
     do {
         takenInOuts.add(inOutToUse);
+        tiosIdxs.push(inOutToUse.idx!);  // for debugging
+
+        const inOut_NextOrPrev = inOutToUse.nextOrPrev!;
+        takenInOuts.add(inOut_NextOrPrev);
         
         const beziersToNextContainer = inOutToUse.dir === +1
-            ? getBeziersToNextContainer(inOutToUse!, takenInOuts)!
-            : getBeziersToPrevContainer(inOutToUse!, takenInOuts)!;
+            ? getBeziersToNextContainer(inOutToUse, inOut_NextOrPrev)!
+            : getBeziersToPrevContainer(inOutToUse, inOut_NextOrPrev)!;
 
-        const { bezierPieces: additionalBeziers, inOut } = beziersToNextContainer;
+        const additionalBeziers = beziersToNextContainer;
 
         bezierPieces.push(...additionalBeziers);
 
         const getNextExit_ = tight ? getTightNextExit : getNextExit;
 
-        const nextExit = getNextExit_(inOut!, origInOut, additionalOutsToCheck, takenInOuts);
+        const nextExit = getNextExit_(inOut_NextOrPrev!, origInOut, additionalOutsToCheck, takenInOuts);
 
         ({ inOutToUse, additionalBezier } = nextExit);
 
@@ -67,6 +68,8 @@ function completeLoop(
             bezierPieces.push({ ps: additionalBezier, ts: [0,1] });
         }
     } while (inOutToUse !== origInOut);
+
+    tiosIdxs;//?
 
     return { bezierPieces, additionalOutsToCheck };
 }

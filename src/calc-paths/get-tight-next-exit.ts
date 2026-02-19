@@ -27,13 +27,14 @@ function getTightNextExit(
 
     orderInOuts(inOut.container, 1);
 
-    // console.log([inOut.idx, inOut.dir]);
+    // console.log(inOut.idx, inOut.dir);
 
     let inOutToUse = inOut.nextAround!;
     // console.log([inOutToUse.idx, inOutToUse.dir], 'used');
 
     let next = inOut;
 
+    const marks: number[] = [];  // for debugging
     const curLoopsIdxs = new Set(origInOut.loopsIdxs);
     do {
         next = next.nextAround!;
@@ -41,6 +42,7 @@ function getTightNextExit(
         if (next === inOut) { break; }
 
         markInOutForChecking_(next, origInOut.dir, origInOut, curLoopsIdxs);
+        marks.push(next.idx!);
 
         if (next.dir === -1) {
             curLoopsIdxs?.add(next._x_?.curve.loop.idx!);
@@ -48,6 +50,8 @@ function getTightNextExit(
             curLoopsIdxs.delete(next._x_?.curve.loop.idx!);
         }
     } while (true)
+
+    marks;
 
     let additionalBezier: number[][] | undefined = undefined;
     if (!containerIsBasic(inOut.container)) {
@@ -63,7 +67,7 @@ function markInOutForChecking(
         originalOut: InOut,
         takenInOuts: Set<InOut>,
         additionalOutsToCheck: InOut[]) {
-            
+
     return (inOut: Mutable<InOut>,
             parity: number,
             origInOut: InOut,

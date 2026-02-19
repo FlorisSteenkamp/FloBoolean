@@ -9,17 +9,20 @@
     "dependencies": {
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.1",
-        "@mui/material": "^7.2.0",
-        "ramda": "^0.31.3",
-        "react": "^19.1.1",
-        "react-dom": "^19.1.1"
+        "@mui/material": "^7.3.8",
+        "ramda": "^0.32.0",
+        "react": "^19.2.4",
+        "react-dom": "^19.2.4"
     },
     "devDependencies": {
-        "@types/ramda": "^0.31.0",
-        "@types/react": "^19.1.9",
-        "@types/react-dom": "^19.1.7",
-        "webpack": "^5.101.0",
+        "@types/ramda": "^0.31.1",
+        "@types/react": "^19.2.14",
+        "@types/react-dom": "^19.2.3",
+        "concurrently": "^9.2.1",
+        "webpack": "^5.105.2",
         "webpack-cli": "^6.0.1"
     },
-    "scripts": {}
+    "scripts": {
+        "dev": "concurrently \"webpack -w\" \"live-server --open=index.html\""
+    }
 }

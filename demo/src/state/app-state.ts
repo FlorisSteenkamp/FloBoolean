@@ -6,8 +6,8 @@ import { PageState } from "./page-state";
  */
 interface AppState {
     /** The state version */
-    version: number;
-    pageState: PageState;
+    readonly version: number;
+    readonly pageState: PageState;
 }
 
 

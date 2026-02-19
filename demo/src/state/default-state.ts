@@ -42,9 +42,9 @@ const defaultPageState: PageState = {
     showDelay: 2000,
     clickFor: 'bezier',
     toDraw: defaultToDraw,
-    viewbox: [[0,0],[100.100]],
+    viewbox: [[0,0],[100,100]],
     vectorName : 'square',
-    vectorNameBoolean: 'squares',
+    vectorNameBoolean: 'two-squares',
     forBoolean: true,
     booleanOp: 'AND'
 };

@@ -3,7 +3,10 @@ import { toGrid } from "./to-grid.js";
 import { fixBezierByPointSpacing } from "./fix-bezier-by-point-spacing.js";
 
 
-function sendToGrid(expMax: number, maxBitLength: number) {
+function sendToGrid(
+        expMax: number,
+        maxBitLength: number) {
+
     return (p: number[]) => {
         const x = toGrid(p[0], expMax, maxBitLength);
         const y = toGrid(p[1], expMax, maxBitLength);

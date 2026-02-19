@@ -1,6 +1,6 @@
 declare const _debug_: Debug; 
-
 import type { Debug } from '../debug/debug.js';
+
 import type { Mutable } from '../types/mutable.js';
 import type { InOut } from '../containers/in-out/in-out.js';
 import type { Loop } from '../loop/loop.js';
@@ -22,6 +22,7 @@ import { createRootInOut } from './create-root-in-out.js';
 import { bezierToBezierPiece } from '../calc-paths/bezier-to-bezier-piece.js';
 import { removeMicroCorners } from './remove-micro-corners.js';
 import { BezierPiece } from 'flo-bezier3';
+import { MAX_BIT_LENGTH } from './max-bitlength.js';
 
 const { abs, max } = Math;
 
@@ -29,8 +30,6 @@ const { abs, max } = Math;
 interface SimplifyOptions {
     /**  */
     readonly inclMicroCorners?: boolean;
-    /** defaults to 46 */
-    readonly maxBitLength?: number;
     /**
      * * defaults to `(2**expMax * 2**(-12))**2`;
      * * minimum area of a bezer loop before it will be discarded
@@ -89,14 +88,13 @@ function simplifyPaths(
     const expMax = Math.ceil(Math.log2(maxCoordinate));
 
     const {
-        maxBitLength = 46,
         inclMicroCorners = true,
         minLoopArea = (2**expMax * 2**(-12))**2,
         orientationPositive = false,
         keepOriginalOrientation = false
     } = options;
 
-    const gridSpacing = 2**expMax * 2**(-maxBitLength);
+    const gridSpacing = 2**expMax * 2**(-MAX_BIT_LENGTH);
 
     /** 
      * A size (based on the max value of the tangent) for the containers holding 
@@ -110,7 +108,7 @@ function simplifyPaths(
 
     bezierLoops = normalizeLoops(
         bezierLoops, 
-        maxBitLength, 
+        MAX_BIT_LENGTH,
         expMax,
         false,
         true,

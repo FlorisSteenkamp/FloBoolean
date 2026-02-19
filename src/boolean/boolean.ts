@@ -1,10 +1,7 @@
-declare const _debug_: Debug;
-declare const _debug_temp: Debug;
-
-import type { Debug } from '../debug/debug.js';
 import type { Mutable } from '../types/mutable.js';
 import type { Loop } from '../loop/loop.js';
 import type { InOut } from '../containers/in-out/in-out.js';
+import type { BooleanOptions } from './boolean-options.js';
 import { completePath } from '../calc-paths/complete-path.js';
 import { getTightestContainingLoop } from '../calc-paths/get-tightest-containing-loop.js';
 import { orderLoopAscendingByMinY } from '../calc-paths/order-loop-ascending-by-min-y.js';
@@ -14,59 +11,16 @@ import { loopFromBeziers } from '../loop/loop-from-beziers.js';
 import { normalizeLoops } from '../loop/normalize/normalize-loop.js';
 import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate.js';
 import { getShapeArea } from '../loop/get-loop-area.js';
-import { getAllLoopsFromTree } from './get-all-loops-from-tree.js';
-import { reverseBezierPieces } from './reverse-bezier-pieces.js';
-import { simplifyPaths } from './simplify-paths.js';
-import { createRootInOut } from './create-root-in-out.js';
-import { loopFromOut } from './loop-from-out.js';
-
-// the imports below is used in the test cases - see code below
-import { addDebugInfo1 } from './add-debug-info-1.js';
-import { addDebugInfo2 } from './add-debug-info-2.js';
+import { getAllLoopsFromTree } from '../main/get-all-loops-from-tree.js';
+import { reverseBezierPieces } from '../main/reverse-bezier-pieces.js';
+import { createRootInOut } from '../main/create-root-in-out.js';
+import { loopFromOut } from '../main/loop-from-out.js';
+import { MAX_BIT_LENGTH } from '../main/max-bitlength.js';
+import { simplifyAndFlattenLoopss } from './simplify-and-flatten-bezier-loopss.js';
+import { finalSimpify } from './final-simplify.js';
 import { bezierToBezierPiece } from '../calc-paths/bezier-to-bezier-piece.js';
-
-
-interface BooleanOptions {
-    /**  */
-    readonly inclMicroCorners?: boolean;
-    /**
-     * * defaults to `(2**expMax * 2**(-12))**2`;
-     * * minimum area of a bezer loop before it will be discarded
-     */
-    readonly minLoopArea?: number;
-    /**
-     * defaults to `false` (for historic reasons); if `true` then the returned
-     * paths all have a positive (counter-clockwise) orientation for each single
-     * outermost loop (with the set of returned loops) with the rest being negatively
-     * oriented, else, if `false` the reverse is true.
-     */
-    readonly orientationPositive?: boolean;
-    /**
-     * defaults to `false` (for historic reasons);
-     */
-    readonly keepOriginalOrientation?: boolean;
-}
-
-
-function AND(bits: boolean[]) {
-    return (bits.every(v => v));
-}
-
-
-function OR(bits: boolean[]) {
-    return (bits.includes(true));
-}
-
-
-/**
- * * for multiple inputs, XOR is typically defined such that the output is `true`
- * if an odd number of inputs are `true`, and `false` if an even number of inputs are `true`. 
- * 
- * @param bits 
- */
-function XOR(bits: boolean[]) {
-    return bits.filter(v => v).length%2 === 1;
-}
+import { getWindingNumber } from '../loop/get-winding-number.js';
+import { reverseShapeOrientation } from '../loop/reverse-shape-orientation.js';
 
 
 /**
@@ -76,7 +30,7 @@ function XOR(bits: boolean[]) {
  * * uses an algorithm similirar to that of Lavanya Subramaniam: PARTITION OF A
  * NON-SIMPLE POLYGON INTO SIMPLE POLYGONS (see `simplifyPaths`); 
  * 
- * @param bezierLoopss an array of possibly intersecting loops
+ * @param bezierLoopss_ an array of possibly intersecting loops
  * @param booleanOperator defaults to `AND`; the boolean operator to
  * use (AND, OR or XOR) or a custom function can be used
  * @param options options
@@ -86,69 +40,36 @@ function boolean(
         booleanOperator: (bits: boolean[]) => boolean,
         options: BooleanOptions = {}): Loop[][] {
 
-    if (typeof _debug_ !== 'undefined') {
-        (globalThis as any)._debug_temp = _debug_;
-        (globalThis as any)._debug_ = undefined;
-    }
-    
     // bezierLoopss = bezierLoopss.map(bezierLoops => bezierLoops.map(reverseShapeOrientation));  // For quick testing
     const maxCoordinate = Math.max(...bezierLoopss.map(getMaxCoordinate));
     /** The exponent, e, such that 2**e >= all bezier coordinate points. */
     const expMax = Math.ceil(Math.log2(maxCoordinate));
 
-    const maxBitLength = 46;
     const {
         minLoopArea = (2**expMax * 2**(-12))**2,
-        orientationPositive = false,
         keepOriginalOrientation = false,
     } = options;
 
-    const gridSpacing = 2**expMax * 2**(-maxBitLength);
+    const gridSpacing = 2**expMax * 2**(-MAX_BIT_LENGTH);
 
     /** 
      * A size (based on the max value of the tangent) for the containers holding 
      * critical points.
      */
+    // const containerSizeMultiplier = 2**5;
     const containerSizeMultiplier = 2**5;
-    // const containerSizeMultiplier = 2**41;
     const containerDim = gridSpacing * containerSizeMultiplier;
 
-    bezierLoopss = bezierLoopss.map(bezierLoops => normalizeLoops(
-        bezierLoops, maxBitLength, expMax,
+    const bezierLoopss_ = bezierLoopss.map(bezierLoops => normalizeLoops(
+        bezierLoops, MAX_BIT_LENGTH, expMax,
         false, true,
     ));
 
-    const bezierLoops: number[][][][] = [];
-    for (let i=0; i<bezierLoopss.length; i++) {
-        const __simpLoops = bezierLoopss[i];
+    const loopsCount = bezierLoopss_.length;
+    // bezierLoopss.map(ls => ls.map(getWindingNumber));//?
 
-        /** Each `_simpLoops` represents an independent shape (possibly with holes) */
-        const _simpLoops = simplifyPaths(__simpLoops, maxCoordinate, {
-            maxBitLength,
-            minLoopArea,
-            inclMicroCorners: true,
-            orientationPositive: true
-        });
+    const bezierLoops = simplifyAndFlattenLoopss(maxCoordinate, minLoopArea, bezierLoopss);
 
-        const simpLoops = _simpLoops.flat().map(v => v.beziers);
-        
-        for (let j=0; j<simpLoops.length; j++) {
-            const simpLoop = simpLoops[j];
-            // @ts-ignore
-            simpLoop.loopsIdx = i;
-            bezierLoops.push(simpLoop);
-        }
-    }
-
-    // console.log(bezierLoops);
-
-    if (typeof _debug_temp !== 'undefined') {
-        (globalThis as any)._debug_ = _debug_temp;
-        (globalThis as any)._debug_temp = undefined;
-    }
-
-
-    addDebugInfo1(bezierLoops);
     bezierLoops.sort(orderLoopAscendingByMinY);
 
     // @ts-ignore
@@ -163,13 +84,18 @@ function boolean(
     for (let i=0; i<loops.length; i++) {
         const loop = loops[i];
 
-        if (takenLoops.has(loop)) { continue; }
+        if (takenLoops.has(loop)) {
+            continue;
+        }
+
         takenLoops.add(loop);
 
         const parent = getTightestContainingLoop(root, loop);
 
         const container = extremes.get(loop)![0].container!;
-        if (container.inOuts.length === 0) { continue; }
+        if (container.inOuts.length === 0) {
+            continue;
+        }
 
         const initialOut = getOutermostInAndOut(container, parent, loop);
 
@@ -184,7 +110,6 @@ function boolean(
             initialOut.parent!.children!.add(initialOut);
             continue;
         }
-        
 
         completePath(
             initialOut,
@@ -195,12 +120,14 @@ function boolean(
     }
 
     const outSet = getAllLoopsFromTree(root);
+    // outSet.map(os => ({ dir: os.dir, idx: os.idx  }));//?
+    // outSet.map(inOut => [inOut.idx, inOut.loopsIdxs]);//?
 
     const inOuts = outSet.map(inOut => {
         const { loopsIdxs } = inOut;
         if (loopsIdxs === undefined || loopsIdxs.size === 0) { return undefined; }
 
-        const bits = new Array(bezierLoopss.length).fill(0).map(
+        const bits = new Array(loopsCount).fill(0).map(
             (_,idx) => loopsIdxs.has(idx)
         );
         const include = booleanOperator(bits);
@@ -211,7 +138,7 @@ function boolean(
             if (inOut.orientation === 1 &&
                 parent.orientation === 1) {
 
-                const parentBits = new Array(bezierLoopss.length).fill(0).map(
+                const parentBits = new Array(loopsCount).fill(0).map(
                     (_,idx) => parent.loopsIdxs!.has(idx)
                 );
                 const includeParent = booleanOperator(parentBits);//?
@@ -226,10 +153,10 @@ function boolean(
                 }
             }
             if (inOut.orientation === -1 &&
-                parent.parent!.orientation === 1) {
+                parent.parent?.orientation === 1) {
 
                 // `parent.parent` cannot be the root at this point
-                const parentParentBits = new Array(bezierLoopss.length).fill(0).map(
+                const parentParentBits = new Array(loopsCount).fill(0).map(
                     (_,idx) => parent.parent!.loopsIdxs!.has(idx)
                 );
                 const includeParentParent = booleanOperator(parentParentBits);
@@ -260,34 +187,10 @@ function boolean(
         (loop: Loop) => Math.abs(getShapeArea(loop.beziers)) > minLoopArea
     );
 
-    if (typeof _debug_ !== 'undefined') {
-        (globalThis as any)._debug_temp = _debug_;
-        (globalThis as any)._debug_ = undefined;
-    }
-
-    const paths = loops__.map(l => l.beziers);
-    const loopss_ = simplifyPaths(
-        paths,
-        maxCoordinate,
-        {
-            minLoopArea,
-            inclMicroCorners: true,
-            orientationPositive,
-            keepOriginalOrientation,
-        }
-    );
-
-    if (typeof _debug_temp !== 'undefined') {
-        (globalThis as any)._debug_ = _debug_temp;
-        (globalThis as any)._debug_temp = undefined;
-    }
-
-    addDebugInfo2(loopss_);
-    // console.log(loopss_.map(loops => loops.map(l => l.beziers)));
+    const loopss_ = finalSimpify(options, maxCoordinate, minLoopArea, loops__);
 
     return loopss_;
 }
 
 
-export type { BooleanOptions }
-export { boolean, OR, AND, XOR }
+export { boolean }

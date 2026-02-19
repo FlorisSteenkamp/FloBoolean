@@ -1,0 +1,51 @@
+
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+>
+    <path 
+        class="shape"
+        d="
+            M 667 545
+            L 482 548 
+            L 480 335 
+            L 659 343 
+            Q 484 450 667 545 
+            z
+        "
+    />
+    <path 
+        class="shape"
+        d="
+            M 516 581
+            L 705 582 
+            Q 770 480 700 318 
+            L 496 284 
+            Q 713 439 516 581 
+            z
+        "
+    />
+</svg>
+
+
+
+<!-- orientation: positive (anti-clockwise; shows clockwise) -->
+<!-- <path 
+    class="shape"
+    d="
+        M 602 552
+        Q 181 513 568 341 
+        Q 551 495 602 552 
+        z
+    "
+/> -->
+<!-- orientation: negative (clockwise; shows anti-clockwise) -->
+<!-- <path 
+    class="shape"
+    d="
+        M 512 594
+        Q 901 502 471 282 
+        Q 669 453 512 594
+        z
+    "
+/> -->

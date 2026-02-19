@@ -8,38 +8,46 @@
  function beziersToSvgPathStr(
         beziers: number[][][]) {
 
-    let str = '';
+    const strs: string[] = [];
     for (let i=0; i<beziers.length; i++) {
         const ps = beziers[i];
         if (i === 0) {
-            str = 'M ' + 
+            strs.push(
+                'M ' + 
                 ps[0][0].toString() + ' ' + 
-                ps[0][1].toString() + '\n';
+                ps[0][1].toString()
+            );
         }
         
         if (ps.length === 4) {
-            str += 'C ' + 
-            ps[1][0].toString() + ' ' + 
-            ps[1][1].toString() + ' ' +
-            ps[2][0].toString() + ' ' + 
-            ps[2][1].toString() + ' ' +
-            ps[3][0].toString() + ' ' + 
-            ps[3][1].toString() + ' ' + '\n';
+            strs.push('C ' + 
+                ps[1][0].toString() + ' ' + 
+                ps[1][1].toString() + ' ' +
+                ps[2][0].toString() + ' ' + 
+                ps[2][1].toString() + ' ' +
+                ps[3][0].toString() + ' ' + 
+                ps[3][1].toString() + ' '
+            );
         } else if (ps.length === 3) {
-            str += 'Q ' + 
-            ps[1][0].toString() + ' ' + 
-            ps[1][1].toString() + ' ' +
-            ps[2][0].toString() + ' ' + 
-            ps[2][1].toString() + ' ' + '\n';
+            strs.push(
+                'Q ' + 
+                ps[1][0].toString() + ' ' + 
+                ps[1][1].toString() + ' ' +
+                ps[2][0].toString() + ' ' + 
+                ps[2][1].toString() + ' '
+            );
         } else if (ps.length === 2) {
-            str += 'L ' + 
-            ps[1][0].toString() + ' ' + 
-            ps[1][1].toString() + ' ' + '\n';
+            strs.push(
+                'L ' + 
+                ps[1][0].toString() + ' ' + 
+                ps[1][1].toString() + ' '
+            );
         }
     }
 
+    strs.push(' z');
 
-    return str + ' z' + '\n';
+    return strs.join('\n');
 }
 
 

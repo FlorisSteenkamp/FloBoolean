@@ -54,7 +54,6 @@ function getNextExit(
             // we are still rotating on the inside of the loop
             if (toCount === 0) {
                 outToUse = next;
-                // console.log([outToUse.idx, outToUse.dir], 'used');
             } else if (toCount === 1) {
                 // ...must have the same orientation (see complexish2.svg in tests)
                 markOutForChecking_(next, originalOut.orientation!, originalOut);

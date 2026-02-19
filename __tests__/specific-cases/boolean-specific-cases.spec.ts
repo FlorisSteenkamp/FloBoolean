@@ -1,8 +1,6 @@
-import * as fs from 'fs';
 import { getPathsFromFile } from '../helpers/get-paths-from-file';
-import { makeTolerance } from '../helpers/make-tolerance';
-import { checkShapes } from '../helpers/check-shapes';
-import { boolean, XOR } from '../../src/main/boolean';
+import { boolean } from '../../src/boolean/boolean';
+import { OR } from '../../src/boolean/ops';
 import { enableDebugForBooleanOp } from '../../src/debug/debug';
 
 
@@ -14,13 +12,21 @@ test('`boolean` specific cases', function() {
 
     // testIt('one-square-inside-b', '-> should boolean correctly');
     // testIt('koldat52-over-square', '-> should boolean correctly');
-    testIt('three-squares', '-> should boolean correctly');
+    // testIt('three-squares', '-> should boolean correctly');
+    // testIt('two-simple', '-> should boolean correctly');
+    testIt('lamina', 'lamina -> should boolean correctly');
 
     function testIt(fileName: string, description: string) {
-        const { bezierLoopss } = getPathsFromFile(fileName); 
+        const { bezierLoopss } = getPathsFromFile(fileName);
+        bezierLoopss;//?
 
-        const loopss = boolean(bezierLoopss, XOR);
-        loopss[0]?.length;//?
+        const loopss = boolean(bezierLoopss, OR);
+        loopss;//?
+        loopss[0].length;//?
+        loopss[0][0].beziers;//?
+        loopss[0][0].beziers.map(ps => ps.map(p => p.map(c => Math.round(c))));//?
+
+        // FUTURE
         // const tolerancePower = -20;
         // const tolerance = makeTolerance(tolerancePower, bezierLoops);
         // expect(

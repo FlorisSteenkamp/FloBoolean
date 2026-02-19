@@ -1,5 +1,6 @@
 
 const vectorsBoolean = [
+    'two-simple',
     'lamina',
     'koldat52-over-square',
     'two-squares',

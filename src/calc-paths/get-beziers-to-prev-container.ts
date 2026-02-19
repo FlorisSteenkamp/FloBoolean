@@ -5,18 +5,11 @@ import { containerIsBasic } from "../container.js";
 
 
 function getBeziersToPrevContainer(
-        in_: InOut,
-        takenInOuts: Set<InOut>): {
-            bezierPieces: BezierPiece[];
-            inOut: InOut;
-        } {
+        inOut: InOut,
+        inOut_NextOrPrev: InOut): BezierPiece[] {
 
-    const out = in_.nextOrPrev!;
-
-    takenInOuts.add(out);
-
-    const outX = out._x_!;
-    const inX = in_._x_!;
+    const outX = inOut_NextOrPrev._x_!;
+    const inX = inOut._x_!;
     
     //----------------------------
     const curveS = inX.curve;
@@ -28,9 +21,9 @@ function getBeziersToPrevContainer(
     let curCurve = curveS;
     let curT = tS;
 
-    if (!containerIsBasic(in_.container)) {
+    if (!containerIsBasic(inOut.container)) {
         // we must clip the outgoing curve
-        curT = mid(closestPointOnBezierCertified(curCurve.ps, in_.p)[0].ri);
+        curT = mid(closestPointOnBezierCertified(curCurve.ps, inOut.p)[0].ri);
     }
 
     const bezierPieces: BezierPiece[] = [];
@@ -44,7 +37,7 @@ function getBeziersToPrevContainer(
 
             bezierPieces.push({ ps, ts });
 
-            return { bezierPieces, inOut: out }
+            return bezierPieces;
         } else {
             const ts = [curT, 0];
 

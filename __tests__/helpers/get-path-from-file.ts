@@ -8,7 +8,7 @@ function getPathFromFile(
         skipInvariantsCheck = false) {
 
     let fileStr = fs.readFileSync(
-        `c:/projects/boolean/__tests__/vectors/${fileName}.svg`, 'utf8'
+        `c:/projects/boolean/demo/vectors/${fileName}.svg`, 'utf8'
     );
 
     let svgStr = fileStr.match(/d="[^"]*"/)![0];

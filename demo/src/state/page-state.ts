@@ -21,15 +21,15 @@ type BooleanOp = 'AND' | 'OR' | 'XOR' | 'aNOTb';
 
 interface PageState {
     /** Won't be save to localstorage */
-    deduced: DeducedState | undefined;
-    showDelay: number;
-    clickFor: ClickFor;
-    viewbox: number[][];
-    toDraw: ToDraw;
-    vectorName: string;
-    vectorNameBoolean: string;
-    forBoolean: boolean;
-    booleanOp: BooleanOp;
+    readonly deduced: DeducedState | undefined;
+    readonly showDelay: number;
+    readonly clickFor: ClickFor;
+    readonly viewbox: number[][];
+    readonly toDraw: ToDraw;
+    readonly vectorName: string;
+    readonly vectorNameBoolean: string;
+    readonly forBoolean: boolean;
+    readonly booleanOp: BooleanOp;
 }
 
 
