@@ -65,7 +65,10 @@ function getXInOuts(container) {
                         container,
                         side: x.side,
                         sideX: x.sideX,
-                        loopsIdxs: new Set()
+                        loopsIdxs: new Set(),
+                        children: new Set(),
+                        windingNum: 0,
+                        orientation: 0
                     });
                     prevX.out = outs[outs.length - 1];
                 }
@@ -82,7 +85,10 @@ function getXInOuts(container) {
                         container,
                         side: prevX.side,
                         sideX: prevX.sideX,
-                        loopsIdxs: new Set()
+                        loopsIdxs: new Set(),
+                        children: new Set(),
+                        windingNum: 0,
+                        orientation: 0
                     });
                     x.in_ = ins[ins.length - 1];
                 }

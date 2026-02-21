@@ -1,6 +1,7 @@
 import { Invariants } from "./invariants";
 import { Tolerance } from "./tolerance";
 
+const { abs } = Math;
 
 /**
 * 
@@ -15,11 +16,12 @@ function checkInvariant(
     let { area: area_, centroid: centroid_, bounds: bounds_ } =  invariantCalc;
     let { area, centroid, bounds } =  invariantReq;
 
-    if (Math.abs(area - area_) > tolerance.area) {
+    // if (abs(area - area_) > tolerance.area) {
+    if (abs(area) - abs(area_) > tolerance.area) {
         throw new Error(`Area not within tolerance. Found ${area_} - should be ${area}`);
     }
-    if (Math.abs(centroid[0] - centroid_[0]) > tolerance.centroid ||
-        Math.abs(centroid[1] - centroid_[1]) > tolerance.centroid) {
+    if (abs(centroid[0] - centroid_[0]) > tolerance.centroid ||
+        abs(centroid[1] - centroid_[1]) > tolerance.centroid) {
 
         // centroid;//?
         // centroid_;//?
@@ -27,7 +29,7 @@ function checkInvariant(
         // centroid[0] - centroid_[0];//?
         // centroid[1] - centroid_[1];//?
         throw new Error(
-            `Centroid not within tolerance. Calc: ${centroid_}, required: ${centroid}, ` + `\n` +
+            `Centroid not within tolerance. Calc: ${JSON.stringify(centroid_)}, required: ${JSON.stringify(centroid)}, ` + `\n` +
             `delta x,y: ${centroid[0] - centroid_[0]}, ${centroid[1] - centroid_[1]}`
         );
     }
@@ -36,10 +38,10 @@ function checkInvariant(
     const minYDelta = bounds.minY - bounds_.minY;
     const maxXDelta = bounds.maxX - bounds_.maxX;
     const maxYDelta = bounds.maxY - bounds_.maxY;
-    if (Math.abs(bounds.minX - bounds_.minX) > tolerance.bounds ||
-        Math.abs(bounds.minY - bounds_.minY) > tolerance.bounds ||
-        Math.abs(bounds.maxX - bounds_.maxX) > tolerance.bounds ||
-        Math.abs(bounds.maxY - bounds_.maxY) > tolerance.bounds) {
+    if (abs(bounds.minX - bounds_.minX) > tolerance.bounds ||
+        abs(bounds.minY - bounds_.minY) > tolerance.bounds ||
+        abs(bounds.maxX - bounds_.maxX) > tolerance.bounds ||
+        abs(bounds.maxY - bounds_.maxY) > tolerance.bounds) {
 
         minXDelta;//?
         minYDelta;//?
@@ -53,13 +55,13 @@ function checkInvariant(
     }
 
     return true &&
-        Math.abs(area - area_) <= tolerance.area &&
-        Math.abs(centroid[0] - centroid_[0]) <= tolerance.centroid &&
-        Math.abs(centroid[1] - centroid_[1]) <= tolerance.centroid &&
-        Math.abs(bounds.minX - bounds_.minX) <= tolerance.bounds &&
-        Math.abs(bounds.minY - bounds_.minY) <= tolerance.bounds &&
-        Math.abs(bounds.maxX - bounds_.maxX) <= tolerance.bounds &&
-        Math.abs(bounds.maxY - bounds_.maxY) <= tolerance.bounds;
+        abs(area) - abs(area_) <= tolerance.area &&
+        abs(centroid[0] - centroid_[0]) <= tolerance.centroid &&
+        abs(centroid[1] - centroid_[1]) <= tolerance.centroid &&
+        abs(bounds.minX - bounds_.minX) <= tolerance.bounds &&
+        abs(bounds.minY - bounds_.minY) <= tolerance.bounds &&
+        abs(bounds.maxX - bounds_.maxX) <= tolerance.bounds &&
+        abs(bounds.maxY - bounds_.maxY) <= tolerance.bounds;
 }
 
 

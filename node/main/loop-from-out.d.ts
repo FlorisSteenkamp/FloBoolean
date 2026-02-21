@@ -2,8 +2,8 @@ import type { InOut } from "../containers/in-out/in-out.js";
 /**
  *
  * @param out
- * @param orientation
+ * @param outerLoopOrientation
  * @param loopIdx identifies the loop during debugging
  */
-declare function loopFromOut(out: InOut, orientation: number, keepOriginalOrientation: boolean, loopIdx: number): import("../index.js").Loop;
+declare function loopFromOut(out: InOut, outerLoopOrientation: number, loopIdx: number): import("../index.js").Loop;
 export { loopFromOut };

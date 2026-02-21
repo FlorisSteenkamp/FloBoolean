@@ -65,6 +65,8 @@ function compareInOut(
             return res; 
         }
 
+        // console.log('aa')
+
         // At this stage it is either the same curve (mathematically, if endpoints
         // and direction is ignored) or even the once compenensated roots cannot be
         // resolved. In future we can cascade compensations to ensure resolution

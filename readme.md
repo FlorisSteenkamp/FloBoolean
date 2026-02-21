@@ -1,15 +1,22 @@
-[![npm][1]][2] [![install size][3]][4] [![downloads][5]][2]
+[![npm][1]][2] [![downloads][5]][2]
 
 [1]: https://img.shields.io/npm/v/flo-boolean "FloBoolean, npm badge"
 [2]: https://www.npmjs.com/package/flo-boolean "FloBoolean, npm link"
-[3]: https://packagephobia.now.sh/badge?p=flo-boolean "FloBoolean size, badge"
-[4]: https://packagephobia.now.sh/result?p=flo-boolean "FloBoolean size, link"
 [5]: https://badgen.now.sh/npm/dm/flo-boolean "FloBoolean downloads, badge"
 
-# Boolean operations and path simplification on shapes
+# Boolean operations on shapes
 
-This library performs shape simplification via `simplifyPaths` and boolean operations
-via `boolean`.
+This library performs shape boolean operations via the function `boolean`.
+
+**Note**: what is usually called a boolean operation is really a "winding number
+function", to be specific:
+* AND (intersect) → regions are kept with absolute winding number > 1
+* OR (union) → regions are kept with absolute winding number >= 1
+* XOR (exclude) → non-overlapping regions are kept, i.e. regions with winding number === 1 are kept
+
+**Note**: Since version 5 of this library the `boolean` function has changed
+completely to more accurately reflect what is usually meant by a boolean
+operation (within vector design software, see above)
 
 ---
 Bug reports, pull requests and ⭐⭐⭐⭐⭐s are welcome and appreciated!
@@ -28,8 +35,12 @@ npm install flo-boolean
 after simplification has an outer shape (with winding number +1, resp. -1) with inner
 shapes (with winding number -1, resp. +1).
 
+However, this returns exactly the same result as `boolean('OR', ...)`
+
+# Boolean operations
+
 ```ts
-import { getPathsFromStr, simplifyPaths, boolean, OR, AND, XOR, Loop } from 'flo-boolean';
+import { getPathsFromStr, boolean } from 'flo-boolean';
 
 const svgPathStr = `
     M 0 0
@@ -59,26 +70,25 @@ const paths = getPathsFromStr(svgPathStr);
 //   ]
 // ]`
 
-const r = simplifyPaths(paths, undefined, { inclMicroCorners: false });
+const loops = boolean('OR', paths);
 
-// Now `r` consist of 2 sets of loops, each set containing a single loop (see fig. below)
-r[0][0].beziers;  //=> `[ [[300, 2], [200, -50], ...`
-r[1][0].beziers;  //=>  [ [[174.99999999999994, 41.108796296296305], ...`
+// Now `loops` consist of of loops
+loops[0];  //=> `[ [[300, 2], [200, -50], ...`
+loops[1];  //=>  [ [[174.99999999999994, 41.108796296296305], ...`
 ```
 
 ![Shape simplification - loop 1](https://raw.github.com/FlorisSteenkamp/FloBoolean/master/figs/koldat55-1a.png)
 ![Shape simplification - loop 2](https://raw.github.com/FlorisSteenkamp/FloBoolean/master/figs/koldat55-2a.png)
 
-# Boolean operations
 
-`boolean` performs shape boolean operations, e.g.
+## Another example
 
 ```ts
-import { getPathsFromStr, simplifyPaths, boolean, OR, AND, XOR, Loop } from 'flo-boolean';
+import { getPathsFromStr, boolean } from 'flo-boolean';
 
-// Say we have the following svg path strings (there can be more than 2)
+// Say we have the following svg path string
 
-const svgPathStrA = `
+const svgPathStr = `
     M 81 35
     Q 81  34  80  34
     Q 80  35  79  34.8
@@ -87,32 +97,26 @@ const svgPathStrA = `
     M 79  34
     L 79  32.8
     L 80  34
-    Z`;
+    Z
 
-const svgPathStrB = `
     M 79.4  33
     L 80.5  33
     L 80.5  34.7
     L 79.4 34.7
     Z`;
 
-const svgPathStrs = [svgPathStrA, svgPathStrB];
-
 // Convert them to an array of bezier curves forming "closed loops"
-const pathss = svgPathStrs.map(getPathsFromStr);
+const paths = getPathsFromStr(svgPathStr);
 
 
-const r = boolean(pathss, XOR);
-// `r` consist of new sets of loops being the boolean operation specified, i.e.
-// `OR`, `AND` or `XOR`. (see figs. below)
+const loops = boolean('XOR', paths);
+// `loops` consist of a new array of loops being the boolean operation specified, i.e.
+// `"OR"`, `"AND"` or `"XOR"`. (see figs. below)
 
-r[0][0].beziers;  //=> [ ... ]
-r[1][0].beziers;  //=> [ ... ]
-r[2][0].beziers;  //=> [ ... ]
-r[3][0].beziers;  //=> [ ... ]
-r[4][0].beziers;  //=> [ ... ]
-
-// You can also create your own custom operator (see other operators as examples)
+loops[0];  //=> [ ... ]
+loops[1];  //=> [ ... ]
+loops[2];  //=> [ ... ]
+loops[3];  //=> [ ... ]
 ```
 
 ![Boolean XOR - before](https://raw.github.com/FlorisSteenkamp/FloBoolean/master/figs/koldat52-over-square.png)

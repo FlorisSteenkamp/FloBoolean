@@ -2,6 +2,14 @@
 	xmlns="http://www.w3.org/2000/svg"
     version="1.1"
 >
+    <!-- orientation: negative (clockwise; shows anti-clockwise) -->
+    <!-- orientation: negative (clockwise; shows anti-clockwise) -->
+    <!-- orientation: negative (clockwise; shows anti-clockwise) -->
+
+    <!-- orientation: positive (anti-clockwise; shows clockwise) -->
+    <!-- orientation: positive (anti-clockwise; shows clockwise) -->
+    <!-- orientation: positive (anti-clockwise; shows clockwise) -->
+
     <path 
         class="shape"
         d=" M 0 0

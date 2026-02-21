@@ -102,7 +102,10 @@ function getXInOuts(
                         container,
                         side: x.side,
                         sideX: x.sideX!,
-                        loopsIdxs: new Set()
+                        loopsIdxs: new Set(),
+                        children: new Set(),
+                        windingNum: 0,
+                        orientation: 0
                     });
                     (prevX as Mutable<WithRI>).out = outs[outs.length-1];
                 }
@@ -118,7 +121,10 @@ function getXInOuts(
                         container,
                         side: prevX!.side!, 
                         sideX: prevX!.sideX!,
-                        loopsIdxs: new Set()
+                        loopsIdxs: new Set(),
+                        children: new Set(),
+                        windingNum: 0,
+                        orientation: 0
                     });
                     (x as Mutable<WithRI>).in_ = ins[ins.length-1];
                 }

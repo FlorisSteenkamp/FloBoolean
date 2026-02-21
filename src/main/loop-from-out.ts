@@ -7,19 +7,26 @@ import { reverseShapeOrientation } from "../loop/reverse-shape-orientation.js";
 /**
  * 
  * @param out 
- * @param orientation 
+ * @param outerLoopOrientation 
  * @param loopIdx identifies the loop during debugging
  */
 function loopFromOut(
         out: InOut,
-        orientation: number,
-        keepOriginalOrientation: boolean,
+        outerLoopOrientation: number,
+        // keepOriginalOrientation: boolean,
         loopIdx: number) {
 
     const _beziers = out.bezierPieces?.map(bezierPieceToBezier);
     if (_beziers === undefined) { return loopFromBeziers([], loopIdx); }
 
-    const beziers = orientation >= 0 || keepOriginalOrientation
+
+    const orientation = out.orientation;
+
+    // const beziers = orientation >= 0 || keepOriginalOrientation
+    // const beziers = outerLoopOrientation < 0
+    //     ? _beziers
+    //     : reverseShapeOrientation(_beziers);
+    const beziers = loopIdx === 0 || (outerLoopOrientation * orientation < 0)  // different orientations
         ? _beziers
         : reverseShapeOrientation(_beziers);
 

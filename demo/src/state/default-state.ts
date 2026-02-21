@@ -44,8 +44,8 @@ const defaultPageState: PageState = {
     toDraw: defaultToDraw,
     viewbox: [[0,0],[100,100]],
     vectorName : 'square',
-    vectorNameBoolean: 'two-squares',
-    forBoolean: true,
+    // vectorNameBoolean: 'two-squares',
+    // forBoolean: true,
     booleanOp: 'AND'
 };
 

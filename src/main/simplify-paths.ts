@@ -1,9 +1,11 @@
 declare const _debug_: Debug; 
 import type { Debug } from '../debug/debug.js';
 
+import type { BezierPiece } from 'flo-bezier3';
 import type { Mutable } from '../types/mutable.js';
 import type { InOut } from '../containers/in-out/in-out.js';
 import type { Loop } from '../loop/loop.js';
+import type { SimplifyOptions } from './simplify-options.js';
 import { completePath } from '../calc-paths/complete-path.js';
 import { getTightestContainingLoop } from '../calc-paths/get-tightest-containing-loop.js';
 import { orderLoopAscendingByMinY } from '../calc-paths/order-loop-ascending-by-min-y.js';
@@ -21,32 +23,11 @@ import { loopFromOut } from './loop-from-out.js';
 import { createRootInOut } from './create-root-in-out.js';
 import { bezierToBezierPiece } from '../calc-paths/bezier-to-bezier-piece.js';
 import { removeMicroCorners } from './remove-micro-corners.js';
-import { BezierPiece } from 'flo-bezier3';
 import { MAX_BIT_LENGTH } from './max-bitlength.js';
+import { mapOverTree } from '../utils/map-over-tree.js';
+import { reverseShapeOrientation } from '../loop/reverse-shape-orientation.js';
 
 const { abs, max } = Math;
-
-
-interface SimplifyOptions {
-    /**  */
-    readonly inclMicroCorners?: boolean;
-    /**
-     * * defaults to `(2**expMax * 2**(-12))**2`;
-     * * minimum area of a bezer loop before it will be discarded
-     */
-    readonly minLoopArea?: number;
-    /**
-     * defaults to `false` (for historic reasons); if `true` then the returned
-     * paths all have a positive (counter-clockwise) orientation for each single
-     * outermost loop (with the set of returned loops) with the rest being negatively
-     * oriented, else, if `false` the reverse is true.
-     */
-    readonly orientationPositive?: boolean;
-    /**
-     * defaults to `false` (for historic reasons);
-     */
-    readonly keepOriginalOrientation?: boolean;
-}
 
 
 /**
@@ -67,7 +48,7 @@ interface SimplifyOptions {
  * wrong value could cause the algorithm to fail
  */
 function simplifyPaths(
-        bezierLoops: number[][][][],
+        bezierLoops: (number[][])[][],
         maxCoordinate?: number,
         options: SimplifyOptions = {}): Loop[][] {
 
@@ -90,8 +71,10 @@ function simplifyPaths(
     const {
         inclMicroCorners = true,
         minLoopArea = (2**expMax * 2**(-12))**2,
-        orientationPositive = false,
-        keepOriginalOrientation = false
+        // orientationPositive = false,
+        // keepOriginalOrientation = false,
+        booleanOp = "OR",
+        containerSizeMultiplier = 2**4
     } = options;
 
     const gridSpacing = 2**expMax * 2**(-MAX_BIT_LENGTH);
@@ -102,7 +85,7 @@ function simplifyPaths(
      */
     //==================================================================
     // const containerSizeMultiplier = 2**4;
-    const containerSizeMultiplier = 2**4;
+    // const containerSizeMultiplier = 2**41;
     //==================================================================
     const containerDim = gridSpacing * containerSizeMultiplier;
 
@@ -185,19 +168,33 @@ function simplifyPaths(
         }
     }
 
+    if (typeof _debug_ !== 'undefined' && !!_debug_.verbose) {
+        // console.log(simplifyInOut(root));
+    }
+    
     const loopTrees = splitLoopTrees(root);
-    const outSets = loopTrees.map(getLoopsFromTree);
+
+    if (typeof _debug_ !== 'undefined' && !!_debug_.verbose) {
+        // loopTrees.forEach(lt => {
+        //     console.log(simplifyInOut(lt));
+        // });
+    }
+
+    const getLoopsFromTree_ = getLoopsFromTree(booleanOp);
+    const outSets = loopTrees.map(getLoopsFromTree_)
+        .filter(v => v.length !== 0);
 
     //----------------------------------------
     // Give outer loop a positive orientation
     //----------------------------------------
     const loopss = outSets.map(outSet => {
-        const outerLoopOrientation =
-            (orientationPositive || keepOriginalOrientation ? +1 : -1) * outSet[0].orientation!;
+        // const outerLoopOrientation =
+        //     (keepOriginalOrientation ? +1 : -1) * outSet[0].orientation;
+        const outerLoopOrientation = outSet[0].orientation;
 
-        return outSet.map((out,idx) => loopFromOut(out, outerLoopOrientation, keepOriginalOrientation, idx));
+        // return outSet.map((inOut,idx) => loopFromOut(inOut, outerLoopOrientation, keepOriginalOrientation, idx));
+        return outSet.map((inOut,idx) => loopFromOut(inOut, outerLoopOrientation, idx));
     });
-
 
     //----------------------------------------------------------
     // Filter each `loops` in `loopss` by min allowed loop area
@@ -250,5 +247,13 @@ function simplifyPaths(
 }
 
 
-export type { SimplifyOptions }
+/** for debugging only */
+function simplifyInOut(inOut: InOut) {
+    return mapOverTree(inOut, io => ({
+        idx: io.idx, dir: io.dir, windingNum: io.windingNum,
+        children: undefined
+    }))
+}
+
+
 export { simplifyPaths }

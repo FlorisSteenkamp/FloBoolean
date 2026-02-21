@@ -1,6 +1,6 @@
 {
     "liveServer.settings.port": 5502,
     "eslint.lintTask.enable": true,
-    "workbench.editor.enablePreview": false,
+    "workbench.editor.enablePreview": true,
     "workbench.editor.enablePreviewFromQuickOpen": false
 }

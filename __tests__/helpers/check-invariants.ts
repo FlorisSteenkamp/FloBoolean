@@ -36,7 +36,9 @@ function checkInvariants(
             if (!r) {
                 // _invariantCalc;//?
                 // _invariantReq//?
-                throw new Error(`Invariant not within tolerance: calculated ${_invariantCalc}, required ${_invariantReq}`);
+                throw new Error(
+                    `Invariant not within tolerance: calculated ${JSON.stringify(_invariantCalc)}, required ${JSON.stringify(_invariantReq)}`
+                );
             }
         }
     }

@@ -23,10 +23,10 @@ interface InOut {
     /** the next IInOut anti-clockwise around the container boundary */
     readonly nextAround?: InOut;
     /** +1 or -1 -> Clockwise or anti-clockwise */
-    readonly orientation?: number;
-    readonly windingNum?: number;
+    readonly orientation: number;
+    readonly windingNum: number;
     readonly parent?: InOut;
-    readonly children?: Set<InOut>;
+    readonly children: Set<InOut>;
     readonly bezierPieces?: BezierPiece[];
     /**
      * the ordering around the container (anti-clockwise from bottom right)
@@ -47,5 +47,7 @@ interface InOut {
      * to this `InOut` when seen as a loop
      */
     readonly loopsIdxs?: Set<number>;
+    /** used in `getLoopsFromTree` to see if the loop was reified */
+    readonly used?: boolean;
 }
 export { InOut };

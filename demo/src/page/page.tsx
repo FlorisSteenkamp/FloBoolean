@@ -38,13 +38,15 @@ function Page(props: Props) {
     // Props
     const { stateControl, pageState } = props;
     const { upd } = stateControl;
-    const { toDraw, forBoolean } = pageState;
+    // const { toDraw, forBoolean } = pageState;
+    const { toDraw } = pageState;
 
     // Hooks
     const ref = useRef<SVGSVGElement>(null);
     const refX = useRef<HTMLSpanElement>(null);
     const refY = useRef<HTMLSpanElement>(null);
-    useEffect(function() { lazyLoadDeduced(stateControl, ref, false, forBoolean) }, []); // run only once
+    // useEffect(function() { lazyLoadDeduced(stateControl, ref, false, forBoolean) }, []); // run only once
+    useEffect(function() { lazyLoadDeduced(stateControl, ref, false) }, []); // run only once
     
   
     function toDrawChanged(key: keyof ToDraw) {
@@ -61,26 +63,28 @@ function Page(props: Props) {
             child: React.ReactNode) {
 
         const vectorName = event.target.value as string;
-        upd(pageState, { vectorName, forBoolean: false });
-        lazyLoadDeduced(stateControl, ref, true, false);
+        // upd(pageState, { vectorName, forBoolean: false });
+        upd(pageState, { vectorName });
+        // lazyLoadDeduced(stateControl, ref, true, false);
+        lazyLoadDeduced(stateControl, ref, true);
     }
 
-    function onVectorSelected() {
-
-    }
+    // function onVectorSelected() {}
 
     function onRefreshClicked() {
-        lazyLoadDeduced(stateControl, ref, true, stateControl.state.appState.pageState.forBoolean);
+        // lazyLoadDeduced(stateControl, ref, true, stateControl.state.appState.pageState.forBoolean);
+        lazyLoadDeduced(stateControl, ref, true);
     }
 
-    function onVectorChangedBoolean(
-            event: SelectChangeEvent<string>,
-            child: React.ReactNode) {
+    // FUTURE - sets of loops
+    // function onVectorChangedBoolean(
+    //         event: SelectChangeEvent<string>,
+    //         child: React.ReactNode) {
 
-        const vectorNameBoolean = event.target.value as string;
-        upd(pageState, { vectorNameBoolean, forBoolean: true });
-        lazyLoadDeduced(stateControl, ref, true, true);
-    }
+    //     const vectorNameBoolean = event.target.value as string;
+    //     upd(pageState, { vectorNameBoolean, forBoolean: true });
+    //     lazyLoadDeduced(stateControl, ref, true, true);
+    // }
 
 
     function onClickForChanged(clickFor: ClickFor | 'spacer'): void {
@@ -90,9 +94,11 @@ function Page(props: Props) {
 
 
     function onBooleanOpChanged(booleanOp: BooleanOp | 'spacer'): void {
+        // FUTURE - sets of loops
         if (booleanOp === 'spacer') { return; }
         upd(pageState, { booleanOp });
-        lazyLoadDeduced(stateControl, ref, true, true);
+        // lazyLoadDeduced(stateControl, ref, true, true);
+        lazyLoadDeduced(stateControl, ref, true);
     }
 
 
@@ -160,7 +166,7 @@ function Page(props: Props) {
                             id="select-outlined"
                             value={pageState.vectorName}
                             onChange={onVectorChanged}
-                            onSelect={onVectorSelected}
+                            // onSelect={onVectorSelected}
                             label="Shape"
                         >
                             {vectors.map(v => 
@@ -168,7 +174,7 @@ function Page(props: Props) {
                             )}
                         </Select>
                     </FormControl>
-                    <FormControl size='small' variant="outlined" style={{ minWidth: '200px', verticalAlign: 'middle' }}>
+                    {/* <FormControl size='small' variant="outlined" style={{ minWidth: '200px', verticalAlign: 'middle' }}>
                         <InputLabel id="select-outlined-label-bool">Shapes</InputLabel>
                         <Select
                             labelId="select-outlined-label-bool"
@@ -181,7 +187,7 @@ function Page(props: Props) {
                                 <MenuItem key={v} value={v}>{v}</MenuItem>
                             )}
                         </Select>
-                    </FormControl>
+                    </FormControl> */}
                     <ButtonGroup<BooleanOp | 'spacer'>
                         label='Boolean Op'
                         styles={{ div: { display: 'inline-block', margin: '20px', verticalAlign: 'middle' } }}
@@ -189,7 +195,7 @@ function Page(props: Props) {
                             AND: { text: 'AND' },
                             OR: { text: 'OR' },
                             XOR: { text: 'XOR' },
-                            aNOTb: { text: 'aNOTb' },
+                            // aNOTb: { text: 'aNOTb' },
                         }}
                         value={pageState.booleanOp}
                         onChanged={onBooleanOpChanged}

@@ -15,6 +15,8 @@ import { loopFromOut } from './loop-from-out.js';
 import { createRootInOut } from './create-root-in-out.js';
 import { bezierToBezierPiece } from '../calc-paths/bezier-to-bezier-piece.js';
 import { removeMicroCorners } from './remove-micro-corners.js';
+import { MAX_BIT_LENGTH } from './max-bitlength.js';
+import { mapOverTree } from '../utils/map-over-tree.js';
 const { abs, max } = Math;
 /**
  * Returns the result of simplifying the given bezier loops so that the returned
@@ -47,18 +49,21 @@ function simplifyPaths(bezierLoops, maxCoordinate, options = {}) {
     maxCoordinate = maxCoordinate || getMaxCoordinate(bezierLoops);
     /** The exponent, e, such that 2**e >= all bezier coordinate points. */
     const expMax = Math.ceil(Math.log2(maxCoordinate));
-    const { maxBitLength = 46, inclMicroCorners = true, minLoopArea = (2 ** expMax * 2 ** (-12)) ** 2, orientationPositive = false, keepOriginalOrientation = false } = options;
-    const gridSpacing = 2 ** expMax * 2 ** (-maxBitLength);
+    const { inclMicroCorners = true, minLoopArea = (2 ** expMax * 2 ** (-12)) ** 2, 
+    // orientationPositive = false,
+    // keepOriginalOrientation = false,
+    booleanOp = "OR", containerSizeMultiplier = 2 ** 4 } = options;
+    const gridSpacing = 2 ** expMax * 2 ** (-MAX_BIT_LENGTH);
     /**
      * A size (based on the max value of the tangent) for the containers holding
      * critical points.
      */
     //==================================================================
     // const containerSizeMultiplier = 2**4;
-    const containerSizeMultiplier = 2 ** 4;
+    // const containerSizeMultiplier = 2**41;
     //==================================================================
     const containerDim = gridSpacing * containerSizeMultiplier;
-    bezierLoops = normalizeLoops(bezierLoops, maxBitLength, expMax, false, true);
+    bezierLoops = normalizeLoops(bezierLoops, MAX_BIT_LENGTH, expMax, false, true);
     addDebugInfo1(bezierLoops);
     bezierLoops.sort(orderLoopAscendingByMinY);
     const loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));
@@ -113,14 +118,27 @@ function simplifyPaths(bezierLoops, maxCoordinate, options = {}) {
             }
         }
     }
+    if (typeof _debug_ !== 'undefined' && !!_debug_.verbose) {
+        // console.log(simplifyInOut(root));
+    }
     const loopTrees = splitLoopTrees(root);
-    const outSets = loopTrees.map(getLoopsFromTree);
+    if (typeof _debug_ !== 'undefined' && !!_debug_.verbose) {
+        // loopTrees.forEach(lt => {
+        //     console.log(simplifyInOut(lt));
+        // });
+    }
+    const getLoopsFromTree_ = getLoopsFromTree(booleanOp);
+    const outSets = loopTrees.map(getLoopsFromTree_)
+        .filter(v => v.length !== 0);
     //----------------------------------------
     // Give outer loop a positive orientation
     //----------------------------------------
     const loopss = outSets.map(outSet => {
-        const outerLoopOrientation = (orientationPositive || keepOriginalOrientation ? +1 : -1) * outSet[0].orientation;
-        return outSet.map((out, idx) => loopFromOut(out, outerLoopOrientation, keepOriginalOrientation, idx));
+        // const outerLoopOrientation =
+        //     (keepOriginalOrientation ? +1 : -1) * outSet[0].orientation;
+        const outerLoopOrientation = outSet[0].orientation;
+        // return outSet.map((inOut,idx) => loopFromOut(inOut, outerLoopOrientation, keepOriginalOrientation, idx));
+        return outSet.map((inOut, idx) => loopFromOut(inOut, outerLoopOrientation, idx));
     });
     //----------------------------------------------------------
     // Filter each `loops` in `loopss` by min allowed loop area
@@ -154,6 +172,13 @@ function simplifyPaths(bezierLoops, maxCoordinate, options = {}) {
     addDebugInfo2(_loopss_); // adds debug info used within __tests__ (and the demo)
     // console.log(loopss_);
     return _loopss_;
+}
+/** for debugging only */
+function simplifyInOut(inOut) {
+    return mapOverTree(inOut, io => ({
+        idx: io.idx, dir: io.dir, windingNum: io.windingNum,
+        children: undefined
+    }));
 }
 export { simplifyPaths };
 //# sourceMappingURL=simplify-paths.js.map

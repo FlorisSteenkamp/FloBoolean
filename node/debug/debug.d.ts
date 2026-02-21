@@ -4,19 +4,20 @@ type GeneratedElems = {
     [T in keyof IDebugElems]: IDebugElems[T][];
 };
 interface ITiming {
-    normalize: number;
+    readonly normalize: number;
     simplifyPaths: number;
 }
 interface Generated {
-    elems: GeneratedElems;
-    timing: ITiming;
+    readonly elems: GeneratedElems;
+    readonly timing: ITiming;
 }
 interface IDebugFunctions {
-    drawElem: TDrawElemFunctions;
+    readonly drawElem: TDrawElemFunctions;
 }
 interface Debug {
-    generated: Generated;
-    fs: IDebugFunctions;
+    readonly generated: Generated;
+    readonly fs: IDebugFunctions;
+    readonly verbose: boolean;
 }
 /**
  * Returns a new debug object by spreading boolean operation debug information

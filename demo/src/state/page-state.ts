@@ -16,7 +16,9 @@ type ClickFor =
     | 'loopPre'
 
 
-type BooleanOp = 'AND' | 'OR' | 'XOR' | 'aNOTb';
+// FUTURE
+// type BooleanOp = 'AND' | 'OR' | 'XOR' | 'aNOTb';
+type BooleanOp = 'AND' | 'OR' | 'XOR';
 
 
 interface PageState {
@@ -27,8 +29,8 @@ interface PageState {
     readonly viewbox: number[][];
     readonly toDraw: ToDraw;
     readonly vectorName: string;
-    readonly vectorNameBoolean: string;
-    readonly forBoolean: boolean;
+    // readonly vectorNameBoolean: string;
+    // readonly forBoolean: boolean;
     readonly booleanOp: BooleanOp;
 }
 

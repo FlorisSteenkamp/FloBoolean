@@ -1,7 +1,10 @@
-import { completeLoop } from './complete-loop.js';
+declare const _debug_: Debug;
+import type { Debug } from '../debug/debug.js';
+
 import type { InOut } from '../containers/in-out/in-out.js';
 import type { Loop } from '../loop/loop.js';
-import { Mutable } from '../types/mutable.js';
+import type { Mutable } from '../types/mutable.js';
+import { completeLoop } from './complete-loop.js';
 
 
 /**
@@ -35,8 +38,8 @@ function completePath(
         (origInOut.parent! as Mutable<InOut>).children = origInOut.parent!.children || new Set();
         origInOut.parent!.children!.add(origInOut);
 
-        additionalOutsToCheck.map(v => v.idx);
-        for (let i=additionalOutsToCheck.length - 1; i>=0; i--) {
+        // for (let i=additionalOutsToCheck.length - 1; i>=0; i--) {
+        for (let i=0; i<additionalOutsToCheck.length; i++) {
             inOutStack.push(additionalOutsToCheck[i]);
         }
     }

@@ -17,7 +17,7 @@ function checkShapes(
         return loops.map(loop => {
             // loop.beziers;//?
             let centroid = getShapeCentroid(loop.beziers);
-            let area     = getShapeArea(loop.beziers);
+            let area     = Math.abs(getShapeArea(loop.beziers));
             let bounds   = getShapeBounds(loop.beziers);
 
             return { centroid, area, bounds };

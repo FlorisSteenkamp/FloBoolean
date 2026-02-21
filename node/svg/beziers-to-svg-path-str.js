@@ -5,37 +5,38 @@
  * control points
  */
 function beziersToSvgPathStr(beziers) {
-    let str = '';
+    const strs = [];
     for (let i = 0; i < beziers.length; i++) {
         const ps = beziers[i];
         if (i === 0) {
-            str = 'M ' +
+            strs.push('M ' +
                 ps[0][0].toString() + ' ' +
-                ps[0][1].toString() + '\n';
+                ps[0][1].toString());
         }
         if (ps.length === 4) {
-            str += 'C ' +
+            strs.push('C ' +
                 ps[1][0].toString() + ' ' +
                 ps[1][1].toString() + ' ' +
                 ps[2][0].toString() + ' ' +
                 ps[2][1].toString() + ' ' +
                 ps[3][0].toString() + ' ' +
-                ps[3][1].toString() + ' ' + '\n';
+                ps[3][1].toString() + ' ');
         }
         else if (ps.length === 3) {
-            str += 'Q ' +
+            strs.push('Q ' +
                 ps[1][0].toString() + ' ' +
                 ps[1][1].toString() + ' ' +
                 ps[2][0].toString() + ' ' +
-                ps[2][1].toString() + ' ' + '\n';
+                ps[2][1].toString() + ' ');
         }
         else if (ps.length === 2) {
-            str += 'L ' +
+            strs.push('L ' +
                 ps[1][0].toString() + ' ' +
-                ps[1][1].toString() + ' ' + '\n';
+                ps[1][1].toString() + ' ');
         }
     }
-    return str + ' z' + '\n';
+    strs.push(' z');
+    return strs.join('\n');
 }
 export { beziersToSvgPathStr };
 //# sourceMappingURL=beziers-to-svg-path-str.js.map

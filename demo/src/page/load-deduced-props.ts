@@ -1,5 +1,6 @@
 import { StateControl } from '../state-control/state-control';
-import { getPathsFromStr, simplifyPaths, boolean, OR, AND, XOR, Loop } from '../../../src/index.js';
+// import { getPathsFromStr, simplifyPaths, boolean, OR, AND, XOR, Loop } from '../../../src/index.js';
+import { getPathsFromStr, simplifyPaths } from '../../../src/index.js';
 import { updDebugGlobal } from "./upd-debug-global";
 import { getViewBoxForShapes } from './viewbox';
 
@@ -7,16 +8,17 @@ import { getViewBoxForShapes } from './viewbox';
 const IS_DEBUG_ON = true;
 
 
-function aNOTb(bits: boolean[]) {
-    return bits[0] && !bits[1];
-}
-const strToBooleanOp = { AND, OR, XOR, aNOTb }
+// function aNOTb(bits: boolean[]) {
+//     return bits[0] && !bits[1];
+// }
+// const strToBooleanOp = { AND, OR, XOR, aNOTb }
 
 
 async function loadDeducedProps(
         stateControl: StateControl,
         pathStrs: string[],
-        forBoolean: boolean) {
+        // forBoolean: boolean) {
+        ) {
 
     const bezierLoopss = pathStrs.map(getPathsFromStr);
     const viewbox = getViewBoxForShapes(bezierLoopss);
@@ -26,10 +28,17 @@ async function loadDeducedProps(
         // Resets _debug_
         updDebugGlobal(IS_DEBUG_ON);
         const { booleanOp } = stateControl.state.appState.pageState;
-        const op = strToBooleanOp[booleanOp];
-        const loopss = forBoolean
-            ? boolean(bezierLoopss, op)
-            : simplifyPaths(bezierLoopss[0], undefined, { orientationPositive: true, inclMicroCorners: true });
+        // const op = strToBooleanOp[booleanOp];
+        // const loopss = forBoolean
+        //     ? boolean(bezierLoopss, op)
+        //     : simplifyPaths(bezierLoopss[0], undefined, { orientationPositive: true, inclMicroCorners: true });
+        const loopss = simplifyPaths(
+            bezierLoopss[0], undefined, {
+                // orientationPositive: true,
+                inclMicroCorners: true,
+                booleanOp, containerSizeMultiplier: 2**4
+            }
+        );
         
         stateControl.transientState.bezierLoopss = loopss;
     } catch (e) {

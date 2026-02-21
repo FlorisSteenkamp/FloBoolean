@@ -1,0 +1,25 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+>
+    <path 
+        class="shape"
+        d="
+            M 81 35
+            Q 81  34  80  34
+            Q 80  35  79  34.8
+            Z
+            
+            M 79  34
+            L 79  32.8
+            L 80  34
+            Z
+
+            M 79.4  33
+            L 80.5  33
+            L 80.5  34.7
+            L 79.4 34.7
+            Z
+        "
+    />
+</svg>

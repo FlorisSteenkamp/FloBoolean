@@ -1,7 +1,7 @@
 declare const _debug_: Debug;
+import type { Debug } from '../debug/debug.js';
 
 import type { BezierPiece } from 'flo-bezier3';
-import type { Debug } from '../debug/debug.js';
 import type { InOut } from '../containers/in-out/in-out.js';
 import { closestPointOnBezierCertified } from 'flo-bezier3';
 import { mid } from 'flo-poly';
@@ -34,26 +34,27 @@ function completeLoop(
     let inOutToUse: InOut = origInOut;
     let additionalBezier: number[][] | undefined;
 
-    const tiosIdxs: number[] = [];
+    const getNextExit_ = tight ? getTightNextExit : getNextExit;
 
+    /** For debugging only */
+    const ios: InOut[] = [];
     do {
         takenInOuts.add(inOutToUse);
-        tiosIdxs.push(inOutToUse.idx!);  // for debugging
+        ios.push(inOutToUse);  // for debugging only
 
-        const inOut_NextOrPrev = inOutToUse.nextOrPrev!;
-        takenInOuts.add(inOut_NextOrPrev);
+        const inOut_Next = inOutToUse.nextOrPrev!;
+        takenInOuts.add(inOut_Next);
         
         const beziersToNextContainer = inOutToUse.dir === +1
-            ? getBeziersToNextContainer(inOutToUse, inOut_NextOrPrev)!
-            : getBeziersToPrevContainer(inOutToUse, inOut_NextOrPrev)!;
+            ? getBeziersToNextContainer(inOutToUse, inOut_Next)!
+            : getBeziersToPrevContainer(inOutToUse, inOut_Next)!;
 
-        const additionalBeziers = beziersToNextContainer;
+        bezierPieces.push(...beziersToNextContainer);
 
-        bezierPieces.push(...additionalBeziers);
-
-        const getNextExit_ = tight ? getTightNextExit : getNextExit;
-
-        const nextExit = getNextExit_(inOut_NextOrPrev!, origInOut, additionalOutsToCheck, takenInOuts);
+        const nextExit = getNextExit_(
+            inOut_Next!, origInOut,
+            additionalOutsToCheck, takenInOuts
+        );
 
         ({ inOutToUse, additionalBezier } = nextExit);
 
@@ -69,9 +70,24 @@ function completeLoop(
         }
     } while (inOutToUse !== origInOut);
 
-    tiosIdxs;//?
+    if (typeof _debug_ !== 'undefined' && !!_debug_.verbose) {
+        logIos(ios);
+    }
 
     return { bezierPieces, additionalOutsToCheck };
+}
+
+
+/** For debugging only */
+function logIos(ios: InOut[]) {
+    const strs: string[] = [];
+    const params: string[] = [];
+    for (let io of ios) {
+        params.push(io.dir === 1 ? "color: blue;" : "color: red");
+        strs.push(`%c${io.idx}`);
+    }
+
+    console.log('Taken ios: ' + strs.join(' '), ...params);
 }
 
 

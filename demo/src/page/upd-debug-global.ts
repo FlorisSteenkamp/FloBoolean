@@ -6,7 +6,10 @@ import { enableDebugForBooleanOp } from "../../../src/index";
  * Set global debug variable.
  */
 function updDebugGlobal(debugOn: boolean) {
-    (globalThis as any)._debug_ = {};
+    (globalThis as any)._debug_ = {
+        verbose: true
+        // verbose: false
+    };
 
     enableDebugDrawFs(debugOn);
     enableDebugForBooleanOp(debugOn);

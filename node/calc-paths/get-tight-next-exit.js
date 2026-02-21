@@ -8,10 +8,11 @@ import { containerIsBasic } from "../container.js";
 function getTightNextExit(inOut, origInOut, additionalOutsToCheck, takenInOuts) {
     const markInOutForChecking_ = markInOutForChecking(origInOut, takenInOuts, additionalOutsToCheck);
     orderInOuts(inOut.container, 1);
-    // console.log([inOut.idx, inOut.dir]);
+    // console.log(inOut.idx, inOut.dir);
     let inOutToUse = inOut.nextAround;
     // console.log([inOutToUse.idx, inOutToUse.dir], 'used');
     let next = inOut;
+    const marks = []; // for debugging
     const curLoopsIdxs = new Set(origInOut.loopsIdxs);
     do {
         next = next.nextAround;
@@ -19,6 +20,7 @@ function getTightNextExit(inOut, origInOut, additionalOutsToCheck, takenInOuts) 
             break;
         }
         markInOutForChecking_(next, origInOut.dir, origInOut, curLoopsIdxs);
+        marks.push(next.idx);
         if (next.dir === -1) {
             curLoopsIdxs?.add(next._x_?.curve.loop.idx);
         }
@@ -26,6 +28,7 @@ function getTightNextExit(inOut, origInOut, additionalOutsToCheck, takenInOuts) 
             curLoopsIdxs.delete(next._x_?.curve.loop.idx);
         }
     } while (true);
+    marks;
     let additionalBezier = undefined;
     if (!containerIsBasic(inOut.container)) {
         // add a "micro corner"

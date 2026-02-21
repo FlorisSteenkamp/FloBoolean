@@ -5,5 +5,5 @@ import type { InOut } from "../containers/in-out/in-out.js";
  * value > 1 are not returned.
  * @param root
  */
-declare function getLoopsFromTree(root: InOut): InOut[];
+declare function getLoopsFromTree(booleanOp?: 'AND' | 'OR' | 'XOR'): (root: InOut) => InOut[];
 export { getLoopsFromTree };

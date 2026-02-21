@@ -14,6 +14,8 @@ const vectorsBoolean = [
 ];
 
 const vectors = [
+    'koldat52-over-square-2',
+    'two-squares',
     'snuggle-1',
     'three-squares',
     'same-k-family-lines-2',

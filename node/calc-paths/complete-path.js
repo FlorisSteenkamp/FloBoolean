@@ -21,7 +21,10 @@ function completePath(initialOut, takenLoops, takenInOuts, tight) {
         origInOut.bezierPieces = bezierPieces;
         origInOut.parent.children = origInOut.parent.children || new Set();
         origInOut.parent.children.add(origInOut);
-        inOutStack.push(...additionalOutsToCheck);
+        // for (let i=additionalOutsToCheck.length - 1; i>=0; i--) {
+        for (let i = 0; i < additionalOutsToCheck.length; i++) {
+            inOutStack.push(additionalOutsToCheck[i]);
+        }
     }
 }
 export { completePath };
