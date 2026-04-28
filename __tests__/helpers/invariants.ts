@@ -11,4 +11,4 @@ interface Invariants {
 }
 
 
-export { Invariants }
+export type { Invariants }

@@ -1,7 +1,7 @@
 import type { Container } from "../container.js";
 import type { Mutable } from "../types/mutable.js";
+import type { InOut } from "./in-out/in-out.js";
 import { compareInOut } from "./get-container-in-outs/get-in-outs-via-sides/compare-in-out.js";
-import { InOut } from "./in-out/in-out.js";
 
 
 /**

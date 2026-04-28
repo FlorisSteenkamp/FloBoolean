@@ -1,4 +1,4 @@
-import { InOut } from "../containers/in-out/in-out.js";
+import type { InOut } from "../containers/in-out/in-out.js";
 /**
  *
  * @param inOut the in/out for which the next exit should be found

@@ -23,4 +23,5 @@ interface Container {
  * @param container
  */
 declare function containerIsBasic(container: Container): boolean;
-export { Container, containerIsBasic };
+export type { Container };
+export { containerIsBasic };

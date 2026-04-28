@@ -50,6 +50,7 @@ function parseNumber(source) {
     }
     // Read the decimals.
     if (ci < source._endIndex && source._string[ci] === ".") {
+        source._currentIndex += 1;
         ci += 1;
         if (ci >= source._endIndex ||
             source._string[ci] < "0" ||

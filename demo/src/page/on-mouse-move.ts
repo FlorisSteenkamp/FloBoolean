@@ -1,6 +1,6 @@
-import type { StateControl } from "../state-control/state-control";
-import { drawRect } from "./draw-rect";
-import { getViewboxXY } from "./get-viewbox-xy";
+import type { StateControl } from "../state-control/state-control.js";
+import { drawRect } from "./draw-rect.js";
+import { getViewboxXY } from "./get-viewbox-xy.js";
 
 
 function onMouseMove(

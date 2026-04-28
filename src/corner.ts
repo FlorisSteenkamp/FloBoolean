@@ -36,4 +36,4 @@ interface Corner {
 }
 
 
-export { Corner }
+export type { Corner }

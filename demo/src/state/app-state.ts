@@ -1,4 +1,4 @@
-import { PageState } from "./page-state";
+import type { PageState } from "./page-state.js";
 
 
 /**
@@ -11,4 +11,4 @@ interface AppState {
 }
 
 
-export { AppState }
+export type { AppState }

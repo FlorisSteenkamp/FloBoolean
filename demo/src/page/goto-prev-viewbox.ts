@@ -1,8 +1,8 @@
 declare const _debug_: Debug; 
 
-import { Debug } from '../../../src/index';
-import { StateControl } from "../state-control/state-control";
-import { getViewBoxForShape } from './viewbox';
+import { Debug } from '../../../src/index.js';
+import { StateControl } from "../state-control/state-control.js";
+import { getViewBoxForShape } from './viewbox.js';
 
 
 function gotoPrevViewbox(

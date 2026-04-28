@@ -1,6 +1,7 @@
+import type { BezierPiece } from "flo-bezier3";
+import type { InOut } from "../containers/in-out/in-out.js";
 import { mid } from 'flo-poly';
-import { closestPointOnBezierCertified, BezierPiece } from "flo-bezier3";
-import { InOut } from "../containers/in-out/in-out.js";
+import { closestPointOnBezierCertified } from "flo-bezier3";
 import { containerIsBasic } from "../container.js";
 
 

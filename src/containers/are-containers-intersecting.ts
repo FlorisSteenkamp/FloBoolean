@@ -1,5 +1,5 @@
+import type { Container } from "../container.js";
 import { areBoxesIntersecting } from "../are-boxes-intersecting.js";
-import { Container } from "../container.js";
 
 
 function areContainersIntersecting(container1: Container, container2: Container) {

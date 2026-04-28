@@ -2,4 +2,4 @@
 type NestedObj = { [key:string]: any };
 
 
-export { NestedObj }
+export type { NestedObj }

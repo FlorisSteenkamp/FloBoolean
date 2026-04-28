@@ -1,5 +1,5 @@
-import { StateControl } from "../state-control/state-control";
-import { getViewboxXY } from "./get-viewbox-xy";
+import { StateControl } from "../state-control/state-control.js";
+import { getViewboxXY } from "./get-viewbox-xy.js";
 
 
 function onMouseDown(

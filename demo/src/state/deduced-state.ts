@@ -4,4 +4,4 @@ interface DeducedState {
 }
 
 
-export { DeducedState }
+export type { DeducedState }

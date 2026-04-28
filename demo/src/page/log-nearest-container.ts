@@ -1,7 +1,7 @@
 declare const _debug_: Debug; 
 
-import { Debug } from '../../../src/debug/debug';
-import { Container, containerIsBasic } from '../../../src/container';
+import { Debug } from '../../../src/debug/debug.js';
+import { Container, containerIsBasic } from '../../../src/container.js';
 import { squaredDistanceBetween } from 'flo-vector2d';
 
 

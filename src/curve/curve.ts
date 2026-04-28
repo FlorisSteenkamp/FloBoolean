@@ -1,4 +1,4 @@
-import { Loop } from '../loop/loop.js';
+import type { Loop } from '../loop/loop.js';
 
 
 /**
@@ -32,4 +32,4 @@ interface Curve {
 }
 
 
-export { Curve }
+export type { Curve }

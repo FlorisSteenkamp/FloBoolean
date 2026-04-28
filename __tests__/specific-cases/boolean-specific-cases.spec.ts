@@ -2,10 +2,10 @@ import { test, expect } from '@jest/globals';
 // FUTURE
 test.skip('dummy test to silence error', () => {});
 
-// import { getPathsFromFile } from '../helpers/get-paths-from-file';
-// import { boolean } from '../../src/boolean/boolean';
-// import { OR } from '../../src/boolean/ops';
-// import { enableDebugForBooleanOp } from '../../src/debug/debug';
+// import { getPathsFromFile } from '../helpers/get-paths-from-file.js';
+// import { boolean } from '../../src/boolean/boolean.js';
+// import { OR } from '../../src/boolean/ops.js';
+// import { enableDebugForBooleanOp } from '../../src/debug/debug.js';
 
 
 // test('`boolean` specific cases', function() {

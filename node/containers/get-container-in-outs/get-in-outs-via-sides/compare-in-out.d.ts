@@ -1,4 +1,4 @@
-import { InOut } from "../../../containers/in-out/in-out.js";
+import type { InOut } from "../../../containers/in-out/in-out.js";
 /**
  * Returns the result of comparing two `InOut`s within the same container.
  *

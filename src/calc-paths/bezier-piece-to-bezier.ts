@@ -1,4 +1,5 @@
-import { BezierPiece, fromTo } from "flo-bezier3";
+import type { BezierPiece } from "flo-bezier3";
+import { fromTo } from "flo-bezier3";
 
 
 function bezierPieceToBezier(

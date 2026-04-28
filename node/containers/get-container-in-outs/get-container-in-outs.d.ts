@@ -1,5 +1,5 @@
-import { Container } from "../../container.js";
-import { InOut } from "../../containers/in-out/in-out.js";
+import type { Container } from "../../container.js";
+import type { InOut } from "../../containers/in-out/in-out.js";
 /**
  * * **warning** ioIdx will be modified by this function
  *

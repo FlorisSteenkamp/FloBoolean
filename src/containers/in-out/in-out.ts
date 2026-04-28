@@ -1,4 +1,4 @@
-import { BezierPiece } from "flo-bezier3";
+import type { BezierPiece } from "flo-bezier3";
 import type { __X__ } from "../../-x-.js";
 import type { Container } from "../../container.js";
 import type { X } from "../../x.js";
@@ -62,4 +62,4 @@ interface InOut {
 }
 
 
-export { InOut }
+export type { InOut }

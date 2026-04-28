@@ -1,5 +1,5 @@
-import { InOut } from "../containers/in-out/in-out.js";
-import { Mutable } from "../types/mutable.js";
+import type { InOut } from "../containers/in-out/in-out.js";
+import type { Mutable } from "../types/mutable.js";
 
 
 /**

@@ -1,27 +1,27 @@
 declare const _debug_: Debug; 
-
-import { Debug } from '../debug/debug.js';
-import { Container } from "../container.js";
+import type { Debug } from '../debug/debug.js';
+import type { Container } from "../container.js";
+import type { Mutable } from '../types/mutable.js';
+import type { __X__ } from '../-x-.js';
+import type { TGraph } from '../graph/get-connected-components.js';
+import type { Loop } from "../loop/loop.js";
+import type { InOut } from './in-out/in-out.js';
 import { areContainersIntersecting } from "./are-containers-intersecting.js";
-import { TGraph, addEdges, getConnectedComponents } from "../graph/get-connected-components.js";
+import { addEdges, getConnectedComponents } from "../graph/get-connected-components.js";
 import { getIsolatedComponents } from "./get-isolated-containers.js";
 import { mergeContainers } from "./merge-containers.js";
 import { getContainerInOuts } from "./get-container-in-outs/get-container-in-outs.js";
 import { getIntersections } from "../get-critical-points/get-intersections.js";
 import { setIntersectionNextValues } from "../get-critical-points/set-intersection-next-values.js";
-import { Loop } from "../loop/loop.js";
 import { sweepLine } from "../sweep-line/sweep-line.js";
 import { getSelfIntersections } from '../get-critical-points/get-self-intersections.js';
-import { InOut } from './in-out/in-out.js';
 import { getInterfaceIntersections } from '../get-critical-points/get-interface-intersections.js';
 import { getExcessiveCurvatures } from '../get-critical-points/get-excessive-curvatures.js';
 import { getExtremes } from '../get-critical-points/get-extremes.js';
 import { sendContainersToGrid } from './send-containers-to-grid.js';
-import { compareInOut } from './get-container-in-outs/get-in-outs-via-sides/compare-in-out.js';
+// import { compareInOut } from './get-container-in-outs/get-in-outs-via-sides/compare-in-out.js';
 import { filterContainers } from './filter-containers.js';
-import { orderInOuts } from './order-in-outs.js';
-import { Mutable } from '../types/mutable.js';
-import { __X__ } from '../-x-.js';
+// import { orderInOuts } from './order-in-outs.js';
 
 
 /**

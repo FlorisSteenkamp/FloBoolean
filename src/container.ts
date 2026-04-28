@@ -54,4 +54,5 @@ function containerIsBasic(container: Container) {
 }
 
 
-export { Container, containerIsBasic }
+export type { Container }
+export { containerIsBasic }

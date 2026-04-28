@@ -1,4 +1,4 @@
-import { ToDraw } from "../state/to-draw"
+import { ToDraw } from "../state/to-draw.js"
 
 
 const toDrawKeyToText: { [P in keyof ToDraw]?: string } = {

@@ -1,6 +1,6 @@
-import { Container } from "../container.js";
-import { Loop } from "../loop/loop.js";
-import { __X__ } from '../-x-.js';
+import type { Container } from "../container.js";
+import type { __X__ } from '../-x-.js';
+import type { Loop } from "../loop/loop.js";
 /**
  *
  * @param containerDim

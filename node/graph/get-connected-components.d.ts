@@ -1,4 +1,4 @@
-import { IntersectionResult } from '../sweep-line/sweep-line.js';
+import type { IntersectionResult } from '../sweep-line/sweep-line.js';
 /**
  * Representation of an undirectied graph as a map of adjacency lists, where
  * the map keys represent the Vertices (V) and the adjacency list the edges (E).
@@ -13,4 +13,5 @@ declare function addEdge<T>(graph: TGraph<T>, vertices: [T, T]): void;
  * Returns connected components for the given undirected graph
  */
 declare function getConnectedComponents<T>(graph: TGraph<T>): T[][];
-export { addEdge, getConnectedComponents, TGraph, addEdges };
+export { addEdge, getConnectedComponents, addEdges };
+export type { TGraph };

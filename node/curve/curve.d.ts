@@ -1,4 +1,4 @@
-import { Loop } from '../loop/loop.js';
+import type { Loop } from '../loop/loop.js';
 /**
  * Represents a bezier curve on the shape boundary / loop.
  */
@@ -28,4 +28,4 @@ interface Curve {
      */
     readonly idx: number;
 }
-export { Curve };
+export type { Curve };

@@ -1,6 +1,6 @@
 import * as fs from 'fs';
-import { getPathsFromStr } from '../../src/svg/get-paths-from-str';
-import { Invariants } from './invariants';
+import { getPathsFromStr } from '../../src/svg/get-paths-from-str.js';
+import { Invariants } from './invariants.js';
 
 
 function getPathFromFile(

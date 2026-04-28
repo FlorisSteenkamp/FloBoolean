@@ -7,8 +7,9 @@
         "noEmitOnError": true,
         "noEmit": false,
         "sourceMap": true,
-        "outDir": "node",
-        "moduleResolution": "node",
+        "rootDir": "./src",
+        "outDir": "./node",
+        "moduleResolution": "bundler",
         "jsx": "react"
     },
     "include": [

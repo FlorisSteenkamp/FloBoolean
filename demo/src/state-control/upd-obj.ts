@@ -1,6 +1,6 @@
-//import { assocPath } from "./assoc-path";
+//import { assocPath } from "./assoc-path.js";
 import { assocPath } from "ramda";
-import { getObjPath } from "./get-obj-path";
+import { getObjPath } from "./get-obj-path.js";
 
 
 function _updObj(

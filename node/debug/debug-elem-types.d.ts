@@ -1,7 +1,7 @@
-import { __X__ } from "../-x-.js";
-import { Container } from "../container.js";
-import { IPointOnShape } from "../point-on-shape/point-on-shape.js";
-import { Loop } from "../loop/loop.js";
+import type { __X__ } from "../-x-.js";
+import type { Container } from "../container.js";
+import type { IPointOnShape } from "../point-on-shape/point-on-shape.js";
+import type { Loop } from "../loop/loop.js";
 interface IDebugElems {
     readonly minY: IPointOnShape;
     readonly loop: Loop;
@@ -15,4 +15,4 @@ interface IDebugElems {
     readonly tightBoundingBox_: number[][];
     readonly boundingHull_: number[][];
 }
-export { IDebugElems };
+export type { IDebugElems };

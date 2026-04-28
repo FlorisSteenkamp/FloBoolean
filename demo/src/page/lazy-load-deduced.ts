@@ -1,8 +1,8 @@
-import { StateControl } from "../state-control/state-control";
-import { PageState } from "../state/page-state";
-import { drawElements } from "./draw-elements";
-import { loadDeducedProps } from "./load-deduced-props";
-import { loadPaths } from "./load-paths";
+import { StateControl } from "../state-control/state-control.js";
+import { PageState } from "../state/page-state.js";
+import { drawElements } from "./draw-elements.js";
+import { loadDeducedProps } from "./load-deduced-props.js";
+import { loadPaths } from "./load-paths.js";
 
 
 async function lazyLoadDeduced(

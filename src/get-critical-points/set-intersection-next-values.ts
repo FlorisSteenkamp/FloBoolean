@@ -1,6 +1,6 @@
 import type { __X__ } from "../-x-.js";
 import type { Loop } from "../loop/loop.js";
-import { Mutable } from "../types/mutable.js";
+import type { Mutable } from "../types/mutable.js";
 
 
 /**

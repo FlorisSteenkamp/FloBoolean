@@ -1,4 +1,4 @@
-import { BooleanOptions } from '../boolean/boolean-options';
+import type { BooleanOptions } from '../boolean/boolean-options.js';
 interface SimplifyOptions extends BooleanOptions {
     /**
      * generally set this to `false`; if `true` then the resulting paths

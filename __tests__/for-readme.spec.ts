@@ -15,7 +15,8 @@ test('test for readme - boolean', function() {
             L 175 25
             L 175 55
             L 125 55
-            Z`;
+            Z
+        `;
 
         const paths = getPathsFromStr(svgPathStr);
         // `paths` now consists of two 'bezier loops', i.e.
@@ -44,18 +45,18 @@ test('test for readme - boolean', function() {
     {  // XOR example
         const svgPathStr = `
             M 81 35
-            Q 81  34  80  34
-            Q 80  35  79  34.8
+            Q 81 34  80 34
+            Q 80 35  79 34.8
             Z
             
-            M 79  34
-            L 79  32.8
-            L 80  34
+            M 79 34
+            L 79 32.8
+            L 80 34
             Z
 
-            M 79.4  33
-            L 80.5  33
-            L 80.5  34.7
+            M 79.4 33
+            L 80.5 33
+            L 80.5 34.7
             L 79.4 34.7
             Z`;
 

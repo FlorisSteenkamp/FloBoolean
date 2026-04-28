@@ -11,7 +11,9 @@ import { getInterfaceIntersections } from '../get-critical-points/get-interface-
 import { getExcessiveCurvatures } from '../get-critical-points/get-excessive-curvatures.js';
 import { getExtremes } from '../get-critical-points/get-extremes.js';
 import { sendContainersToGrid } from './send-containers-to-grid.js';
+// import { compareInOut } from './get-container-in-outs/get-in-outs-via-sides/compare-in-out.js';
 import { filterContainers } from './filter-containers.js';
+// import { orderInOuts } from './order-in-outs.js';
 /**
  *
  * @param containerDim

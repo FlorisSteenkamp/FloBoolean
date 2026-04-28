@@ -1,4 +1,4 @@
-import { getShapeBounds } from "../../../src/calc-paths/get-shape-bounds";
+import { getShapeBounds } from "../../../src/calc-paths/get-shape-bounds.js";
 
 
 function getViewBoxForShape(bezierLoops: number[][][][]) {

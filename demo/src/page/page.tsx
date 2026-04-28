@@ -1,21 +1,21 @@
 import * as React from 'react';
 import { useRef, useEffect } from 'react';
 import { Container, FormControl, InputLabel, MenuItem, Select, Grid, Button } from '@mui/material';
-import { StateControl } from '../state-control/state-control';
-import { ToDraw } from '../state/to-draw';
-import { Checkbox } from '../components/simple-checkbox';
-import { vectors, vectorsBoolean } from '../state/vectors';
-import { BooleanOp, ClickFor, PageState } from '../state/page-state';
-import { toViewBoxStr } from './viewbox';
-import { ButtonGroup } from '../components/simple-button-group';
+import { StateControl } from '../state-control/state-control.js';
+import { ToDraw } from '../state/to-draw.js';
+import { Checkbox } from '../components/simple-checkbox.js';
+import { vectors, vectorsBoolean } from '../state/vectors.js';
+import { BooleanOp, ClickFor, PageState } from '../state/page-state.js';
+import { toViewBoxStr } from './viewbox.js';
+import { ButtonGroup } from '../components/simple-button-group.js';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { onMouseUp } from './on-mouse-up';
+import { onMouseUp } from './on-mouse-up.js';
 import { onClick } from './on-click.js';
-import { toDrawKeyToText } from './to-draw-key-to-text';
-import { onMouseMove } from './on-mouse-move';
-import { onMouseDown } from './on-mouse-down';
-import { drawElements } from './draw-elements';
-import { lazyLoadDeduced } from './lazy-load-deduced';
+import { toDrawKeyToText } from './to-draw-key-to-text.js';
+import { onMouseMove } from './on-mouse-move.js';
+import { onMouseDown } from './on-mouse-down.js';
+import { drawElements } from './draw-elements.js';
+import { lazyLoadDeduced } from './lazy-load-deduced.js';
 
 
 const toDrawCheckboxStyles = { 

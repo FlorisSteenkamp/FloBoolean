@@ -1,7 +1,6 @@
-import { BezierPiece } from "flo-bezier3";
-import { InOut } from "../containers/in-out/in-out.js";
+import type { InOut } from "../containers/in-out/in-out.js";
+import type { Mutable } from "../types/mutable.js";
 import { orderInOuts } from "../containers/order-in-outs.js";
-import { Mutable } from "../types/mutable.js";
 import { containerIsBasic } from "../container.js";
 
 

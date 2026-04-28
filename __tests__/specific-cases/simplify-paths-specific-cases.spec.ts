@@ -1,11 +1,11 @@
 import { test, expect } from '@jest/globals';
-import { getPathFromFile } from '../helpers/get-path-from-file';
-import { makeTolerance } from '../helpers/make-tolerance';
-import { checkShapes } from '../helpers/check-shapes';
-import { simplifyPaths } from '../../src/main/simplify-paths';
-import { enableDebugForBooleanOp } from '../../src/debug/debug';
-import { getPathsFromStr } from '../../src/svg/get-paths-from-str';
-import { boolean } from '../../src/boolean/boolean';
+import { getPathFromFile } from '../helpers/get-path-from-file.js';
+import { makeTolerance } from '../helpers/make-tolerance.js';
+import { checkShapes } from '../helpers/check-shapes.js';
+import { simplifyPaths } from '../../src/main/simplify-paths.js';
+import { enableDebugForBooleanOp } from '../../src/debug/debug.js';
+import { getPathsFromStr } from '../../src/svg/get-paths-from-str.js';
+import { boolean } from '../../src/boolean/boolean.js';
 
 
 test('`simplifyPaths` specific cases', function() {

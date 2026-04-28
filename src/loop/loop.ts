@@ -14,4 +14,4 @@ interface Loop {
 }
 
 
-export { Loop }
+export type { Loop }

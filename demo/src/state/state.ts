@@ -1,5 +1,5 @@
-import { AppState } from "./app-state";
-import { TransientState } from "./transient-state";
+import type { AppState } from "./app-state.js";
+import type { TransientState } from "./transient-state.js";
 
 
 interface State {
@@ -7,4 +7,4 @@ interface State {
 }
 
 
-export { State }
+export type { State }

@@ -1,6 +1,6 @@
+import type { __X__ } from "../-x-.js";
+import type { Loop } from "../loop/loop.js";
 import { curvature, getCurvatureExtrema } from "flo-bezier3";
-import { __X__ } from "../-x-.js";
-import { Loop } from "../loop/loop.js";
 import { makeSimpleX } from "./make-simple-x.js";
 
 

@@ -1,13 +1,13 @@
-import { logNearestContainer } from './log-nearest-container';
-import { logNearestBezierPre, logLooseBb_, logTightBb_, logBHull_ } from './log-bbs';
-import { logNearestBezierPost } from './log-nearest-bezier-post';
-import { logNearestLoopsPost } from './log-nearest-loops-post';
-import { logNearestLoopPost } from './log-nearest-loop-post';
-import { logNearestLoopPre } from './log-nearest-loop-pre'
-import { gotoPrevViewbox } from './goto-prev-viewbox';
-import { StateControl } from '../state-control/state-control';
-import { ClickFor } from '../state/page-state';
-import { getViewboxXY } from './get-viewbox-xy';
+import { logNearestContainer } from './log-nearest-container.js';
+import { logNearestBezierPre, logLooseBb_, logTightBb_, logBHull_ } from './log-bbs.js';
+import { logNearestBezierPost } from './log-nearest-bezier-post.js';
+import { logNearestLoopsPost } from './log-nearest-loops-post.js';
+import { logNearestLoopPost } from './log-nearest-loop-post.js';
+import { logNearestLoopPre } from './log-nearest-loop-pre.js'
+import { gotoPrevViewbox } from './goto-prev-viewbox.js';
+import { StateControl } from '../state-control/state-control.js';
+import { ClickFor } from '../state/page-state.js';
+import { getViewboxXY } from './get-viewbox-xy.js';
 
 
 function onClick(

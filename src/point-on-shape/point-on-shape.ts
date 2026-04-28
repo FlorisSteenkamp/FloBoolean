@@ -1,4 +1,4 @@
-import { Curve } from '../curve/curve.js';
+import type { Curve } from '../curve/curve.js';
 
 
 interface IPointOnShape {
@@ -10,6 +10,6 @@ interface IPointOnShape {
 }
 
 
-export { 
+export type { 
     IPointOnShape
 }

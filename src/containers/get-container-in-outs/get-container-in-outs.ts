@@ -1,7 +1,7 @@
-import { Container } from "../../container.js";
+import type { Container } from "../../container.js";
+import type { InOut } from "../../containers/in-out/in-out.js";
 import { getInOutsViaSides } from "./get-in-outs-via-sides/get-in-outs-via-sides.js";
 // import { getInOutsViaCrossing } from "./get-in-outs-via-crossing/get-in-outs-via-crossing.js";
-import { InOut } from "../../containers/in-out/in-out.js";
 
 
 /**

@@ -1,5 +1,5 @@
-import { Invariants } from "./invariants";
-import { Tolerance } from "./tolerance";
+import { Invariants } from "./invariants.js";
+import { Tolerance } from "./tolerance.js";
 
 const { abs } = Math;
 

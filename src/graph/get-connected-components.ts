@@ -1,4 +1,4 @@
-import { IntersectionResult } from '../sweep-line/sweep-line.js';
+import type { IntersectionResult } from '../sweep-line/sweep-line.js';
 
 
 /** 
@@ -77,4 +77,5 @@ function getConnectedComponents<T>(graph: TGraph<T>) {
 } 
 
 
-export { addEdge, getConnectedComponents, TGraph, addEdges }
+export { addEdge, getConnectedComponents, addEdges }
+export type { TGraph }

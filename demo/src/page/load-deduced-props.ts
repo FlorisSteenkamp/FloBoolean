@@ -1,8 +1,8 @@
-import { StateControl } from '../state-control/state-control';
+import { StateControl } from '../state-control/state-control.js';
 // import { getPathsFromStr, simplifyPaths, boolean, OR, AND, XOR, Loop } from '../../../src/index.js';
 import { getPathsFromStr, simplifyPaths } from '../../../src/index.js';
-import { updDebugGlobal } from "./upd-debug-global";
-import { getViewBoxForShapes } from './viewbox';
+import { updDebugGlobal } from "./upd-debug-global.js";
+import { getViewBoxForShapes } from './viewbox.js';
 
 
 const IS_DEBUG_ON = true;

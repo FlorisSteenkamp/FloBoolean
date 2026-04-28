@@ -1,13 +1,14 @@
+import type { RootInterval, RootIntervalExp } from "flo-poly";
+import type { __X__ } from "../../../-x-.js";
+import type { Curve } from "../../../curve/curve.js";
+import type { InOut } from "../../../containers/in-out/in-out.js";
+import type { Container } from "../../../container.js";
+import type { X } from "../../../x.js";
+import type { Mutable } from "../../../types/mutable.js";
 import { eEstimate } from "big-float-ts";
-import { allRootsCertified, RootIntervalExp, refineK1, RootInterval, rootIntervalToExp } from "flo-poly";
+import { allRootsCertified, refineK1, rootIntervalToExp } from "flo-poly";
 import { getCoeffsBezBez, getIntervalBoxDd } from "flo-bezier3";
-import { Container } from "../../../container.js";
-import { X } from "../../../x.js";
-import { __X__ } from "../../../-x-.js";
-import { Curve } from "../../../curve/curve.js";
 import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting.js";
-import { InOut } from "../../../containers/in-out/in-out.js";
-import { Mutable } from "../../../types/mutable.js";
 
 
 

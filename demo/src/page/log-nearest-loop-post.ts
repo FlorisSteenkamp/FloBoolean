@@ -1,8 +1,8 @@
 declare const _debug_: Debug; 
 
 import { squaredDistanceBetween } from 'flo-vector2d';
-import { Debug } from '../../../src/debug/debug';
-import { getShapeArea, Loop, getShapeCentroid, getWindingNumber } from '../../../src/index';
+import { Debug } from '../../../src/debug/debug.js';
+import { getShapeArea, Loop, getShapeCentroid, getWindingNumber } from '../../../src/index.js';
 import { drawFs } from 'flo-draw';
 
 

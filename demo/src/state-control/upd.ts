@@ -1,7 +1,7 @@
-import { State } from "../state/state";
-import { AppState } from "../state/app-state";
-import { _updObj } from "./upd-obj";
-import { NestedObj } from './nested-obj';
+import type { State } from "../state/state.js";
+import type { AppState } from "../state/app-state.js";
+import { _updObj } from "./upd-obj.js";
+import type { NestedObj } from './nested-obj.js';
 
 
 type UpdFunction = <T extends NestedObj>(v: T, newV: Partial<T>) => T;
@@ -68,4 +68,5 @@ function toLocalStorage(appState: AppState) {
 }
 
 
-export { _upd, Upd, UpdFunction }
+export { _upd }
+export type { Upd, UpdFunction }

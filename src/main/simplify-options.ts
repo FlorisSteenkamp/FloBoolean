@@ -1,4 +1,4 @@
-import { BooleanOptions } from '../boolean/boolean-options';
+import type { BooleanOptions } from '../boolean/boolean-options.js';
 
 
 interface SimplifyOptions extends BooleanOptions {

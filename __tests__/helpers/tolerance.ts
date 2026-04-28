@@ -6,4 +6,4 @@ interface Tolerance {
 }
 
 
-export { Tolerance }
+export type { Tolerance }

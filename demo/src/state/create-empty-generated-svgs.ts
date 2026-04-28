@@ -1,4 +1,4 @@
-import { IDebugElems } from "../../../src/debug/debug-elem-types";
+import { IDebugElems } from "../../../src/debug/debug-elem-types.js";
 
 
 function createEmptyGeneratedSvgs(): { [T in keyof IDebugElems]: SVGElement[][] }  {

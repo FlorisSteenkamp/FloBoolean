@@ -10,4 +10,4 @@ interface Loop {
     /** A reference to the loop */
     readonly idx?: number;
 }
-export { Loop };
+export type { Loop };
