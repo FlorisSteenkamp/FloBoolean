@@ -1,3 +1,4 @@
+import { test, expect } from '@jest/globals';
 import type { InOut } from '../src/containers/in-out/in-out.js';
 import { compareInOut } from '../src/containers/get-container-in-outs/get-in-outs-via-sides/compare-in-out.js';
 

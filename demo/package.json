@@ -7,15 +7,10 @@
     "author": "",
     "license": "MIT",
     "dependencies": {
-        "@emotion/react": "^11.14.0",
-        "@emotion/styled": "^11.14.1",
-        "@mui/material": "^7.3.8",
-        "ramda": "^0.32.0",
         "react": "^19.2.4",
         "react-dom": "^19.2.4"
     },
     "devDependencies": {
-        "@types/ramda": "^0.31.1",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
         "concurrently": "^9.2.1",

@@ -1,3 +1,4 @@
+import { test, expect } from '@jest/globals';
 import { getPathFromFile } from '../helpers/get-path-from-file';
 import { makeTolerance } from '../helpers/make-tolerance';
 import { checkShapes } from '../helpers/check-shapes';

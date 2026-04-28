@@ -1,3 +1,4 @@
+import { test, expect } from '@jest/globals';
 import { getTotalShapeCurvature } from "../src/loop/get-total-shape-curvature";
 import { reverseShapeOrientation } from "../src/loop/reverse-shape-orientation";
 

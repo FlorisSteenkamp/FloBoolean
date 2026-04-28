@@ -1,3 +1,4 @@
+import { test, expect } from '@jest/globals';
 import { getPathsFromStr } from '../src/svg/get-paths-from-str.js';
 import { boolean } from '../src/boolean/boolean.js';
 
