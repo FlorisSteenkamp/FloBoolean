@@ -7,13 +7,13 @@
         "noEmitOnError": true,
         "noEmit": false,
         "sourceMap": true,
-        "rootDir": "./src",
+        "rootDir": "..",
         "outDir": "./node",
         "moduleResolution": "bundler",
         "jsx": "react"
     },
     "include": [
-        "src/app.tsx"
+        "src/**/*"
     ],
     "exclude": [
         "node_modules"

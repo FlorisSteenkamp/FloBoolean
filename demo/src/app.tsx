@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useState } from 'react';
+import type { State } from './state/state.js';
+import type { StateControl } from './state-control/state-control.js';
 import { _upd } from './state-control/upd.js';
-import { State } from './state/state.js';
-import { StateControl } from './state-control/state-control.js';
 import { getInitialState } from './state/get-initial-state.js';
 import { defaultTransientState } from './state/default-state.js';
 import { Page } from './page/page.js';

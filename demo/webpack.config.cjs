@@ -15,7 +15,7 @@ module.exports = {
             '.tsx', '.ts', '.d.ts'
         ],
         extensionAlias: {
-            ".js": [".js", ".ts"],
+            ".js": [".js", ".ts", ".tsx"],
             ".cjs": [".cjs", ".cts"],
             ".mjs": [".mjs", ".mts"]
         },
