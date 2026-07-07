@@ -6,8 +6,6 @@ export type { IntersectionResult } from './sweep-line/sweep-line.js';
 export type { X } from './x.js';
 export type { _X_ } from './-x-.js';
 export type { SimplifyOptions } from './main/simplify-options.js';
-// FUTuRE
-// export type { BooleanOptions } from './boolean/boolean-options.js';
 export { enableDebugForBooleanOp } from './debug/debug.js';
 export { getPathsFromStr } from './svg/get-paths-from-str.js';
 export { beziersToSvgPathStr } from './svg/beziers-to-svg-path-str.js';
@@ -28,6 +26,3 @@ export { getShapeBounds } from './calc-paths/get-shape-bounds.js';
 export { isLoopInLoop } from './calc-paths/is-loop-in-loop.js';
 export { simplifyPaths } from './main/simplify-paths.js';
 export { boolean } from './boolean/boolean.js';
-// FUTURE
-// export { boolean } from './boolean/boolean.js';
-// export { AND, OR, XOR } from './boolean/ops.js';

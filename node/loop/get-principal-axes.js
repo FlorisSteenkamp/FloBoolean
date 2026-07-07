@@ -1,5 +1,5 @@
 import { ddAddDd, ddDiffDd, ddMultDd, ddNegativeOf } from 'double-double';
-import { allRootsCertified, allRootsCertifiedSimplified } from 'flo-poly';
+import { roots } from 'flo-poly';
 import { ddGet2ndMomentOfInertia, ddGetProdMomentOfInertia, get2ndMomentOfInertia, getProdMomentOfInertia } from "./get-2nd-moment-of-inertia.js";
 import { reverseShapeOrientation } from "./reverse-shape-orientation.js";
 import { getTotalShapeCurvature } from "./get-total-shape-curvature.js";
@@ -39,10 +39,10 @@ function getPrincipalAxes(pss) {
     const poly = [1, -(a + d), a * d - b * c];
     let v0;
     let v1;
-    const roots = allRootsCertifiedSimplified(poly).map(r => (r.tS + r.tE) / 2);
-    roots.sort((a, b) => abs(a) - abs(b));
-    let r0 = roots[0]; // Eigenvalue 1
-    let r1 = roots[1]; // Eigenvalue 2
+    const rs = roots(poly)?.map(r => r.t) || [];
+    rs.sort((a, b) => abs(a) - abs(b));
+    let r0 = rs[0]; // Eigenvalue 1
+    let r1 = rs[1]; // Eigenvalue 2
     // allow for floating point roundoff
     // see e.g. https://people.math.harvard.edu/~knill/teaching/math21b2004/exhibits/2dmatrices/index.html
     const Δ = 2 ** -40;
@@ -115,10 +115,10 @@ function ddGetPrincipalAxes(pss) {
     const poly = [[0, 1], ddNegativeOf(ddAddDd(a, d)), ddDiffDd(ddMultDd(a, d), ddMultDd(b, c))];
     let v0;
     let v1;
-    const roots = allRootsCertified(poly, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY).map(r => (r.tS + r.tE) / 2);
-    roots.sort((a, b) => abs(a) - abs(b));
-    let r0 = roots[0]; // Eigenvalue 1
-    let r1 = roots[1]; // Eigenvalue 2
+    const rs = roots(poly)?.map(r => r.t) || [];
+    rs.sort((a, b) => abs(a) - abs(b));
+    let r0 = rs[0]; // Eigenvalue 1
+    let r1 = rs[1]; // Eigenvalue 2
     // allow for floating point roundoff
     // see e.g. https://people.math.harvard.edu/~knill/teaching/math21b2004/exhibits/2dmatrices/index.html
     const Δ = 2 ** -40;

@@ -26,8 +26,8 @@ function getSelfIntersections(loops) {
             const box1 = getIntervalBox(ps, [t1S, t1E]); // ts are within 1 upls accurate
             xs.push([
                 // FUTURE - multiplicity relevant??
-                { x: { ri: { tS: t0S, tE: t0E, multiplicity: 1 }, box: box0, kind }, curve },
-                { x: { ri: { tS: t1S, tE: t1E, multiplicity: 1 }, box: box1, kind }, curve }
+                { x: { ri: { t: t0S, tS: t0S, tE: t0E, multiplicity: 1 }, box: box0, kind }, curve },
+                { x: { ri: { t: t1S, tS: t1S, tE: t1E, multiplicity: 1 }, box: box1, kind }, curve }
             ]);
         }
     }

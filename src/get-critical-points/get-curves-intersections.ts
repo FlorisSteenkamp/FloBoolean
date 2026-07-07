@@ -37,7 +37,6 @@ function getCurvesIntersections(expMax: number) {
 
         // check open bounding boxes
         const aabbsIntersectOpen = areBoxesIntersecting(false,
-        // const aabbsIntersectOpen = areBoxesIntersecting(true,
             getBoundingBox$(psA),
             getBoundingBox$(psB)
         );
@@ -55,7 +54,7 @@ function getCurvesIntersections(expMax: number) {
             return checkEndpoints(curveA, curveB);
         }
 
-        // neither aabbs nor hulls can split the curves
+        // neither aabbs (axis-aligned bounding boxes) nor hulls can split the curves
         return curveB.next === curveA 
             ? getIntersection(curveB, curveA, expMax, true)   // B-->A
             : getIntersection(curveA, curveB, expMax, true);  // A-->B
@@ -64,7 +63,8 @@ function getCurvesIntersections(expMax: number) {
     // curves are not connected at endpoints
 
     // check closed bounding boxes
-    let possiblyIntersecting = areBoxesIntersecting(true,
+    let possiblyIntersecting = areBoxesIntersecting(
+        true,  // closed (excluding boundary)
         getBoundingBox$(psA),
         getBoundingBox$(psB)
     );
@@ -85,7 +85,7 @@ function getCurvesIntersections(expMax: number) {
  * in which case `undefined` is returned) between curveA and curveB.
  * 
  * * **precondition:** curveA.next === curveB || curveB.next === curveA
- * * **precondition:** every intersection will be at an endpoint of at least
+ * * **precondition:** every intersection is at an endpoint of at least
  * one of the curves
  * 
  * @param curveA 
@@ -111,7 +111,6 @@ function checkEndpoints(
     const psB = curveB.ps;
 
     // Is last point (i.e. at `t` === 1) of curveB on curveA?
-    // if (isPointOnBezierExtension(psA, psB[psB.length-1])) {
     if (isPointOnBezierExtension(psA, psB[psB.length-1].map(c => [c]))) {
         // Check if they are in same k family (this *is* necessary for two curves
         // in same k-family joined end to end, e.g. ---A--->|---B---> in which

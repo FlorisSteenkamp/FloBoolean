@@ -32,15 +32,18 @@ async function loadDeducedProps(
         // const loopss = forBoolean
         //     ? boolean(bezierLoopss, op)
         //     : simplifyPaths(bezierLoopss[0], undefined, { orientationPositive: true, inclMicroCorners: true });
-        const loopss = simplifyPaths(
-            bezierLoopss[0], undefined, {
-                // orientationPositive: true,
-                inclMicroCorners: true,
-                booleanOp, containerSizeMultiplier: 2**4
-            }
-        );
-        
-        stateControl.transientState.bezierLoopss = loopss;
+        const NUM_LOOPS = 20;  // for better benchmarking
+        for (let i=0; i<NUM_LOOPS; i++) {
+            const loopss = simplifyPaths(
+                bezierLoopss[0], undefined, {
+                    // orientationPositive: true,
+                    inclMicroCorners: true,
+                    booleanOp, containerSizeMultiplier: 2**4
+                }
+            );
+
+            stateControl.transientState.bezierLoopss = loopss;
+        }
     } catch (e) {
         console.log(e);
     } finally {

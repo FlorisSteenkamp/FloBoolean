@@ -17,6 +17,7 @@ function getIntersection(
         expMax: number,
         isANextB: boolean): __X__[][] {
             
+    // console.log(isANextB);
     const ps1 = curveA.ps;
     const ps2 = curveB.ps;
 

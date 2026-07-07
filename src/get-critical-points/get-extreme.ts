@@ -33,7 +33,7 @@ function getExtreme(loop: Loop): __X__[] {
         // FUTURE - do we need 2 intersections???
         { 
             x: { 
-                ri: { tS: ts[0], tE: ts[1], multiplicity: 1 }, 
+                ri: { t: ts[0], tS: ts[0], tE: ts[1], multiplicity: 1 }, 
                 kind: 0, 
                 box: y.box
             }, 
@@ -41,7 +41,7 @@ function getExtreme(loop: Loop): __X__[] {
         },  // extreme
         { 
             x: { 
-                ri: { tS: ts[0], tE: ts[1], multiplicity: 1 },
+                ri: { t: ts[0], tS: ts[0], tE: ts[1], multiplicity: 1 },
                 kind: 0,
                 box: y.box
             },

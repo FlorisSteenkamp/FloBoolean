@@ -43,7 +43,7 @@ function getOutermostInAndOut(
     firstInOut.loopsIdxs = new Set(set);
     firstInOut.children = new Set();
     if (orientation === 1) {
-        firstInOut.loopsIdxs?.add(loop.idx!);
+        firstInOut.loopsIdxs?.add(loop.idx);
     }
 
     lastInOut.orientation = orientation;
@@ -52,7 +52,7 @@ function getOutermostInAndOut(
     lastInOut.loopsIdxs = new Set(set);
     lastInOut.children = new Set();
     if (orientation === 1) {
-        lastInOut.loopsIdxs?.add(loop.idx!);
+        lastInOut.loopsIdxs?.add(loop.idx);
     }
 
 

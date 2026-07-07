@@ -236,7 +236,7 @@ function simplifyPaths(
                 )
             );
             const beziers_ = removeMicroCorners(beziers, lengthTol);
-            return loopFromBeziers(beziers_, loop.idx!);
+            return loopFromBeziers(beziers_, loop.idx);
         }));
 
     addDebugInfo2(_loopss_);  // adds debug info used within __tests__ (and the demo)

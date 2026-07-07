@@ -87,7 +87,7 @@ function logIos(ios: InOut[]) {
         strs.push(`%c${io.idx}`);
     }
 
-    console.log('Taken ios: ' + strs.join(' '), ...params);
+    // console.log('Taken ios: ' + strs.join(' '), ...params);
 }
 
 

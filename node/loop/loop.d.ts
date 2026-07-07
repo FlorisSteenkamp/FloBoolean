@@ -8,6 +8,6 @@ interface Loop {
     /** A pre-ordered array of bezier curves to add initially.*/
     readonly beziers: number[][][];
     /** A reference to the loop */
-    readonly idx?: number;
+    readonly idx: number;
 }
 export type { Loop };

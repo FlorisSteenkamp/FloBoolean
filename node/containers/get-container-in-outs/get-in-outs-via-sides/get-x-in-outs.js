@@ -1,5 +1,5 @@
 import { eEstimate } from "big-float-ts";
-import { allRootsCertified, refineK1, rootIntervalToExp } from "flo-poly";
+import { roots, refineK1, rootIntervalToExp } from "flo-poly";
 import { getCoeffsBezBez, getIntervalBoxDd } from "flo-bezier3";
 import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting.js";
 function midBox(box) {
@@ -109,16 +109,18 @@ function getXs0(ps1, ps2) {
         return undefined;
     }
     const { coeffs, errBound, getPExact } = _coeffs;
-    const ris = allRootsCertified(coeffs, 0, 1, errBound, getPExact);
+    const ris = roots(coeffs, 0, 1, errBound, getPExact) || [];
     if (ris.length === 0) {
         return undefined;
     }
     return { ris: ris.map(rootIntervalToExp), getPExact };
 }
 function rootIntervalToDouble(ri) {
+    const tS = eEstimate(ri.tS);
+    const tE = eEstimate(ri.tE);
     return {
-        tS: eEstimate(ri.tS),
-        tE: eEstimate(ri.tE),
+        t: tS,
+        tS, tE,
         multiplicity: ri.multiplicity
     };
 }
@@ -179,7 +181,7 @@ function getTs(ps, side) {
                     for (const riPs of risPs) {
                         // FUTURE - below we're converting riPs (using getXs0) to RootIntervalExp and below back to 
                         // RootInterval again - not necessary - fix
-                        _risPs.push(...refineK1({ tS: riPs.tS[1], tE: riPs.tE[1], multiplicity: riPs.multiplicity }, getPExactPs_()));
+                        _risPs.push(...refineK1({ t: riPs.tS[1], tS: riPs.tS[1], tE: riPs.tE[1], multiplicity: riPs.multiplicity }, getPExactPs_()));
                     }
                     risPs = _risPs;
                     cPs++;
@@ -205,7 +207,7 @@ function getTs(ps, side) {
                 if (areBoxesIntersectingDd(true)(boxSideI, boxSideJ)) {
                     const _risSide = [];
                     for (const riSide of risSide) {
-                        _risSide.push(...refineK1({ tS: riSide.tS[1], tE: riSide.tE[1], multiplicity: riSide.multiplicity }, getPExactSide_()));
+                        _risSide.push(...refineK1({ t: riSide.tS[1], tS: riSide.tS[1], tE: riSide.tE[1], multiplicity: riSide.multiplicity }, getPExactSide_()));
                     }
                     risSide = _risSide;
                     cSide++;

@@ -1,4 +1,4 @@
-import { allRoots } from 'flo-poly';
+import { roots } from 'flo-poly';
 import { toPowerBasis, tangent, evalDeCasteljau } from 'flo-bezier3';
 import { toUnitVector, translate } from 'flo-vector2d';
 import { getBoundingBox$ } from '../get-bounding-box-.js';
@@ -99,7 +99,7 @@ function getAxisAlignedRayLoopIntersections(loop, p, dir) {
         }
         const translatedPs = ps.map(translate(offset));
         const poly = f(translatedPs);
-        const ts_ = allRoots(poly, 0 - DELTA, 1 + DELTA);
+        const ts_ = roots(poly, 0 - DELTA, 1 + DELTA)?.map(r => r.t) || [];
         for (let i = 0; i < ts_.length; i++) {
             const t = ts_[i];
             if (Math.abs(t) < DELTA || Math.abs(t - 1) < DELTA) {
