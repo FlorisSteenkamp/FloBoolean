@@ -32,7 +32,7 @@ async function loadDeducedProps(
         // const loopss = forBoolean
         //     ? boolean(bezierLoopss, op)
         //     : simplifyPaths(bezierLoopss[0], undefined, { orientationPositive: true, inclMicroCorners: true });
-        const NUM_LOOPS = 20;  // for better benchmarking
+        const NUM_LOOPS = 1;  // for better benchmarking
         for (let i=0; i<NUM_LOOPS; i++) {
             const loopss = simplifyPaths(
                 bezierLoopss[0], undefined, {

@@ -25,9 +25,8 @@ import { bezierToBezierPiece } from '../calc-paths/bezier-to-bezier-piece.js';
 import { removeMicroCorners } from './remove-micro-corners.js';
 import { MAX_BIT_LENGTH } from './max-bitlength.js';
 import { mapOverTree } from '../utils/map-over-tree.js';
-import { reverseShapeOrientation } from '../loop/reverse-shape-orientation.js';
 
-const { abs, max } = Math;
+const { abs, max, ceil, log2 } = Math;
 
 
 /**
@@ -66,7 +65,7 @@ function simplifyPaths(
      */
     maxCoordinate = maxCoordinate || getMaxCoordinate(bezierLoops);
     /** The exponent, e, such that 2**e >= all bezier coordinate points. */
-    const expMax = Math.ceil(Math.log2(maxCoordinate));
+    const expMax = ceil(log2(maxCoordinate));
 
     const {
         inclMicroCorners = true,
@@ -204,7 +203,7 @@ function simplifyPaths(
         const loops = loopss[i];
 
         const loops_ = loops.filter(
-            loop => Math.abs(getShapeArea(loop.beziers)) > minLoopArea
+            loop => abs(getShapeArea(loop.beziers)) > minLoopArea
         );
 
         if (loops_.length) { 
