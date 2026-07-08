@@ -7,7 +7,7 @@ test('`compareInOut`', function() {
     const inOutA: InOut = {
         side: 0,
         sideX: {
-            ri: { tS: 0.5, tE: 0.5, multiplicity: 1, },
+            ri: { t: 0.5, tS: 0.5, tE: 0.5, multiplicity: 1, },
             compensated: undefined,
             box: undefined!,  // not used in `compareInOut`
             kind: undefined!  // ...
@@ -24,7 +24,7 @@ test('`compareInOut`', function() {
     const inOutB: InOut = {
         side: 0,
         sideX: {
-            ri: { tS: 0.6, tE: 0.6, multiplicity: 1, },
+            ri: { t: 0.6, tS: 0.6, tE: 0.6, multiplicity: 1, },
             compensated: undefined,
             box: undefined!,  // not used in `compareInOut`
             kind: undefined!  // ...
