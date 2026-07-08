@@ -7,11 +7,12 @@ interface SimplifyOptions extends BooleanOptions {
      */
     readonly inclMicroCorners?: boolean;
     /**
-     * defaults to `false` (for historic reasons); if `true` then the returned
-     * paths all have a positive (counter-clockwise) orientation for each single
-     * outermost loop (with the set of returned loops) with the rest being negatively
-     * oriented (the holes), else, if `false` the reverse is true.
+     * defaults to `false`; if `true` then the returned paths all have a negative
+     * (clockwise) orientation for each single outermost loop (within the set of
+     * returned loopss) with the rest being positively oriented (the holes),
+     * else, if `false` the loops keep their natural orientation.
      */
+    readonly forceOrientationNegative?: boolean;
     /**
      * defaults to `false` (for historic reasons);
      */

@@ -70,7 +70,7 @@ function simplifyPaths(
     const {
         inclMicroCorners = true,
         minLoopArea = (2**expMax * 2**(-12))**2,
-        // orientationPositive = false,
+        forceOrientationNegative = false,
         // keepOriginalOrientation = false,
         booleanOp = "OR",
         containerSizeMultiplier = 2**4
@@ -187,12 +187,11 @@ function simplifyPaths(
     // Give outer loop a positive orientation
     //----------------------------------------
     const loopss = outSets.map(outSet => {
-        // const outerLoopOrientation =
-        //     (keepOriginalOrientation ? +1 : -1) * outSet[0].orientation;
         const outerLoopOrientation = outSet[0].orientation;
 
-        // return outSet.map((inOut,idx) => loopFromOut(inOut, outerLoopOrientation, keepOriginalOrientation, idx));
-        return outSet.map((inOut,idx) => loopFromOut(inOut, outerLoopOrientation, idx));
+        return outSet.map((inOut,idx) => 
+            loopFromOut(inOut, outerLoopOrientation, idx, forceOrientationNegative)
+        );
     });
 
     //----------------------------------------------------------
