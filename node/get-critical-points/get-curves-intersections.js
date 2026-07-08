@@ -26,9 +26,7 @@ function getCurvesIntersections(expMax) {
             // curves are connected at endpoints
             // closed bounding boxes are guaranteed to intersect - don't check
             // check open bounding boxes
-            const aabbsIntersectOpen = areBoxesIntersecting(false, 
-            // const aabbsIntersectOpen = areBoxesIntersecting(true,
-            getBoundingBox$(psA), getBoundingBox$(psB));
+            const aabbsIntersectOpen = areBoxesIntersecting(false, getBoundingBox$(psA), getBoundingBox$(psB));
             if (!aabbsIntersectOpen) {
                 return checkEndpoints(curveA, curveB);
             }
@@ -39,14 +37,15 @@ function getCurvesIntersections(expMax) {
             if (!hullsIntersectOpen) {
                 return checkEndpoints(curveA, curveB);
             }
-            // neither aabbs nor hulls can split the curves
+            // neither aabbs (axis-aligned bounding boxes) nor hulls can split the curves
             return curveB.next === curveA
                 ? getIntersection(curveB, curveA, expMax, true) // B-->A
                 : getIntersection(curveA, curveB, expMax, true); // A-->B
         }
         // curves are not connected at endpoints
         // check closed bounding boxes
-        let possiblyIntersecting = areBoxesIntersecting(true, getBoundingBox$(psA), getBoundingBox$(psB));
+        let possiblyIntersecting = areBoxesIntersecting(true, // closed (excluding boundary)
+        getBoundingBox$(psA), getBoundingBox$(psB));
         if (!possiblyIntersecting) {
             return undefined;
         }
@@ -65,7 +64,7 @@ function getCurvesIntersections(expMax) {
  * in which case `undefined` is returned) between curveA and curveB.
  *
  * * **precondition:** curveA.next === curveB || curveB.next === curveA
- * * **precondition:** every intersection will be at an endpoint of at least
+ * * **precondition:** every intersection is at an endpoint of at least
  * one of the curves
  *
  * @param curveA
@@ -85,7 +84,6 @@ function checkEndpoints(curveA, curveB) {
     const psA = curveA.ps;
     const psB = curveB.ps;
     // Is last point (i.e. at `t` === 1) of curveB on curveA?
-    // if (isPointOnBezierExtension(psA, psB[psB.length-1])) {
     if (isPointOnBezierExtension(psA, psB[psB.length - 1].map(c => [c]))) {
         // Check if they are in same k family (this *is* necessary for two curves
         // in same k-family joined end to end, e.g. ---A--->|---B---> in which

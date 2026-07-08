@@ -21,7 +21,7 @@
     "dependencies": {
         "big-float-ts": "^4.0.3",
         "double-double": "^3.0.4",
-        "flo-bezier3": "^7.0.2",
+        "flo-bezier3": "^7.0.3",
         "flo-draw": "^2.0.5",
         "flo-gauss-quadrature": "^2.1.4",
         "flo-memoize": "^2.0.1",
@@ -34,7 +34,7 @@
         "@swc/core": "^1.15.43",
         "@swc/jest": "^0.2.39",
         "@types/jest": "^30.0.0",
-        "@types/node": "^26.1.0",
+        "@types/node": "^26.1.1",
         "c8": "^11.0.0",
         "circular-dependency-plugin": "^5.2.2",
         "jest": "^30.4.2",

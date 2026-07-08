@@ -17,7 +17,7 @@ import { bezierToBezierPiece } from '../calc-paths/bezier-to-bezier-piece.js';
 import { removeMicroCorners } from './remove-micro-corners.js';
 import { MAX_BIT_LENGTH } from './max-bitlength.js';
 import { mapOverTree } from '../utils/map-over-tree.js';
-const { abs, max } = Math;
+const { abs, max, ceil, log2 } = Math;
 /**
  * Returns the result of simplifying the given bezier loops so that the returned
  * loops is an array of loops.
@@ -48,7 +48,7 @@ function simplifyPaths(bezierLoops, maxCoordinate, options = {}) {
      */
     maxCoordinate = maxCoordinate || getMaxCoordinate(bezierLoops);
     /** The exponent, e, such that 2**e >= all bezier coordinate points. */
-    const expMax = Math.ceil(Math.log2(maxCoordinate));
+    const expMax = ceil(log2(maxCoordinate));
     const { inclMicroCorners = true, minLoopArea = (2 ** expMax * 2 ** (-12)) ** 2, 
     // orientationPositive = false,
     // keepOriginalOrientation = false,
@@ -146,7 +146,7 @@ function simplifyPaths(bezierLoops, maxCoordinate, options = {}) {
     const loopss_ = [];
     for (let i = 0; i < loopss.length; i++) {
         const loops = loopss[i];
-        const loops_ = loops.filter(loop => Math.abs(getShapeArea(loop.beziers)) > minLoopArea);
+        const loops_ = loops.filter(loop => abs(getShapeArea(loop.beziers)) > minLoopArea);
         if (loops_.length) {
             loops_.sort((loopA, loopB) => {
                 return orderLoopAscendingByMinY(loopA.beziers, loopB.beziers);

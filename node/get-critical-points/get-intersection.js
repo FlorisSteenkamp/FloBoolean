@@ -1,5 +1,6 @@
 import { getEndpointIntersections, evalDeCasteljau, bezierBezierIntersectionBoundless } from "flo-bezier3";
 import { getOtherTs } from './get-other-t.js';
+let ii = 0;
 /**
  *
  * @param curveA
@@ -8,10 +9,20 @@ import { getOtherTs } from './get-other-t.js';
  * @param isANextB is curveB the next curve after curveA, i.e. is A's next B
  */
 function getIntersection(curveA, curveB, expMax, isANextB) {
+    // console.log(isANextB);
     const ps1 = curveA.ps;
     const ps2 = curveB.ps;
     const xs = [];
     let ris2 = bezierBezierIntersectionBoundless(ps1, ps2);
+    // TODO
+    // if (isANextB && ii++ < 2) {
+    //     const P_ = ps1[ps1.length-1];
+    //     const _P = ps2[0];
+    //     // console.log(P_[0] === _P[0] && P_[1] === _P[1]);
+    //     const { coeffs, errBound, getPExact } = getCoeffsBezBez(ps1,ps2);
+    //     getImplicitForm3ExactPb
+    //     // console.log(coeffs);
+    // }
     if (ris2 === undefined) {
         // the curves have an infinte number of intersections
         // some reasonable error bound -> to be fine-tuned, but cannot

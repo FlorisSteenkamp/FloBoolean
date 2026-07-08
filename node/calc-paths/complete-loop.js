@@ -55,7 +55,7 @@ function logIos(ios) {
         params.push(io.dir === 1 ? "color: blue;" : "color: red");
         strs.push(`%c${io.idx}`);
     }
-    console.log('Taken ios: ' + strs.join(' '), ...params);
+    // console.log('Taken ios: ' + strs.join(' '), ...params);
 }
 export { completeLoop };
 //# sourceMappingURL=complete-loop.js.map
