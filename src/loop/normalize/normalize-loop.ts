@@ -1,5 +1,5 @@
 declare const _debug_: Debug; 
-import type { Debug, Timing } from '../../debug/debug.js';
+import type { Debug } from '../../debug/debug.js';
 import { bitLength } from 'big-float-ts';
 import { fixBeziers } from "./fix-beziers.js";
 import { toGrid } from './to-grid.js';

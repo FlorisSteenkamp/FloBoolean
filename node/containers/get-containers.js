@@ -31,20 +31,11 @@ function getContainers(loops, containerDim, expMax) {
     // console.log('topmost  ', xs4);
     // console.log('excessive  ', xs5);
     if (typeof _debug_ !== 'undefined') {
-        for (const xPair of xs1) {
-            _debug_.elems.intersection.push(...xPair);
-        }
-        for (const xPair of xs2) {
-            _debug_.elems.intersection.push(...xPair);
-        }
-        for (const xPair of xs3) {
-            _debug_.elems.intersection.push(...xPair);
-        }
-        for (const xPair of xs4) {
-            _debug_.elems.intersection.push(...xPair);
-        }
-        for (const xPair of xs5) {
-            _debug_.elems.intersection.push(...xPair);
+        const { intersection } = _debug_.elems;
+        for (const xs of [xs1, xs2, xs3, xs4, xs5]) {
+            for (const xPair of xs) {
+                intersection.push(...xPair);
+            }
         }
     }
     // initialize the containers with one of the one-sided intersections

@@ -1,6 +1,3 @@
-declare const _debug_: Debug;
-import type { Debug } from '../debug/debug.js';
-
 import type { InOut } from '../containers/in-out/in-out.js';
 import type { Loop } from '../loop/loop.js';
 import type { Mutable } from '../types/mutable.js';
@@ -38,7 +35,6 @@ function completePath(
         (origInOut.parent! as Mutable<InOut>).children = origInOut.parent!.children || new Set();
         origInOut.parent!.children!.add(origInOut);
 
-        // for (let i=additionalOutsToCheck.length - 1; i>=0; i--) {
         for (let i=0; i<additionalOutsToCheck.length; i++) {
             inOutStack.push(additionalOutsToCheck[i]);
         }
