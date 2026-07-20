@@ -1,5 +1,4 @@
 declare const _debug_: Debug; 
-
 import { getBoundingBoxTight, getBoundingHull } from 'flo-bezier3';
 import { Debug } from '../debug/debug.js';
 import { getBoundingBox$ } from '../get-bounding-box-.js';
@@ -18,17 +17,17 @@ function addDebugInfo1(bezierLoops: number[][][][]) {
 
     
     for (const loop of bezierLoops) {
-        _debug_.generated.elems.loopPre.push(...bezierLoops);
-        _debug_.generated.elems.loopsPre.push(bezierLoops);
+        _debug_.elems.loopPre.push(...bezierLoops);
+        _debug_.elems.loopsPre.push(bezierLoops);
 
         for (const ps of loop) {
             const lbb   = getBoundingBox$(ps);
             const tbb   = getBoundingBoxTight(ps);
             const bhull = getBoundingHull(ps, false)!;
-            _debug_.generated.elems.bezier_          .push(ps);
-            _debug_.generated.elems.looseBoundingBox_.push(lbb);
-            _debug_.generated.elems.tightBoundingBox_.push(tbb);
-            _debug_.generated.elems.boundingHull_    .push(bhull);
+            _debug_.elems.bezier_          .push(ps);
+            _debug_.elems.looseBoundingBox_.push(lbb);
+            _debug_.elems.tightBoundingBox_.push(tbb);
+            _debug_.elems.boundingHull_    .push(bhull);
         }
     }
 }

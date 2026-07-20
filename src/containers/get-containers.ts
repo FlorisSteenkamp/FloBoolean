@@ -49,11 +49,11 @@ function getContainers(
 
 
     if (typeof _debug_ !== 'undefined') { 
-        for (const xPair of xs1) { _debug_.generated.elems.intersection.push(...xPair); }
-        for (const xPair of xs2) { _debug_.generated.elems.intersection.push(...xPair); }
-        for (const xPair of xs3) { _debug_.generated.elems.intersection.push(...xPair); }
-        for (const xPair of xs4) { _debug_.generated.elems.intersection.push(...xPair); }
-        for (const xPair of xs5) { _debug_.generated.elems.intersection.push(...xPair); }
+        for (const xPair of xs1) { _debug_.elems.intersection.push(...xPair); }
+        for (const xPair of xs2) { _debug_.elems.intersection.push(...xPair); }
+        for (const xPair of xs3) { _debug_.elems.intersection.push(...xPair); }
+        for (const xPair of xs4) { _debug_.elems.intersection.push(...xPair); }
+        for (const xPair of xs5) { _debug_.elems.intersection.push(...xPair); }
     }
 
     // initialize the containers with one of the one-sided intersections
@@ -101,9 +101,7 @@ function getContainers(
     containers = filterContainers(containers);
     containers = sendContainersToGrid(containers, expMax, containerDim);
 
-    // console.log(xPairs.map(xp => xp[0].x.kind).filter(k => k === 7).length);
-
-    if (typeof _debug_ !== 'undefined') { _debug_.generated.elems.container = containers; }
+    if (typeof _debug_ !== 'undefined') { _debug_.elems.container.push(...containers); }
 
     // Add the other half of the intersections too - all intersections has 
     // exactly one opposite curve intersection (t values come in pairs)

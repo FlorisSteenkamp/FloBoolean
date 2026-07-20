@@ -1,5 +1,5 @@
+import type { DebugElems } from '../debug-elem-types.js';
 import { drawFs } from 'flo-draw';
-import { IDebugElems } from '../debug-elem-types.js';
 import { drawMinY } from './draw-min-y.js';
 import { drawLoop } from './draw-loop.js';
 import { drawLoops } from './draw-loops.js';
@@ -12,11 +12,11 @@ import { drawLoopPre } from './draw-loop-pre.js';
 import { drawLoopsPre } from './draw-loops-pre.js';
 
 
-type TDrawElemFunctions = 
-	{ [T in keyof IDebugElems]: (g: SVGGElement, elem: IDebugElems[T], classes?: string, delay?: number) => SVGElement[] };
+type DrawElemFunctions = 
+	{ [T in keyof DebugElems]: (g: SVGGElement, elem: DebugElems[T], classes?: string, delay?: number) => SVGElement[] };
 
 
-const drawElemFunctions: TDrawElemFunctions = {
+const drawElemFunctions: DrawElemFunctions = {
 	minY: drawMinY,
 	loop: drawLoop,
 	loopPre: drawLoopPre,
@@ -31,4 +31,4 @@ const drawElemFunctions: TDrawElemFunctions = {
 }
 
 
-export { drawElemFunctions, TDrawElemFunctions }
+export { drawElemFunctions, DrawElemFunctions as TDrawElemFunctions }

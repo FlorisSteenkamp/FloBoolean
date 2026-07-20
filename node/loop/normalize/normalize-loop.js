@@ -33,6 +33,9 @@ function normalizeLoops(bezierLoops, maxBitLength, expMax, doScramble = false, d
     loops = doScramble ? scrambleLoops(loops, maxBitLength, expMax, 1) : loops;
     loops = loops.map(fixBeziers_);
     loops = loops.filter(loop => loop.length > 0);
+    if (typeof _debug_ !== 'undefined') {
+        _debug_.timing.normalize = performance.now() - _debug_.timing.timingStart;
+    }
     return loops;
 }
 /** Just for testing purposes - not used in the actual algorithm */

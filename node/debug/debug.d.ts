@@ -1,29 +1,28 @@
-import type { IDebugElems } from './debug-elem-types.js';
+import type { DebugElems } from './debug-elem-types.js';
 import { TDrawElemFunctions } from './draw-elem/draw-elem.js';
 type GeneratedElems = {
-    [T in keyof IDebugElems]: IDebugElems[T][];
+    [T in keyof DebugElems]: DebugElems[T][];
 };
-interface ITiming {
-    readonly normalize: number;
+interface Timing {
+    timingStart: number;
+    normalize: number;
     simplifyPaths: number;
 }
-interface Generated {
-    readonly elems: GeneratedElems;
-    readonly timing: ITiming;
-}
-interface IDebugFunctions {
+interface DebugFunctions {
     readonly drawElem: TDrawElemFunctions;
 }
 interface Debug {
-    readonly generated: Generated;
-    readonly fs: IDebugFunctions;
+    readonly elems: GeneratedElems;
+    readonly timing: Timing;
+    readonly fs: DebugFunctions;
     readonly verbose: boolean;
 }
 /**
  * Returns a new debug object by spreading boolean operation debug information
  * onto the given (possibly undefined) debug object.
+ *
  * @param debug a (possibly undefined) debug object
  */
 declare function enableDebugForBooleanOp(debugOn: boolean): void;
-export type { Debug, GeneratedElems, ITiming, Generated, IDebugFunctions };
+export type { Debug, GeneratedElems, Timing, DebugFunctions };
 export { enableDebugForBooleanOp };

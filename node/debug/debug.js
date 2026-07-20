@@ -2,6 +2,7 @@ import { drawElemFunctions } from './draw-elem/draw-elem.js';
 /**
  * Returns a new debug object by spreading boolean operation debug information
  * onto the given (possibly undefined) debug object.
+ *
  * @param debug a (possibly undefined) debug object
  */
 function enableDebugForBooleanOp(debugOn) {
@@ -12,32 +13,29 @@ function enableDebugForBooleanOp(debugOn) {
     const debug = globalThis._debug_;
     const debug_ = {
         ...debug,
-        generated: {
-            ...(!debug ? {} : !debug.generated ? {} : debug.generated),
-            elems: {
-                ...(!debug ? {} : !debug.generated ? {} : !debug.generated.elems ? {} : debug.generated.elems),
-                minY: [],
-                loop: [],
-                loopPre: [],
-                loopsPre: [],
-                loops: [],
-                intersection: [],
-                container: [],
-                bezier_: [],
-                looseBoundingBox_: [],
-                tightBoundingBox_: [],
-                boundingHull_: [],
-            },
-            timing: {
-                ...(!debug ? {} : !debug.generated ? {} : !debug.generated.timing ? {} : debug.generated.timing),
-                normalize: 0,
-                simplifyPaths: 0,
-            }
+        elems: {
+            ...debug?.elems,
+            minY: [],
+            loop: [],
+            loopPre: [],
+            loopsPre: [],
+            loops: [],
+            intersection: [],
+            container: [],
+            bezier_: [],
+            looseBoundingBox_: [],
+            tightBoundingBox_: [],
+            boundingHull_: [],
+        },
+        timing: {
+            ...debug?.timing,
+            normalize: 0,
+            simplifyPaths: 0,
         },
         fs: {
-            ...(!debug ? {} : !debug.fs ? {} : debug.fs),
+            ...debug?.fs,
             drawElem: {
-                ...(!debug ? {} : !debug.fs ? {} : !debug.fs.drawElem ? {} : debug.fs.drawElem),
+                ...debug?.fs.drawElem,
                 ...drawElemFunctions
             }
         }

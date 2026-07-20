@@ -3,8 +3,8 @@ function addDebugInfo2(loopss) {
         return;
     }
     for (const loops of loopss) {
-        _debug_.generated.elems.loop.push(...loops);
-        _debug_.generated.elems.loops.push(loops);
+        _debug_.elems.loop.push(...loops);
+        _debug_.elems.loops.push(loops);
         //console.log(loopsToSvgPathStr(loops.map(loop => loop.beziers)));
     }
     // ---------------------------------------------------------------------

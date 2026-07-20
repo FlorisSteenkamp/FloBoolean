@@ -36,11 +36,10 @@ const { abs, max, ceil, log2 } = Math;
  * wrong value could cause the algorithm to fail
  */
 function simplifyPaths(bezierLoops, maxCoordinate, options = {}) {
-    let timingStart;
-    if (typeof _debug_ !== 'undefined') {
-        timingStart = performance.now();
-    }
     // bezierLoops = bezierLoops.map(reverseShapeOrientation);  // For quick tests
+    if (typeof _debug_ !== 'undefined') {
+        _debug_.timing.timingStart = performance.now();
+    }
     /**
      * All bezier coordinates will be truncated to this (bit-aligned) bitlength.
      * Higher bitlengths would increase the running time of the algorithm
@@ -117,15 +116,7 @@ function simplifyPaths(bezierLoops, maxCoordinate, options = {}) {
             }
         }
     }
-    if (typeof _debug_ !== 'undefined' && !!_debug_.verbose) {
-        // console.log(simplifyInOut(root));
-    }
     const loopTrees = splitLoopTrees(root);
-    if (typeof _debug_ !== 'undefined' && !!_debug_.verbose) {
-        // loopTrees.forEach(lt => {
-        //     console.log(simplifyInOut(lt));
-        // });
-    }
     const getLoopsFromTree_ = getLoopsFromTree(booleanOp);
     const outSets = loopTrees.map(getLoopsFromTree_)
         .filter(v => v.length !== 0);
@@ -151,8 +142,7 @@ function simplifyPaths(bezierLoops, maxCoordinate, options = {}) {
         }
     }
     if (typeof _debug_ !== 'undefined') {
-        const timing = _debug_.generated.timing;
-        timing.simplifyPaths = performance.now() - timingStart;
+        _debug_.timing.simplifyPaths = performance.now() - _debug_.timing.timingStart - _debug_.timing.normalize;
     }
     //-------------------------------------
     // Remove "micro corners" if requested

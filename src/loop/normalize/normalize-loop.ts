@@ -1,3 +1,5 @@
+declare const _debug_: Debug; 
+import type { Debug, Timing } from '../../debug/debug.js';
 import { bitLength } from 'big-float-ts';
 import { fixBeziers } from "./fix-beziers.js";
 import { toGrid } from './to-grid.js';
@@ -41,7 +43,11 @@ function normalizeLoops(
     // just for testing purposes
     loops = doScramble ? scrambleLoops(loops, maxBitLength, expMax, 1): loops;
     loops = loops.map(fixBeziers_);
-    loops = loops.filter(loop => loop.length > 0)
+    loops = loops.filter(loop => loop.length > 0);
+
+    if (typeof _debug_ !== 'undefined') {
+        _debug_.timing.normalize = performance.now() - _debug_.timing.timingStart!;
+    }
 
     return loops;
 }

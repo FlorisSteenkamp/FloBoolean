@@ -1,6 +1,5 @@
 declare const _debug_: Debug; 
-import type { Debug } from '../debug/debug.js';
-
+import type { Debug, Timing } from '../debug/debug.js';
 import type { BezierPiece } from 'flo-bezier3';
 import type { Mutable } from '../types/mutable.js';
 import type { InOut } from '../containers/in-out/in-out.js';
@@ -51,12 +50,11 @@ function simplifyPaths(
         maxCoordinate?: number,
         options: SimplifyOptions = {}): Loop[][] {
 
-    let timingStart: number;
-    if (typeof _debug_ !== 'undefined') {
-        timingStart = performance.now();
-    }
-
     // bezierLoops = bezierLoops.map(reverseShapeOrientation);  // For quick tests
+
+    if (typeof _debug_ !== 'undefined') {
+        _debug_.timing.timingStart = performance.now();
+    }
 
     /** 
      * All bezier coordinates will be truncated to this (bit-aligned) bitlength.
@@ -167,17 +165,7 @@ function simplifyPaths(
         }
     }
 
-    if (typeof _debug_ !== 'undefined' && !!_debug_.verbose) {
-        // console.log(simplifyInOut(root));
-    }
-    
     const loopTrees = splitLoopTrees(root);
-
-    if (typeof _debug_ !== 'undefined' && !!_debug_.verbose) {
-        // loopTrees.forEach(lt => {
-        //     console.log(simplifyInOut(lt));
-        // });
-    }
 
     const getLoopsFromTree_ = getLoopsFromTree(booleanOp);
     const outSets = loopTrees.map(getLoopsFromTree_)
@@ -214,8 +202,7 @@ function simplifyPaths(
     }
 
     if (typeof _debug_ !== 'undefined') {
-        const timing = _debug_.generated.timing;
-        timing.simplifyPaths = performance.now() - timingStart!;
+        _debug_.timing.simplifyPaths = performance.now() - _debug_.timing.timingStart - _debug_.timing.normalize;
     }
 
     //-------------------------------------
