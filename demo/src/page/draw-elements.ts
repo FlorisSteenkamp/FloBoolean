@@ -30,13 +30,13 @@ async function drawElements(
     
         if (!toDraw) { continue; }
 
-        const generated = _debug_.generated;
+        const elems = _debug_.elems;
         
-        if (generated.elems[elemType] === undefined) { 
+        if (elems[elemType] === undefined) { 
             continue; 
         }
         
-        for (const elem of generated.elems[elemType]) {
+        for (const elem of elems[elemType]) {
             // console.log(elemType);
             const drawElem = _debug_.fs.drawElem[elemType] as (g: SVGGElement, elem: any) => SVGElement[];
             $elems.push(drawElem(g, elem));

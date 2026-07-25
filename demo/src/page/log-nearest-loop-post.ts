@@ -19,8 +19,8 @@ function logNearestLoopPost(
     let bestLoop: Loop = undefined!;
     let bestDistance = Number.POSITIVE_INFINITY;
 
-    const generated = _debug_.generated;
-    const loops = generated.elems.loop;
+    const elems = _debug_.elems;
+    const loops = elems.loop;
 
     if (loops.length === 0) {
         console.log('No loops');

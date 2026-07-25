@@ -1,7 +1,7 @@
-import { IDebugElems } from "../../../src/debug/debug-elem-types.js";
+import { DebugElems } from "../../../src/debug/debug-elem-types.js";
 
 
-function createEmptyGeneratedSvgs(): { [T in keyof IDebugElems]: SVGElement[][] }  {
+function createEmptyGeneratedSvgs(): { [T in keyof DebugElems]: SVGElement[][] }  {
     return {
         bezier_              : [],
         looseBoundingBox_    : [],

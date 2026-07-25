@@ -18,7 +18,7 @@ function logNearestContainer(g: SVGGElement, p: number[], showDelay = 1000) {
     let bestContainer: Container;
     let bestDistance = Number.POSITIVE_INFINITY;
 
-    for (const container of _debug_.generated.elems.container) {
+    for (const container of _debug_.elems.container) {
         const dSquared = getClosestSquareDistanceToRect(container.box, p);
         
         if (dSquared < bestDistance) {
