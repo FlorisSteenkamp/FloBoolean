@@ -1,4 +1,4 @@
-import type { __X__ } from '../-x-.js';
+import type { __X__ } from './-x-.js';
 import type { Loop } from '../loop/loop.js';
 import { bezierSelfIntersection, getIntervalBox } from 'flo-bezier3';
 
@@ -8,8 +8,10 @@ const eps = Number.EPSILON;
 /**
  * @param loops 
  */
-function getSelfIntersections(loops: Loop[]): __X__[][] {
-    const xs: __X__[][] = [];
+function getSelfIntersections(
+        loops: Loop[]): [__X__,__X__][] {
+
+    const xs: [__X__,__X__][] = [];
 
     for (const loop of loops) {
         for (const curve of loop.curves) {

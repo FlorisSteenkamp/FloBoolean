@@ -15,6 +15,8 @@ const vectorsBoolean = [
 
 const vectors = [
     'AA',
+    // "play3",
+    'quad-blob',
     'horight-o',
     'koldat52-over-square-2',
     'two-squares',

@@ -1,6 +1,6 @@
-import type { Container } from "../container.js";
+import type { Container } from "./container.js";
 /**
- * Orders the `InOut`s within the container.
+ * Orders the `InOut`s within the container in a loop.
  *
  * * modifies `prevAround` and `nextAround` of the given container's `InOut`s
  *

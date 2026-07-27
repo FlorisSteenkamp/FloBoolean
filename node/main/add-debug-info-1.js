@@ -1,5 +1,5 @@
 import { getBoundingBoxTight, getBoundingHull } from 'flo-bezier3';
-import { getBoundingBox$ } from '../get-bounding-box-.js';
+import { getBoundingBox$ } from '../geometry/get-bounding-box-.js';
 function addDebugInfo1(bezierLoops) {
     if (typeof _debug_ === 'undefined') {
         return;

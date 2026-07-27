@@ -2,5 +2,15 @@
     "liveServer.settings.port": 5502,
     "eslint.lintTask.enable": true,
     "workbench.editor.enablePreview": true,
-    "workbench.editor.enablePreviewFromQuickOpen": false
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "typescript.preferences.importModuleSpecifierEnding": "js",
+    "javascript.preferences.importModuleSpecifierEnding": "js",
+    "typescript.preferences.autoImportSpecifierExcludeRegexes": [
+        "\\.tsx?$"
+    ],
+    "javascript.preferences.autoImportSpecifierExcludeRegexes": [
+        "\\.tsx?$"
+    ],
+    "typescript.format.semicolons": "insert",
+    "javascript.format.semicolons": "insert"
 }

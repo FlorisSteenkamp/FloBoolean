@@ -18,4 +18,19 @@ import type { SimplifyOptions } from './simplify-options.js';
  * wrong value could cause the algorithm to fail
  */
 declare function simplifyPaths(bezierLoops: (number[][])[][], maxCoordinate?: number, options?: SimplifyOptions): Loop[][];
-export { simplifyPaths };
+/**
+ * * used internally only
+ *
+ * @param bezierLoops
+ * @param maxCoordinate
+ * @param options
+ *
+ * @internal
+ */
+declare function prepLoops(bezierLoops: (number[][])[][], maxCoordinate?: number, containerSizeMultiplier?: number): {
+    extremes: Map<Loop, [import("../get-critical-points/-x-.js").__X__, import("../get-critical-points/-x-.js").__X__]>;
+    containers: import("../containers/container.js").Container[];
+    loops: Loop[];
+    expMax: number;
+};
+export { simplifyPaths, prepLoops };

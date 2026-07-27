@@ -10,8 +10,8 @@ const esModules = [
 module.exports = {
     moduleFileExtensions: ['ts', 'js'],
     resolver: "jest-ts-webcompat-resolver",
-    // testEnvironment: 'node',
-    testEnvironment: 'jsdom',
+    testEnvironment: 'node',
+    // testEnvironment: 'jsdom',
     testMatch: [ "**/__tests__/**/*.spec.ts"],
     // collectCoverage: true,
     collectCoverage: false,  // Make true again!

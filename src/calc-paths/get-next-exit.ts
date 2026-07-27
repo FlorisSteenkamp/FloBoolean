@@ -1,6 +1,6 @@
 import type { InOut } from "../containers/in-out/in-out.js";
-import type { Mutable } from "../types/mutable.js";
-import { containerIsBasic } from "../container.js";
+import type { Mutable } from "../utils/mutable.js";
+import { containerIsBasic } from "../containers/container.js";
 import { orderInOuts } from "../containers/order-in-outs.js";
 
 

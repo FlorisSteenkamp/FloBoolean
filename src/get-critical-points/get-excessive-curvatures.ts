@@ -1,18 +1,17 @@
-import type { __X__ } from "../-x-.js";
+import type { __X__ } from "./-x-.js";
 import type { Loop } from "../loop/loop.js";
 import { curvature, getCurvatureExtrema } from "flo-bezier3";
 import { makeSimpleX } from "./make-simple-x.js";
-
 
 const { abs } = Math;
 
 
 function getExcessiveCurvatures(
         expMax: number,
-        loops: Loop[]): __X__[][] {
+        loops: Loop[]): [__X__,__X__][] {
 
     /** all one-sided Xs from */
-    const xs: __X__[][] = [];
+    const xs: [__X__,__X__][] = [];
     // return xs;
 
     // Get interface points

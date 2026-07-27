@@ -20,25 +20,18 @@ function getExtreme(loop) {
             makeSimpleX(0, curve.next, 0) // extreme
         ];
     }
+    // FUTURE - should multiplicity be undefined in these cases?
+    const __x__ = {
+        x: {
+            ri: { t: ts[0], tS: ts[0], tE: ts[1], multiplicity: 1 },
+            kind: 0,
+            box: y.box
+        },
+        curve
+    };
     return [
-        // FUTURE - should multiplicity be undefined in these cases?
-        // FUTURE - do we need 2 intersections???
-        {
-            x: {
-                ri: { t: ts[0], tS: ts[0], tE: ts[1], multiplicity: 1 },
-                kind: 0,
-                box: y.box
-            },
-            curve
-        }, // extreme
-        {
-            x: {
-                ri: { t: ts[0], tS: ts[0], tE: ts[1], multiplicity: 1 },
-                kind: 0,
-                box: y.box
-            },
-            curve
-        } // extreme
+        __x__,
+        { ...__x__ } // duplicate the object so that they are not the same object
     ];
 }
 export { getExtreme };

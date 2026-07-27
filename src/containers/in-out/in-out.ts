@@ -1,7 +1,7 @@
 import type { BezierPiece } from "flo-bezier3";
-import type { __X__ } from "../../-x-.js";
-import type { Container } from "../../container.js";
-import type { X } from "../../x.js";
+import type { __X__ } from "../../get-critical-points/-x-.js";
+import type { Container } from "../container.js";
+import type { X } from "../../get-critical-points/x.js";
 
 
 interface InOut {
@@ -22,9 +22,9 @@ interface InOut {
     /** the next in or previous out from this InOut */
     readonly nextOrPrev?: InOut;
 
-    /** the prior IInOut anti-clockwise around the container boundary */
+    /** the prior `InOut` anti-clockwise around the container boundary */
     readonly prevAround?: InOut;
-    /** the next IInOut anti-clockwise around the container boundary */
+    /** the next `InOut` anti-clockwise around the container boundary */
     readonly nextAround?: InOut;
 
     //--------------------------------------------------------------------------
@@ -57,6 +57,7 @@ interface InOut {
      * to this `InOut` when seen as a loop
      */
     readonly loopsIdxs?: Set<number>;
+    
     /** used in `getLoopsFromTree` to see if the loop was reified */
     readonly used?: boolean;
 }

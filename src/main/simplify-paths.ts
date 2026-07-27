@@ -1,7 +1,7 @@
 declare const _debug_: Debug; 
 import type { Debug, Timing } from '../debug/debug.js';
 import type { BezierPiece } from 'flo-bezier3';
-import type { Mutable } from '../types/mutable.js';
+import type { Mutable } from '../utils/mutable.js';
 import type { InOut } from '../containers/in-out/in-out.js';
 import type { Loop } from '../loop/loop.js';
 import type { SimplifyOptions } from './simplify-options.js';
@@ -10,7 +10,7 @@ import { getTightestContainingLoop } from '../calc-paths/get-tightest-containing
 import { orderLoopAscendingByMinY } from '../calc-paths/order-loop-ascending-by-min-y.js';
 import { splitLoopTrees } from '../calc-paths/split-loop-trees.js';
 import { getLoopsFromTree } from '../calc-paths/get-loops-from-tree.js';
-import { getContainers } from '../containers/get-containers.js';
+import { getContainers } from '../containers/get-containers/get-containers.js';
 import { getOutermostInAndOut } from '../calc-paths/get-outermost-in-and-out.js';
 import { loopFromBeziers } from '../loop/loop-from-beziers.js';
 import { normalizeLoops } from '../loop/normalize/normalize-loop.js';
@@ -24,6 +24,7 @@ import { bezierToBezierPiece } from '../calc-paths/bezier-to-bezier-piece.js';
 import { removeMicroCorners } from './remove-micro-corners.js';
 import { MAX_BIT_LENGTH } from './max-bitlength.js';
 import { mapOverTree } from '../utils/map-over-tree.js';
+import { getInOutsOfContainer } from '../containers/get-container-in-outs/get-in-outs-via-sides/get-in-outs-via-sides.js';
 
 const { abs, max, ceil, log2 } = Math;
 
@@ -52,53 +53,18 @@ function simplifyPaths(
 
     // bezierLoops = bezierLoops.map(reverseShapeOrientation);  // For quick tests
 
-    if (typeof _debug_ !== 'undefined') {
-        _debug_.timing.timingStart = performance.now();
-    }
+    const { containerSizeMultiplier = 2**4 } = options;
 
-    /** 
-     * All bezier coordinates will be truncated to this (bit-aligned) bitlength.
-     * Higher bitlengths would increase the running time of the algorithm 
-     * considerably.
-     */
-    maxCoordinate = maxCoordinate || getMaxCoordinate(bezierLoops);
-    /** The exponent, e, such that 2**e >= all bezier coordinate points. */
-    const expMax = ceil(log2(maxCoordinate));
+    const { extremes, containers, loops, expMax } = prepLoops(
+        bezierLoops, maxCoordinate, containerSizeMultiplier
+    );
 
     const {
         inclMicroCorners = true,
         minLoopArea = (2**expMax * 2**(-12))**2,
         forceOrientationNegative = false,
-        // keepOriginalOrientation = false,
-        booleanOp = "OR",
-        containerSizeMultiplier = 2**4
+        booleanOp = "OR"
     } = options;
-
-    const gridSpacing = 2**expMax * 2**(-MAX_BIT_LENGTH);
-
-    /** 
-     * A size (based on the max value of the tangent) for the containers holding 
-     * critical points.
-     */
-    //==================================================================
-    // const containerSizeMultiplier = 2**4;
-    // const containerSizeMultiplier = 2**41;
-    //==================================================================
-    const containerDim = gridSpacing * containerSizeMultiplier;
-
-    bezierLoops = normalizeLoops(
-        bezierLoops, 
-        MAX_BIT_LENGTH,
-        expMax,
-        false,
-        true,
-    );
-
-    addDebugInfo1(bezierLoops);
-    bezierLoops.sort(orderLoopAscendingByMinY);
-
-    const loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));
-    const { extremes, containers } = getContainers(loops, containerDim, expMax);
 
     const root = createRootInOut();
     // `takenLoops` is important in rare cases such as in the 'koldat52' vector
@@ -228,17 +194,68 @@ function simplifyPaths(
 
     // console.log(loopss_);
 
+    console.log(structuredClone(getInOutsOfContainer.getStats()));
+    getInOutsOfContainer.resetStats();
+
     return _loopss_;
 }
 
 
-/** for debugging only */
-function simplifyInOut(inOut: InOut) {
-    return mapOverTree(inOut, io => ({
-        idx: io.idx, dir: io.dir, windingNum: io.windingNum,
-        children: undefined
-    }))
+/**
+ * * used internally only
+ * 
+ * @param bezierLoops 
+ * @param maxCoordinate 
+ * @param options 
+ * 
+ * @internal
+ */
+function prepLoops(
+        bezierLoops: (number[][])[][],
+        maxCoordinate?: number,
+        containerSizeMultiplier = 2**4) {
+
+    if (typeof _debug_ !== 'undefined') {
+        _debug_.timing.timingStart = performance.now();
+    }
+
+    /** 
+     * All bezier coordinates will be truncated to this (bit-aligned) bitlength.
+     * Higher bitlengths would increase the running time of the algorithm 
+     * considerably.
+     */
+    const maxCoordinate_ = maxCoordinate || getMaxCoordinate(bezierLoops);
+    /** The exponent, e, such that 2**e >= all bezier coordinate points. */
+    const expMax = ceil(log2(maxCoordinate_));
+
+    const gridSpacing = 2**expMax * 2**(-MAX_BIT_LENGTH);
+
+    /** 
+     * A size (based on the max value of the tangent) for the containers holding 
+     * critical points.
+     */
+    //==================================================================
+    // const containerSizeMultiplier = 2**4;
+    // const containerSizeMultiplier = 2**41;
+    //==================================================================
+    const containerDim = gridSpacing * containerSizeMultiplier;
+
+    bezierLoops = normalizeLoops(
+        bezierLoops, 
+        MAX_BIT_LENGTH,
+        expMax,
+        false,
+        true,
+    );
+
+    addDebugInfo1(bezierLoops);
+    bezierLoops.sort(orderLoopAscendingByMinY);
+
+    const loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));
+    const { extremes, containers } = getContainers(loops, containerDim, expMax);
+
+    return { extremes, containers, loops, expMax };
 }
 
 
-export { simplifyPaths }
+export { simplifyPaths, prepLoops }

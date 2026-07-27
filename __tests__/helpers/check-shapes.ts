@@ -8,6 +8,7 @@ import { checkInvariants } from './check-invariants.js';
 
 
 function checkShapes(
+        fileName: string,
         shapes: Loop[][], 
         invariants: Invariants[][],
         tolerance: Tolerance) {
@@ -24,7 +25,7 @@ function checkShapes(
         });
     });
 
-    const r = checkInvariants(invariants_, invariants, tolerance);
+    const r = checkInvariants(fileName, invariants_, invariants, tolerance);
 
     return r;
 }

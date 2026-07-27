@@ -15,23 +15,20 @@ async function lazyLoadDeduced(
     const { upd, state } = stateControl;
     const { toDraw } = state.appState.pageState;
 
-    const { pageState } = stateControl.state.appState;
-    // const { vectorName, vectorNameBoolean } = pageState;
+    const { pageState } = state.appState;
     const { vectorName } = pageState;
 
-    // const pathStrs = await loadPaths(forBoolean ? vectorNameBoolean : vectorName, forBoolean);
     const pathStrs = await loadPaths(vectorName);
 
-    upd(stateControl.state.appState.pageState.deduced!, { pathStrs });
+    upd(state.appState.pageState.deduced!, { pathStrs });
 
-    // const { viewbox, timingAll } = await loadDeducedProps(stateControl, pathStrs, forBoolean);
     const { viewbox, timingAll } = await loadDeducedProps(stateControl, pathStrs);
 
     console.log(`All took: ${timingAll.toFixed(0)} milliseconds.`);
 
     const elems$ = drawElements(stateControl, ref, toDraw);
 
-    upd(stateControl.state.appState.pageState, {
+    upd(state.appState.pageState, {
         ...(changeViewbox ? { viewbox } : {}),
         deduced: { pathStrs }
     });

@@ -1,5 +1,5 @@
 import { drawFs } from 'flo-draw';
-import { Container } from '../../container.js';
+import { Container } from '../../containers/container.js';
 
 
 function drawContainer(g: SVGGElement, container: Container, classes?: string, delay = 0) {

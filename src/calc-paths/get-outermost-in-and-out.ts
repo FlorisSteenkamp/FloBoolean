@@ -1,7 +1,7 @@
-import type { Container } from '../container.js';
+import type { Container } from '../containers/container.js';
 import type { InOut } from '../containers/in-out/in-out.js';
 import type { Loop } from '../loop/loop.js';
-import type { Mutable } from '../types/mutable.js';
+import type { Mutable } from '../utils/mutable.js';
 import { orderInOuts } from '../containers/order-in-outs.js';
 
 

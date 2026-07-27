@@ -1,6 +1,6 @@
-import type { __X__ } from "../-x-.js";
+import type { __X__ } from "./-x-.js";
 import type { Loop } from "../loop/loop.js";
-import type { Mutable } from "../types/mutable.js";
+import type { Mutable } from "../utils/mutable.js";
 
 
 /**
@@ -8,7 +8,9 @@ import type { Mutable } from "../types/mutable.js";
  *
  * @param xPairs
  */
-function setIntersectionNextValues(xPairs: __X__[][]) {
+function setIntersectionNextValues(
+        xPairs: __X__[][]) {
+
     const xsByLoop: Map<Loop, __X__[]> = new Map();
     for (const xPair of xPairs) {
         for (const x_ of xPair) {

@@ -2,16 +2,14 @@ import { intersectBoxes, bezierBezierIntersectionBoundless, getIntervalBox } fro
 // FUTURE - could this come from flo-bezier3
 function getOtherTs(ps1, ps2, ts2) {
     if (ts2 === undefined) {
-        // infinite number of intersections
-        return undefined;
+        return undefined; // infinite number of intersections
     }
     if (ts2.length === 0) {
         return [];
     }
     const ts1 = bezierBezierIntersectionBoundless(ps2, ps1);
     if (ts1 === undefined) {
-        // infinite number of intersections
-        return undefined;
+        return undefined; // infinite number of intersections
     }
     if (ts1.length === 0) {
         return [];

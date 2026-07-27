@@ -1,4 +1,4 @@
-import { getBounds$ } from '../get-bounds-.js';
+import { getBounds$ } from '../geometry/get-bounds-.js';
 const { min, max } = Math;
 function getShapeBounds(pss) {
     const bounds = pss.map(getBounds$);

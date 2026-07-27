@@ -1,5 +1,5 @@
 import { orderInOuts } from "../containers/order-in-outs.js";
-import { containerIsBasic } from "../container.js";
+import { containerIsBasic } from "../containers/container.js";
 /**
  *
  * @param inOut the in/out for which the next exit should be found

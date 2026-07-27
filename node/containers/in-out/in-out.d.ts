@@ -1,7 +1,7 @@
 import type { BezierPiece } from "flo-bezier3";
-import type { __X__ } from "../../-x-.js";
-import type { Container } from "../../container.js";
-import type { X } from "../../x.js";
+import type { __X__ } from "../../get-critical-points/-x-.js";
+import type { Container } from "../container.js";
+import type { X } from "../../get-critical-points/x.js";
 interface InOut {
     /** direction at container interface, in (-1) or out (+1) */
     readonly dir: -1 | 1;
@@ -18,9 +18,9 @@ interface InOut {
     readonly p: number[];
     /** the next in or previous out from this InOut */
     readonly nextOrPrev?: InOut;
-    /** the prior IInOut anti-clockwise around the container boundary */
+    /** the prior `InOut` anti-clockwise around the container boundary */
     readonly prevAround?: InOut;
-    /** the next IInOut anti-clockwise around the container boundary */
+    /** the next `InOut` anti-clockwise around the container boundary */
     readonly nextAround?: InOut;
     /** +1 or -1 -> Clockwise or anti-clockwise */
     readonly orientation: number;

@@ -4,6 +4,7 @@ const { abs } = Math;
 /**
  * Returns the result of comparing two `InOut`s within the same container.
  *
+ * @param snugDir
  * @param inOutA
  * @param inOutB
  */
@@ -41,23 +42,16 @@ function compareInOut(snugDir) {
             // FUTURE - getPExact called too often - cache it!
             xB.riExp = refineK1(xB.ri, xB.getPExact())[0];
         }
-        //console.log('compensated')
-        //console.log('xA', expEst(xA.riExp.tS), ' - ', expEst(xA.riExp.tE));
-        //console.log('xB', expEst(xB.riExp.tS), ' - ', expEst(xB.riExp.tE));
         res = eCompare(xA.riExp.tS, xB.riExp.tS);
         if (res !== 0) {
             return res;
         }
-        // console.log('aa')
         // At this stage it is either the same curve (mathematically, if endpoints
         // and direction is ignored) or even the once compenensated roots cannot be
         // resolved. In future we can cascade compensations to ensure resolution
         // but we are already about a quadrillionth of a quadrillionth of a unit
         // accurate at this stage.
-        // res = inOutB.dir - inOutA.dir;
         res = inOutA.dir - inOutB.dir;
-        // console.log(inOutA.orientation);
-        // console.log(inOutB.orientation);
         if (res !== 0) {
             return snugDir * res;
         }

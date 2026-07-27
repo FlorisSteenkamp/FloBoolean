@@ -1,6 +1,6 @@
-import type { __X__ } from "../-x-.js";
-import type { Container } from "../container.js";
-import type { PointOnShape } from "../point-on-shape/point-on-shape.js";
+import type { __X__ } from "../get-critical-points/-x-.js";
+import type { Container } from "../containers/container.js";
+import type { PointOnShape } from "./point-on-shape.js";
 import type { Loop } from "../loop/loop.js";
 interface DebugElems {
     readonly minY: PointOnShape;

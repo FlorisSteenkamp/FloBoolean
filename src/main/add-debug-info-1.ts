@@ -1,7 +1,7 @@
 declare const _debug_: Debug; 
 import { getBoundingBoxTight, getBoundingHull } from 'flo-bezier3';
 import { Debug } from '../debug/debug.js';
-import { getBoundingBox$ } from '../get-bounding-box-.js';
+import { getBoundingBox$ } from '../geometry/get-bounding-box-.js';
 import { loopsToSvgPathStr } from '../svg/loops-to-svg-path-str.js';
 
 

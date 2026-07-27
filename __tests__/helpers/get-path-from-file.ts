@@ -5,7 +5,7 @@ import { Invariants } from './invariants.js';
 
 function getPathFromFile(
         fileName: string,
-        skipInvariantsCheck = false) {
+        skipInvariants = false) {
 
     let fileStr = fs.readFileSync(
         `c:/projects/boolean/demo/vectors/${fileName}.svg`, 'utf8'
@@ -15,7 +15,7 @@ function getPathFromFile(
     svgStr = svgStr.substring(3, svgStr.length-1);
 
     let invariants: Invariants[][] = [];
-    if (!skipInvariantsCheck) {
+    if (!skipInvariants) {
         let invariantsStr = fileStr.match(/<!--[^>)]*>/)![0];
         invariantsStr = invariantsStr.substring(4, invariantsStr.length-3);
         invariants = JSON.parse(invariantsStr);

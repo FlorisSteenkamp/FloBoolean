@@ -6,8 +6,8 @@ import { getOtherTs } from './get-other-t.js';
 import { doConvexPolygonsIntersect } from "../geometry/do-convex-polygons-intersect.js";
 import { getIntersection } from './get-intersection.js';
 import { makeSimpleX } from './make-simple-x.js';
-import { getBoundingBox$ } from '../get-bounding-box-.js';
-import { areBoxesIntersecting } from '../are-boxes-intersecting.js';
+import { getBoundingBox$ } from '../geometry/get-bounding-box-.js';
+import { areBoxesIntersecting } from '../geometry/are-boxes-intersecting.js';
 /**
  * Returns the pairs of intersection `t` values between the curves. Interface
  * intersections may not be returned - they should already be caught.
@@ -16,7 +16,7 @@ import { areBoxesIntersecting } from '../are-boxes-intersecting.js';
  * @param curveB
  */
 function getCurvesIntersections(expMax) {
-    return (curveA, curveB) => {
+    return function (curveA, curveB) {
         const psA = curveA.ps;
         const psB = curveB.ps;
         if (psA.length === 2 && psB.length === 2) {
@@ -104,9 +104,6 @@ function getLineLineIntersections(curveA, curveB, expMax) {
     let psB = curveB.ps;
     const bbA = getBoundingBox$(psA);
     const bbB = getBoundingBox$(psB);
-    // if (equal(psA,[[4,8],[4,7]]) && equal(psB,[[4,6],[4,8]])) {
-    //     console.log('testing');
-    // }
     if (curveA.next !== curveB && curveB.next !== curveA) {
         // the two line curves are not consecutive in the loop
         if (areBoxesIntersecting(true, bbA, bbB)) {

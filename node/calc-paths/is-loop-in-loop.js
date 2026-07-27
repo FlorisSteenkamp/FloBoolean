@@ -1,7 +1,7 @@
 import { roots } from 'flo-poly';
 import { toPowerBasis, tangent, evalDeCasteljau } from 'flo-bezier3';
 import { toUnitVector, translate } from 'flo-vector2d';
-import { getBoundingBox$ } from '../get-bounding-box-.js';
+import { getBoundingBox$ } from '../geometry/get-bounding-box-.js';
 import { getShapeBounds } from './get-shape-bounds.js';
 import { squares } from 'squares-rng';
 // FUTURE - remove delta; probably not necessary

@@ -4,6 +4,7 @@ import { checkInvariant } from './check-invariant.js';
 
 
 function checkInvariants(
+        fileName: string,
         invariantsCalc: Invariants[][], 
         invariantsReq: Invariants[][], 
         tolerance: Tolerance) {
@@ -24,7 +25,7 @@ function checkInvariants(
         if (invariantCalc.length !== invariantReq.length) {
             invariantCalc.length;//?
             invariantReq.length;//?
-            throw new Error(`A loopset of loopss lengths differ: calculated ${invariantCalc.length}, required ${invariantReq.length}`);
+            throw new Error(`${fileName}: A loopset of loopss lengths differ: calculated ${invariantCalc.length}, required ${invariantReq.length}`);
         }
 
         for (let i=0; i<invariantCalc.length; i++) {
@@ -37,7 +38,7 @@ function checkInvariants(
                 // _invariantCalc;//?
                 // _invariantReq//?
                 throw new Error(
-                    `Invariant not within tolerance: calculated ${JSON.stringify(_invariantCalc)}, required ${JSON.stringify(_invariantReq)}`
+                    `${fileName}: Invariant not within tolerance: calculated ${JSON.stringify(_invariantCalc)}, required ${JSON.stringify(_invariantReq)}`
                 );
             }
         }

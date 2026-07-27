@@ -1,34 +1,29 @@
-import type { __X__ } from "../../../-x-.js";
+import type { __X__ } from "../../../get-critical-points/-x-.js";
 import type { Curve } from "../../../curve/curve.js";
 import type { InOut } from "../../../containers/in-out/in-out.js";
-import type { Container } from "../../../container.js";
+import type { Container } from "../../container.js";
 import { getXInOuts } from "./get-x-in-outs.js";
+import { timeFunctionCalls } from '../../../utils/time-function-call.js';
 
 
 /**
- * Returns the incoming / outgoing curves (as InOuts) for the given container
+ * Returns the incoming / outgoing curves (as `InOuts`) for the given container
  * using an extremely small rectangle around the intersections.
- * * **warning** ioIdx will be modified by this function
+ * 
+ * * **warning** `ioIdx` will be modified by this function
+ * 
  * @param container 
  * @param ioIdx 
  */
-function getInOutsViaSides(
-        container: Container, 
-        ioIdx: number): {
-            inOuts: InOut[];
-            ioIdx: number;
-        } {
+const getInOutsOfContainer = timeFunctionCalls(function getInOutsOfContainer(  // TODO remove timing
+        container: Container): InOut[] {
 
-    // We check one __X__ for each curve with an intersection within this container
+    // We check one `__X__` for each curve with an intersection within this container
     const xs_ = container.xs;
-
-    //if (xs_.length === 4) {
-    //    console.log(xs_.map(x => x.x.kind))
-    //}
 
     const inOuts: InOut[] = [];
 
-    // get a map from each Curve to each __X__ of this container
+    // Get a map from each `Curve` to each `__X__` of this container
     const xMap: Map<Curve, __X__[]> = new Map();
     for (const x of xs_) {
         const curve = x.curve;
@@ -41,19 +36,15 @@ function getInOutsViaSides(
     }
 
     const getXInOuts_ = getXInOuts(container);
-    for (const entry of xMap) {
-        const [curve, xs] = entry;
 
-        let ins: InOut[];
-        let outs: InOut[];
-        ({ ins, outs, ioIdx } = getXInOuts_(curve, xs, ioIdx));
+    for (const [curve, xs] of xMap) {
+        const { ins, outs } = getXInOuts_(curve, xs);
 
-        inOuts.push(...ins);
-        inOuts.push(...outs);
+        inOuts.push(...ins, ...outs);
     }
 
-    return { inOuts, ioIdx };
-}
+    return inOuts;
+});
 
 
-export { getInOutsViaSides }
+export { getInOutsOfContainer }

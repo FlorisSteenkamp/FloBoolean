@@ -24,6 +24,6 @@
         "live-server": "^1.2.2"
     },
     "scripts": {
-        "dev": "concurrently \"webpack -w\" \"live-server --open=index.html\""
+        "dev": "concurrently \"webpack -w\" \"live-server --host=127.0.0.1 --port=5501 --open=/index.html --watch=.noreload \""
     }
 }

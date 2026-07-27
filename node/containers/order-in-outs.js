@@ -1,6 +1,6 @@
 import { compareInOut } from "./get-container-in-outs/get-in-outs-via-sides/compare-in-out.js";
 /**
- * Orders the `InOut`s within the container.
+ * Orders the `InOut`s within the container in a loop.
  *
  * * modifies `prevAround` and `nextAround` of the given container's `InOut`s
  *

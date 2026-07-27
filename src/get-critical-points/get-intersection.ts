@@ -1,9 +1,9 @@
 import type { Curve } from "../curve/curve.js";
-import type { __X__ } from "../-x-.js";
+import type { __X__ } from "./-x-.js";
 import { getEndpointIntersections, evalDeCasteljau, bezierBezierIntersectionBoundless, getCoeffsBezBez } from "flo-bezier3";
 import { getOtherTs } from './get-other-t.js';
 
-let ii=0;
+
 /**
  * 
  * @param curveA 
@@ -15,25 +15,15 @@ function getIntersection(
         curveA: Curve, 
         curveB: Curve, 
         expMax: number,
-        isANextB: boolean): __X__[][] {
-            
-    // console.log(isANextB);
+        isANextB: boolean): [__X__,__X__][] {
+
     const ps1 = curveA.ps;
     const ps2 = curveB.ps;
 
-    const xs: __X__[][] = [];
+    const xs: [__X__,__X__][] = [];
 
     let ris2 = bezierBezierIntersectionBoundless(ps1,ps2);
 
-    // TODO
-    // if (isANextB && ii++ < 2) {
-    //     const P_ = ps1[ps1.length-1];
-    //     const _P = ps2[0];
-    //     // console.log(P_[0] === _P[0] && P_[1] === _P[1]);
-    //     const { coeffs, errBound, getPExact } = getCoeffsBezBez(ps1,ps2);
-    //     getImplicitForm3ExactPb
-    //     // console.log(coeffs);
-    // }
     if (ris2 === undefined) {
         // the curves have an infinte number of intersections
 
