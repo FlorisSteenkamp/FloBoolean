@@ -44,7 +44,7 @@ test('`simplifyPaths` specific cases', function() {
         // for (const op of ['OR','AND','XOR']) {
         for (const op of ['OR']) {
             const op_ = op as 'OR' | 'AND' | 'XOR';
-            const loopss = simplifyPaths(bezierLoops, undefined, {
+            const loopss = simplifyPaths(bezierLoops, {
                 booleanOp: op_, inclMicroCorners: false
             });
 

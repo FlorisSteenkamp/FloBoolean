@@ -38,7 +38,7 @@ interface X {
      * interval `ri`.
      */
     box: number[][];
-    p?: number[];
+    p: number[];
     /** The number of times the root has been compensated (if undefined implies 0) */
     compensated?: number;
     /** The root interval if compensated 1 or more times */

@@ -28,7 +28,7 @@ interface X {
      * * 6 => a point (order 0 bezier) intersecting a bezier curve
      * 
      * additional kinds added by this library (specific to boolean operations)
-     * * 0 => extreme, e.g. topmost point
+     * * 0 => min-y, e.g. topmost point
      * * 2 => self intersection, a.k.a. ordinary double point, a.k.a crunode
      * * 3 => cusp
      * * 7 => a point of excessive curvature
@@ -39,8 +39,8 @@ interface X {
      * (given by its top-left and bottom-right corner) calculated from the root
      * interval `ri`.
      */
-    box: number[][];
-    p?: number[];
+    // box: number[][];
+    p: number[];
 
     /** The number of times the root has been compensated (if undefined implies 0) */
     compensated?: number;

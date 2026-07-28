@@ -26,7 +26,7 @@ const getInOutsOfContainer = timeFunctionCalls(function getInOutsOfContainer(  /
     // Get a map from each `Curve` to each `__X__` of this container
     const xMap: Map<Curve, __X__[]> = new Map();
     for (const x of xs_) {
-        const curve = x.curve;
+        const { curve } = x;
         const xs = xMap.get(curve);
         if (!xs) { 
             xMap.set(curve, [x]);

@@ -1,7 +1,8 @@
 import type { Curve } from "../curve/curve.js";
 import type { __X__ } from "./-x-.js";
-import { getEndpointIntersections, evalDeCasteljau, bezierBezierIntersectionBoundless, getCoeffsBezBez } from "flo-bezier3";
+import { getEndpointIntersections, bezierBezierIntersectionBoundless } from "flo-bezier3";
 import { getOtherTs } from './get-other-t.js';
+import { toP } from "../utils/to-p.js";
 
 
 /**
@@ -14,7 +15,6 @@ import { getOtherTs } from './get-other-t.js';
 function getIntersection(
         curveA: Curve, 
         curveB: Curve, 
-        expMax: number,
         isANextB: boolean): [__X__,__X__][] {
 
     const ps1 = curveA.ps;
@@ -27,18 +27,11 @@ function getIntersection(
     if (ris2 === undefined) {
         // the curves have an infinte number of intersections
 
-        // some reasonable error bound -> to be fine-tuned, but cannot
-        // break the algorithm (unless its too small), only make it run slower.
-        const errBound = 2**(expMax-47);
         const xPairs = getEndpointIntersections(ps1, ps2);
         for (const xPair of xPairs) {
-            const p1 = evalDeCasteljau(ps1, xPair.ri1.tS);
-            const box = [
-                [p1[0]-errBound, p1[1]-errBound],
-                [p1[0]+errBound, p1[1]+errBound],
-            ];
-            const ri1: __X__ = { x: { ri: xPair.ri1, kind: 5, box }, curve: curveA }; // exact overlap endpoint
-            const ri2: __X__ = { x: { ri: xPair.ri2, kind: 5, box }, curve: curveB }; // exact overlap endpoint
+            const p = toP(ps1, xPair.ri1.t);
+            const ri1: __X__ = { x: { ri: xPair.ri1, kind: 5, p }, curve: curveA }; // exact overlap endpoint
+            const ri2: __X__ = { x: { ri: xPair.ri2, kind: 5, p }, curve: curveB }; // exact overlap endpoint
 
             xs.push([ri1,ri2]);
         }

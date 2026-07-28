@@ -35,10 +35,10 @@ async function loadDeducedProps(
         const NUM_LOOPS = 1;  // for better benchmarking TODO
         for (let i=0; i<NUM_LOOPS; i++) {
             const loopss = simplifyPaths(
-                bezierLoopss[0], undefined, {
+                bezierLoopss[0], {
                     // orientationPositive: true,
                     inclMicroCorners: true,
-                    booleanOp, containerSizeMultiplier: 2**4
+                    booleanOp 
                 }
             );
 

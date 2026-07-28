@@ -13,21 +13,21 @@ import { drawLoopsPre } from './draw-loops-pre.js';
 
 
 type DrawElemFunctions = 
-	{ [T in keyof DebugElems]: (g: SVGGElement, elem: DebugElems[T], classes?: string, delay?: number) => SVGElement[] };
+    { [T in keyof DebugElems]: (g: SVGGElement, elem: DebugElems[T], classes?: string, delay?: number) => SVGElement[] };
 
 
 const drawElemFunctions: DrawElemFunctions = {
-	minY: drawMinY,
-	loop: drawLoop,
-	loopPre: drawLoopPre,
-	loopsPre: drawLoopsPre,
-	loops: drawLoops,
-	intersection: drawIntersection,
-	container: drawContainer,
-	bezier_: drawFs.bezier,
-	looseBoundingBox_: drawLooseBoundingBox,
-	tightBoundingBox_: drawTightBoundingBox,
-	boundingHull_: drawBoundingHull,
+    minY: drawMinY,
+    loop: drawLoop,
+    loopPre: drawLoopPre,
+    loopsPre: drawLoopsPre,
+    loops: drawLoops,
+    intersection: drawIntersection,
+    container: drawContainer,
+    bezier_: drawFs.bezier,
+    looseBoundingBox_: drawLooseBoundingBox,
+    tightBoundingBox_: drawTightBoundingBox,
+    boundingHull_: drawBoundingHull,
 }
 
 

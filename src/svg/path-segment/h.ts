@@ -12,7 +12,7 @@ import { PathState } from '../path-state.js';
  * indicates that relative coordinates will follow. Multiple x values can be 
  * provided (although usually this doesn't make sense). At the end of the 
  * command, the new current point becomes (x, cpy) for the final value of x.
- */	
+ */
 function h(s: PathState): number[][] {
     const ps = [
         s.p, 

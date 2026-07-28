@@ -1,4 +1,4 @@
-import { intersectBoxes, bezierBezierIntersectionBoundless, getIntervalBox } from 'flo-bezier3';
+import { intersectBoxes, bezierBezierIntersectionBoundless, getIntervalBox, evalDeCasteljauDd } from 'flo-bezier3';
 // FUTURE - could this come from flo-bezier3
 function getOtherTs(ps1, ps2, ts2) {
     if (ts2 === undefined) {
@@ -25,8 +25,9 @@ function getOtherTs(ps1, ps2, ts2) {
             if (box !== undefined) {
                 // FUTURE important - combine boxes to make sense, i.e. combine better
                 // e.g. two odd multiplicity boxes should combine to a single even, etc. etc.
-                const x1 = { ri: ts1[i], box, kind: 1 };
-                const x2 = { ri: ts2[j], box, kind: 1 };
+                const p = evalDeCasteljauDd(ps1, [0, ts1[i].t]).map(c => c[1]);
+                const x1 = { ri: ts1[i], p, box, kind: 1 };
+                const x2 = { ri: ts2[j], p, box, kind: 1 };
                 xPairs.push([x1, x2]);
             }
         }

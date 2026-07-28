@@ -16,8 +16,7 @@ import { completeLoop } from './complete-loop.js';
 function completePath(
         initialOut: InOut,
         takenLoops: Set<Loop>,
-        takenInOuts: Set<InOut>,
-        tight: boolean) {
+        takenInOuts: Set<InOut>) {
 
     const inOutStack = [initialOut];
 
@@ -29,7 +28,7 @@ function completePath(
 
         (origInOut as Mutable<InOut>).children = new Set();
         const { bezierPieces, additionalOutsToCheck } = 
-            completeLoop(takenInOuts, origInOut, tight);
+            completeLoop(takenInOuts, origInOut);
 
         (origInOut as Mutable<InOut>).bezierPieces = bezierPieces;
         (origInOut.parent! as Mutable<InOut>).children = origInOut.parent!.children || new Set();

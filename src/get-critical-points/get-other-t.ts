@@ -1,6 +1,7 @@
 import type { X } from "./x.js";
 import type { RootInterval } from "flo-poly";
 import { intersectBoxes, bezierBezierIntersectionBoundless, getIntervalBox } from 'flo-bezier3';
+import { toP } from "../utils/to-p.js";
 
 
 // FUTURE - could this come from flo-bezier3
@@ -32,8 +33,10 @@ function getOtherTs(
             if (box !== undefined) {
                 // FUTURE important - combine boxes to make sense, i.e. combine better
                 // e.g. two odd multiplicity boxes should combine to a single even, etc. etc.
-                const x1: X = { ri: ts1[i], box, kind: 1 };
-                const x2: X = { ri: ts2[j], box, kind: 1 };
+                const p = toP(ps1, ts1[i].t);
+
+                const x1: X = { ri: ts1[i], p, kind: 1 };
+                const x2: X = { ri: ts2[j], p, kind: 1 };
                 xPairs.push([x1, x2]);
             }
         }

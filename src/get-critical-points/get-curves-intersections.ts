@@ -20,66 +20,62 @@ import { areBoxesIntersecting } from '../geometry/are-boxes-intersecting.js';
  * @param curveB 
  */
 function getCurvesIntersections(
-        expMax: number) {
+        curveA: Curve, 
+        curveB: Curve): [__X__,__X__][] | undefined {
 
-    return function(
-            curveA: Curve, 
-            curveB: Curve): [__X__,__X__][] | undefined {
+    const psA = curveA.ps;
+    const psB = curveB.ps;
 
-        const psA = curveA.ps;
-        const psB = curveB.ps;
+    if (psA.length === 2 && psB.length === 2) {
+        return getLineLineIntersections(curveA, curveB);
+    }
 
-        if (psA.length === 2 && psB.length === 2) {
-            return getLineLineIntersections(curveA, curveB, expMax);
-        }
+    if (curveA.next === curveB || curveB.next === curveA) {
+        // curves are connected at endpoints
+        // closed bounding boxes are guaranteed to intersect - don't check
 
-        if (curveA.next === curveB || curveB.next === curveA) {
-            // curves are connected at endpoints
-            // closed bounding boxes are guaranteed to intersect - don't check
-
-            // check open bounding boxes
-            const aabbsIntersectOpen = areBoxesIntersecting(false,
-                getBoundingBox$(psA),
-                getBoundingBox$(psB)
-            );
-            if (!aabbsIntersectOpen) {
-                return checkEndpoints(curveA, curveB);
-            }
-            
-            // check open bounding hulls
-            const bbHullA = getBoundingHull(psA, false)!;
-            const bbHullB = getBoundingHull(psB, false)!;
-            const hullsIntersectOpen = doConvexPolygonsIntersect(
-                bbHullA, bbHullB, false
-            );
-            if (!hullsIntersectOpen) {
-                return checkEndpoints(curveA, curveB);
-            }
-
-            // neither aabbs (axis-aligned bounding boxes) nor hulls can split the curves
-            return curveB.next === curveA 
-                ? getIntersection(curveB, curveA, expMax, true)   // B-->A
-                : getIntersection(curveA, curveB, expMax, true);  // A-->B
-        } 
-
-        // curves are not connected at endpoints
-
-        // check closed bounding boxes
-        let possiblyIntersecting = areBoxesIntersecting(
-            true,  // closed (excluding boundary)
+        // check open bounding boxes
+        const aabbsIntersectOpen = areBoxesIntersecting(false,
             getBoundingBox$(psA),
             getBoundingBox$(psB)
         );
-        if (!possiblyIntersecting) { return undefined; }
-
-        // check closed bounding hulls
+        if (!aabbsIntersectOpen) {
+            return checkEndpoints(curveA, curveB);
+        }
+        
+        // check open bounding hulls
         const bbHullA = getBoundingHull(psA, false)!;
         const bbHullB = getBoundingHull(psB, false)!;
-        possiblyIntersecting = doConvexPolygonsIntersect(bbHullA, bbHullB, true);
-        if (!possiblyIntersecting) { return undefined; }
+        const hullsIntersectOpen = doConvexPolygonsIntersect(
+            bbHullA, bbHullB, false
+        );
+        if (!hullsIntersectOpen) {
+            return checkEndpoints(curveA, curveB);
+        }
 
-        return getIntersection(curveA, curveB, expMax, false);
-    }
+        // neither aabbs (axis-aligned bounding boxes) nor hulls can split the curves
+        return curveB.next === curveA 
+            ? getIntersection(curveB, curveA, true)   // B --> A
+            : getIntersection(curveA, curveB, true);  // A --> B
+    } 
+
+    // curves are not connected at endpoints
+
+    // check closed bounding boxes
+    let possiblyIntersecting = areBoxesIntersecting(
+        true,  // closed (excluding boundary)
+        getBoundingBox$(psA),
+        getBoundingBox$(psB)
+    );
+    if (!possiblyIntersecting) { return undefined; }
+
+    // check closed bounding hulls
+    const bbHullA = getBoundingHull(psA, false)!;
+    const bbHullB = getBoundingHull(psB, false)!;
+    possiblyIntersecting = doConvexPolygonsIntersect(bbHullA, bbHullB, true);
+    if (!possiblyIntersecting) { return undefined; }
+
+    return getIntersection(curveA, curveB, false);
 }
 
 
@@ -132,8 +128,7 @@ function checkEndpoints(
 
 function getLineLineIntersections(
         curveA: Curve, 
-        curveB: Curve,
-        expMax: number): [__X__,__X__][] | undefined {
+        curveB: Curve): [__X__,__X__][] | undefined {
 
     let psA = curveA.ps;
     let psB = curveB.ps;
@@ -144,7 +139,7 @@ function getLineLineIntersections(
     if (curveA.next !== curveB && curveB.next !== curveA) {
         // the two line curves are not consecutive in the loop
         if (areBoxesIntersecting(true, bbA, bbB)) {
-            const xs = getIntersection(curveA, curveB, expMax, false);
+            const xs = getIntersection(curveA, curveB, false);
             return xs.length ? xs : undefined;
         }
 

@@ -1,4 +1,5 @@
 import { getTs } from './get-ts.js';
+import { evalDeCasteljauDd } from "flo-bezier3";
 function midBox(box) {
     return [
         (box[0][0] + box[1][0]) / 2,
@@ -26,12 +27,17 @@ function getXInOuts(container) {
         // For each of the four sides get the t values closest to the 
         // intersection t.
         const { ps } = curve;
-        const xs = xs_.slice();
+        // @ts-ignore
+        const xs = xs_.slice(); //.map(v => ({ ...v, ps }));
+        for (let x of xs) {
+            x.ps = ps;
+        }
         // console.log(xs.length);
         for (let i = 0; i < sides.length; i++) {
             const xs_ = getTs(ps, sides[i]);
             for (const { psX, sideX } of xs_) {
                 xs.push({
+                    ps,
                     x: psX,
                     side: i,
                     sideX,
@@ -54,7 +60,10 @@ function getXInOuts(container) {
             if (x.side !== undefined) {
                 // it is a sideX
                 if (prevWasX === true) {
-                    outs.push(makeInOut(+1, midBoxX(x), prevX, container, x.side, x.sideX));
+                    const p = evalDeCasteljauDd(x.ps, [0, x.x.ri.t]).map(c => c[1]);
+                    outs.push(makeInOut(
+                    // +1, midBoxX(x), prevX!, container, x.side, x.sideX!
+                    +1, p, prevX, container, x.side, x.sideX));
                     prevX.out = outs[outs.length - 1];
                 }
                 prevWasX = false;
@@ -62,7 +71,10 @@ function getXInOuts(container) {
             else {
                 // it is a proper X
                 if (prevWasX === false) {
-                    ins.push(makeInOut(-1, midBoxX(prevX), x, container, prevX.side, prevX.sideX));
+                    const p = evalDeCasteljauDd(x.ps, [0, x.x.ri.t]).map(c => c[1]);
+                    ins.push(makeInOut(
+                    // -1, midBoxX(prevX!), x, container, prevX!.side!, prevX!.sideX!
+                    -1, p, x, container, prevX.side, prevX.sideX));
                     x.in_ = ins[ins.length - 1];
                 }
                 prevWasX = true;

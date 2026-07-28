@@ -55,47 +55,47 @@ function sweepLine<T,U>(
 
     // Initialize event queue to contain all endpoints.
     const events: Event<T>[] = [];
-	for (const item of items) {
-		events.push({ 
+    for (const item of items) {
+        events.push({ 
             type: EVENT_LEFT, 
             item, 
             x: getLeftmost(item)
         });
-		events.push({ 
+        events.push({ 
             type: EVENT_RIGHT, 
             item, 
             x: getRightmost(item)
         });
-	}
+    }
 
-	events.sort(compare);
-	
-	const activeItems = new Set<T>();
+    events.sort(compare);
+    
+    const activeItems = new Set<T>();
     
     /** A list of pairs of items that passed the predicate */
-	const pairedItems: IntersectionResult<T,U>[] = [];
-	for (const event of events) {
-    	const { item, type } = event;
-    	
-   		if (type === EVENT_LEFT) {
-   			for (const activeItem of activeItems) {
+    const pairedItems: IntersectionResult<T,U>[] = [];
+    for (const event of events) {
+        const { item, type } = event;
+        
+           if (type === EVENT_LEFT) {
+               for (const activeItem of activeItems) {
                 const result = predicate(item, activeItem);
-   				if (result) { 
+                   if (result) { 
                     pairedItems.push({ 
                         a: item, 
                         b: activeItem, 
                         u: result 
                     });
-   				}
-   			}
+                   }
+               }
 
-   			activeItems.add(item);
-   		} else if (type === EVENT_RIGHT) {
-   			activeItems.delete(item);
-   		}
-	}
-	
-	return pairedItems;
+               activeItems.add(item);
+           } else if (type === EVENT_RIGHT) {
+               activeItems.delete(item);
+           }
+    }
+    
+    return pairedItems;
 }
 
 

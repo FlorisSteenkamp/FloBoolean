@@ -16,12 +16,12 @@ function orderLoopAscendingByMinY(
 }
 
 
-function getMinY(pss: number[][][]) {	
+function getMinY(pss: number[][][]) {    
     let minY = Number.POSITIVE_INFINITY;
     for (const ps of pss) {
         const y = getBounds$(ps).box[0][1];
         if (y < minY) { minY = y; }
-	}
+    }
 
     return minY;
 }

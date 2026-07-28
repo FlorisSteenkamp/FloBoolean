@@ -23,8 +23,8 @@ import { createRootInOut } from './create-root-in-out.js';
 import { bezierToBezierPiece } from '../calc-paths/bezier-to-bezier-piece.js';
 import { removeMicroCorners } from './remove-micro-corners.js';
 import { MAX_BIT_LENGTH } from './max-bitlength.js';
-import { mapOverTree } from '../utils/map-over-tree.js';
 import { getInOutsOfContainer } from '../containers/get-container-in-outs/get-in-outs-via-sides/get-in-outs-via-sides.js';
+import { getMinYXpair } from '../get-critical-points/get-min-y-x-pair.js';
 
 const { abs, max, ceil, log2 } = Math;
 
@@ -43,21 +43,15 @@ const { abs, max, ceil, log2 } = Math;
  * Also takes care of all special cases.
  * 
  * @param loops an array of possibly intersecting paths
- * @param maxCoordinate optional; if not provided, it will be calculated; a
- * wrong value could cause the algorithm to fail
  */
 function simplifyPaths(
         bezierLoops: (number[][])[][],
-        maxCoordinate?: number,
         options: SimplifyOptions = {}): Loop[][] {
 
     // bezierLoops = bezierLoops.map(reverseShapeOrientation);  // For quick tests
 
-    const { containerSizeMultiplier = 2**4 } = options;
-
-    const { extremes, containers, loops, expMax } = prepLoops(
-        bezierLoops, maxCoordinate, containerSizeMultiplier
-    );
+    const { minYXPairs, containers, loops, expMax } = 
+        prepLoops(bezierLoops);
 
     const {
         inclMicroCorners = true,
@@ -71,25 +65,25 @@ function simplifyPaths(
     const takenLoops: Set<Loop> = new Set();
     const takenOuts: Set<InOut> = new Set();  // Taken intersections
 
-    for (const loop of loops) {
+    for (let i=0; i<loops.length; i++) {
+        const loop = loops[i];
         if (takenLoops.has(loop)) { continue; }
         takenLoops.add(loop);
 
         const parent = getTightestContainingLoop(root, loop);
 
-        const container = extremes.get(loop)![0].container!;
+        const container = minYXPairs[i][0].container!;
         if (container.inOuts.length === 0) { continue; }
 
         const initialOut = getOutermostInAndOut(container, parent, loop);
 
         // Each loop generated will give rise to one componentLoop. 
 
-        const containerIsSimpleExtreme =
-            // container.xs[0].x.kind === 0 && container.xs[1].x.kind === 0 &&  // kind === extreme
+        const containerIsSimple =
             container.inOuts.length === 2 &&  // only 2 InOuts
             container.xs.length === 2;  // only 2 Xs
 
-        if (containerIsSimpleExtreme &&
+        if (containerIsSimple &&
             container.inOuts[0].nextOrPrev === container.inOuts[1]) { 
 
             //---------------------------------------------------
@@ -104,11 +98,10 @@ function simplifyPaths(
         completePath(
             initialOut,
             takenLoops,
-            takenOuts,
-            false
+            takenOuts
         );
 
-        if (containerIsSimpleExtreme &&
+        if (containerIsSimple &&
             initialOut.bezierPieces !== undefined) {
 
             //-------------------------------------------------------------------
@@ -168,7 +161,8 @@ function simplifyPaths(
     }
 
     if (typeof _debug_ !== 'undefined') {
-        _debug_.timing.simplifyPaths = performance.now() - _debug_.timing.timingStart - _debug_.timing.normalize;
+        (_debug_.timing as Mutable<Timing>).simplifyPaths =
+            performance.now() - _debug_.timing.timingStart - _debug_.timing.normalize;
     }
 
     //-------------------------------------
@@ -211,12 +205,10 @@ function simplifyPaths(
  * @internal
  */
 function prepLoops(
-        bezierLoops: (number[][])[][],
-        maxCoordinate?: number,
-        containerSizeMultiplier = 2**4) {
+        bezierLoops: (number[][])[][]) {
 
     if (typeof _debug_ !== 'undefined') {
-        _debug_.timing.timingStart = performance.now();
+        (_debug_.timing as Mutable<Timing>).timingStart = performance.now();
     }
 
     /** 
@@ -224,21 +216,14 @@ function prepLoops(
      * Higher bitlengths would increase the running time of the algorithm 
      * considerably.
      */
-    const maxCoordinate_ = maxCoordinate || getMaxCoordinate(bezierLoops);
+    const maxCoordinate_ = getMaxCoordinate(bezierLoops);
     /** The exponent, e, such that 2**e >= all bezier coordinate points. */
     const expMax = ceil(log2(maxCoordinate_));
-
-    const gridSpacing = 2**expMax * 2**(-MAX_BIT_LENGTH);
 
     /** 
      * A size (based on the max value of the tangent) for the containers holding 
      * critical points.
      */
-    //==================================================================
-    // const containerSizeMultiplier = 2**4;
-    // const containerSizeMultiplier = 2**41;
-    //==================================================================
-    const containerDim = gridSpacing * containerSizeMultiplier;
 
     bezierLoops = normalizeLoops(
         bezierLoops, 
@@ -252,9 +237,12 @@ function prepLoops(
     bezierLoops.sort(orderLoopAscendingByMinY);
 
     const loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));
-    const { extremes, containers } = getContainers(loops, containerDim, expMax);
 
-    return { extremes, containers, loops, expMax };
+    const minYXPairs = loops.map(getMinYXpair);
+
+    const containers = getContainers(loops, minYXPairs, expMax);
+
+    return { minYXPairs, containers, loops, expMax };
 }
 
 

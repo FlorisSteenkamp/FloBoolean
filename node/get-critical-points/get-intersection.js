@@ -1,4 +1,4 @@
-import { getEndpointIntersections, evalDeCasteljau, bezierBezierIntersectionBoundless } from "flo-bezier3";
+import { getEndpointIntersections, bezierBezierIntersectionBoundless, evalDeCasteljauDd } from "flo-bezier3";
 import { getOtherTs } from './get-other-t.js';
 /**
  *
@@ -19,13 +19,13 @@ function getIntersection(curveA, curveB, expMax, isANextB) {
         const errBound = 2 ** (expMax - 47);
         const xPairs = getEndpointIntersections(ps1, ps2);
         for (const xPair of xPairs) {
-            const p1 = evalDeCasteljau(ps1, xPair.ri1.tS);
+            const p = evalDeCasteljauDd(ps1, [0, xPair.ri1.t]).map(c => c[1]);
             const box = [
-                [p1[0] - errBound, p1[1] - errBound],
-                [p1[0] + errBound, p1[1] + errBound],
+                [p[0] - errBound, p[1] - errBound],
+                [p[0] + errBound, p[1] + errBound],
             ];
-            const ri1 = { x: { ri: xPair.ri1, kind: 5, box }, curve: curveA }; // exact overlap endpoint
-            const ri2 = { x: { ri: xPair.ri2, kind: 5, box }, curve: curveB }; // exact overlap endpoint
+            const ri1 = { x: { ri: xPair.ri1, kind: 5, p, box }, curve: curveA }; // exact overlap endpoint
+            const ri2 = { x: { ri: xPair.ri2, kind: 5, p, box }, curve: curveB }; // exact overlap endpoint
             xs.push([ri1, ri2]);
         }
         return xs;

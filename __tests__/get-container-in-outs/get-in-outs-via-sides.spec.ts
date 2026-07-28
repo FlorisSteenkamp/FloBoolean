@@ -21,8 +21,8 @@ test('getInOutsViaSides', function() {
         const filename = 'complexish';
         const { bezierLoops } = getPathFromFile(filename, true); 
 
-        const { extremes, containers, loops, expMax } = prepLoops(
-            bezierLoops, undefined, containerSizeMultiplier
+        const { minYXPairs, containers, loops, expMax } = prepLoops(
+            bezierLoops
         );
 
         // containers;//?

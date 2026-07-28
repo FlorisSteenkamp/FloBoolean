@@ -13,7 +13,7 @@ import { PathState } from '../path-state.js';
  * will follow. A number of coordinates pairs may be specified to draw a 
  * polyline. At the end of the command, the new current point is set to the 
  * final set of coordinates provided.
- */	
+ */
 function l(s: PathState): number[][] {
     const ps = [
         s.p,

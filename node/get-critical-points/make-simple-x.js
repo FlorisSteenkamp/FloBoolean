@@ -1,5 +1,5 @@
 import { createRootExact } from 'flo-poly';
-import { evalDeCasteljauWithErr } from "flo-bezier3";
+import { evalDeCasteljauDd, evalDeCasteljauWithErr } from "flo-bezier3";
 const { EPSILON: eps } = Number;
 /**
  *
@@ -26,9 +26,8 @@ function makeSimpleX(t, curve, kind) {
         return { x: { ri, p: pE, box, kind }, curve };
     }
     // there will be some error in calculating the point
-    // const p = evalDeCasteljauDd(ps, [0,t]).map(c => c[1]);
-    const { p, pE } = evalDeCasteljauWithErr(ps, t);
-    // TODO
+    const p = evalDeCasteljauDd(ps, [0, t]).map(c => c[1]);
+    const { pE } = evalDeCasteljauWithErr(ps, t);
     // const box = [
     //     [p[0] - pE[0], p[1] - pE[1]],
     //     [p[0] + pE[0], p[1] + pE[1]]

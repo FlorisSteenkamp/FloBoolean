@@ -3,8 +3,9 @@ import type { __X__ } from "../../../get-critical-points/-x-.js";
 import type { X } from "../../../get-critical-points/x.js";
 import { eEstimate } from "big-float-ts";
 import { roots, refineK1, rootIntervalToExp } from "flo-poly";
-import { getCoeffsBezBez, getIntervalBoxDd } from "flo-bezier3";
+import { evalDeCasteljauDd, getCoeffsBezBez, getIntervalBoxDd } from "flo-bezier3";
 import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting.js";
+import { toP } from '../../../utils/to-p.js';
 
 
 /**
@@ -59,8 +60,8 @@ function getTs(
         for (let j=0; j<risSide.length; j++) {
             const boxSide = boxesSide[j];
             if (areBoxesIntersectingDd(true)(boxPs, boxSide)) {
-                const psX   = makeX(cPs,   risPs[i],   boxPs,   getPExactPs);
-                const sideX = makeX(cSide, risSide[j], boxSide, getPExactSide);
+                const psX   = makeX(ps, cPs, risPs[i], getPExactPs);
+                const sideX = makeX(side, cSide, risSide[j], getPExactSide);
                 xPairs.push({ psX, sideX });
             }
         }
@@ -141,10 +142,12 @@ function deoverlapBoxes(
  * it was compensated (in which case the exact-poly getter is dropped).
  */
 function makeX(
+        ps: number[][],
         compensated: number,
         ri: RootIntervalExp,
-        box: number[][][],
         getPExact: () => number[][]): X {
+
+    const p = evalDeCasteljauDd(ps, ri.tS).map(c => c[0] + c[1]);
 
     return {
         compensated,
@@ -152,7 +155,7 @@ function makeX(
         riExp: compensated ? ri : undefined,
         getPExact: compensated ? undefined : getPExact,
         kind: 1,
-        box: boxExpToBox(box)
+        p
     };
 }
 

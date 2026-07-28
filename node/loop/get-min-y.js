@@ -1,23 +1,33 @@
-import { getYBoundsTight } from 'flo-bezier3';
-import { memoize } from 'flo-memoize';
+import { getBezierMinY } from './get-bezier-min-y.js';
+import { getControlPointBox } from 'flo-bezier3';
+const { min } = Math;
 /**
  *
  */
-const getMinY = memoize(function (loop) {
+function getMinY(loop) {
     const { curves } = loop;
-    let bestY = getYBoundsTight(curves[0].ps).minY;
+    let minYP = Infinity;
+    for (const { ps } of curves) {
+        minYP = min(minYP, getControlPointBox(ps)[0][1]);
+    }
+    let bestY = undefined;
     let bestCurve = curves[0];
-    for (let i = 1; i < curves.length; i++) {
-        const ps = curves[i].ps;
-        const minY = getYBoundsTight(ps).minY;
-        const v = minY.box[0][1];
-        const x = bestY.box[0][1];
-        if (v < x || (v === x && minY.ts[0] > bestY.ts[0])) {
+    for (const curve of curves) {
+        const { ps } = curve;
+        if (!ps.some(p => p[1] <= minYP)) {
+            continue;
+        }
+        const minY = getBezierMinY(ps);
+        const v = minY.p[1];
+        if (bestY === undefined ||
+            v < bestY.p[1] ||
+            (v === bestY.p[1] && minY.t > bestY.t)) {
             bestY = minY;
-            bestCurve = curves[i];
+            bestCurve = curve;
+            minYP = v;
         }
     }
     return { curve: bestCurve, y: bestY };
-});
+}
 export { getMinY };
 //# sourceMappingURL=get-min-y.js.map

@@ -6,9 +6,9 @@ type GeneratedElems = { [T in keyof DebugElems]: DebugElems[T][] };
 
 
 interface Timing {
-    timingStart: number;
-    normalize: number;
-    simplifyPaths : number;
+    readonly timingStart: number;
+    readonly normalize: number;
+    readonly simplifyPaths : number;
 }
 
 

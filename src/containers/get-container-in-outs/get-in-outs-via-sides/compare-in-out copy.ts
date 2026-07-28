@@ -1,4 +1,4 @@
-import { MaxX, MaxY, MinX, MinY, type InOut } from "../../../containers/in-out/in-out.js";
+import type { InOut } from "../../../containers/in-out/in-out.js";
 import { refineK1 } from "flo-poly";
 import { eCompare } from "big-float-ts";
 
@@ -18,31 +18,29 @@ function compareInOut(
     return (inOutA: InOut,
             inOutB: InOut): number => {
 
-        const { side: sideA, sideX: xA } = inOutA;
-        const { side: sideB, sideX: xB } = inOutB;
-
-        // First compare side indexes - side indexes are the coarsest ordering
+        // First compare side indexes - side indexes are the coursest ordering
+        const sideA = inOutA.side!;
+        const sideB = inOutB.side!;
         let res = sideA - sideB;
         if (res !== 0) { return res; }
 
-        if (sideA === MinX) {
-            console.log('aaa');
-        }
-
-        const { ri: riA } = xA;
-        const { ri: riB } = xB;
-
         // Could not resolve by side indexes (they are the same)
-        // Compare by side `t` values
-        res = riA.t - riB.t;
 
-        const errBound = 2**3 * Number.EPSILON;
+        // Compare by side `t` values
+        const xA = inOutA.sideX!;
+        const xB = inOutB.sideX!;
+        res = xA.ri.tS - xB.ri.tS;
+
+        const errBound = 2*4 * Number.EPSILON;  // is factor of 2 necessary?
         if (abs(res) >= errBound) {
             return res;
         }
 
         // At this point we zoom in once more (compensated once) to add an 
         // additional 49 bits accuracy
+
+        // FUTURE - first check if they are in the same k family - this will speed
+        // up the algorithm in those cases.
 
         if (!xA.compensated) { // else the root is already compensated once
             xA.compensated = 1;  // compensate once - in future we can compensate more times if necessary
@@ -70,19 +68,16 @@ function compareInOut(
         // but we are already about a quadrillionth of a quadrillionth of a unit
         // accurate at this stage.
 
-        const { dir: dirA, idx: idxA } = inOutA;
-        const { dir: dirB, idx: idxB } = inOutB;
-
-        res = dirA - dirB;
+        res = inOutA.dir - inOutB.dir;
         if (res !== 0) {
             return snugDir*res;
         }
 
         // At this stage they are both in or both out
         // We reverse sort the ins in comparison to the outs
-        return dirA === 1 
-            ? idxA - idxB
-            : idxB - idxA;
+        return inOutA.dir === 1 
+            ? inOutA.idx! - inOutB.idx!
+            : inOutB.idx! - inOutA.idx!;
     }
 }
 

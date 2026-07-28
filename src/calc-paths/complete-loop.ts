@@ -1,6 +1,5 @@
 declare const _debug_: Debug;
 import type { Debug } from '../debug/debug.js';
-
 import type { BezierPiece } from 'flo-bezier3';
 import type { InOut } from '../containers/in-out/in-out.js';
 import { closestPointOnBezierCertified } from 'flo-bezier3';
@@ -8,7 +7,6 @@ import { mid } from 'flo-poly';
 import { getNextExit } from './get-next-exit.js';
 import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
 import { getBeziersToPrevContainer } from './get-beziers-to-prev-container.js';
-import { getTightNextExit } from './get-tight-next-exit.js';
 import { bezierPieceToBezier } from './bezier-piece-to-bezier.js';
 
 
@@ -21,8 +19,7 @@ import { bezierPieceToBezier } from './bezier-piece-to-bezier.js';
  */
 function completeLoop(
         takenInOuts: Set<InOut>,
-        origInOut: InOut,
-        tight: boolean): {
+        origInOut: InOut): {
             bezierPieces: BezierPiece[],
             additionalOutsToCheck: InOut[]
         } {
@@ -33,8 +30,6 @@ function completeLoop(
     // Move immediately to the outgoing start of the loop
     let inOutToUse: InOut = origInOut;
     let additionalBezier: number[][] | undefined;
-
-    const getNextExit_ = tight ? getTightNextExit : getNextExit;
 
     /** For debugging only */
     const ios: InOut[] = [];
@@ -51,7 +46,7 @@ function completeLoop(
 
         bezierPieces.push(...beziersToNextContainer);
 
-        const nextExit = getNextExit_(
+        const nextExit = getNextExit(
             inOut_Next!, origInOut,
             additionalOutsToCheck, takenInOuts
         );

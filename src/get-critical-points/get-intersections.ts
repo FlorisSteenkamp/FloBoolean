@@ -28,7 +28,7 @@ function getIntersections(
         curves, 
         curve => getBoundingBox$(curve.ps)[0][0],
         curve => getBoundingBox$(curve.ps)[1][0],
-        getCurvesIntersections(expMax)
+        getCurvesIntersections
     );
 
     const xs: [__X__,__X__][] = [];

@@ -34,11 +34,14 @@ function getContainers(loops, containerDim, expMax) {
     // initialize the containers with one of the one-sided intersections
     let containers = xPairs.map(xPair => {
         const { box } = xPair[0].x;
+        const { p } = xPair[0].x;
         return {
             xs: xPair,
             box: [
                 [box[0][0] - containerDim, box[0][1] - containerDim],
                 [box[1][0] + containerDim, box[1][1] + containerDim]
+                // [p[0] - containerDim, p[1] - containerDim],
+                // [p[0] + containerDim, p[1] + containerDim]
             ],
             inOuts: undefined // to be set later
         };

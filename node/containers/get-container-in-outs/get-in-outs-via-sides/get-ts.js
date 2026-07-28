@@ -1,6 +1,6 @@
 import { eEstimate } from "big-float-ts";
 import { roots, refineK1, rootIntervalToExp } from "flo-poly";
-import { getCoeffsBezBez, getIntervalBoxDd } from "flo-bezier3";
+import { evalDeCasteljauDd, getCoeffsBezBez, getIntervalBoxDd } from "flo-bezier3";
 import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting.js";
 /**
  * Robustly get matching intersections of `ps` (a bezier) that matches those of
@@ -47,8 +47,8 @@ function getTs(ps, side) {
         for (let j = 0; j < risSide.length; j++) {
             const boxSide = boxesSide[j];
             if (areBoxesIntersectingDd(true)(boxPs, boxSide)) {
-                const psX = makeX(cPs, risPs[i], boxPs, getPExactPs);
-                const sideX = makeX(cSide, risSide[j], boxSide, getPExactSide);
+                const psX = makeX(ps, cPs, risPs[i], boxPs, getPExactPs);
+                const sideX = makeX(side, cSide, risSide[j], boxSide, getPExactSide);
                 xPairs.push({ psX, sideX });
             }
         }
@@ -107,14 +107,16 @@ function deoverlapBoxes(curve, ris, getPExact) {
  * Creates an `X` from the given root interval and bounding box, tracking whether
  * it was compensated (in which case the exact-poly getter is dropped).
  */
-function makeX(compensated, ri, box, getPExact) {
+function makeX(ps, compensated, ri, box, getPExact) {
+    const p = evalDeCasteljauDd(ps, ri.tS).map(c => c[1]);
     return {
         compensated,
         ri: rootIntervalToDouble(ri),
         riExp: compensated ? ri : undefined,
         getPExact: compensated ? undefined : getPExact,
         kind: 1,
-        box: boxExpToBox(box)
+        box: boxExpToBox(box),
+        p
     };
 }
 function rootIntervalToDouble(ri) {

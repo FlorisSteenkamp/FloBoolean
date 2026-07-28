@@ -13,8 +13,8 @@ function getInterfaceIntersections(
     for (const loop of loops) {
         for (const curve of loop.curves) {
             xs.push([
-                makeSimpleX(1,curve,4),       // interface
-                makeSimpleX(0,curve.next,4),  // interface
+                makeSimpleX(1, curve, 4),       // interface
+                makeSimpleX(0, curve.next, 4),  // interface
             ]);
         }
     } 

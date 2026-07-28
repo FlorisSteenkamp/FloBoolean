@@ -1,8 +1,9 @@
 declare const _debug_: Debug; 
-import type { Debug } from '../../debug/debug.js';
+import type { Debug, Timing } from '../../debug/debug.js';
 import { bitLength } from 'big-float-ts';
 import { fixBeziers } from "./fix-beziers.js";
 import { toGrid } from './to-grid.js';
+import { Mutable } from '../../utils/mutable.js';
 
 
 /**
@@ -46,7 +47,7 @@ function normalizeLoops(
     loops = loops.filter(loop => loop.length > 0);
 
     if (typeof _debug_ !== 'undefined') {
-        _debug_.timing.normalize = performance.now() - _debug_.timing.timingStart!;
+        (_debug_.timing as Mutable<Timing>).normalize = performance.now() - _debug_.timing.timingStart;
     }
 
     return loops;

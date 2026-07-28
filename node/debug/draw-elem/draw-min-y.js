@@ -6,6 +6,7 @@ function drawMinY(g, pos) {
     //console.log('x: ', getX(ps));
     //console.log('y: ', getY(ps));
     //console.log('t: ', pos.t);
+    console.log(p);
     const $elems = drawFs.crossHair(g, p, 'red thin10 nofill');
     return $elems;
 }

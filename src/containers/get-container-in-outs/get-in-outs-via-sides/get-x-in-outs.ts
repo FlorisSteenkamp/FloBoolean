@@ -5,6 +5,7 @@ import type { Container } from "../../container.js";
 import type { X } from "../../../get-critical-points/x.js";
 import type { Mutable } from "../../../utils/mutable.js";
 import { getTs } from './get-ts.js';
+import { toP } from "../../../utils/to-p.js";
 
 
 
@@ -15,19 +16,6 @@ type SideX = {
 type WithRI = __X__ & Partial<SideX>;
 
 
-function midBox(box: number[][]): number[] {
-    return [
-        (box[0][0] + box[1][0])/2,
-        (box[0][1] + box[1][1])/2
-    ];
-}
-
-
-function midBoxX(_x_: __X__): number[] {
-    return midBox(_x_.x.box);
-}
-
-
 /**
  * * **warning** modifies container.xs[i].in_
  * 
@@ -36,13 +24,13 @@ function midBoxX(_x_: __X__): number[] {
 function getXInOuts(
         container: Container) {
 
-    const [[left,top], [right,bottom]] = container.box;
+    const [[minX,minY], [maxX,maxY]] = container.box;
 
     const sides = [
-        [[right,top   ], [left, top   ]],
-        [[left, top   ], [left, bottom]],
-        [[left, bottom], [right,bottom]],
-        [[right,bottom], [right,top   ]]
+        [[maxX, minY], [minX, minY]],
+        [[minX, minY], [minX, maxY]],
+        [[minX, maxY], [maxX, maxY]],
+        [[maxX, maxY], [maxX, minY]]
     ];
 
     return function (
@@ -56,7 +44,12 @@ function getXInOuts(
 
         const { ps } = curve;
 
-        const xs: WithRI[] = xs_.slice();
+        // @ts-ignore
+        const xs: (WithRI & { ps: number[][] })[] = xs_.slice();//.map(v => ({ ...v, ps }));
+        for (let x of xs) {
+            x.ps = ps;
+        }
+
 
         // console.log(xs.length);
 
@@ -64,7 +57,8 @@ function getXInOuts(
             const xs_ = getTs(ps, sides[i]);
 
             for (const { psX, sideX } of xs_) {
-                xs.push({ 
+                xs.push({
+                    ps,
                     x: psX,
                     side: i, 
                     sideX,
@@ -92,8 +86,9 @@ function getXInOuts(
             if (x.side !== undefined) {
                 // it is a sideX
                 if (prevWasX === true) {
+                    const p = toP(x.ps, x.x.ri.t);
                     outs.push(makeInOut(
-                        +1, midBoxX(x), prevX!, container, x.side, x.sideX!
+                        +1, p, prevX!, container, x.side, x.sideX!
                     ));
                     (prevX as Mutable<WithRI>).out = outs[outs.length-1];
                 }
@@ -101,8 +96,9 @@ function getXInOuts(
             } else {
                 // it is a proper X
                 if (prevWasX === false) {
+                    const p = toP(x.ps, x.x.ri.t);
                     ins.push(makeInOut(
-                        -1, midBoxX(prevX!), x, container, prevX!.side!, prevX!.sideX!
+                        -1, p, x, container, prevX!.side!, prevX!.sideX!
                     ));
                     (x as Mutable<WithRI>).in_ = ins[ins.length-1];
                 }
@@ -129,7 +125,7 @@ function makeInOut(
         sideX: X): InOut {
 
     return {
-        idx: undefined,
+        idx: undefined!,  // will be set later
         dir,
         p,
         _x_,
@@ -139,7 +135,13 @@ function makeInOut(
         loopsIdxs: new Set(),
         children: new Set(),
         windingNum: 0,
-        orientation: 0
+        orientation: 0,
+        nextOrPrev: undefined!,    // will be set later
+        bezierPieces: undefined!,  // ...
+        nextAround: undefined!,    // ...
+        parent: undefined!,        // ...
+        prevAround: undefined!,    // ...
+        used: undefined!           // ...
     };
 }
 
