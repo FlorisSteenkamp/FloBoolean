@@ -18,16 +18,25 @@ function compareInOut(
     return (inOutA: InOut,
             inOutB: InOut): number => {
 
-        const { side: sideA, sideX: xA } = inOutA;
-        const { side: sideB, sideX: xB } = inOutB;
+        const { side: sideA, sideX: xA, dir: dirA, idx: idxA } = inOutA;
+        const { side: sideB, sideX: xB, dir: dirB, idx: idxB } = inOutB;
 
         // First compare side indexes - side indexes are the coarsest ordering
         let res = sideA - sideB;
         if (res !== 0) { return res; }
 
+        //======================================================================
+        const { _x_: _x_A } = inOutA;
+        const { _x_: _x_B } = inOutB;
         if (sideA === MinX) {
-            console.log('aaa');
+            const { curve: curveA } = _x_A;
+            const { curve: curveB } = _x_B;
+            const { ps: psA } = curveA;
+            const { ps: psB } = curveB;
+            
+            const {} = xB;
         }
+        //======================================================================
 
         const { ri: riA } = xA;
         const { ri: riB } = xB;
@@ -69,9 +78,6 @@ function compareInOut(
         // resolved. In future we can cascade compensations to ensure resolution
         // but we are already about a quadrillionth of a quadrillionth of a unit
         // accurate at this stage.
-
-        const { dir: dirA, idx: idxA } = inOutA;
-        const { dir: dirB, idx: idxB } = inOutB;
 
         res = dirA - dirB;
         if (res !== 0) {

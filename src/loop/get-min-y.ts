@@ -1,5 +1,5 @@
 import type { Loop } from './loop.js';
-import { getBezierMinY } from './get-bezier-min-y.js';
+import { getBezierMinY } from '../bezier/get-bezier-min-y.js';
 import { getControlPointBox } from 'flo-bezier3';
 
 const { min } = Math;

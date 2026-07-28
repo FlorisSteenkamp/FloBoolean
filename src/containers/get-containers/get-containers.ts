@@ -17,6 +17,8 @@ import { connectContainerInOuts } from './connect-container-in-outs.js';
 import { getInOutsOfContainer } from '../get-container-in-outs/get-in-outs-via-sides/get-in-outs-via-sides.js';
 import { numberInOuts } from './number-in-outs.js';
 import { MAX_BIT_LENGTH } from '../../main/max-bitlength.js';
+import { getBezierTurnarounds } from '../../bezier/get-bezier-turnarounds.js';
+import { eps } from 'flo-poly';
 
 
 const CONTAINER_SIZE_MULTIPLIER = 2**4;
@@ -83,8 +85,10 @@ function getAllXPairs(
     const xs3 = getSelfIntersections(loops);
     const xs4 = getInterfaceIntersections(loops);
     const xs5 = getExcessiveCurvatures(expMax, loops);
+    const xs6 = getTurnarounds(loops);
 
-    let xPairs = [...xs1, ...xs2, ...xs3, ...xs4, ...xs5];
+    // let xPairs = [...xs1, ...xs2, ...xs3, ...xs4, ...xs5];
+    let xPairs = [...xs1, ...xs2, ...xs3, ...xs4, ...xs5, ...xs6];
 
     if (typeof _debug_ !== 'undefined') { 
         const { intersection } = _debug_.elems;
@@ -94,6 +98,35 @@ function getAllXPairs(
     }
 
     return xPairs;
+}
+
+
+function getTurnarounds(
+        loops: Loop[]): [__X__,__X__][] {
+
+    return loops.map(loop => {
+        return loop.curves.map(curve => {
+            const { ps } = curve;
+            const { turnaroundXs, turnaroundYs } = getBezierTurnarounds(ps);
+
+            return turnaroundXs.map((ta): [__X__,__X__] => {
+                const { p, t } = ta;
+                const __x__: __X__ = {
+                    curve,
+                    x: {
+                        p,
+                        ri: { t, tS: t - 4*eps, tE: t + 4*eps, multiplicity: 1 },
+                        kind: 8
+                    }
+                };
+
+                return [
+                    __x__,
+                    {...__x__}
+                ]
+            })
+        });
+    }).flat(2);
 }
 
 

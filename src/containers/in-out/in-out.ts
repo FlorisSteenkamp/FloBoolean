@@ -4,6 +4,18 @@ import type { Container } from "../container.js";
 import type { X } from "../../get-critical-points/x.js";
 
 
+interface In extends InOut {
+    /** direction at container interface, in (-1) or out (+1) */
+    readonly dir: -1;
+}
+
+
+interface Out extends InOut {
+    /** direction at container interface, in (-1) or out (+1) */
+    readonly dir: 1;
+}
+
+
 interface InOut {
     /** direction at container interface, in (-1) or out (+1) */
     readonly dir: -1|1;
@@ -71,6 +83,6 @@ const MaxY = 2;
 const MaxX = 3;
 
 
-export type { InOut }
+export type { In, Out, InOut }
 export { MinY, MinX, MaxY, MaxX }
 

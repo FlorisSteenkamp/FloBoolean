@@ -79,7 +79,7 @@ function getXInOuts(
 
         const ins: InOut[] = [];
         const outs: InOut[] = [];
-        let prevX: WithRI | undefined = undefined;
+        let prevX: (WithRI & { ps: number[][]; }) | undefined = undefined;
         /** true if the prevX was a proper X, false if it was a SideX */
         let prevWasX: boolean | undefined = undefined;
         for (const x of xs) {
@@ -96,7 +96,7 @@ function getXInOuts(
             } else {
                 // it is a proper X
                 if (prevWasX === false) {
-                    const p = toP(x.ps, x.x.ri.t);
+                    const p = toP(prevX!.ps, prevX!.x.ri.t);
                     ins.push(makeInOut(
                         -1, p, x, container, prevX!.side!, prevX!.sideX!
                     ));

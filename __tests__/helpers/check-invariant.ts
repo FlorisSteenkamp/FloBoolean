@@ -9,6 +9,7 @@ const { abs } = Math;
 * @param invariantReq required invariants
 */
 function checkInvariant(
+        fileName: string,
         invariantCalc: Invariants, 
         invariantReq: Invariants, 
         tolerance: Tolerance) {
@@ -18,7 +19,7 @@ function checkInvariant(
 
     // if (abs(area - area_) > tolerance.area) {
     if (abs(area) - abs(area_) > tolerance.area) {
-        throw new Error(`Area not within tolerance. Found ${area_} - should be ${area}`);
+        throw new Error(`${fileName}: Area not within tolerance. Found ${area_} - should be ${area}`);
     }
     if (abs(centroid[0] - centroid_[0]) > tolerance.centroid ||
         abs(centroid[1] - centroid_[1]) > tolerance.centroid) {
@@ -29,7 +30,7 @@ function checkInvariant(
         // centroid[0] - centroid_[0];//?
         // centroid[1] - centroid_[1];//?
         throw new Error(
-            `Centroid not within tolerance. Calc: ${JSON.stringify(centroid_)}, required: ${JSON.stringify(centroid)}, ` + `\n` +
+            `${fileName}: Centroid not within tolerance. Calc: ${JSON.stringify(centroid_)}, required: ${JSON.stringify(centroid)}, ` + `\n` +
             `delta x,y: ${centroid[0] - centroid_[0]}, ${centroid[1] - centroid_[1]}`
         );
     }
@@ -50,7 +51,7 @@ function checkInvariant(
         tolerance.bounds;//?
 
         throw new Error(
-            `Bounds not within tolerance.`
+            `${fileName}: Bounds not within tolerance.`
         );
     }
 

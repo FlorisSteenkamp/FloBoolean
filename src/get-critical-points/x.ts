@@ -32,8 +32,9 @@ interface X {
      * * 2 => self intersection, a.k.a. ordinary double point, a.k.a crunode
      * * 3 => cusp
      * * 7 => a point of excessive curvature
+     * * 8 => a point of vertical or horizontal tangent
      */
-    kind: 0|1|2|3|4|5|6|7;
+    kind: 0|1|2|3|4|5|6|7|8;
     /** 
      * A small box that is guaranteed to contain the intersection 
      * (given by its top-left and bottom-right corner) calculated from the root

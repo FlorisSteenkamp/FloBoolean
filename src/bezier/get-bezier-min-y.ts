@@ -34,7 +34,7 @@ import { toP } from '../utils/to-p.js';
     for (let i=0; i<rootsY.length; i++) {
         const { tS, tE, t } = rootsY[i];
         const ts = [tS, tE];
-        const box = getIntervalBox(ps, ts);
+        const box = getIntervalBox(ps, ts);  // TODO
 
         if (box[0][1] < minY.p[1]) { 
             const p = toP(ps, t);

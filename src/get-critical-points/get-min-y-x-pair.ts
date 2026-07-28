@@ -27,22 +27,7 @@ function getMinYXpair(
     
     const t = clip(y.t, 0, 1);
 
-    // if (t <= 0) {
-    //     return [
-    //         makeSimpleX(0, curve, 0),
-    //         makeSimpleX(1, curve.prev, 0)
-    //     ];
-    // }
-
-    // if (t >= 1) {
-    //     return [
-    //         makeSimpleX(1, curve, 0),
-    //         makeSimpleX(0, curve.next, 0)
-    //     ];
-    // }
-
     const p = y.p;
-    // FUTURE - should multiplicity be undefined in these cases?
     const __x__: __X__ = {
         x: { 
             ri: { t, tS: t - 4*eps, tE: t + 4*eps, multiplicity: 1 },

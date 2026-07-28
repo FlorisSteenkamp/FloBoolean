@@ -2,7 +2,7 @@ declare const _debug_: Debug;
 import type { Debug, Timing } from '../debug/debug.js';
 import type { BezierPiece } from 'flo-bezier3';
 import type { Mutable } from '../utils/mutable.js';
-import type { InOut } from '../containers/in-out/in-out.js';
+import type { InOut, Out } from '../containers/in-out/in-out.js';
 import type { Loop } from '../loop/loop.js';
 import type { SimplifyOptions } from './simplify-options.js';
 import { completePath } from '../calc-paths/complete-path.js';
@@ -63,7 +63,7 @@ function simplifyPaths(
     const root = createRootInOut();
     // `takenLoops` is important in rare cases such as in the 'koldat52' vector
     const takenLoops: Set<Loop> = new Set();
-    const takenOuts: Set<InOut> = new Set();  // Taken intersections
+    const takenOuts: Set<Out> = new Set();  // Taken intersections
 
     for (let i=0; i<loops.length; i++) {
         const loop = loops[i];
