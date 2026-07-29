@@ -8,8 +8,8 @@ import { orderInOuts } from '../containers/order-in-outs.js';
 /**
  * Get the initial intersection for the given loop.
  * 
- * The loop must be such that  an extreme point on the loop forms part of an
- * outermost loop that is outside  all other component loops that is formed by
+ * The loop must be such that an extreme point on the loop forms part of an
+ * outermost loop that is outside all other component loops that is formed by
  * this loop and all other loops it may intersect.
  * 
  * This extreme point is guaranteed by the initial ordering of the loops by
@@ -20,7 +20,7 @@ import { orderInOuts } from '../containers/order-in-outs.js';
  */
 function getOutermostInAndOut(
         container: Container,
-        parent: InOut,
+        parent: Out,
         loop: Loop): Mutable<Out> {
 
     orderInOuts(container, 1);  // `snugDir` doesn't really matters here
@@ -37,7 +37,7 @@ function getOutermostInAndOut(
 
     const set: Set<number> = parent.idx === 0
         ? new Set()
-        : parent.orientation === 1 ? parent.loopsIdxs! : new Set();
+        : parent.orientation === 1 ? parent.loopsIdxs : new Set();
         
 
     firstInOut.orientation = orientation;

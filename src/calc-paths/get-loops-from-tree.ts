@@ -73,7 +73,9 @@ function getLoopsFromTree(
 }
 
 
-function isAncestorUsed(inOut: InOut) {
+function isAncestorUsed(
+        inOut: InOut) {
+
     let parent = inOut.parent;
     while (true) {
         if (parent === undefined) {

@@ -57,14 +57,14 @@ function getNextExit(
                 outToUse = out;
             } else if (toCount === 1) {
                 // ...must have the same orientation (see complexish2.svg in tests)
-                markOutForChecking_(out, origOut.orientation!, origOut);
+                markOutForChecking_(out, origOut.orientation, origOut);
             }
         } else {
             // else we are rotating on the outside of the loop
             if (prevToCount === 1 && toCount === 0) {
-                markOutForChecking_(out, origOut.orientation!, origOut.parent!);
+                markOutForChecking_(out, origOut.orientation, origOut.parent);
             } else if (prevToCount === 0 && toCount === -1) {
-                markOutForChecking_(out, -origOut.orientation!, origOut.parent!);
+                markOutForChecking_(out, -origOut.orientation, origOut.parent);
             }
         }
     } while (true)

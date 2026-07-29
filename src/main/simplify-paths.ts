@@ -67,6 +67,7 @@ function simplifyPaths(
 
     for (let i=0; i<loops.length; i++) {
         const loop = loops[i];
+
         if (takenLoops.has(loop)) { continue; }
         takenLoops.add(loop);
 
@@ -90,8 +91,8 @@ function simplifyPaths(
             // It's a Jordan curve: short-circuit `completePath`
             //---------------------------------------------------
             initialOut.bezierPieces = loop.beziers.map(bezierToBezierPiece);
-            (initialOut.parent! as Mutable<InOut>).children = initialOut.parent!.children || new Set();
-            initialOut.parent!.children!.add(initialOut);
+            (initialOut.parent as Mutable<InOut>).children = initialOut.parent.children || new Set();
+            initialOut.parent.children!.add(initialOut);
             continue;
         }
 

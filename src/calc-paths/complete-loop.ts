@@ -1,12 +1,11 @@
 declare const _debug_: Debug;
 import type { Debug } from '../debug/debug.js';
 import type { BezierPiece } from 'flo-bezier3';
-import type { InOut, Out } from '../containers/in-out/in-out.js';
+import type { Out } from '../containers/in-out/in-out.js';
 import { closestPointOnBezierCertified } from 'flo-bezier3';
 import { mid } from 'flo-poly';
 import { getNextExit } from './get-next-exit.js';
 import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
-import { getBeziersToPrevContainer } from './get-beziers-to-prev-container.js';
 import { bezierPieceToBezier } from './bezier-piece-to-bezier.js';
 
 
@@ -31,20 +30,20 @@ function completeLoop(
     let outToUse: Out = origOut;
     let additionalBezier: number[][] | undefined;
 
-    /** For debugging only */
-    const ios: InOut[] = [];
+    const outs: Out[] = [];  // For debugging only
     do {
-        takenOuts.add(outToUse);
-        ios.push(outToUse);  // for debugging only
+        outs.push(outToUse);  // for debugging only
 
-        const inOut_Next = outToUse.nextOrPrev!;
+        takenOuts.add(outToUse);
+
+        const inOut_Next = outToUse.nextOrPrev;
         if (inOut_Next.dir === 1) {
+            console.log('aaaaaaaaaaaaaaa')
             takenOuts.add(inOut_Next as Out);
         }
         
-        const beziersToNextContainer = outToUse.dir === +1
-            ? getBeziersToNextContainer(outToUse, inOut_Next)!
-            : getBeziersToPrevContainer(outToUse, inOut_Next)!;
+        const beziersToNextContainer = 
+            getBeziersToNextContainer(outToUse, inOut_Next);
 
         bezierPieces.push(...beziersToNextContainer);
 
@@ -67,16 +66,14 @@ function completeLoop(
         }
     } while (outToUse !== origOut);
 
-    if (typeof _debug_ !== 'undefined' && !!_debug_.verbose) {
-        logIos(ios);
-    }
+    if (typeof _debug_ !== 'undefined' && !!_debug_.verbose) { logIos(outs); }
 
     return { bezierPieces, additionalOutsToCheck };
 }
 
 
 /** For debugging only */
-function logIos(ios: InOut[]) {
+function logIos(ios: Out[]) {
     const strs: string[] = [];
     const params: string[] = [];
     for (let io of ios) {

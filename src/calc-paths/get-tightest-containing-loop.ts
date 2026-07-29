@@ -1,4 +1,4 @@
-import type { InOut } from "../containers/in-out/in-out.js";
+import type { InOut, Out } from "../containers/in-out/in-out.js";
 import type { Loop } from '../loop/loop.js';
 import { isLoopInLoop } from './is-loop-in-loop.js';
 import { bezierPieceToBezier } from './bezier-piece-to-bezier.js';
@@ -9,11 +9,11 @@ import { bezierPieceToBezier } from './bezier-piece-to-bezier.js';
  * @param loop 
  */
 function getTightestContainingLoop(
-        root: InOut, 
-        loop: Loop): InOut {
+        root: Out, 
+        loop: Loop): Out {
     
-    let containingLoop: InOut | undefined = undefined;
-    const stack: InOut[] = [root];
+    let containingLoop: Out | undefined = undefined;
+    const stack: Out[] = [root];
     while (stack.length) {
         const inOut = stack.pop()!;
         f(inOut);
@@ -21,7 +21,7 @@ function getTightestContainingLoop(
 
     return containingLoop!;
 
-    function f(parent: InOut) {
+    function f(parent: Out) {
         // if (parent === root || isLoopInLoop(loop.beziers, parent.bezierPieces!)) {
         if (parent === root || isLoopInLoop(loop.beziers, parent.bezierPieces!.map(bezierPieceToBezier))) {
             containingLoop = parent;

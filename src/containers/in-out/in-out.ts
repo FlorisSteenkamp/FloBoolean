@@ -48,7 +48,7 @@ interface InOut {
     readonly orientation: number;
     readonly windingNum: number;
     readonly parent: InOut;
-    readonly children: Set<InOut>;
+    readonly children: Set<Out>;
     readonly bezierPieces: BezierPiece[]; 
     /** 
      * the edge ordering around the container

@@ -1,4 +1,4 @@
-import type { InOut, Out } from '../containers/in-out/in-out.js';
+import type { Out } from '../containers/in-out/in-out.js';
 import type { Loop } from '../loop/loop.js';
 import type { Mutable } from '../utils/mutable.js';
 import { completeLoop } from './complete-loop.js';
@@ -21,18 +21,18 @@ function completePath(
     const outStack: Out[] = [initialOut];
 
     while (outStack.length) {
-        const origInOut = outStack.pop()!;
-        takenLoops.add(origInOut!._x_!.curve.loop);
+        const origOut = outStack.pop()! as Mutable<Out>;
+        takenLoops.add(origOut._x_.curve.loop);
 
-        if (takenOuts.has(origInOut)) { continue; }
+        if (takenOuts.has(origOut)) { continue; }
 
-        (origInOut as Mutable<InOut>).children = new Set();
+        origOut.children = new Set();
         const { bezierPieces, additionalOutsToCheck } = 
-            completeLoop(takenOuts, origInOut);
+            completeLoop(takenOuts, origOut);
 
-        (origInOut as Mutable<InOut>).bezierPieces = bezierPieces;
-        (origInOut.parent! as Mutable<InOut>).children = origInOut.parent!.children || new Set();
-        origInOut.parent!.children!.add(origInOut);
+        origOut.bezierPieces = bezierPieces;
+        (origOut.parent as Mutable<Out>).children = origOut.parent.children || new Set();
+        origOut.parent.children.add(origOut);
 
         for (let i=0; i<additionalOutsToCheck.length; i++) {
             outStack.push(additionalOutsToCheck[i]);

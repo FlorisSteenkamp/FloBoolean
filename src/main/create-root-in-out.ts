@@ -1,7 +1,7 @@
-import type { InOut } from "../containers/in-out/in-out.js";
+import type { Out } from "../containers/in-out/in-out.js";
 
 
-function createRootInOut(): InOut {
+function createRootInOut(): Out {
     return {
         dir: undefined!,
         idx: 0,
