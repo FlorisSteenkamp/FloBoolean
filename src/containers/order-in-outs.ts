@@ -12,18 +12,19 @@ import { compareInOut } from "./get-container-in-outs/get-in-outs-via-sides/comp
  * @param container
  */
 function orderInOuts(
-        container: Container,
-        snugDir: number) {
+        container: Container) {
 
     const inOuts = container.inOuts;
 
-    inOuts.sort(compareInOut(snugDir));
+    inOuts.sort(compareInOut);
 
-    let prevInOut = inOuts[inOuts.length-1];
+    let prevInOut = inOuts[inOuts.length - 1] as Mutable<InOut>;
     for (let i=0; i<inOuts.length; i++) {
-        const inOut = inOuts[i];
-        (inOut as Mutable<InOut>).prevAround = prevInOut;
-        (prevInOut as Mutable<InOut>).nextAround = inOut;
+        const inOut = inOuts[i] as Mutable<InOut>;
+
+        inOut.prevAround = prevInOut;
+        prevInOut.nextAround = inOut;
+
         prevInOut = inOut;
     }
 }

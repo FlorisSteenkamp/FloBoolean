@@ -9,11 +9,13 @@ import { multiply, add, negate, Horner, integrate, ddMultiply, ddNegate, ddInteg
  * 
  * * see e.g. https://mathinsight.org/greens_theorem_find_area
  * 
- * @param pss the shape given as a closed loop of bezier curves
+ * @param shape the shape given as a closed loop of bezier curves
  */
-function getShapeArea(pss: number[][][]) {
+function getShapeArea(
+        shape: (number[][])[]) {
+
     let totalArea = 0;
-    for (const ps of pss) {
+    for (const ps of shape) {
         const [x,y] = toPowerBasis(ps);
         const [dx,dy] = toPowerBasis_1stDerivative(ps);
 
@@ -35,11 +37,13 @@ function getShapeArea(pss: number[][][]) {
  * 
  * * see e.g. https://mathinsight.org/greens_theorem_find_area
  * 
- * @param pss the shape given as a closed loop of bezier curves
+ * @param shape the shape given as a closed loop of bezier curves
  */
-function ddGetShapeArea(pss: number[][][]) {
+function ddGetShapeArea(
+        shape: (number[][])[]) {
+
     let totalArea = [0,0];
-    for (const ps of pss) {
+    for (const ps of shape) {
         const [x,y] = toPowerBasisDd(ps);
         const [dx,dy] = toPowerBasis_1stDerivativeDd(ps);
 

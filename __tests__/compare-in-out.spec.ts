@@ -38,8 +38,8 @@ test('`compareInOut`', function() {
         orientation: 0          // ...
     }
 
-    const rAB = compareInOut(1)(inOutA, inOutB);
-    const rBA = compareInOut(1)(inOutB, inOutA);
+    const rAB = compareInOut(inOutA, inOutB);
+    const rBA = compareInOut(inOutB, inOutA);
 
     expect(rAB).toBeLessThan(0);
     expect(rBA).toBeGreaterThan(0);

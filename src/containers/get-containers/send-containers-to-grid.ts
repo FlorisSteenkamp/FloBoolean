@@ -1,5 +1,5 @@
 import type { Container } from "../container.js";
-import { toGrid } from "../../loop/normalize/to-grid.js";
+import { toGrid } from "../../shape/normalize/to-grid.js";
 
 
 /**

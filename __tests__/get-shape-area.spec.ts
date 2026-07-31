@@ -1,5 +1,5 @@
 import { test, expect } from '@jest/globals';
-import { ddGetShapeArea, getShapeArea } from "../src/loop/get-loop-area.js";
+import { ddGetShapeArea, getShapeArea } from "../src/shape/get-shape-area.js";
 
 
 test('getShapeArea', function() {

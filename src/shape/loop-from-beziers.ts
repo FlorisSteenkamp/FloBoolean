@@ -1,6 +1,6 @@
-import { Curve } from "../curve/curve.js";
-import { Mutable } from "../utils/mutable.js";
-import { Loop } from "./loop.js";
+import type { Curve } from "../curve/curve.js";
+import type { Mutable } from "../utils/mutable.js";
+import type { Loop } from "./loop.js";
 
 
 /**

@@ -1,5 +1,5 @@
 import type { __X__ } from "./-x-.js";
-import type { Loop } from "../loop/loop.js";
+import type { Loop } from "../shape/loop.js";
 import { curvature, getCurvatureExtrema } from "flo-bezier3";
 import { makeSimpleX } from "./make-simple-x.js";
 

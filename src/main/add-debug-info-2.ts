@@ -1,12 +1,12 @@
 declare const _debug_: Debug; 
-
-import { Debug } from '../debug/debug.js';
-import { Loop } from '../loop/loop.js';
+import type { Debug, Timing } from '../debug/debug.js';
+import type { Mutable } from '../utils/mutable.js';
+import type { Loop } from '../shape/loop.js';
 
 // the imports below is used in the test cases - see code below
-import { getShapeCentroid } from '../loop/get-loop-centroid.js';
+import { getShapeCentroid } from '../shape/get-shape-centroid.js';
 import { getShapeBounds } from '../calc-paths/get-shape-bounds.js';
-import { getShapeArea } from '../loop/get-loop-area.js';
+import { getShapeArea } from '../shape/get-shape-area.js';
 
 
 function addDebugInfo2(loopss: Loop[][]) {
@@ -16,6 +16,11 @@ function addDebugInfo2(loopss: Loop[][]) {
         _debug_.elems.loop.push(...loops);
         _debug_.elems.loops.push(loops);
         //console.log(loopsToSvgPathStr(loops.map(loop => loop.beziers)));
+    }
+
+    if (typeof _debug_ !== 'undefined') {
+        (_debug_.timing as Mutable<Timing>).simplifyPaths =
+            performance.now() - _debug_.timing.timingStart - _debug_.timing.normalize;
     }
 
     // ---------------------------------------------------------------------

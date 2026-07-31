@@ -4,7 +4,6 @@ import { ddGet2ndMomentOfInertia, ddGetProdMomentOfInertia, get2ndMomentOfInerti
 import { reverseShapeOrientation } from "./reverse-shape-orientation.js";
 import { getTotalShapeCurvature } from "./get-total-shape-curvature.js";
 
-
 const { abs } = Math;
 
 

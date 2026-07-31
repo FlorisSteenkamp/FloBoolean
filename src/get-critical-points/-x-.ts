@@ -1,6 +1,6 @@
 import type { X } from './x.js';
 import type { Container } from '../containers/container.js';
-import type { InOut } from '../containers/in-out/in-out.js';
+import type { In, Out } from '../containers/in-out/in-out.js';
 import type { Curve } from '../curve/curve.js';
 
 
@@ -24,8 +24,8 @@ interface __X__ extends _X_ {
      */
     readonly next?: __X__;
     readonly prev?: __X__;
-    readonly in_?: InOut;
-    readonly out?: InOut;
+    readonly in_?: In;
+    readonly out?: Out;
 }
 
 

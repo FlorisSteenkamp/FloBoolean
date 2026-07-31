@@ -1,7 +1,8 @@
 declare const _debug_: Debug;
 import type { Debug } from '../debug/debug.js';
 import type { BezierPiece } from 'flo-bezier3';
-import type { Out } from '../containers/in-out/in-out.js';
+import type { In, Out } from '../containers/in-out/in-out.js';
+import type { Loop } from '../shape/loop.js';
 import { closestPointOnBezierCertified } from 'flo-bezier3';
 import { mid } from 'flo-poly';
 import { getNextExit } from './get-next-exit.js';
@@ -18,6 +19,7 @@ import { bezierPieceToBezier } from './bezier-piece-to-bezier.js';
  */
 function completeLoop(
         takenOuts: Set<Out>,
+        takenLoops: Set<Loop>,
         origOut: Out): {
             bezierPieces: BezierPiece[],
             additionalOutsToCheck: Out[]
@@ -35,20 +37,20 @@ function completeLoop(
         outs.push(outToUse);  // for debugging only
 
         takenOuts.add(outToUse);
+        // Every curve threaded through this loop belongs to this component, so
+        // mark its loop as taken to prevent it being re-processed as a separate
+        // outermost loop (which would reset already-built child nesting).
+        takenLoops.add(outToUse._x_.curve.loop);
 
-        const inOut_Next = outToUse.nextOrPrev;
-        if (inOut_Next.dir === 1) {
-            console.log('aaaaaaaaaaaaaaa')
-            takenOuts.add(inOut_Next as Out);
-        }
-        
+        const nextIn = outToUse.nextOrPrev as In;
+
         const beziersToNextContainer = 
-            getBeziersToNextContainer(outToUse, inOut_Next);
+            getBeziersToNextContainer(outToUse, nextIn);
 
         bezierPieces.push(...beziersToNextContainer);
 
         const nextExit = getNextExit(
-            inOut_Next!, origOut,
+            nextIn!, origOut,
             additionalOutsToCheck, takenOuts
         );
 

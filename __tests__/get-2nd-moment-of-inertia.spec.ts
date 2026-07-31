@@ -2,9 +2,9 @@ import { test, expect } from '@jest/globals';
 import { ddToStr } from 'double-double';
 import { rotate } from "flo-vector2d";
 import { degToRad, radToDeg } from '../src/svg/circle-to-cubic-beziers.js';
-import { getShapeCentroid } from '../src/loop/get-loop-centroid.js';
-import { reverseShapeOrientation } from "../src/loop/reverse-shape-orientation.js";
-import { get2ndMomentOfInertia, getProdMomentOfInertia, ddGet2ndMomentOfInertia, ddGetProdMomentOfInertia } from '../src/loop/get-2nd-moment-of-inertia.js';
+import { getShapeCentroid } from '../src/shape/get-shape-centroid.js';
+import { reverseShapeOrientation } from "../src/shape/reverse-shape-orientation.js";
+import { get2ndMomentOfInertia, getProdMomentOfInertia, ddGet2ndMomentOfInertia, ddGetProdMomentOfInertia } from '../src/shape/get-2nd-moment-of-inertia.js';
 
 const { PI, sin, cos } = Math;
 

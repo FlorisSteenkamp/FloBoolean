@@ -1,5 +1,5 @@
 import type { Out } from '../containers/in-out/in-out.js';
-import type { Loop } from '../loop/loop.js';
+import type { Loop } from '../shape/loop.js';
 import type { Mutable } from '../utils/mutable.js';
 import { completeLoop } from './complete-loop.js';
 
@@ -28,7 +28,7 @@ function completePath(
 
         origOut.children = new Set();
         const { bezierPieces, additionalOutsToCheck } = 
-            completeLoop(takenOuts, origOut);
+            completeLoop(takenOuts, takenLoops, origOut);
 
         origOut.bezierPieces = bezierPieces;
         (origOut.parent as Mutable<Out>).children = origOut.parent.children || new Set();

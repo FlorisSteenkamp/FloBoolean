@@ -1,6 +1,6 @@
-import { toPowerBasis, toPowerBasis_1stDerivative, toPowerBasis_1stDerivativeDd, toPowerBasisDd } from "flo-bezier3";
-import { multiply, Horner, integrate, ddHorner, ddMultiply, ddIntegrate } from 'flo-poly';
 import { ddAddDd, ddDiffDd } from 'double-double';
+import { multiply, Horner, integrate, ddHorner, ddMultiply, ddIntegrate } from 'flo-poly';
+import { toPowerBasis, toPowerBasis_1stDerivative, toPowerBasis_1stDerivativeDd, toPowerBasisDd } from "flo-bezier3";
 
 
 /** 
@@ -10,11 +10,15 @@ import { ddAddDd, ddDiffDd } from 'double-double';
  * * intermediate calculations are done in double-double precision
  * 
  * * see e.g. https://en.wikipedia.org/wiki/Second_moment_of_area
+ * 
+ * @param shape the shape given as a closed loop of bezier curves
  */
-function ddGet2ndMomentOfInertia(pss: number[][][]): number[][] {
+function ddGet2ndMomentOfInertia(
+        shape: (number[][])[]): number[][] {
+
     let cx = [0,0];
     let cy = [0,0];
-    for (const ps of pss) {
+    for (const ps of shape) {
         const [x,y] = toPowerBasisDd(ps);
         const [dx,dy] = toPowerBasis_1stDerivativeDd(ps);
 

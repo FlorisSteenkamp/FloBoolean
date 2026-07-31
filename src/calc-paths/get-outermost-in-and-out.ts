@@ -1,6 +1,6 @@
 import type { Container } from '../containers/container.js';
 import type { InOut, Out } from '../containers/in-out/in-out.js';
-import type { Loop } from '../loop/loop.js';
+import type { Loop } from '../shape/loop.js';
 import type { Mutable } from '../utils/mutable.js';
 import { orderInOuts } from '../containers/order-in-outs.js';
 
@@ -18,12 +18,10 @@ import { orderInOuts } from '../containers/order-in-outs.js';
  * @param loop 
  * @param parent 
  */
-function getOutermostInAndOut(
+function getOutermostOut(
         container: Container,
         parent: Out,
         loop: Loop): Mutable<Out> {
-
-    orderInOuts(container, 1);  // `snugDir` doesn't really matters here
 
     const inOuts = container.inOuts;
     const firstInOut: Mutable<InOut> = inOuts[0];
@@ -63,4 +61,4 @@ function getOutermostInAndOut(
 }
 
 
-export { getOutermostInAndOut }
+export { getOutermostOut }

@@ -21,8 +21,6 @@ const getInOutsOfContainer = timeFunctionCalls(function getInOutsOfContainer(  /
     // We check one `__X__` for each curve with an intersection within this container
     const xs_ = container.xs;
 
-    const inOuts: InOut[] = [];
-
     // Get a map from each `Curve` to each `__X__` of this container
     const xMap: Map<Curve, __X__[]> = new Map();
     for (const x of xs_) {
@@ -37,6 +35,7 @@ const getInOutsOfContainer = timeFunctionCalls(function getInOutsOfContainer(  /
 
     const getXInOuts_ = getXInOuts(container);
 
+    const inOuts: InOut[] = [];
     for (const [curve, xs] of xMap) {
         const { ins, outs } = getXInOuts_(curve, xs);
 

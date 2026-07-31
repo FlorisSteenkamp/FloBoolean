@@ -6,19 +6,19 @@ import { getInterfaceRotation, tangent, totalCurvature } from "flo-bezier3";
  * 
  * * the returned value will be a multiple of 2𝜋
  * 
- * @param pss 
+ * @param shape 
  */
 function getTotalShapeCurvature(
-        pss: number[][][]): number {
+        shape: number[][][]): number {
 
-    const len = pss.length;
+    const len = shape.length;
 
     // test the loop
     let total = 0;
     for (let i=0; i<len; i++) {
         const j = (i-1+len)%len 
-        const psI = pss[j];
-        const psO = pss[i];
+        const psI = shape[j];
+        const psO = shape[i];
         const c = totalCurvature(psO, [0,1]);
 
         // disconutinuous curvature (turn) at interface between 2 beziers

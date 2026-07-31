@@ -1,6 +1,6 @@
 import type { __X__ } from "../get-critical-points/-x-.js";
 import type { Container } from "../containers/container.js";
-import type { Loop } from "../loop/loop.js";
+import type { Loop } from "../shape/loop.js";
 import { Curve } from "../curve/curve.js";
 
 

@@ -1,5 +1,5 @@
 import type { BezierPiece } from "flo-bezier3";
-import type { InOut, Out } from "../containers/in-out/in-out.js";
+import type { In, Out } from "../containers/in-out/in-out.js";
 import { mid } from 'flo-poly';
 import { closestPointOnBezierCertified } from "flo-bezier3";
 import { containerIsBasic } from "../containers/container.js";
@@ -7,10 +7,10 @@ import { containerIsBasic } from "../containers/container.js";
 
 function getBeziersToNextContainer(
         out: Out,
-        inOut_NextOrPrev: InOut): BezierPiece[] {
+        nextIn: In): BezierPiece[] {
 
     const outX = out._x_!;
-    const inX = inOut_NextOrPrev._x_!;
+    const inX = nextIn._x_!;
 
     //----------------------------
     const curveS = outX.curve;

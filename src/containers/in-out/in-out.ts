@@ -47,7 +47,7 @@ interface InOut {
     /** +1 or -1 -> Clockwise or anti-clockwise */
     readonly orientation: number;
     readonly windingNum: number;
-    readonly parent: InOut;
+    readonly parent: Out;
     readonly children: Set<Out>;
     readonly bezierPieces: BezierPiece[]; 
     /** 

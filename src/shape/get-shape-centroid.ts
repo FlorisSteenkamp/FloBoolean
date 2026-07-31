@@ -1,7 +1,7 @@
 import type { Loop } from "./loop.js";
 import { toPowerBasis, toPowerBasis_1stDerivative, toPowerBasis_1stDerivativeDd, toPowerBasisDd } from "flo-bezier3";
 import { Horner, multiply, integrate, ddIntegrate, ddMultiply, ddHorner, ddDivideByConst } from 'flo-poly';
-import { ddGetShapeArea, getShapeArea } from "./get-loop-area.js";
+import { ddGetShapeArea, getShapeArea } from "./get-shape-area.js";
 import { ddAddDd, ddDivDd, ddMultBy2, ddMultDd, doubleDivDouble  } from "double-double";
 
 
@@ -13,12 +13,14 @@ import { ddAddDd, ddDivDd, ddMultBy2, ddMultDd, doubleDivDouble  } from "double-
  * 
  * see https://sites.math.washington.edu/~king/coursedir/m324a10/as/centroid-green.pdf
  */
-function getShapeCentroid(pss: number[][][]) {
-    const A = getShapeArea(pss);
+function getShapeCentroid(
+        shape: number[][][]) {
+
+    const A = getShapeArea(shape);
 
     let cx = 0;
     let cy = 0;
-    for (const ps of pss) {
+    for (const ps of shape) {
         const [x,y] = toPowerBasis(ps);
         const [dx,dy] = toPowerBasis_1stDerivative(ps);
 
@@ -45,11 +47,15 @@ function getShapeCentroid(pss: number[][][]) {
  * * intermediate calculations are done in double-double precision
  * 
  * see https://sites.math.washington.edu/~king/coursedir/m324a10/as/centroid-green.pdf
+ * 
+ * @param shape the shape given as a closed loop of bezier curves
  */
-function ddGetShapeCentroid(pss: number[][][]) {
+function ddGetShapeCentroid(
+        shape: number[][][]) {
+
     let cx = [0,0];
     let cy = [0,0];
-    for (const ps of pss) {
+    for (const ps of shape) {
         const [x,y] = toPowerBasisDd(ps);
         const [dx,dy] = toPowerBasis_1stDerivativeDd(ps);
 
@@ -63,7 +69,7 @@ function ddGetShapeCentroid(pss: number[][][]) {
         cy = ddAddDd(cy, _y);
     }
 
-    const A = ddGetShapeArea(pss);
+    const A = ddGetShapeArea(shape);
     const A2 = ddMultBy2(A);
 
     const CX = ddDivDd([0,1],A2);
@@ -90,18 +96,3 @@ function getLoopCentroid(loop: Loop) {
 
 
 export { getLoopCentroid, getShapeCentroid, ddGetShapeCentroid }
-
-
-// Quokka tests
-// {
-//     const pss = [
-//         [ [ 0, -236.73825503355692 ], [ 16, 42.261744966443075 ] ],
-//         [ [ 16, 42.261744966443075 ], [ 16, 126.26174496644308 ] ],
-//         [ [ 16, 126.26174496644308 ], [ -16, 126.26174496644308 ] ],
-//         [ [ -16, 126.26174496644308 ], [ -16, 42.261744966443075 ] ],
-//         [ [ -16, 42.261744966443075 ], [ 0, -236.73825503355692 ] ]
-//     ];
-
-//     getShapeCentroid(pss);//?
-//     ddGetShapeCentroid(pss);//?
-// }

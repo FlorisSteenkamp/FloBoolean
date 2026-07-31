@@ -1,4 +1,4 @@
-import type { InOut, Out } from "../containers/in-out/in-out.js";
+import type { In, InOut, Out } from "../containers/in-out/in-out.js";
 import type { Mutable } from "../utils/mutable.js";
 import { containerIsBasic } from "../containers/container.js";
 import { orderInOuts } from "../containers/order-in-outs.js";
@@ -12,8 +12,8 @@ import { orderInOuts } from "../containers/order-in-outs.js";
  * @param takenOuts
  */
 function getNextExit(
-        in_: InOut, 
-        origOut: InOut,
+        in_: In, 
+        origOut: Out,
         additionalOutsToCheck: Out[],
         takenOuts: Set<Out>): {
             outToUse: Out;
@@ -26,22 +26,21 @@ function getNextExit(
     );
 
     // the ordering below also ensures ins comes before outs
-    orderInOuts(in_.container, origOut.orientation!);
-
-    // console.log([in_.idx, in_.dir]);
+    orderInOuts(in_.container);
 
     let toCount = 1;
-    let next = in_;
+    let next: InOut = in_;
     let outToUse: Out | undefined = undefined;
     let curOrientation = origOut.orientation!;
     do {
-        next = origOut.orientation! === +1
+        next = origOut.orientation === +1
             ? next.nextAround!
             : next.prevAround!
 
         if (next === in_) { break; }
 
         const prevToCount = toCount;
+
         toCount = toCount - next.dir;
 
         if (toCount === 1) {
@@ -80,17 +79,19 @@ function getNextExit(
 
 
 function markInOutForChecking(
-        takenInOuts: Set<InOut>,
-        additionalOutsToCheck: InOut[]) {
+        takenOuts: Set<Out>,
+        additionalOutsToCheck: Out[]) {
 
     return (inOut: Out,
             orientation: number,
-            origParent: InOut) => {
+            origParent: Out) => {
 
-        if (!takenInOuts.has(inOut)) {
-            (inOut as Mutable<Out>).orientation = orientation;
-            (inOut as Mutable<Out>).parent = origParent;
-            (inOut as Mutable<Out>).windingNum = origParent.windingNum! + inOut.orientation!;
+        if (!takenOuts.has(inOut)) {
+            const inOut_: Mutable<Out> = inOut;
+
+            inOut_.orientation = orientation;
+            inOut_.parent = origParent;
+            inOut_.windingNum = origParent.windingNum! + inOut.orientation!;
             additionalOutsToCheck.push(inOut);
         }
     }

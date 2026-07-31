@@ -1,6 +1,6 @@
 import type { Container } from "../container.js";
 import type { Mutable } from "../../utils/mutable.js";
-import type { InOut } from "../in-out/in-out.js";
+import type { In, Out } from "../in-out/in-out.js";
 
 
 /**
@@ -13,8 +13,8 @@ function connectContainerInOuts(
         for (const inOut of container.inOuts) {
             if (inOut.dir === -1) { continue; }
 
-            const out = inOut as Mutable<InOut>;
-            let _x_ = out._x_!;
+            const out = inOut as Mutable<Out>;
+            let _x_ = out._x_;
             // move to next 'in' __X__
             while (true) {
                 _x_ = _x_.next!;
@@ -31,7 +31,7 @@ function connectContainerInOuts(
         for (const inOut of container.inOuts) {
             if (inOut.dir === +1) { continue; }
 
-            const in_ = inOut as Mutable<InOut>;
+            const in_ = inOut as Mutable<In>;
             let _x_ = in_._x_;
             // move to prev 'out' __X__
             while (true) {

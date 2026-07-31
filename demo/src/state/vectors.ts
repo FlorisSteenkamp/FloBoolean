@@ -14,8 +14,10 @@ const vectorsBoolean = [
 ];
 
 const vectors = [
-    'AA',
+    // 'AA',
     // "play3",
+    'multi-level-reversed-orientation',
+    'multi-level-reversed-orientation2',
     'quad-blob',
     'horight-o',
     'koldat52-over-square-2',
@@ -29,6 +31,7 @@ const vectors = [
     'complexish',
     'complexish2',
     'complexish3',
+    'complexish4',
     'koldat51',
     'koldat52',
     'koldat53',
@@ -47,7 +50,6 @@ const vectors = [
     'square',
     'B',
     'same-k-family-lines',
-    'multi-level-reversed-orientation',
     'holy-poly',
     'f',
     'split-shape-lines',

@@ -1,12 +1,11 @@
 import type { __X__ } from "../../../get-critical-points/-x-.js";
 import type { Curve } from "../../../curve/curve.js";
-import type { InOut } from "../../../containers/in-out/in-out.js";
+import type { In, Out } from "../../../containers/in-out/in-out.js";
 import type { Container } from "../../container.js";
 import type { X } from "../../../get-critical-points/x.js";
 import type { Mutable } from "../../../utils/mutable.js";
 import { getTs } from './get-ts.js';
 import { toP } from "../../../utils/to-p.js";
-
 
 
 type SideX = { 
@@ -35,7 +34,7 @@ function getXInOuts(
 
     return function (
             curve: Curve,
-            xs_: __X__[]): { ins: InOut[], outs: InOut[] } {
+            xs_: __X__[]): { ins: In[], outs: Out[] } {
 
         // At this point all `xs` belong to the same curve and container.
 
@@ -77,8 +76,8 @@ function getXInOuts(
         // compensated intervals)
         xs.sort((xA, xB) => xA.x.ri.tS - xB.x.ri.tS);
 
-        const ins: InOut[] = [];
-        const outs: InOut[] = [];
+        const ins: In[] = [];
+        const outs: Out[] = [];
         let prevX: (WithRI & { ps: number[][]; }) | undefined = undefined;
         /** true if the prevX was a proper X, false if it was a SideX */
         let prevWasX: boolean | undefined = undefined;
@@ -116,13 +115,13 @@ function getXInOuts(
  * Creates an `InOut` from the given differing fields, filling in the constant
  * `container` reference and the default empty/zero fields.
  */
-function makeInOut(
-        dir: 1 | -1,
+function makeInOut<D extends 1 | -1>(
+        dir: D,
         p: number[],
         _x_: __X__,
         container: Container,
         side: number,
-        sideX: X): InOut {
+        sideX: X): D extends -1 ? In : Out {
 
     return {
         idx: undefined!,  // will be set later
@@ -142,7 +141,7 @@ function makeInOut(
         parent: undefined!,        // ...
         prevAround: undefined!,    // ...
         used: undefined!           // ...
-    };
+    } as unknown as D extends -1 ? In : Out;
 }
 
 

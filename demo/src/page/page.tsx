@@ -1,14 +1,16 @@
 import * as React from 'react';
-import { useRef, useEffect } from 'react';
-import { Container, FormControl, InputLabel, MenuItem, Select, Grid, Button } from '@mui/material';
-import { StateControl } from '../state-control/state-control.js';
-import { ToDraw } from '../state/to-draw.js';
+import type { StateControl } from '../state-control/state-control.js';
+import type { ToDraw } from '../state/to-draw.js';
+import type { BooleanOp, ClickFor, PageState } from '../state/page-state.js';
+import { useState, useRef, useEffect } from 'react';
 import { Checkbox } from '../components/simple-checkbox.js';
-import { vectors, vectorsBoolean } from '../state/vectors.js';
-import { BooleanOp, ClickFor, PageState } from '../state/page-state.js';
+import { vectors } from '../state/vectors.js';
 import { toViewBoxStr } from './viewbox.js';
 import { ButtonGroup } from '../components/simple-button-group.js';
-import { SelectChangeEvent } from '@mui/material/Select';
+import { SimpleSelect } from '../components/simple-select.js';
+import { SimpleButton } from '../components/simple-button.js';
+import { getPathsFromStr } from '../../../src/index.js';
+import { drawBooleanRef } from '../../../__tests__/specific-cases/draw-boolean-ref.js';
 import { onMouseUp } from './on-mouse-up.js';
 import { onClick } from './on-click.js';
 import { toDrawKeyToText } from './to-draw-key-to-text.js';
@@ -23,7 +25,10 @@ const toDrawCheckboxStyles = {
         display: 'inline-block', 
         marginBottom: '5px', 
         fontWeight: 400,
-        width: '160px'
+        width: '160px',
+        textAlign: 'left' as const,
+        userSelect: 'none' as const,
+        WebkitUserSelect: 'none' as const,
     }
 }
 
@@ -43,10 +48,49 @@ function Page(props: Props) {
 
     // Hooks
     const ref = useRef<SVGSVGElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
     const refX = useRef<HTMLSpanElement>(null);
     const refY = useRef<HTMLSpanElement>(null);
+    const [showRef, setShowRef] = useState(false);
     // useEffect(function() { lazyLoadDeduced(stateControl, ref, false, forBoolean) }, []); // run only once
     useEffect(function() { lazyLoadDeduced(stateControl, ref, false) }, []); // run only once
+
+    // Draw (or clear) the boolean-operation reference on the overlay canvas.
+    function drawReference() {
+        const canvas = canvasRef.current;
+        if (!canvas) { return; }
+        const ctx = canvas.getContext('2d');
+        if (!ctx) { return; }
+
+        const W = canvas.width;
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, W, W);
+        if (!showRef) { return; }
+
+        const pathStrs = pageState.deduced?.pathStrs;
+        if (!pathStrs || pathStrs.length === 0) { return; }
+
+        // Operand loops of the (self) boolean operation, in shape space.
+        const loops = getPathsFromStr(pathStrs[0]);
+
+        // Match the SVG's viewBox 'xMidYMid meet' mapping onto the square canvas.
+        const [vx, vy] = pageState.viewbox[0];
+        const vw = pageState.viewbox[1][0] - vx;
+        const vh = pageState.viewbox[1][1] - vy;
+        const scale = Math.min(W / vw, W / vh);
+        const offX = (W - vw * scale) / 2;
+        const offY = (W - vh * scale) / 2;
+        const pxLoops = loops.map(loop => loop.map(bez => bez.map(
+            p => [offX + (p[0] - vx) * scale, offY + (p[1] - vy) * scale]
+        )));
+
+        drawBooleanRef(ctx as any, pxLoops, pageState.booleanOp);
+    }
+
+    useEffect(drawReference, [
+        showRef, pageState.booleanOp, pageState.vectorName,
+        pageState.deduced, pageState.viewbox
+    ]);
     
   
     function toDrawChanged(key: keyof ToDraw) {
@@ -57,19 +101,12 @@ function Page(props: Props) {
     }
 
 
-    //function vectorChanged(vectorName: string) {
-    function onVectorChanged(
-            event: SelectChangeEvent<string>,
-            child: React.ReactNode) {
-
-        const vectorName = event.target.value as string;
+    function onVectorChanged(vectorName: string) {
         // upd(pageState, { vectorName, forBoolean: false });
         upd(pageState, { vectorName });
         // lazyLoadDeduced(stateControl, ref, true, false);
         lazyLoadDeduced(stateControl, ref, true);
     }
-
-    // function onVectorSelected() {}
 
     function onRefreshClicked() {
         // lazyLoadDeduced(stateControl, ref, true, stateControl.state.appState.pageState.forBoolean);
@@ -97,100 +134,78 @@ function Page(props: Props) {
         // FUTURE - sets of loops
         if (booleanOp === 'spacer') { return; }
         upd(pageState, { booleanOp });
-        // lazyLoadDeduced(stateControl, ref, true, true);
         lazyLoadDeduced(stateControl, ref, true);
     }
 
 
-    const pathStrs = pageState.deduced!.pathStrs;
+    const { pathStrs } = pageState.deduced!;
 
 
     return (<>
-        <Container
-            maxWidth="md"
-            style={{ height: 'calc(100%)', padding: '10px' }}
+        <div
+            style={{
+                height: '100vh',
+                boxSizing: 'border-box',
+                padding: '10px',
+                maxWidth: '1059px',
+                margin: '0 auto',
+                display: 'flex',
+                flexDirection: 'column',
+                overflow: 'hidden'
+            }}
         >
-            {Object
-            .keys(toDraw)
-            .filter(key => !!toDrawKeyToText[key as keyof ToDraw])
-            .map(_key => {
-                const key = _key as keyof ToDraw;
-                return (
-                    <Checkbox 
-                        key={key}
-                        checked={toDraw[key]} 
-                        styles={toDrawCheckboxStyles}
-                        text={toDrawKeyToText[key] as string}
-                        onChanged={toDrawChanged(key)} 
+            <div style={{ textAlign: 'center', flexShrink: 0 }}>
+                <div style={{ display: 'inline-block', textAlign: 'left' }}>
+                {Object
+                .keys(toDraw)
+                .filter(key => !!toDrawKeyToText[key as keyof ToDraw])
+                .map(_key => {
+                    const key = _key as keyof ToDraw;
+                    return (
+                        <Checkbox 
+                            key={key}
+                            checked={toDraw[key]} 
+                            styles={toDrawCheckboxStyles}
+                            text={toDrawKeyToText[key] as string}
+                            onChanged={toDrawChanged(key)} 
+                        />
+                    );
+                })}
+                </div>
+                {/* <hr style={{ 
+                    display: 'block',  height: '1px', 
+                    border: '0',  borderTop: '1px solid #ccc', 
+                    margin: '1px 0', padding: 0, color: '#eee' }} 
+                /> */}
+                <br/>
+                <ButtonGroup<ClickFor | 'spacer'>
+                    label='Click'
+                    styles={{ div: { display: 'inline-block', marginTop: '10px' } }}
+                    options={{
+                        loopPre: { text: 'loop pre' },
+                        bezier_: { text: 'bezier' },
+                        looseBoundingBox_: { text: 'lbb' },
+                        tightBoundingBox_: { text: 'tbb' },
+                        boundingHull_: { text: 'bh' },
+                        spacer: { text: '•' },
+                        bezier: { text: 'bezier' },
+                        container: { text: 'container' },
+                        loopPost: { text: 'loop' },
+                        loopsPost: { text: 'loops' },
+                    }}
+                    value={pageState.clickFor}
+                    onChanged={onClickForChanged}
+                />
+                <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', flexWrap: 'wrap', gap: '16px', marginTop: '10px' }}>
+                    <SimpleSelect
+                        label="Shape"
+                        value={pageState.vectorName}
+                        options={vectors}
+                        onChanged={onVectorChanged}
                     />
-                );
-            })}
-            {/* <hr style={{ 
-                display: 'block',  height: '1px', 
-                border: '0',  borderTop: '1px solid #ccc', 
-                margin: '1px 0', padding: 0, color: '#eee' }} 
-            /> */}
-            <br/>
-            <ButtonGroup<ClickFor | 'spacer'>
-                label='Click'
-                styles={{ div: { display: 'inline-block', marginTop: '10px' } }}
-                options={{
-                    loopPre: { text: 'loop pre' },
-                    bezier_: { text: 'bezier' },
-                    looseBoundingBox_: { text: 'lbb' },
-                    tightBoundingBox_: { text: 'tbb' },
-                    boundingHull_: { text: 'bh' },
-                    spacer: { text: '•' },
-                    bezier: { text: 'bezier' },
-                    container: { text: 'container' },
-                    loopPost: { text: 'loop' },
-                    loopsPost: { text: 'loops' },
-                }}
-                value={pageState.clickFor}
-                onChanged={onClickForChanged}
-            />
-            {/* <ValueSelect
-                label="Show delay"
-                styles={{}}
-                value={pageState.showDelay}
-                min={0}
-                step={250}
-                onChanged={showDelayChanged}
-            /> */}
-            <Grid container spacing={5}>
-                <Grid>
-                    <FormControl size='small' variant="outlined" style={{ minWidth: '200px', marginRight: '10px', verticalAlign: 'middle' }}>
-                        <InputLabel id="select-outlined-label">Shape</InputLabel>
-                        <Select
-                            labelId="select-outlined-label"
-                            id="select-outlined"
-                            value={pageState.vectorName}
-                            onChange={onVectorChanged}
-                            // onSelect={onVectorSelected}
-                            label="Shape"
-                        >
-                            {vectors.map(v => 
-                                <MenuItem key={v} value={v}>{v}</MenuItem>
-                            )}
-                        </Select>
-                    </FormControl>
-                    {/* <FormControl size='small' variant="outlined" style={{ minWidth: '200px', verticalAlign: 'middle' }}>
-                        <InputLabel id="select-outlined-label-bool">Shapes</InputLabel>
-                        <Select
-                            labelId="select-outlined-label-bool"
-                            id="select-outlined-bool"
-                            value={pageState.vectorNameBoolean}
-                            onChange={onVectorChangedBoolean}
-                            label="Shapes"
-                        >
-                            {vectorsBoolean.map(v => 
-                                <MenuItem key={v} value={v}>{v}</MenuItem>
-                            )}
-                        </Select>
-                    </FormControl> */}
                     <ButtonGroup<BooleanOp | 'spacer'>
                         label='Boolean Op'
-                        styles={{ div: { display: 'inline-block', margin: '20px', verticalAlign: 'middle' } }}
+                        styles={{ div: { display: 'inline-block' } }}
                         options={{
                             AND: { text: 'AND' },
                             OR: { text: 'OR' },
@@ -200,50 +215,50 @@ function Page(props: Props) {
                         value={pageState.booleanOp}
                         onChanged={onBooleanOpChanged}
                     />
-                    <div style={{ verticalAlign: 'middle', display: 'inline-block' }}>
-                        <Button
-                            onClick={onRefreshClicked}
+                    <SimpleButton onClick={onRefreshClicked}>
+                        Refresh
+                    </SimpleButton>
+                    <Checkbox
+                        text="Reference"
+                        checked={showRef}
+                        onChanged={setShowRef}
+                        styles={{ div: { display: 'inline-block', userSelect: 'none' as const } }}
+                    />
+                </div>
+            </div>
+            <span ref={refX} style={{ userSelect: 'none', position: 'fixed', bottom: '13px', left: '10px', zIndex: 1 }} />
+            <span ref={refY} style={{ userSelect: 'none', position: 'fixed', bottom: '13px', left: '80px', zIndex: 1 }} />
+            <div style={{ flex: 1, overflow: 'auto', minHeight: 0 }}>
+                {pathStrs !== undefined && 
+                    <div style={{ position: 'relative', width: '1024px', height: '1024px' }}>
+                        <svg 
+                            ref={ref}
+                            xmlns="http://www.w3.org/2000/svg"
+                            version="1.1"
+                            id="svg"
+                            x="0px" 
+                            y="0px"
+                            viewBox={toViewBoxStr(pageState.viewbox)}
+                            style={{ position: 'absolute', top: 0, left: 0, width: '1024px', height: '1024px' }}
+                            onMouseDown={onMouseDown(stateControl, ref)}
+                            onMouseUp={onMouseUp(stateControl, ref)}
+                            onMouseMove={onMouseMove(stateControl, ref, refX, refY)}
+                            onClick={onClick(stateControl, ref)}
                         >
-                            Refresh
-                        </Button>
+                            <g />
+                        </svg>
+                        <canvas
+                            ref={canvasRef}
+                            width={1024}
+                            height={1024}
+                            style={{ position: 'absolute', top: 0, left: 0, width: '1024px', height: '1024px', pointerEvents: 'none' }}
+                        />
                     </div>
-                </Grid>
-            </Grid>
-            <span ref={refX} style={{ userSelect: 'none', position: 'absolute', bottom: '13px', left: '10px' }} />
-            <span ref={refY} style={{ userSelect: 'none', position: 'absolute', bottom: '13px', left: '80px' }} />
-            {pathStrs !== undefined && 
-                <svg 
-                    ref={ref}
-                    xmlns="http://www.w3.org/2000/svg"
-                    version="1.1"
-                    id="svg"
-                    x="0px" 
-                    y="0px"
-                    viewBox={toViewBoxStr(pageState.viewbox)}
-                    style={{ width: '100%' }}
-                    onMouseDown={onMouseDown(stateControl, ref)}
-                    onMouseUp={onMouseUp(stateControl, ref)}
-                    onMouseMove={onMouseMove(stateControl, ref, refX, refY)}
-                    onClick={onClick(stateControl, ref)}
-                >
-                    {/* {pathStrs.map((pathStr,idx) => {
-                        return (
-                            <path 
-                                key={idx}
-                                id="svg-path"
-                                className="shape"
-                                d={pathStr}
-                            />
-                        )
-                    })} */}
-                    <g />
-                </svg>
-            };
-        </Container>
+                };
+            </div>
+        </div>
     </>);
 }
 
 
 export { Page }
-
-// 506

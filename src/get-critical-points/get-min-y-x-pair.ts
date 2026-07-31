@@ -1,9 +1,9 @@
 declare const _debug_: Debug;
 import type { Debug } from '../debug/debug.js';
-import type { Loop } from "../loop/loop.js";
+import type { Loop } from "../shape/loop.js";
 import type { __X__ } from "./-x-.js";
 import { clip } from '../utils/clip.js';
-import { getLoopMinY } from "../loop/get-min-y.js";
+import { getLoopMinY } from "../shape/get-min-y.js";
 import { makeSimpleX } from "./make-simple-x.js";
 
 

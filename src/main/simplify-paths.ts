@@ -2,8 +2,8 @@ declare const _debug_: Debug;
 import type { Debug, Timing } from '../debug/debug.js';
 import type { BezierPiece } from 'flo-bezier3';
 import type { Mutable } from '../utils/mutable.js';
-import type { InOut, Out } from '../containers/in-out/in-out.js';
-import type { Loop } from '../loop/loop.js';
+import type { Out } from '../containers/in-out/in-out.js';
+import type { Loop } from '../shape/loop.js';
 import type { SimplifyOptions } from './simplify-options.js';
 import { completePath } from '../calc-paths/complete-path.js';
 import { getTightestContainingLoop } from '../calc-paths/get-tightest-containing-loop.js';
@@ -11,11 +11,10 @@ import { orderLoopAscendingByMinY } from '../calc-paths/order-loop-ascending-by-
 import { splitLoopTrees } from '../calc-paths/split-loop-trees.js';
 import { getLoopsFromTree } from '../calc-paths/get-loops-from-tree.js';
 import { getContainers } from '../containers/get-containers/get-containers.js';
-import { getOutermostInAndOut } from '../calc-paths/get-outermost-in-and-out.js';
-import { loopFromBeziers } from '../loop/loop-from-beziers.js';
-import { normalizeLoops } from '../loop/normalize/normalize-loop.js';
-import { getMaxCoordinate } from '../loop/normalize/get-max-coordinate.js';
-import { getShapeArea } from '../loop/get-loop-area.js';
+import { getOutermostOut } from '../calc-paths/get-outermost-in-and-out.js';
+import { loopFromBeziers } from '../shape/loop-from-beziers.js';
+import { normalizeLoops } from '../shape/normalize/normalize-loop.js';
+import { getMaxCoordinate } from '../shape/normalize/get-max-coordinate.js';
 import { addDebugInfo1 } from './add-debug-info-1.js';
 import { addDebugInfo2 } from './add-debug-info-2.js';
 import { loopFromOut } from './loop-from-out.js';
@@ -25,6 +24,8 @@ import { removeMicroCorners } from './remove-micro-corners.js';
 import { MAX_BIT_LENGTH } from './max-bitlength.js';
 import { getInOutsOfContainer } from '../containers/get-container-in-outs/get-in-outs-via-sides/get-in-outs-via-sides.js';
 import { getMinYXpair } from '../get-critical-points/get-min-y-x-pair.js';
+import { reverseShapeOrientation } from '../shape/reverse-shape-orientation.js';
+import { filterLoopsByMinAllowedArea } from './filter-loops-by-min-area.js';
 
 const { abs, max, ceil, log2 } = Math;
 
@@ -49,9 +50,10 @@ function simplifyPaths(
         options: SimplifyOptions = {}): Loop[][] {
 
     // bezierLoops = bezierLoops.map(reverseShapeOrientation);  // For quick tests
+    // TODO - remove bitlength requirements??
 
-    const { minYXPairs, containers, loops, expMax } = 
-        prepLoops(bezierLoops);
+    const { minYXPairs, loops, expMax } = prepLoops(bezierLoops);
+    const containers = getContainers(loops, minYXPairs, expMax);
 
     const {
         inclMicroCorners = true,
@@ -74,24 +76,25 @@ function simplifyPaths(
         const parent = getTightestContainingLoop(root, loop);
 
         const container = minYXPairs[i][0].container!;
-        if (container.inOuts.length === 0) { continue; }
+        const { inOuts, xs } = container;
 
-        const initialOut = getOutermostInAndOut(container, parent, loop);
+        if (inOuts.length === 0) { continue; }
 
-        // Each loop generated will give rise to one componentLoop. 
+        const initialOut = getOutermostOut(container, parent, loop);
 
         const containerIsSimple =
-            container.inOuts.length === 2 &&  // only 2 InOuts
-            container.xs.length === 2;  // only 2 Xs
+            inOuts.length === 2 &&  // only 2 InOuts
+            xs.length === 2;  // only 2 Xs
 
+        // TODO - maybe remove this??
         if (containerIsSimple &&
-            container.inOuts[0].nextOrPrev === container.inOuts[1]) { 
+            inOuts[0].nextOrPrev === inOuts[1]) { 
 
             //---------------------------------------------------
             // It's a Jordan curve: short-circuit `completePath`
             //---------------------------------------------------
             initialOut.bezierPieces = loop.beziers.map(bezierToBezierPiece);
-            (initialOut.parent as Mutable<InOut>).children = initialOut.parent.children || new Set();
+            (initialOut.parent as Mutable<Out>).children = initialOut.parent.children || new Set();
             initialOut.parent.children!.add(initialOut);
             continue;
         }
@@ -105,6 +108,7 @@ function simplifyPaths(
         if (containerIsSimple &&
             initialOut.bezierPieces !== undefined) {
 
+            // TODO - can maybe also be done using `BezierPiece`s throughout the code
             //-------------------------------------------------------------------
             // combine first and last bezier so not to have an extraneous bezier
             //-------------------------------------------------------------------
@@ -127,45 +131,22 @@ function simplifyPaths(
 
     const loopTrees = splitLoopTrees(root);
 
-    const getLoopsFromTree_ = getLoopsFromTree(booleanOp);
-    const outSets = loopTrees.map(getLoopsFromTree_)
+    const outSets = loopTrees.map(getLoopsFromTree(booleanOp))
         .filter(v => v.length !== 0);
 
     //----------------------------------------
-    // Give outer loop a positive orientation
+    // Create loops for all `outSets`
     //----------------------------------------
     const loopss = outSets.map(outSet => {
-        const outerLoopOrientation = outSet[0].orientation;
+        const outerLoopOrientation = outSet[0].out.orientation;
 
-        return outSet.map((inOut,idx) => 
-            loopFromOut(inOut, outerLoopOrientation, idx, forceOrientationNegative)
+        return outSet.map(({ out, depth }, idx) => 
+            loopFromOut(out, outerLoopOrientation, idx, depth, forceOrientationNegative)
         );
     });
 
-    //----------------------------------------------------------
-    // Filter each `loops` in `loopss` by min allowed loop area
-    //----------------------------------------------------------
-    const loopss_: Loop[][] = [];
-    for (let i=0; i<loopss.length; i++) {
-        const loops = loopss[i];
-
-        const loops_ = loops.filter(
-            loop => abs(getShapeArea(loop.beziers)) > minLoopArea
-        );
-
-        if (loops_.length) { 
-            loops_.sort((loopA, loopB) => { 
-                return orderLoopAscendingByMinY(loopA.beziers, loopB.beziers) 
-            });
-            loopss_.push(loops_); 
-        }
-    }
-
-    if (typeof _debug_ !== 'undefined') {
-        (_debug_.timing as Mutable<Timing>).simplifyPaths =
-            performance.now() - _debug_.timing.timingStart - _debug_.timing.normalize;
-    }
-
+    const loopss_ = filterLoopsByMinAllowedArea(minLoopArea, loopss);
+    
     //-------------------------------------
     // Remove "micro corners" if requested
     //-------------------------------------
@@ -187,9 +168,7 @@ function simplifyPaths(
 
     addDebugInfo2(_loopss_);  // adds debug info used within __tests__ (and the demo)
 
-    // console.log(loopss_);
-
-    console.log(structuredClone(getInOutsOfContainer.getStats()));
+    // console.log(structuredClone(getInOutsOfContainer.getStats()));
     getInOutsOfContainer.resetStats();
 
     return _loopss_;
@@ -241,9 +220,7 @@ function prepLoops(
 
     const minYXPairs = loops.map(getMinYXpair);
 
-    const containers = getContainers(loops, minYXPairs, expMax);
-
-    return { minYXPairs, containers, loops, expMax };
+    return { minYXPairs, loops, expMax };
 }
 
 

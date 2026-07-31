@@ -1,5 +1,5 @@
 import type { __X__ } from './-x-.js';
-import type { Loop } from '../loop/loop.js';
+import type { Loop } from '../shape/loop.js';
 import type { Curve } from '../curve/curve.js';
 import { sweepLine } from '../sweep-line/sweep-line.js';
 import { getCurvesIntersections } from './get-curves-intersections.js';

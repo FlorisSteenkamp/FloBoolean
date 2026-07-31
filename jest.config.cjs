@@ -12,6 +12,13 @@ module.exports = {
     resolver: "jest-ts-webcompat-resolver",
     testEnvironment: 'node',
     // testEnvironment: 'jsdom',
+    verbose: false,  // show a per-file summary instead of each individual test
+    // Only report failing tests/suites (stay silent for passes). Pass
+    // `showPaths: true` in the options below to also list passing file paths.
+    reporters: [
+        ['jest-silent-reporter', { useDots: true, showWarnings: true }],
+        'summary',
+    ],
     testMatch: [ "**/__tests__/**/*.spec.ts"],
     // collectCoverage: true,
     collectCoverage: false,  // Make true again!

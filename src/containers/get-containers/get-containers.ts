@@ -3,8 +3,7 @@ import type { Debug } from '../../debug/debug.js';
 import type { Container } from "../container.js";
 import type { Mutable } from '../../utils/mutable.js';
 import type { __X__ } from '../../get-critical-points/-x-.js';
-import type { Loop } from "../../loop/loop.js";
-import type { InOut } from '../in-out/in-out.js';
+import type { Loop } from "../../shape/loop.js";
 import { getIntersections } from "../../get-critical-points/get-intersections.js";
 import { setIntersectionNextValues } from "../../get-critical-points/set-intersection-next-values.js";
 import { getSelfIntersections } from '../../get-critical-points/get-self-intersections.js';
@@ -19,6 +18,7 @@ import { numberInOuts } from './number-in-outs.js';
 import { MAX_BIT_LENGTH } from '../../main/max-bitlength.js';
 import { getBezierTurnarounds } from '../../bezier/get-bezier-turnarounds.js';
 import { eps } from 'flo-poly';
+import { orderInOuts } from '../order-in-outs.js';
 
 
 const CONTAINER_SIZE_MULTIPLIER = 2**4;
@@ -66,6 +66,7 @@ function getContainers(
     setIntersectionNextValues(xPairs);
 
     connectContainerInOuts(containers);
+    containers.forEach(orderInOuts);
 
     return containers;
 }

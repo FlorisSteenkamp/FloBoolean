@@ -1,5 +1,5 @@
 import { Tolerance } from "./tolerance.js";
-import { getMaxCoordinate } from "../../src/loop/normalize/get-max-coordinate.js";
+import { getMaxCoordinate } from "../../src/shape/normalize/get-max-coordinate.js";
 
 
 /**

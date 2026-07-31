@@ -1,4 +1,4 @@
-import type { Loop } from "../loop/loop.js";
+import type { Loop } from "../shape/loop.js";
 import type { __X__ } from "./-x-.js";
 import { makeSimpleX } from "./make-simple-x.js";
 

@@ -4,7 +4,7 @@ import { squaredDistanceBetweenPointAndLineSegment } from 'flo-vector2d';
 import { evalDeCasteljau, length } from 'flo-bezier3';
 import { drawFs } from 'flo-draw';
 import { Debug } from '../../../src/debug/debug.js';
-import { Loop } from '../../../src/index.js';
+import { beziersToSvgPathStr, Loop } from '../../../src/index.js';
 
 
 function logNearestLoopsPost(
@@ -40,10 +40,9 @@ function logNearestLoopsPost(
         }
     }
 
-    console.log(bestLoops);
-    //console.log(bestLoops.map(
-    //    loop => loop.beziers.map(ps => length([0,1],ps))
-    //))
+    // console.log(bestLoops);
+    const bestLoops_ = bestLoops!.map(loop => loop.beziers);
+    console.log(bestLoops_.map(beziersToSvgPathStr));
 }
 
 
