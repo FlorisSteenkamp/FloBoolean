@@ -6,9 +6,9 @@ import { compareInOut } from "./get-container-in-outs/get-in-outs-via-sides/comp
  *
  * @param container
  */
-function orderInOuts(container, snugDir) {
+function orderInOuts(container) {
     const inOuts = container.inOuts;
-    inOuts.sort(compareInOut(snugDir));
+    inOuts.sort(compareInOut);
     let prevInOut = inOuts[inOuts.length - 1];
     for (let i = 0; i < inOuts.length; i++) {
         const inOut = inOuts[i];

@@ -65,6 +65,7 @@ test('`simplifyPaths` specific cases', function() {
     function testIt(
             fileName: string) {
 
+        // console.log(fileName);
         const { bezierLoops, invariants } = getPathFromFile(fileName);
 
         //-------------

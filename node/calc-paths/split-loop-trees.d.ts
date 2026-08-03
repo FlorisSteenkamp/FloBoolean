@@ -1,4 +1,4 @@
-import type { InOut } from "../containers/in-out/in-out.js";
+import type { Out } from "../containers/in-out/in-out.js";
 /**
  * Take the forest of trees, create a new root making it a tree and snip
  * branches such that each branch determines a new set of loops each
@@ -7,5 +7,5 @@ import type { InOut } from "../containers/in-out/in-out.js";
  *
  * @param root
  */
-declare function splitLoopTrees(root: InOut): InOut[];
+declare function splitLoopTrees(root: Out): Out[];
 export { splitLoopTrees };

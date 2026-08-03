@@ -16,7 +16,7 @@ import { drawFs } from 'flo-draw';
  */
 function logNearestBezierPre(g: SVGGElement, p: number[], showDelay = 1000) {
     let bestPs: number[][];
-    let bestDistance = Number.POSITIVE_INFINITY;
+    let bestDistance = Infinity;
 
     for (const ps of _debug_.elems.bezier_) {
         const bezierPoint = closestPointOnBezier(ps, p);
@@ -58,7 +58,7 @@ function logBHull_(g: SVGGElement, p: number[], showDelay = 1000) {
 
 function getNearestPoly(p: number[], polys: number[][][]) {
     let bestPoly;
-    let bestDistance = Number.POSITIVE_INFINITY;
+    let bestDistance = Infinity;
 
     for (const poly of polys) {
         const c = centroid(poly);

@@ -1,5 +1,14 @@
 
-type IntersectionResult<T,U> = {
+/**
+ * Represents the result of a predicate that checks for intersection between
+ * two items.
+ * 
+ * * the result is given as an object with the following properties:
+ *   * `a` - the first item checked for possible intersection
+ *   * `b` - the second item checked for possible intersection
+ *   * `u` - the result of the predicate
+ */
+interface IntersectionResult<T,U> {
     /** the first item checked for possible intersection */
     readonly a: T;
     /** the second item checked for possible intersection */

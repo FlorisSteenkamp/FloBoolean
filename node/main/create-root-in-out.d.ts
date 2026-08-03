@@ -1,3 +1,3 @@
-import type { InOut } from "../containers/in-out/in-out.js";
-declare function createRootInOut(): InOut;
+import type { Out } from "../containers/in-out/in-out.js";
+declare function createRootInOut(): Out;
 export { createRootInOut };

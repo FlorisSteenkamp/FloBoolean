@@ -1,4 +1,4 @@
-import type { __X__ } from "./-x-.js";
-import type { Loop } from "../loop/loop.js";
-declare function getExcessiveCurvatures(expMax: number, loops: Loop[]): [__X__, __X__][];
+import type { _X_ } from "./-x-.js";
+import type { Loop } from "../shape/loop.js";
+declare function getExcessiveCurvatures(expMax: number, loops: Loop[]): [_X_, _X_][];
 export { getExcessiveCurvatures };

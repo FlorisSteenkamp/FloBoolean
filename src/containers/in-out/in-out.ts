@@ -1,5 +1,5 @@
 import type { BezierPiece } from "flo-bezier3";
-import type { __X__ } from "../../get-critical-points/-x-.js";
+import type { _X_ } from "../../get-critical-points/-x-.js";
 import type { Container } from "../container.js";
 import type { X } from "../../get-critical-points/x.js";
 
@@ -24,8 +24,8 @@ interface InOut {
      * `dir === -1` and one with `dir === +1`)
      */
     readonly idx: number;
-    /** intersection; the actuale one, not the "box side" intersection */
-    readonly _x_: __X__;
+    /** intersection; the actual one, not the "box side" intersection */
+    readonly _x_: _X_;
     /** the `Container` this `InOut` belongs to */
     readonly container: Container;
     /** intersection point used for creating beziers in center of `Container` */
@@ -66,14 +66,6 @@ interface InOut {
      * [side, sideT] it forms a well-ordering of the InOut.
      */
     readonly sideX: X;
-    /**
-     * used in `boolean` only; Set of indexes indicating which loops belongs
-     * to this `InOut` when seen as a loop
-     */
-    readonly loopsIdxs: Set<number>;
-    
-    /** used in `getLoopsFromTree` to see if the loop was reified */
-    readonly used: boolean;
 }
 
 

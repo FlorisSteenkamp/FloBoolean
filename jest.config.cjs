@@ -17,9 +17,11 @@ module.exports = {
     // `showPaths: true` in the options below to also list passing file paths.
     reporters: [
         ['jest-silent-reporter', { useDots: true, showWarnings: true }],
+        './jest-console-reporter.cjs',
         'summary',
     ],
     testMatch: [ "**/__tests__/**/*.spec.ts"],
+    setupFiles: [ './jest.setup.getorinsert.cjs' ],
     // collectCoverage: true,
     collectCoverage: false,  // Make true again!
     coverageProvider: 'v8',

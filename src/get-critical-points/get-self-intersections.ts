@@ -1,4 +1,4 @@
-import type { __X__ } from './-x-.js';
+import type { _X_ } from './-x-.js';
 import type { Loop } from '../shape/loop.js';
 import { bezierSelfIntersection } from 'flo-bezier3';
 import { toP } from '../utils/to-p.js';
@@ -10,9 +10,9 @@ const eps = Number.EPSILON;
  * @param loops 
  */
 function getSelfIntersections(
-        loops: Loop[]): [__X__,__X__][] {
+        loops: Loop[]): [_X_,_X_][] {
 
-    const xs: [__X__,__X__][] = [];
+    const xs: [_X_,_X_][] = [];
 
     for (const loop of loops) {
         for (const curve of loop.curves) {

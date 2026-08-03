@@ -11,7 +11,6 @@ function createRootInOut(): Out {
         p: undefined!,
         _x_: undefined!,
         container: undefined!,
-        loopsIdxs: new Set(),
         orientation: -1,
         side: undefined!,
         nextOrPrev: undefined!,
@@ -19,7 +18,6 @@ function createRootInOut(): Out {
         nextAround: undefined!,
         prevAround: undefined!,
         sideX: undefined!,
-        used: undefined!
     };
 }
 

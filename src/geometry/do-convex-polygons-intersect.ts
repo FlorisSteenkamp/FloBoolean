@@ -27,8 +27,8 @@ function doConvexPolygonsIntersect(
             // find the vector perpendicular to this edge
             const normal = [p2[1] - p1[1], p1[0] - p2[0]];
 
-            let minA = Number.POSITIVE_INFINITY;
-            let maxA = Number.NEGATIVE_INFINITY;
+            let minA = Infinity;
+            let maxA = -Infinity;
             // for each vertex in the first shape, project it onto the line 
             // perpendicular to the edge and keep track of the min and max of 
             // these values
@@ -44,8 +44,8 @@ function doConvexPolygonsIntersect(
             // for each vertex in the second shape, project it onto the line 
             // perpendicular to the edge and keep track of the min and max of 
             // these values
-            let minB = Number.POSITIVE_INFINITY;
-            let maxB = Number.NEGATIVE_INFINITY;
+            let minB = Infinity;
+            let maxB = -Infinity;
             for (let k=0; k<polygonB.length; k++) {
                 const projected = 
                     normal[0] * polygonB[k][0] + 

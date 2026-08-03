@@ -4,7 +4,7 @@
 // import { orient2d } from "big-float-ts";
 // import { getIntervalBox, getHodograph, evalDeCasteljau } from "flo-bezier3";
 // import { getInOutsViaSides } from "../get-in-outs-via-sides/get-in-outs-via-sides.js";
-// import { __X__ } from "../../../-x-.js";
+// import { _X_ } from "../../../-x-.js";
 
 
 // /**
@@ -88,24 +88,24 @@
 //     const config1 = cSign! > 0;
 //     if (config1) {
 //         // config1 (the 1st of the 2 possible configurations)
-//         inOuts.push({ dir: -1, p, _x_: x1, container, loopsIdxs: new Set() });
-//         inOuts.push({ dir: +1, p, _x_: x2, container, loopsIdxs: new Set() });
-//         inOuts.push({ dir: +1, p, _x_: x1, container, loopsIdxs: new Set() });
-//         inOuts.push({ dir: -1, p, _x_: x2, container, loopsIdxs: new Set() });
-//         (x1 as Mutable<__X__>).in_ = inOuts[0];
-//         (x2 as Mutable<__X__>).in_ = inOuts[3];
-//         (x1 as Mutable<__X__>).out = inOuts[1];
-//         (x2 as Mutable<__X__>).out = inOuts[2];
+//         inOuts.push({ dir: -1, p, _x_: x1, container });
+//         inOuts.push({ dir: +1, p, _x_: x2, container });
+//         inOuts.push({ dir: +1, p, _x_: x1, container });
+//         inOuts.push({ dir: -1, p, _x_: x2, container });
+//         (x1 as Mutable<_X_>).in_ = inOuts[0];
+//         (x2 as Mutable<_X_>).in_ = inOuts[3];
+//         (x1 as Mutable<_X_>).out = inOuts[1];
+//         (x2 as Mutable<_X_>).out = inOuts[2];
 //     } else {
 //         // config2 (the 2nd of the 2 possible configurations)
-//         inOuts.push({ dir: -1, p, _x_: x1, container, loopsIdxs: new Set() });
-//         inOuts.push({ dir: -1, p, _x_: x2, container, loopsIdxs: new Set() });
-//         inOuts.push({ dir: +1, p, _x_: x1, container, loopsIdxs: new Set() });
-//         inOuts.push({ dir: +1, p, _x_: x2, container, loopsIdxs: new Set() });
-//         (x1 as Mutable<__X__>).in_ = inOuts[0];
-//         (x2 as Mutable<__X__>).in_ = inOuts[1];
-//         (x1 as Mutable<__X__>).out = inOuts[2];
-//         (x2 as Mutable<__X__>).out = inOuts[3];
+//         inOuts.push({ dir: -1, p, _x_: x1, container });
+//         inOuts.push({ dir: -1, p, _x_: x2, container });
+//         inOuts.push({ dir: +1, p, _x_: x1, container });
+//         inOuts.push({ dir: +1, p, _x_: x2, container });
+//         (x1 as Mutable<_X_>).in_ = inOuts[0];
+//         (x2 as Mutable<_X_>).in_ = inOuts[1];
+//         (x1 as Mutable<_X_>).out = inOuts[2];
+//         (x2 as Mutable<_X_>).out = inOuts[3];
 //     }
 
 //     return { inOuts, ioIdx };

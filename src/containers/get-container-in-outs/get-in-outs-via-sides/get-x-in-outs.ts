@@ -1,6 +1,6 @@
-import type { __X__ } from "../../../get-critical-points/-x-.js";
+import type { _X_ } from "../../../get-critical-points/-x-.js";
 import type { Curve } from "../../../curve/curve.js";
-import type { In, Out } from "../../../containers/in-out/in-out.js";
+import type { In, InOut, Out } from "../../../containers/in-out/in-out.js";
 import type { Container } from "../../container.js";
 import type { X } from "../../../get-critical-points/x.js";
 import type { Mutable } from "../../../utils/mutable.js";
@@ -12,7 +12,7 @@ type SideX = {
     side: number; 
     sideX: X;
 }
-type WithRI = __X__ & Partial<SideX>;
+type WithRI = _X_ & Partial<SideX>;
 
 
 /**
@@ -34,7 +34,7 @@ function getXInOuts(
 
     return function (
             curve: Curve,
-            xs_: __X__[]): { ins: In[], outs: Out[] } {
+            xs_: _X_[]): { ins: In[], outs: Out[] } {
 
         // At this point all `xs` belong to the same curve and container.
 
@@ -118,12 +118,12 @@ function getXInOuts(
 function makeInOut<D extends 1 | -1>(
         dir: D,
         p: number[],
-        _x_: __X__,
+        _x_: _X_,
         container: Container,
         side: number,
         sideX: X): D extends -1 ? In : Out {
 
-    return {
+    const inOut: InOut = {
         idx: undefined!,  // will be set later
         dir,
         p,
@@ -131,7 +131,6 @@ function makeInOut<D extends 1 | -1>(
         container,
         side,
         sideX,
-        loopsIdxs: new Set(),
         children: new Set(),
         windingNum: 0,
         orientation: 0,
@@ -139,9 +138,10 @@ function makeInOut<D extends 1 | -1>(
         bezierPieces: undefined!,  // ...
         nextAround: undefined!,    // ...
         parent: undefined!,        // ...
-        prevAround: undefined!,    // ...
-        used: undefined!           // ...
-    } as unknown as D extends -1 ? In : Out;
+        prevAround: undefined!     // ...
+    };
+
+    return inOut as unknown as D extends -1 ? In : Out
 }
 
 

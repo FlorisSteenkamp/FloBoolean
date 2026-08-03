@@ -4,7 +4,6 @@ export type { Loop } from './shape/loop.js';
 export type { Curve } from './curve/curve.js';
 export type { IntersectionResult } from './sweep-line/sweep-line.js';
 export type { X } from './get-critical-points/x.js';
-export type { _X_ } from './get-critical-points/-x-.js';
 export type { SimplifyOptions } from './main/simplify-options.js';
 export { enableDebugForBooleanOp } from './debug/debug.js';
 export { getPathsFromStr } from './svg/get-paths-from-str.js';

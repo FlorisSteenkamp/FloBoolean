@@ -1,3 +1,7 @@
-import type { PointOnShape } from '../point-on-shape.js';
-declare function drawMinY(g: SVGGElement, pos: PointOnShape): SVGElement[];
+import type { Curve } from '../../curve/curve.js';
+declare function drawMinY(g: SVGGElement, pos: {
+    curve: Curve;
+    t: number;
+    p: number[];
+}): SVGElement[];
 export { drawMinY };

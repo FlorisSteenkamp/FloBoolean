@@ -1,3 +1,3 @@
-import type { Loop } from "../../loop/loop.js";
+import type { Loop } from "../../shape/loop.js";
 declare function drawLoop(g: SVGGElement, loop: Loop): SVGElement[];
 export { drawLoop };

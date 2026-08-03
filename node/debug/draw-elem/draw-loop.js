@@ -1,9 +1,9 @@
 import { drawFs } from 'flo-draw';
 // import { getLoopArea, getShapeArea } from '../../loop/get-loop-area.js';
-import { getShapeCentroid } from '../../loop/get-loop-centroid.js';
+import { getShapeCentroid } from '../../shape/get-shape-centroid.js';
 // import { getShapeBounds } from '../../loop/get-loop-bounds.js';
 import { drawShape } from './draw-shape.js';
-import { getWindingNumber } from "../../loop/get-winding-number.js";
+import { getWindingNumber } from "../../shape/get-winding-number.js";
 function drawLoop(g, loop) {
     const centroid = getShapeCentroid(loop.beziers);
     // const area     = getShapeArea(loop.beziers);

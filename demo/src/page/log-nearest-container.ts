@@ -16,7 +16,7 @@ function getClosestSquareDistanceToRect(rect: number[][], p: number[]) {
 
 function logNearestContainer(g: SVGGElement, p: number[], showDelay = 1000) {
     let bestContainer: Container;
-    let bestDistance = Number.POSITIVE_INFINITY;
+    let bestDistance = Infinity;
 
     for (const container of _debug_.elems.container) {
         const dSquared = getClosestSquareDistanceToRect(container.box, p);

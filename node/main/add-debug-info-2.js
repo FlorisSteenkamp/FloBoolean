@@ -7,6 +7,10 @@ function addDebugInfo2(loopss) {
         _debug_.elems.loops.push(loops);
         //console.log(loopsToSvgPathStr(loops.map(loop => loop.beziers)));
     }
+    if (typeof _debug_ !== 'undefined') {
+        _debug_.timing.simplifyPaths =
+            performance.now() - _debug_.timing.timingStart - _debug_.timing.normalize;
+    }
     // ---------------------------------------------------------------------
     // Don't delete below commented lines - it is for creating test cases.
     // if (typeof document === 'undefined') { return; }

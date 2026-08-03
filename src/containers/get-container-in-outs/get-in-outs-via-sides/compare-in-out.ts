@@ -2,6 +2,12 @@ import type { InOut } from "../../../containers/in-out/in-out.js";
 import { MinX } from "../../../containers/in-out/in-out.js";
 import { refineK1 } from "flo-poly";
 import { eCompare } from "big-float-ts";
+import { evalDeCasteljau, evalDeCasteljauDd } from "flo-bezier3";
+import { followToBoxEdge } from "./follow-to-box-edge.js";
+import { toP } from "../../../utils/to-p.js";
+import { Mutable } from "../../../utils/mutable.js";
+import { X } from "../../../get-critical-points/x.js";
+import { compareInOut2 } from './compare-in-out2.js';
 
 const { abs } = Math;
 
@@ -24,15 +30,22 @@ function compareInOut(
     if (res !== 0) { return res; }
 
     //======================================================================
-    const { _x_: _x_A } = inOutA;
-    const { _x_: _x_B } = inOutB;
+    // This is currently an experiment considering the case where both curves
+    // go through the left edge of the box only. We want to compare the y values
+    // at a distance far away from the box (say between the boxes) so we don't
+    // have to use very high precision in the calculations in the usual case.
+    //
+    // The two events are coincident on the min-x side - disambiguate by following
+    // each loop (in its `dir`) to the edge of its `nextOrPrev` box (or until
+    // it leaves the original box) and comparing the resulting points.
     if (sideA === MinX) {
-        const { curve: curveA } = _x_A;
-        const { curve: curveB } = _x_B;
-        const { ps: psA } = curveA;
-        const { ps: psB } = curveB;
-        
-        const {} = xB;
+        const r = compareInOut2(inOutA, inOutB);
+        // if (r === 0) {
+        //     throw 'AAA';
+        // }
+        // if (r !== undefined) {
+        //     return r;
+        // }
     }
     //======================================================================
 
@@ -52,17 +65,17 @@ function compareInOut(
     // additional 49 bits accuracy
 
     if (!xA.compensated) { // else the root is already compensated once
-        xA.compensated = 1;  // compensate once - in future we can compensate more times if necessary
+        (xA as Mutable<X>).compensated = 1;  // compensate once - in future we can compensate more times if necessary
         // there should be only 1 root in the 4u interval
         // FUTURE - getPExact called too often - cache it!
-        xA.riExp = refineK1(xA.ri, xA.getPExact!())[0];
+        (xA as Mutable<X>).riExp = refineK1(xA.ri, xA.getPExact!())[0];
     }
 
     if (!xB.compensated) { // else the root is already compensated once
-        xB.compensated = 1;  // compensate once - in future we can compensate more times if necessary
+        (xB as Mutable<X>).compensated = 1;  // compensate once - in future we can compensate more times if necessary
         // there should be only 1 root in the 4u interval
         // FUTURE - getPExact called too often - cache it!
-        xB.riExp = refineK1(xB.ri, xB.getPExact!())[0];
+        (xB as Mutable<X>).riExp = refineK1(xB.ri, xB.getPExact!())[0];
     }
 
     res = eCompare(xA.riExp!.tS, xB.riExp!.tS);

@@ -47,8 +47,8 @@ function getTs(ps, side) {
         for (let j = 0; j < risSide.length; j++) {
             const boxSide = boxesSide[j];
             if (areBoxesIntersectingDd(true)(boxPs, boxSide)) {
-                const psX = makeX(ps, cPs, risPs[i], boxPs, getPExactPs);
-                const sideX = makeX(side, cSide, risSide[j], boxSide, getPExactSide);
+                const psX = makeX(ps, cPs, risPs[i], getPExactPs);
+                const sideX = makeX(side, cSide, risSide[j], getPExactSide);
                 xPairs.push({ psX, sideX });
             }
         }
@@ -107,15 +107,14 @@ function deoverlapBoxes(curve, ris, getPExact) {
  * Creates an `X` from the given root interval and bounding box, tracking whether
  * it was compensated (in which case the exact-poly getter is dropped).
  */
-function makeX(ps, compensated, ri, box, getPExact) {
-    const p = evalDeCasteljauDd(ps, ri.tS).map(c => c[1]);
+function makeX(ps, compensated, ri, getPExact) {
+    const p = evalDeCasteljauDd(ps, ri.tS).map(c => c[0] + c[1]);
     return {
         compensated,
         ri: rootIntervalToDouble(ri),
         riExp: compensated ? ri : undefined,
         getPExact: compensated ? undefined : getPExact,
         kind: 1,
-        box: boxExpToBox(box),
         p
     };
 }

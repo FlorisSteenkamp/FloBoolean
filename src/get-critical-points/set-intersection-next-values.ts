@@ -1,4 +1,4 @@
-import type { __X__ } from "./-x-.js";
+import type { _X_ } from "./-x-.js";
 import type { Loop } from "../shape/loop.js";
 import type { Mutable } from "../utils/mutable.js";
 
@@ -9,9 +9,9 @@ import type { Mutable } from "../utils/mutable.js";
  * @param xPairs
  */
 function setIntersectionNextValues(
-        xPairs: __X__[][]) {
+        xPairs: [_X_, _X_][]) {
 
-    const xsByLoop: Map<Loop, __X__[]> = new Map();
+    const xsByLoop: Map<Loop, _X_[]> = new Map();
     for (const xPair of xPairs) {
         for (const x_ of xPair) {
             const loop = x_.curve.loop;
@@ -30,15 +30,17 @@ function setIntersectionNextValues(
         xs.sort((xA, xB) => {
             let r = xA.curve.idx - xB.curve.idx;
             if (r !== 0) { return r; }
+
             r = xA.x.ri.tS - xB.x.ri.tS;
             if (r !== 0) { return r; }
+
             return xA.in_ !== undefined ? -1 : +1;
         });
 
         const len = xs.length;
         for (let i=0; i<len; i++) {
-            (xs[i] as Mutable<__X__>).next = xs[(i+1)%len];
-            (xs[i] as Mutable<__X__>).prev = xs[(i-1+len)%len];
+            (xs[i] as Mutable<_X_>).next = xs[(i+1)%len];
+            (xs[i] as Mutable<_X_>).prev = xs[(i-1+len)%len];
         }
     }
 }

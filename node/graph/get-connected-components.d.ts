@@ -10,8 +10,9 @@ declare function addEdges<T, U>(graph: TGraph<T>, edges: IntersectionResult<T, U
  */
 declare function addEdge<T>(graph: TGraph<T>, vertices: [T, T]): void;
 /**
- * Returns connected components for the given undirected graph
+ * Returns connected components for the given undirected graph, including
+ * isolated vertices from the optional `items` collection.
  */
-declare function getConnectedComponents<T>(graph: TGraph<T>): T[][];
+declare function getConnectedComponents<T>(graph: TGraph<T>, items?: Iterable<T>): T[][];
 export { addEdge, getConnectedComponents, addEdges };
 export type { TGraph };

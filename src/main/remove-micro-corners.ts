@@ -1,5 +1,32 @@
+import type { Loop } from "../shape/loop.js";
+import type { Container } from "../containers/container.js";
 import { controlPointLinesLength } from "flo-bezier3";
 import { getWindingNumber } from "../shape/get-winding-number.js";
+import { loopFromBeziers } from "../shape/loop-from-beziers.js";
+import { mapmap } from "../utils/map-map.js";
+
+const { abs, max } = Math;
+
+
+function removeAllMicroCorners(
+        loopss_: Loop[][],
+        containers: Container[]) {
+
+    return mapmap(loopss_, loop => {
+        const { beziers } = loop;
+        const lengthTol = max(
+            ...containers.map(
+                container => abs(container.box[0][0] - container.box[1][0])
+            ),
+            ...containers.map(
+                container => abs(container.box[0][1] - container.box[1][1])
+            )
+        );
+        const beziers_ = removeMicroCorners(beziers, lengthTol);
+        return loopFromBeziers(beziers_, loop.idx);
+    });
+}
+
 
 function removeMicroCorners(
         pss: number[][][],
@@ -28,4 +55,4 @@ function removeMicroCorners(
 }
 
 
-export { removeMicroCorners }
+export { removeMicroCorners, removeAllMicroCorners }

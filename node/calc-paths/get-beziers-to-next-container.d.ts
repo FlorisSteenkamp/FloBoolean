@@ -1,4 +1,4 @@
 import type { BezierPiece } from "flo-bezier3";
-import type { InOut } from "../containers/in-out/in-out.js";
-declare function getBeziersToNextContainer(inOut: InOut, inOut_NextOrPrev: InOut): BezierPiece[];
+import type { In, Out } from "../containers/in-out/in-out.js";
+declare function getBeziersToNextContainer(out: Out, nextIn: In): BezierPiece[];
 export { getBeziersToNextContainer };

@@ -1,4 +1,4 @@
-import type { __X__ } from "../../../get-critical-points/-x-.js";
+import type { _X_ } from "../../../get-critical-points/-x-.js";
 import type { Curve } from "../../../curve/curve.js";
 import type { InOut } from "../../../containers/in-out/in-out.js";
 import type { Container } from "../../container.js";
@@ -22,7 +22,7 @@ const getInOutsOfContainer = timeFunctionCalls(function getInOutsOfContainer(  /
     const xs_ = container.xs;
 
     // Get a map from each `Curve` to each `__X__` of this container
-    const xMap: Map<Curve, __X__[]> = new Map();
+    const xMap: Map<Curve, _X_[]> = new Map();
     for (const x of xs_) {
         const { curve } = x;
         const xs = xMap.get(curve);

@@ -1,0 +1,1 @@
+{"version":3,"file":"translate-shape.js","sourceRoot":"","sources":["../../src/shape/translate-shape.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,cAAc,CAAA;AACxC,OAAO,EAAE,MAAM,EAAE,MAAM,qBAAqB,CAAC;AAG7C;;;;;GAKG;AACH,SAAS,cAAc,CACf,CAAW,EACX,KAAqB;IAEzB,OAAO,MAAM,CAAC,KAAK,EAAE,SAAS,CAAC,CAAC,CAAC,CAAC,CAAC;AACvC,CAAC;AAGD,OAAO,EAAE,cAAc,EAAE,CAAA"}

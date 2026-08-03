@@ -8,8 +8,13 @@ function createRootInOut() {
         p: undefined,
         _x_: undefined,
         container: undefined,
-        loopsIdxs: new Set(),
-        orientation: -1
+        orientation: -1,
+        side: undefined,
+        nextOrPrev: undefined,
+        bezierPieces: undefined,
+        nextAround: undefined,
+        prevAround: undefined,
+        sideX: undefined,
     };
 }
 export { createRootInOut };

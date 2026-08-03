@@ -1,26 +1,17 @@
 import { getTs } from './get-ts.js';
-import { evalDeCasteljauDd } from "flo-bezier3";
-function midBox(box) {
-    return [
-        (box[0][0] + box[1][0]) / 2,
-        (box[0][1] + box[1][1]) / 2
-    ];
-}
-function midBoxX(_x_) {
-    return midBox(_x_.x.box);
-}
+import { toP } from "../../../utils/to-p.js";
 /**
  * * **warning** modifies container.xs[i].in_
  *
  * @param container
  */
 function getXInOuts(container) {
-    const [[left, top], [right, bottom]] = container.box;
+    const [[minX, minY], [maxX, maxY]] = container.box;
     const sides = [
-        [[right, top], [left, top]],
-        [[left, top], [left, bottom]],
-        [[left, bottom], [right, bottom]],
-        [[right, bottom], [right, top]]
+        [[maxX, minY], [minX, minY]],
+        [[minX, minY], [minX, maxY]],
+        [[minX, maxY], [maxX, maxY]],
+        [[maxX, maxY], [maxX, minY]]
     ];
     return function (curve, xs_) {
         // At this point all `xs` belong to the same curve and container.
@@ -60,10 +51,8 @@ function getXInOuts(container) {
             if (x.side !== undefined) {
                 // it is a sideX
                 if (prevWasX === true) {
-                    const p = evalDeCasteljauDd(x.ps, [0, x.x.ri.t]).map(c => c[1]);
-                    outs.push(makeInOut(
-                    // +1, midBoxX(x), prevX!, container, x.side, x.sideX!
-                    +1, p, prevX, container, x.side, x.sideX));
+                    const p = toP(x.ps, x.x.ri.t);
+                    outs.push(makeInOut(+1, p, prevX, container, x.side, x.sideX));
                     prevX.out = outs[outs.length - 1];
                 }
                 prevWasX = false;
@@ -71,10 +60,8 @@ function getXInOuts(container) {
             else {
                 // it is a proper X
                 if (prevWasX === false) {
-                    const p = evalDeCasteljauDd(x.ps, [0, x.x.ri.t]).map(c => c[1]);
-                    ins.push(makeInOut(
-                    // -1, midBoxX(prevX!), x, container, prevX!.side!, prevX!.sideX!
-                    -1, p, x, container, prevX.side, prevX.sideX));
+                    const p = toP(prevX.ps, prevX.x.ri.t);
+                    ins.push(makeInOut(-1, p, x, container, prevX.side, prevX.sideX));
                     x.in_ = ins[ins.length - 1];
                 }
                 prevWasX = true;
@@ -89,19 +76,24 @@ function getXInOuts(container) {
  * `container` reference and the default empty/zero fields.
  */
 function makeInOut(dir, p, _x_, container, side, sideX) {
-    return {
-        idx: undefined,
+    const inOut = {
+        idx: undefined, // will be set later
         dir,
         p,
-        _x_,
+        _x_: _x_,
         container,
         side,
         sideX,
-        loopsIdxs: new Set(),
         children: new Set(),
         windingNum: 0,
-        orientation: 0
+        orientation: 0,
+        nextOrPrev: undefined, // will be set later
+        bezierPieces: undefined, // ...
+        nextAround: undefined, // ...
+        parent: undefined, // ...
+        prevAround: undefined // ...
     };
+    return inOut;
 }
 export { getXInOuts };
 //# sourceMappingURL=get-x-in-outs.js.map

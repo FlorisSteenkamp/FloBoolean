@@ -27,7 +27,7 @@ function DFSUtil(graph, v, visited, component) {
     visited.add(v);
     component.push(v);
     // Recur for all the vertices adjacent to this vertex 
-    const list = graph.get(v);
+    const list = graph.get(v) ?? [];
     for (let i = 0; i < list.length; i++) {
         const x = list[i];
         if (!visited.has(x)) {
@@ -36,14 +36,23 @@ function DFSUtil(graph, v, visited, component) {
     }
 }
 /**
- * Returns connected components for the given undirected graph
+ * Returns connected components for the given undirected graph, including
+ * isolated vertices from the optional `items` collection.
  */
-function getConnectedComponents(graph) {
+function getConnectedComponents(graph, items) {
     // Mark all the vertices as not visited 
     const components = [];
     const visited = new Set();
-    for (const item of graph) {
-        const node = item[0];
+    const nodes = new Set();
+    for (const node of graph.keys()) {
+        nodes.add(node);
+    }
+    if (items) {
+        for (const item of items) {
+            nodes.add(item);
+        }
+    }
+    for (const node of nodes) {
         if (!visited.has(node)) {
             // print all reachable vertices from v 
             components.push([]);

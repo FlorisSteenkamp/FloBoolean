@@ -8,21 +8,21 @@ import { completeLoop } from './complete-loop.js';
  * @param parent
  * @param loop
  */
-function completePath(initialOut, takenLoops, takenInOuts, tight) {
-    const inOutStack = [initialOut];
-    while (inOutStack.length) {
-        const origInOut = inOutStack.pop();
-        takenLoops.add(origInOut._x_.curve.loop);
-        if (takenInOuts.has(origInOut)) {
+function completePath(initialOut, takenLoops, takenOuts) {
+    const outStack = [initialOut];
+    while (outStack.length) {
+        const origOut = outStack.pop();
+        takenLoops.add(origOut._x_.curve.loop);
+        if (takenOuts.has(origOut)) {
             continue;
         }
-        origInOut.children = new Set();
-        const { bezierPieces, additionalOutsToCheck } = completeLoop(takenInOuts, origInOut, tight);
-        origInOut.bezierPieces = bezierPieces;
-        origInOut.parent.children = origInOut.parent.children || new Set();
-        origInOut.parent.children.add(origInOut);
+        origOut.children = new Set();
+        const { bezierPieces, additionalOutsToCheck } = completeLoop(takenOuts, takenLoops, origOut);
+        origOut.bezierPieces = bezierPieces;
+        origOut.parent.children = origOut.parent.children || new Set();
+        origOut.parent.children.add(origOut);
         for (let i = 0; i < additionalOutsToCheck.length; i++) {
-            inOutStack.push(additionalOutsToCheck[i]);
+            outStack.push(additionalOutsToCheck[i]);
         }
     }
 }

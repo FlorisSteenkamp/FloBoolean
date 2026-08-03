@@ -1,5 +1,5 @@
 import type { RootInterval, RootIntervalExp } from "flo-poly";
-import type { __X__ } from "../../../get-critical-points/-x-.js";
+import type { _X_ } from "../../../get-critical-points/-x-.js";
 import type { X } from "../../../get-critical-points/x.js";
 import { eEstimate } from "big-float-ts";
 import { roots, refineK1, rootIntervalToExp } from "flo-poly";

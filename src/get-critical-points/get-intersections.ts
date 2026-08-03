@@ -1,4 +1,4 @@
-import type { __X__ } from './-x-.js';
+import type { _X_ } from './-x-.js';
 import type { Loop } from '../shape/loop.js';
 import type { Curve } from '../curve/curve.js';
 import { sweepLine } from '../sweep-line/sweep-line.js';
@@ -14,7 +14,7 @@ import { getBoundingBox$ } from '../geometry/get-bounding-box-.js';
  */
 function getIntersections(
         loops: Loop[], 
-        expMax: number): [__X__,__X__][] {
+        expMax: number): [_X_,_X_][] {
 
     const curves: Curve[] = [];
     for (const loop of loops) {
@@ -31,7 +31,7 @@ function getIntersections(
         getCurvesIntersections
     );
 
-    const xs: [__X__,__X__][] = [];
+    const xs: [_X_,_X_][] = [];
     for (const r of rs) {
         for (const xPair of r.u!) {
             xs.push(xPair);

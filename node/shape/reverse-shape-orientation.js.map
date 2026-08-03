@@ -1,0 +1,1 @@
+{"version":3,"file":"reverse-shape-orientation.js","sourceRoot":"","sources":["../../src/shape/reverse-shape-orientation.ts"],"names":[],"mappings":"AACA;;;;GAIG;AACH,SAAS,uBAAuB,CACxB,KAAmB;IAEvB,OAAO,KAAK,CAAC,GAAG,CAAC,EAAE,CAAC,EAAE,CAAC,EAAE,CAAC,UAAU,EAAE,CAAC,CAAC,UAAU,EAAE,CAAC;AACzD,CAAC;AAGD,OAAO,EAAE,uBAAuB,EAAE,CAAA"}

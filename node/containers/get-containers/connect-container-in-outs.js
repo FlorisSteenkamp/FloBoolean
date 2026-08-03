@@ -9,7 +9,7 @@ function connectContainerInOuts(containers) {
             }
             const out = inOut;
             let _x_ = out._x_;
-            // move to next 'in' __X__
+            // move to next 'in' _X_
             while (true) {
                 _x_ = _x_.next;
                 if (_x_.in_ !== undefined) {
@@ -27,7 +27,7 @@ function connectContainerInOuts(containers) {
             }
             const in_ = inOut;
             let _x_ = in_._x_;
-            // move to prev 'out' __X__
+            // move to prev 'out' _X_
             while (true) {
                 _x_ = _x_.prev;
                 if (_x_.out !== undefined) {

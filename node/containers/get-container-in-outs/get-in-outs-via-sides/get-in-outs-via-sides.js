@@ -11,10 +11,9 @@ import { timeFunctionCalls } from '../../../utils/time-function-call.js';
  */
 const getInOutsOfContainer = timeFunctionCalls(function getInOutsOfContainer(// TODO remove timing
 container) {
-    // We check one `__X__` for each curve with an intersection within this container
+    // We check one `_X_` for each curve with an intersection within this container
     const xs_ = container.xs;
-    const inOuts = [];
-    // Get a map from each `Curve` to each `__X__` of this container
+    // Get a map from each `Curve` to each `_X_` of this container
     const xMap = new Map();
     for (const x of xs_) {
         const { curve } = x;
@@ -27,6 +26,7 @@ container) {
         }
     }
     const getXInOuts_ = getXInOuts(container);
+    const inOuts = [];
     for (const [curve, xs] of xMap) {
         const { ins, outs } = getXInOuts_(curve, xs);
         inOuts.push(...ins, ...outs);

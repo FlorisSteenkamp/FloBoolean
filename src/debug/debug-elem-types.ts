@@ -1,4 +1,4 @@
-import type { __X__ } from "../get-critical-points/-x-.js";
+import type { _X_ } from "../get-critical-points/-x-.js";
 import type { Container } from "../containers/container.js";
 import type { Loop } from "../shape/loop.js";
 import { Curve } from "../curve/curve.js";
@@ -14,7 +14,7 @@ interface DebugElems {
     readonly loopPre: number[][][];
     readonly loops: Loop[],
     readonly loopsPre: number[][][][];
-    readonly intersection: __X__;
+    readonly intersection: _X_;
     readonly container: Container;
     // keep the underscore in the names below so not to clash with other debug 
     // elems in other libraries

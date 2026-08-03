@@ -1,69 +1,64 @@
-const { abs, sign } = Math;
+const { abs } = Math;
 /**
- * Returns an array of LoopTrees from the given LoopTree where each returned
- * LoopTree is one of the nodes of the tree. Nodes with winding number absolute
- * value > 1 are not returned.
- * @param root
+ * Returns `true` if a region with the given winding number belongs to the
+ * result of the given boolean operation, i.e. the operation's membership
+ * predicate `P(windingNum)`.
+ *
+ * - `OR`  (union)         : winding number !== 0
+ * - `AND` (intersection)  : |winding number| >= 2 (covered two or more times)
+ * - `XOR` (symmetric diff): winding number is odd
+ */
+function inResult(booleanOp, windingNum) {
+    if (booleanOp === 'AND') {
+        return abs(windingNum) >= 2;
+    }
+    if (booleanOp === 'XOR') {
+        return (abs(windingNum) % 2) === 1;
+    }
+    // 'OR' and the default
+    return windingNum !== 0;
+}
+/**
+ * Returns the selected loop nodes that bound the result of the given boolean
+ * operation for the given tree, each paired with its nesting `depth` (the
+ * number of selected ancestor loops within this tree).
+ *
+ * A loop is included exactly when membership in the result changes across it,
+ * i.e. when `P(node.windingNum) !== P(parent.windingNum)` where `P` is the
+ * operation's membership predicate (see `inResult`) and the region outside the
+ * outermost loop (winding number 0) is never in the result.
+ *
+ * The returned loops are precisely the boundary of the result region. The
+ * `depth` lets the caller alternate loop orientations by nesting level so that
+ * the non-zero winding fill rule reproduces the region for arbitrarily nested
+ * loops (outer loops, holes, islands within holes, ...).
+ *
+ * @param root the outer loop of an independent shape (winding number 1 or -1)
  */
 function getLoopsFromTree(booleanOp) {
     return (root) => {
-        // At this point root will have a winding number of 1 or -1 (obviously since it's the outer loop)
-        const trees = booleanOp === 'OR' || booleanOp === 'XOR'
-            ? [root] // include the outer loop in these cases (abs winding num 1)
-            : [];
-        // @ts-ignore
-        root.used = booleanOp === 'OR' || booleanOp === 'XOR';
-        const stack = Array.from(root.children);
+        const selected = [];
+        // Each stack entry is a node paired with the number of selected
+        // ancestor loops above it within this tree.
+        const stack = [[root, 0]];
         while (stack.length) {
-            const tree = stack.pop();
-            if (booleanOp === 'OR') {
-                if (tree.windingNum === 0) {
-                    trees.push(tree);
-                }
+            const [tree, ancestorCount] = stack.pop();
+            // Winding number of the face just outside this loop (0 if this is
+            // the outermost loop of the shape).
+            const parentWinding = tree.parent?.windingNum ?? 0;
+            // Include this loop iff result membership flips across it.
+            const isSelected = inResult(booleanOp, tree.windingNum) !==
+                inResult(booleanOp, parentWinding);
+            if (isSelected) {
+                selected.push({ out: tree, depth: ancestorCount });
             }
-            if (booleanOp === 'AND') {
-                const ancestorUsed = isAncestorUsed(tree);
-                if ((tree.windingNum === 0 && ancestorUsed) ||
-                    abs(tree.windingNum) >= 2 && !ancestorUsed) {
-                    trees.push(tree);
-                    // @ts-ignore
-                    tree.used = true;
-                }
-            }
-            if (booleanOp === 'XOR') {
-                const ancestorUsed = isAncestorUsed(tree);
-                if ((tree.windingNum === 0 && ancestorUsed) ||
-                    abs(tree.windingNum) >= 2 && ancestorUsed) {
-                    trees.push(tree);
-                    // @ts-ignore
-                    tree.used = true;
-                } /* else if (abs(tree.windingNum) >= 2) {
-                    // @ts-ignore
-                    // tree.windingNum = 0;
-                    // tree.orientation = -sign(tree.orientation);
-                    trees.push(tree);
-                    // @ts-ignore
-                    tree.used = true;
-                }*/
-            }
+            const childAncestorCount = isSelected ? ancestorCount + 1 : ancestorCount;
             for (const child of tree.children) {
-                stack.push(child);
+                stack.push([child, childAncestorCount]);
             }
         }
-        return trees;
+        return selected;
     };
-}
-function isAncestorUsed(inOut) {
-    let parent = inOut.parent;
-    while (true) {
-        if (parent === undefined) {
-            return false;
-        }
-        if (parent.used) {
-            return true;
-        }
-        parent = parent.parent;
-    }
 }
 export { getLoopsFromTree };
 //# sourceMappingURL=get-loops-from-tree.js.map

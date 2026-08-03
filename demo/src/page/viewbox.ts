@@ -2,10 +2,10 @@ import { getShapeBounds } from "../../../src/calc-paths/get-shape-bounds.js";
 
 
 function getViewBoxForShape(bezierLoops: number[][][][]) {
-    let minX_ = Number.POSITIVE_INFINITY;
-    let minY_ = Number.POSITIVE_INFINITY;
-    let maxX_ = Number.NEGATIVE_INFINITY;
-    let maxY_ = Number.NEGATIVE_INFINITY;
+    let minX_ = Infinity;
+    let minY_ = Infinity;
+    let maxX_ = -Infinity;
+    let maxY_ = -Infinity;
     for (const bezierLoop of bezierLoops) {
         const { minX, maxX, minY, maxY } = getShapeBounds(bezierLoop);
         if (minX < minX_) { minX_ = minX }
@@ -25,10 +25,10 @@ function getViewBoxForShape(bezierLoops: number[][][][]) {
 
 
 function getViewBoxForShapes(bezierLoopss: number[][][][][]) {
-    let minX_ = Number.POSITIVE_INFINITY;
-    let minY_ = Number.POSITIVE_INFINITY;
-    let maxX_ = Number.NEGATIVE_INFINITY;
-    let maxY_ = Number.NEGATIVE_INFINITY;
+    let minX_ = Infinity;
+    let minY_ = Infinity;
+    let maxX_ = -Infinity;
+    let maxY_ = -Infinity;
     for (const bezierLoops of bezierLoopss) {
         for (const bezierLoop of bezierLoops) {
             const { minX, maxX, minY, maxY } = getShapeBounds(bezierLoop);

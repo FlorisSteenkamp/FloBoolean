@@ -17,7 +17,7 @@ function logNearestLoopPost(
         p: number[], showDelay = 1000) {
 
     let bestLoop: Loop = undefined!;
-    let bestDistance = Number.POSITIVE_INFINITY;
+    let bestDistance = Infinity;
 
     const elems = _debug_.elems;
     const loops = elems.loop;

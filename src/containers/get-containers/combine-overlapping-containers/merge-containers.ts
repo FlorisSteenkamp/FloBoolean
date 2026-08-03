@@ -1,35 +1,34 @@
 import type { Container } from "../../container.js";
-import type { __X__ } from "../../../get-critical-points/-x-.js";
+import type { _X_ } from "../../../get-critical-points/-x-.js";
+
+const { min, max } = Math;
 
 
-function mergeContainers(ccs: Container[][]) {
-    const containers: Container[] = [];
+function mergeContainers(
+        containers: Container[]): Container {
 
-    for (const cc of ccs) {
-        let minLeft = Number.POSITIVE_INFINITY;
-        let minTop = Number.POSITIVE_INFINITY;
-        let maxRight = Number.NEGATIVE_INFINITY;
-        let maxBottom = Number.NEGATIVE_INFINITY;
-        const xs: __X__[] = [];
-        for (const c of cc) {
-            const [[left,top], [right,bottom]] = c.box;
-            if (left   < minLeft  ) { minLeft   = left;   }
-            if (top    < minTop   ) { minTop    = top;    }
-            if (right  > maxRight ) { maxRight  = right;  }
-            if (bottom > maxBottom) { maxBottom = bottom; }
-            xs.push(...c.xs);
-        }
+    let minLeft = Infinity;
+    let minTop = Infinity;
+    let maxRight = -Infinity;
+    let maxBottom = -Infinity;
+    const xs: _X_[] = [];
 
-        const container: Container = {
-            box: [[minLeft,minTop], [maxRight,maxBottom]],
-            xs,
-            inOuts: undefined!
-        };
+    for (const container of containers) {
+        const [[left,top], [right,bottom]] = container.box;
 
-        containers.push(container);
+        minLeft   = min(minLeft,   left);
+        minTop    = min(minTop,    top);
+        maxRight  = max(maxRight,  right);
+        maxBottom = max(maxBottom, bottom);
+
+        xs.push(...container.xs);
     }
 
-    return containers;
+    return {
+        box: [[minLeft,minTop], [maxRight,maxBottom]],
+        xs,
+        inOuts: undefined!
+    };
 }
 
 

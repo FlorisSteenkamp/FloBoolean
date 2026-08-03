@@ -29,7 +29,7 @@ function boolean(booleanOp, bezierLoops, options = {}) {
         inclMicroCorners: false,
         minLoopArea
     };
-    const loopss = simplifyPaths(bezierLoops, undefined, simplifyOptions);
+    const loopss = simplifyPaths(bezierLoops, simplifyOptions);
     const bezierLoops_ = loopss.flat(1).map(l => l.beziers);
     return bezierLoops_;
 }

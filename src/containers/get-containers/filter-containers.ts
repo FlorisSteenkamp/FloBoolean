@@ -21,7 +21,7 @@ function filterContainers(containers: Container[]) {
 
         for (const x of container.xs) {
             if (x.x.kind !== 4) { 
-                // include container if any __X__ is not an interface
+                // include container if any _X_ is not an interface
                 return true; 
             }
         }

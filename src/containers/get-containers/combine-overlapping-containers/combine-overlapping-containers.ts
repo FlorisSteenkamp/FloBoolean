@@ -1,9 +1,8 @@
 import type { Container } from "../../container.js";
-import type { TGraph } from '../../../graph/get-connected-components.js';
+import type { Graph } from '../../../graph/get-connected-components.js';
 import { sweepLine } from "../../../sweep-line/sweep-line.js";
 import { areContainersIntersecting } from "./are-containers-intersecting.js";
-import { addEdges, getConnectedComponents } from "../../../graph/get-connected-components.js";
-import { getIsolatedComponents } from "./get-isolated-containers.js";
+import { addEdge, getConnectedComponents } from "../../../graph/get-connected-components.js";
 import { mergeContainers } from "./merge-containers.js";
 
 
@@ -18,42 +17,36 @@ function combineOverlappingContainers(
 
     // iterate, combining containers that overlap on each iteration 
     while (true) {
-        /** container intersections as an array of Container pairs */
-        const is = sweepLine(
+        /**
+         * container intersections as an array of objects with the following properties:
+         *   a: the first container in the pair
+         *   b: the second container in the pair
+         *   u: always `true` (the result of the predicate)
+         */
+        const rs = sweepLine(
             containers, 
-            getLeftMost, 
-            getRightMost, 
+            container => container.box[0][0], 
+            container => container.box[1][0], 
             areContainersIntersecting
         );
 
         // if there are no more intersections between containers we're done
-        if (!is.length) { break; }
+        if (!rs.length) { break; }
 
-        const graph: TGraph<Container> = new Map();
-        addEdges(graph, is);
+        // Create a graph of containers, where each container is a vertex and
+        // each intersection is an edge
+        const graph: Graph<Container> = new Map(containers.map(c => [c, []]));
+        for (let i=0; i<rs.length; i++) {
+            const r = rs[i];
+            addEdge(graph, [r.a, r.b]);
+        }
 
-        const connectedContainers = getConnectedComponents(graph);
-        const isolatedContainers = getIsolatedComponents(
-            containers, connectedContainers
+        containers = getConnectedComponents(graph).map(
+            mergeContainers
         );
-
-        containers = [
-            ...mergeContainers(connectedContainers), 
-            ...isolatedContainers
-        ];
     }
 
     return containers;
-}
-
-
-function getLeftMost(container: Container) { 
-    return container.box[0][0];
-}
-
-
-function getRightMost(container: Container) { 
-    return container.box[1][0];
 }
 
 

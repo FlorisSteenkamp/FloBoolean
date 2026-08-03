@@ -19,7 +19,7 @@
 //             ioIdx: number;
 //         } {
 
-//     // We check one __X__ for each curve with an intersection within this container
+//     // We check one _X_ for each curve with an intersection within this container
 //     // const xs = container.xs;
 
 //     // console.log(xs);

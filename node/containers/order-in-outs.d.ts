@@ -6,5 +6,5 @@ import type { Container } from "./container.js";
  *
  * @param container
  */
-declare function orderInOuts(container: Container, snugDir: number): void;
+declare function orderInOuts(container: Container): void;
 export { orderInOuts };

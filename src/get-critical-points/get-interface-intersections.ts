@@ -1,13 +1,13 @@
 import type { Loop } from "../shape/loop.js";
-import type { __X__ } from "./-x-.js";
+import type { _X_ } from "./-x-.js";
 import { makeSimpleX } from "./make-simple-x.js";
 
 
 function getInterfaceIntersections(
-        loops: Loop[]): [__X__,__X__][] {
+        loops: Loop[]): [_X_,_X_][] {
 
     /** all one-sided Xs from */
-    const xs: [__X__,__X__][] = [];
+    const xs: [_X_,_X_][] = [];
 
     // Get interface points
     for (const loop of loops) {

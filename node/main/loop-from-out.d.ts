@@ -1,9 +1,12 @@
-import type { InOut } from "../containers/in-out/in-out.js";
+import type { Out } from "../containers/in-out/in-out.js";
 /**
  *
  * @param out
  * @param outerLoopOrientation
  * @param loopIdx identifies the loop during debugging
+ * @param depth number of selected ancestor loops (nesting level); determines
+ * the loop's orientation so that alternating levels (outer, hole, island, ...)
+ * are cut in and out correctly by the non-zero winding fill rule
  */
-declare function loopFromOut(out: InOut, outerLoopOrientation: number, loopIdx: number, forceOrientationNegative: boolean): import("../index.js").Loop;
+declare function loopFromOut(out: Out, outerLoopOrientation: number, loopIdx: number, depth: number, forceOrientationNegative: boolean): import("../index.js").Loop;
 export { loopFromOut };

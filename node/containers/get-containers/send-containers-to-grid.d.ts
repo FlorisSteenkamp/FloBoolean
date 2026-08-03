@@ -8,7 +8,7 @@ import type { Container } from "../container.js";
  * @param containerDim
  */
 declare function sendContainersToGrid(containers: Container[], expMax: number, containerDim: number): {
-    xs: import("../../get-critical-points/-x-.js").__X__[];
+    xs: import("../../get-critical-points/-x-.js")._X_[];
     inOuts: import("../in-out/in-out.js").InOut[];
     box: number[][];
 }[];

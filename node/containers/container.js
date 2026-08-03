@@ -1,6 +1,6 @@
 /**
- * Returns true if the container contains only 1 interface
- * intersection or contains only 1 general, extreme or loop intersection
+ * Returns `true` if the container contains only 1 interface
+ * intersection or contains only 1 general, minY or loop intersection
  * (not cusp, or endpoint overlap), false otherwise.
  *
  * @param container

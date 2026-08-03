@@ -2,36 +2,33 @@ import { closestPointOnBezierCertified } from 'flo-bezier3';
 import { mid } from 'flo-poly';
 import { getNextExit } from './get-next-exit.js';
 import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
-import { getBeziersToPrevContainer } from './get-beziers-to-prev-container.js';
-import { getTightNextExit } from './get-tight-next-exit.js';
 import { bezierPieceToBezier } from './bezier-piece-to-bezier.js';
 /**
  * Completes a loop for a specific intersection point entry curve.
  *
  * @param expMax
- * @param takenInOuts
- * @param origInOut
+ * @param takenOuts
+ * @param origOut
  */
-function completeLoop(takenInOuts, origInOut, tight) {
+function completeLoop(takenOuts, takenLoops, origOut) {
     const additionalOutsToCheck = [];
     const bezierPieces = [];
     // Move immediately to the outgoing start of the loop
-    let inOutToUse = origInOut;
+    let outToUse = origOut;
     let additionalBezier;
-    const getNextExit_ = tight ? getTightNextExit : getNextExit;
-    /** For debugging only */
-    const ios = [];
+    const outs = []; // For debugging only
     do {
-        takenInOuts.add(inOutToUse);
-        ios.push(inOutToUse); // for debugging only
-        const inOut_Next = inOutToUse.nextOrPrev;
-        takenInOuts.add(inOut_Next);
-        const beziersToNextContainer = inOutToUse.dir === +1
-            ? getBeziersToNextContainer(inOutToUse, inOut_Next)
-            : getBeziersToPrevContainer(inOutToUse, inOut_Next);
+        outs.push(outToUse); // for debugging only
+        takenOuts.add(outToUse);
+        // Every curve threaded through this loop belongs to this component, so
+        // mark its loop as taken to prevent it being re-processed as a separate
+        // outermost loop (which would reset already-built child nesting).
+        takenLoops.add(outToUse._x_.curve.loop);
+        const nextIn = outToUse.nextOrPrev;
+        const beziersToNextContainer = getBeziersToNextContainer(outToUse, nextIn);
         bezierPieces.push(...beziersToNextContainer);
-        const nextExit = getNextExit_(inOut_Next, origInOut, additionalOutsToCheck, takenInOuts);
-        ({ inOutToUse, additionalBezier } = nextExit);
+        const nextExit = getNextExit(nextIn, origOut, additionalOutsToCheck, takenOuts);
+        ({ outToUse, additionalBezier } = nextExit);
         if (additionalBezier !== undefined) {
             const lastBezPiece = bezierPieces[bezierPieces.length - 1];
             const lastBez = bezierPieceToBezier(lastBezPiece);
@@ -41,9 +38,9 @@ function completeLoop(takenInOuts, origInOut, tight) {
             bezierPieces.push(inBez_);
             bezierPieces.push({ ps: additionalBezier, ts: [0, 1] });
         }
-    } while (inOutToUse !== origInOut);
+    } while (outToUse !== origOut);
     if (typeof _debug_ !== 'undefined' && !!_debug_.verbose) {
-        logIos(ios);
+        logIos(outs);
     }
     return { bezierPieces, additionalOutsToCheck };
 }

@@ -1,4 +1,4 @@
-import type { __X__ } from './-x-.js';
+import type { _X_ } from './-x-.js';
 import type { Curve } from "../curve/curve.js";
 import { orient2d } from 'big-float-ts';
 import { createRootExact, mid } from 'flo-poly';
@@ -21,7 +21,7 @@ import { areBoxesIntersecting } from '../geometry/are-boxes-intersecting.js';
  */
 function getCurvesIntersections(
         curveA: Curve, 
-        curveB: Curve): [__X__,__X__][] | undefined {
+        curveB: Curve): [_X_,_X_][] | undefined {
 
     const psA = curveA.ps;
     const psB = curveB.ps;
@@ -92,7 +92,7 @@ function getCurvesIntersections(
  */
 function checkEndpoints(
         curveA: Curve, 
-        curveB: Curve): [__X__,__X__][] | undefined {
+        curveB: Curve): [_X_,_X_][] | undefined {
 
     if (curveB.next === curveA) {
         if (curveA.next === curveB) {
@@ -128,7 +128,7 @@ function checkEndpoints(
 
 function getLineLineIntersections(
         curveA: Curve, 
-        curveB: Curve): [__X__,__X__][] | undefined {
+        curveB: Curve): [_X_,_X_][] | undefined {
 
     let psA = curveA.ps;
     let psB = curveB.ps;

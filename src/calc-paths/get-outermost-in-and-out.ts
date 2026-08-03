@@ -1,8 +1,6 @@
 import type { Container } from '../containers/container.js';
 import type { InOut, Out } from '../containers/in-out/in-out.js';
-import type { Loop } from '../shape/loop.js';
 import type { Mutable } from '../utils/mutable.js';
-import { orderInOuts } from '../containers/order-in-outs.js';
 
 
 /**
@@ -20,44 +18,27 @@ import { orderInOuts } from '../containers/order-in-outs.js';
  */
 function getOutermostOut(
         container: Container,
-        parent: Out,
-        loop: Loop): Mutable<Out> {
+        parent: Out): Mutable<Out> {
 
     const inOuts = container.inOuts;
     const firstInOut: Mutable<InOut> = inOuts[0];
     const lastInOut: Mutable<InOut> = inOuts[inOuts.length-1];
 
-    const initialOut: Mutable<Out> = (firstInOut.dir === 1
+    const initialOut: Out = (firstInOut.dir === 1
         ? firstInOut
         : lastInOut) as Mutable<Out>;
 
     const orientation = lastInOut.dir;
+    const windingNum = parent.windingNum! + orientation!;
 
-    const set: Set<number> = parent.idx === 0
-        ? new Set()
-        : parent.orientation === 1 ? parent.loopsIdxs : new Set();
-        
-
-    firstInOut.orientation = orientation;
-    firstInOut.parent = parent;
-    firstInOut.windingNum = parent.windingNum! + orientation!;
-    firstInOut.loopsIdxs = new Set(set);
-    firstInOut.children = new Set();
-    if (orientation === 1) {
-        firstInOut.loopsIdxs?.add(loop.idx);
+    for (const inOut of [firstInOut, lastInOut]) {
+        inOut.orientation = orientation;
+        inOut.parent = parent;
+        inOut.windingNum = windingNum;
+        inOut.children = new Set();
     }
 
-    lastInOut.orientation = orientation;
-    lastInOut.parent = parent;
-    lastInOut.windingNum = parent.windingNum! + orientation!;
-    lastInOut.loopsIdxs = new Set(set);
-    lastInOut.children = new Set();
-    if (orientation === 1) {
-        lastInOut.loopsIdxs?.add(loop.idx);
-    }
-
-
-    return initialOut;
+    return initialOut as Out;
 }
 
 

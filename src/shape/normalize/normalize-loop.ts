@@ -1,9 +1,9 @@
 declare const _debug_: Debug; 
 import type { Debug, Timing } from '../../debug/debug.js';
-import { bitLength } from 'big-float-ts';
+import type { Mutable } from '../../utils/mutable.js';
 import { fixBeziers } from "./fix-beziers.js";
-import { toGrid } from './to-grid.js';
-import { Mutable } from '../../utils/mutable.js';
+import { MAX_BIT_LENGTH } from '../../main/max-bitlength.js';
+import { addDebugInfo1 } from '../../main/add-debug-info-1.js';
 
 
 /**
@@ -28,66 +28,23 @@ import { Mutable } from '../../utils/mutable.js';
  * @param bezierLoops
  * @param maxBitLength
  * @param expMax
- * @param doScramble
- * @param doSendToGrid
  */
 function normalizeLoops(
         bezierLoops: number[][][][],
-        maxBitLength: number,
-        expMax: number,
-        doScramble = false,
-        doSendToGrid = true): number[][][][] {
+        expMax: number): number[][][][] {
 
-    const fixBeziers_ = fixBeziers(expMax, maxBitLength, doSendToGrid);
-
-    let loops = bezierLoops.slice();
-    // just for testing purposes
-    loops = doScramble ? scrambleLoops(loops, maxBitLength, expMax, 1): loops;
-    loops = loops.map(fixBeziers_);
-    loops = loops.filter(loop => loop.length > 0);
+    const loops = bezierLoops
+        .slice()
+        .map(fixBeziers(expMax, MAX_BIT_LENGTH))
+        .filter(loop => loop.length > 0);
 
     if (typeof _debug_ !== 'undefined') {
         (_debug_.timing as Mutable<Timing>).normalize = performance.now() - _debug_.timing.timingStart;
     }
 
+    addDebugInfo1(loops);
+
     return loops;
-}
-
-
-/** Just for testing purposes - not used in the actual algorithm */
-function scrambleLoops(
-        loops: number[][][][], 
-        maxBitLength: number, 
-        expMax: number,
-        mult = 0.02) {
-
-    const loops_: number[][][][] = [];
-    for (const loop of loops) {
-        const loop_: number[][][] = [];
-        for (const bez of loop) {
-            const bez_ = bez.map(v => v.map(c => {
-                let c_ = 0;
-                let ii = 0;
-                let mblc: number;
-                let mbl = 0;
-                while (true) {
-                    if (++ii > 10) { break; }
-                    c_ = (c + Math.random()) * (1 + ((Math.random()-0.7) * mult));
-                    c_ = toGrid(c_, expMax, maxBitLength);
-                    const bl = bitLength(c_);
-                    if (bl > mbl) {
-                        mbl = bl;
-                        mblc = c_;
-                    }
-                }
-                return mblc!;
-            }));
-            loop_.push(bez_);
-        }
-        loops_.push(loop_);
-    }
-
-    return loops_;
 }
 
 

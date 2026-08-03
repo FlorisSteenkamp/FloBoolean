@@ -1,4 +1,4 @@
-import type { Loop } from '../loop/loop.js';
+import type { Loop } from '../shape/loop.js';
 import type { SimplifyOptions } from './simplify-options.js';
 /**
  * Returns the result of simplifying the given bezier loops so that the returned
@@ -14,10 +14,8 @@ import type { SimplifyOptions } from './simplify-options.js';
  * Also takes care of all special cases.
  *
  * @param loops an array of possibly intersecting paths
- * @param maxCoordinate optional; if not provided, it will be calculated; a
- * wrong value could cause the algorithm to fail
  */
-declare function simplifyPaths(bezierLoops: (number[][])[][], maxCoordinate?: number, options?: SimplifyOptions): Loop[][];
+declare function simplifyPaths(bezierLoops: (number[][])[][], options?: SimplifyOptions): Loop[][];
 /**
  * * used internally only
  *
@@ -27,9 +25,8 @@ declare function simplifyPaths(bezierLoops: (number[][])[][], maxCoordinate?: nu
  *
  * @internal
  */
-declare function prepLoops(bezierLoops: (number[][])[][], maxCoordinate?: number, containerSizeMultiplier?: number): {
-    extremes: Map<Loop, [import("../get-critical-points/-x-.js").__X__, import("../get-critical-points/-x-.js").__X__]>;
-    containers: import("../containers/container.js").Container[];
+declare function prepLoops(bezierLoops: (number[][])[][]): {
+    minYXPairs: [import("../get-critical-points/-x-.js")._X_, import("../get-critical-points/-x-.js")._X_][];
     loops: Loop[];
     expMax: number;
 };

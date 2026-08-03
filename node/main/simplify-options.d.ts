@@ -33,7 +33,5 @@ interface SimplifyOptions extends BooleanOptions {
      * * `"XOR"` (exclude) -> winding numbers === 1
      */
     readonly booleanOp?: 'AND' | 'OR' | 'XOR';
-    /** for debugging purposes; don't use */
-    readonly containerSizeMultiplier?: number;
 }
 export type { SimplifyOptions };

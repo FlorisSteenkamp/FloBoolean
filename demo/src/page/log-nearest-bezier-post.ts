@@ -20,7 +20,7 @@ function logNearestBezierPost(
         showDelay = 1000) {
 
     let bestPs: number[][];
-    let bestDistance = Number.POSITIVE_INFINITY;
+    let bestDistance = Infinity;
 
     for (const loops of _debug_.elems.loops) {
         const bezierLoops = loops;

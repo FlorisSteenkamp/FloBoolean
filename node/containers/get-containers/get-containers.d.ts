@@ -1,14 +1,11 @@
 import type { Container } from "../container.js";
-import type { __X__ } from '../../get-critical-points/-x-.js';
-import type { Loop } from "../../loop/loop.js";
+import type { _X_ } from '../../get-critical-points/-x-.js';
+import type { Loop } from "../../shape/loop.js";
 /**
  *
  * @param containerDim
  *
  * @internal
  */
-declare function getContainers(loops: Loop[], containerDim: number, expMax: number): {
-    extremes: Map<Loop, [__X__, __X__]>;
-    containers: Container[];
-};
+declare function getContainers(loops: Loop[], minYXPairs: [_X_, _X_][], expMax: number): Container[];
 export { getContainers };

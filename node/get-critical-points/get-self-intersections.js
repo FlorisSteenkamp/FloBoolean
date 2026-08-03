@@ -1,4 +1,5 @@
-import { bezierSelfIntersection, evalDeCasteljauDd, getIntervalBox } from 'flo-bezier3';
+import { bezierSelfIntersection } from 'flo-bezier3';
+import { toP } from '../utils/to-p.js';
 const eps = Number.EPSILON;
 /**
  * @param loops
@@ -24,13 +25,11 @@ function getSelfIntersections(loops) {
             const t0E = ts0 + eps;
             const t1S = ts1 - eps;
             const t1E = ts1 + eps;
-            const box0 = getIntervalBox(ps, [t0S, t0E]); // ts are within 1 upls accurate
-            const box1 = getIntervalBox(ps, [t1S, t1E]); // ts are within 1 upls accurate
-            const p = evalDeCasteljauDd(ps, [0, ts0]).map(c => c[1]);
+            const p = toP(ps, ts0);
             xs.push([
                 // FUTURE - multiplicity relevant??
-                { x: { ri: { t: t0S, tS: t0S, tE: t0E, multiplicity: 1 }, p, box: box0, kind }, curve },
-                { x: { ri: { t: t1S, tS: t1S, tE: t1E, multiplicity: 1 }, p, box: box1, kind }, curve }
+                { x: { ri: { t: t0S, tS: t0S, tE: t0E, multiplicity: 1 }, p, kind }, curve },
+                { x: { ri: { t: t1S, tS: t1S, tE: t1E, multiplicity: 1 }, p, kind }, curve }
             ]);
         }
     }

@@ -1,5 +1,6 @@
-import { getEndpointIntersections, bezierBezierIntersectionBoundless, evalDeCasteljauDd } from "flo-bezier3";
+import { getEndpointIntersections, bezierBezierIntersectionBoundless } from "flo-bezier3";
 import { getOtherTs } from './get-other-t.js';
+import { toP } from "../utils/to-p.js";
 /**
  *
  * @param curveA
@@ -7,25 +8,18 @@ import { getOtherTs } from './get-other-t.js';
  * @param expMax
  * @param isANextB is curveB the next curve after curveA, i.e. is A's next B
  */
-function getIntersection(curveA, curveB, expMax, isANextB) {
+function getIntersection(curveA, curveB, isANextB) {
     const ps1 = curveA.ps;
     const ps2 = curveB.ps;
     const xs = [];
     let ris2 = bezierBezierIntersectionBoundless(ps1, ps2);
     if (ris2 === undefined) {
         // the curves have an infinte number of intersections
-        // some reasonable error bound -> to be fine-tuned, but cannot
-        // break the algorithm (unless its too small), only make it run slower.
-        const errBound = 2 ** (expMax - 47);
         const xPairs = getEndpointIntersections(ps1, ps2);
         for (const xPair of xPairs) {
-            const p = evalDeCasteljauDd(ps1, [0, xPair.ri1.t]).map(c => c[1]);
-            const box = [
-                [p[0] - errBound, p[1] - errBound],
-                [p[0] + errBound, p[1] + errBound],
-            ];
-            const ri1 = { x: { ri: xPair.ri1, kind: 5, p, box }, curve: curveA }; // exact overlap endpoint
-            const ri2 = { x: { ri: xPair.ri2, kind: 5, p, box }, curve: curveB }; // exact overlap endpoint
+            const p = toP(ps1, xPair.ri1.t);
+            const ri1 = { x: { ri: xPair.ri1, kind: 5, p }, curve: curveA }; // exact overlap endpoint
+            const ri2 = { x: { ri: xPair.ri2, kind: 5, p }, curve: curveB }; // exact overlap endpoint
             xs.push([ri1, ri2]);
         }
         return xs;

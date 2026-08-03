@@ -14,7 +14,7 @@ interface X {
      * end of the interval with `tE - tS` guaranteed to be less than or equal to
      * `4*Number.EPSILON`
      */
-    ri: RootInterval;
+    readonly ri: RootInterval;
     /**
      * The kind of intersection (inherited from `flo-bezier3`):
      * * 1 => general curve-curve intersection (non-self-overlapping)
@@ -26,23 +26,18 @@ interface X {
      * * 6 => a point (order 0 bezier) intersecting a bezier curve
      *
      * additional kinds added by this library (specific to boolean operations)
-     * * 0 => extreme, e.g. topmost point
+     * * 0 => min-y, e.g. topmost point
      * * 2 => self intersection, a.k.a. ordinary double point, a.k.a crunode
      * * 3 => cusp
      * * 7 => a point of excessive curvature
+     * * 8 => a point of vertical or horizontal tangent
      */
-    kind: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-    /**
-     * A small box that is guaranteed to contain the intersection
-     * (given by its top-left and bottom-right corner) calculated from the root
-     * interval `ri`.
-     */
-    box: number[][];
-    p: number[];
+    readonly kind: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+    readonly p: number[];
     /** The number of times the root has been compensated (if undefined implies 0) */
-    compensated?: number;
+    readonly compensated?: number;
     /** The root interval if compensated 1 or more times */
-    riExp?: RootIntervalExp;
-    getPExact?: () => number[][];
+    readonly riExp?: RootIntervalExp;
+    readonly getPExact?: () => number[][];
 }
 export type { X };

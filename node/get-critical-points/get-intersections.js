@@ -15,7 +15,7 @@ function getIntersections(loops, expMax) {
         }
     }
     // Filter curves so that we eliminate those that can definitely not intersect
-    const rs = sweepLine(curves, curve => getBoundingBox$(curve.ps)[0][0], curve => getBoundingBox$(curve.ps)[1][0], getCurvesIntersections(expMax));
+    const rs = sweepLine(curves, curve => getBoundingBox$(curve.ps)[0][0], curve => getBoundingBox$(curve.ps)[1][0], getCurvesIntersections);
     const xs = [];
     for (const r of rs) {
         for (const xPair of r.u) {
