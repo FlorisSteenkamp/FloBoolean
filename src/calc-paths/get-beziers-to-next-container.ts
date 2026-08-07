@@ -24,7 +24,7 @@ function getBeziersToNextContainer(
 
     if (!containerIsBasic(out.container)) {
         // we must clip the outgoing curve
-        curT = mid(closestPointOnBezierCertified(curveS.ps, out.p)[0].ri);
+        curT = mid(closestPointOnBezierCertified(curveS.ps, out._x_.x.p)[0].ri);
     }
 
     const bezierPieces: BezierPiece[] = [];

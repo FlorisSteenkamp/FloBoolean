@@ -70,7 +70,7 @@ function getNextExit(
     let additionalBezier: number[][] | undefined = undefined;
     if (!containerIsBasic(in_.container)) {
         // add a "micro corner"
-        additionalBezier = [in_.p, outToUse!.p];
+        additionalBezier = [in_._x_.x.p, outToUse!._x_.x.p];
     }
     
     return { outToUse: outToUse!, additionalBezier };

@@ -25,13 +25,13 @@ function drawContainer(
     const inOuts = container.inOuts;
     for (let i=0; i<inOuts.length; i++) {
         const inOut = inOuts[i];
-        const p = inOut.p;
+        const p = inOut._x_.x.p;
         const color = inOut.dir === -1 ? 'red' : 'blue';
         const size = scale*(1 + (0.5*i));
         if (inOut.idx !== undefined) {
             $texts.push(...drawFs.text(g, p, inOut.idx!.toString(), scale/2, `thin5 ${color}`, delay));
         }
-        $circles.push(...drawFs.dot(g, inOut.p, size/8, `thin5 nofill ${color}`, delay)); 
+        $circles.push(...drawFs.dot(g, inOut._x_.x.p, size/8, `thin5 nofill ${color}`, delay)); 
     }
 
     // container rect

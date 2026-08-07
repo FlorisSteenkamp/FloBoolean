@@ -25,7 +25,7 @@ const { min, max } = Math;
  * holding critical points.
  */
 const CONTAINER_SIZE_MULTIPLIER = 2**4;
-const CONTAINER_SIZE_MULTIPLIER_FOR_DEBUGGING = 2**32;
+const CONTAINER_SIZE_MULTIPLIER_FOR_DEBUGGING = 2**36;
 
 
 /**
@@ -55,13 +55,13 @@ function getContainers(
 
     assignContainersToXs(containers);
 
-    for (const container of containers) {
-        (container as Mutable<Container>).inOuts = getInOutsOfContainer(container);
-    }
-
     // remove xs not belonging to a container (caused by `filterContainers`)
     xPairs = xPairs.filter(x => x[0].container !== undefined);
     setIntersectionNextAndPrevs(xPairs);
+
+    for (const container of containers) {
+        (container as Mutable<Container>).inOuts = getInOutsOfContainer(container);
+    }
 
     assignBigBoxesToContainers(containers, expMax);  // TODO
 

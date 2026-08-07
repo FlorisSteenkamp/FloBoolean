@@ -1,10 +1,14 @@
 import type { _X_ } from "./-x-.js";
 import type { Loop } from "../shape/loop.js";
 import type { Mutable } from "../utils/mutable.js";
+import { compareXs } from "../containers/compare-xs.js";
 
 
 /**
- * Set each intersection on the given original loop's `next` and `prev` value.
+ * Set each intersection on the given original loop's `next`/`prev` (the next/
+ * prev intersection in a *different* container) as well as `nextBefExit`/
+ * `prevBefExit` (the last intersection still in the *same* container before the
+ * jump to the next/prev container - possibly the `_X_` itself).
  *
  * @param xPairs
  */
@@ -23,15 +27,7 @@ function setIntersectionNextAndPrevs(
     for (const xs of xsByLoop.values()) {
         if (xs === undefined || xs.length === 0) { continue; }
 
-        xs.sort((xA, xB) => {
-            let r = xA.curve.idx - xB.curve.idx;
-            if (r !== 0) { return r; }
-
-            r = xA.x.ri.tS - xB.x.ri.tS;
-            if (r !== 0) { return r; }
-
-            return xA.in_ !== undefined ? -1 : +1;
-        });
+        xs.sort(compareXs);
 
         const len = xs.length;
         for (let i=0; i<len; i++) {
@@ -40,18 +36,27 @@ function setIntersectionNextAndPrevs(
             // Skip over intersections that stay in the same container so that
             // `next`/`prev` always move to an intersection in a different
             // container (falls back to `xs[i]` itself if all share it).
-            let ni = (i + 1)%len;
-            while (ni !== i && xs[ni].container === container) {
-                ni = (ni + 1)%len;
+            let i_ = (i + 1)%len;
+            while (i_ !== i && xs[i_].container === container) {
+                i_ = (i_ + 1)%len;
             }
 
-            let pi = (i - 1 + len)%len;
-            while (pi !== i && xs[pi].container === container) {
-                pi = (pi - 1 + len)%len;
+            let _i = (i - 1 + len)%len;
+            while (_i !== i && xs[_i].container === container) {
+                _i = (_i - 1 + len)%len;
             }
 
-            (xs[i] as Mutable<_X_>).next = xs[ni];
-            (xs[i] as Mutable<_X_>).prev = xs[pi];
+            // The last intersection still in the same container right before the
+            // container changes (the one just before `ni`/`pi`) - falls back to
+            // `xs[i]` itself when its immediate neighbour already leaves (or when
+            // every intersection shares this container).
+            const nbi = i_ === i ? i : (i_ - 1 + len)%len;
+            const pbi = _i === i ? i : (_i + 1)%len;
+
+            (xs[i] as Mutable<_X_>).next = xs[i_];
+            (xs[i] as Mutable<_X_>).prev = xs[_i];
+            (xs[i] as Mutable<_X_>).nextBefExit = xs[nbi];
+            (xs[i] as Mutable<_X_>).prevBefExit = xs[pbi];
         }
     }
 }

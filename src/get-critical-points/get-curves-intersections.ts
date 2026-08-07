@@ -119,7 +119,7 @@ function checkEndpoints(
         if (xPairs === undefined || xPairs.length === 0) { return undefined; }
         const xPair = xPairs[0];
         return [[
-            { x: xPair[0], curve: curveA, next: undefined!, prev: undefined! },
+            { x: xPair[0], curve: curveA, next: undefined!, prev: undefined!, container: undefined!, order: 0 },
             makeSimpleX(1, curveB, 1)
         ]];
     }

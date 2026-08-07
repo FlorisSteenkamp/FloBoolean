@@ -12,14 +12,17 @@ interface _X_ {
     
     /** The Curve on the shape boundary this point belong to. */
     readonly curve: Curve;
-    readonly container?: Container;
+    readonly container: Container;
     /** 
      * The next intersection along the original loop that this X belongs to
      */
     readonly next: _X_;
     readonly prev: _X_;
+    readonly nextBefExit?: _X_;
+    readonly prevBefExit?: _X_;
     readonly in_?: In | undefined;
     readonly out?: Out | undefined;
+    readonly order: number;
 }
 
 

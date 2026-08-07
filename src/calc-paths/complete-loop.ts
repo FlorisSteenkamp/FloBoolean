@@ -35,7 +35,7 @@ function completeLoop(
     const outs: Out[] = [];  // For debugging only
     let guard = 0;  // TEMP debug guard
     do {
-        if (++guard > 50_000) {
+        if (++guard > 50_000) {  // TODO - remove guard eventually
             const cycle = outs.slice(-6);
             const tail = cycle.map(o => o.idx).join(' -> ');
             const distinct = new Set(cycle.map(o => o.container));

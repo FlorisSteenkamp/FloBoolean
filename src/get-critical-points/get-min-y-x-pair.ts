@@ -34,6 +34,8 @@ function getMinYXpair(
         curve,
         next: undefined!, // will be set later
         prev: undefined!, // ...
+        container: undefined!,
+        order: 0
     }
 
     // duplicate the object so that they are not the same object

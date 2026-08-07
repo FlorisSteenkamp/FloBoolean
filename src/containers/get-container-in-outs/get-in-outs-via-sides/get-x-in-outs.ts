@@ -2,15 +2,13 @@ import type { _X_ } from "../../../get-critical-points/-x-.js";
 import type { Curve } from "../../../curve/curve.js";
 import type { In, InOut, Out } from "../../../containers/in-out/in-out.js";
 import type { Container } from "../../container.js";
-import type { X } from "../../../get-critical-points/x.js";
 import type { Mutable } from "../../../utils/mutable.js";
 import { getTs } from './get-ts.js';
-import { toP } from "../../../utils/to-p.js";
+import { compareXs } from '../../compare-xs.js';
 
 
 interface SideX extends _X_ { 
-    side: number; 
-    sideX: X;
+    isSide: boolean; 
     ps: number[][];
 }
 
@@ -52,15 +50,16 @@ function getXInOuts(
         for (let i=0; i<sides.length; i++) {
             const xs_ = getTs(ps, sides[i], [0,1], [0,1]);
 
-            for (const { psX, sideX } of xs_) {
+            for (const { psX } of xs_) {
                 xs.push({
                     ps,
                     x: psX,
-                    side: i, 
-                    sideX,
+                    isSide: true, 
                     curve: undefined!, // unused
                     next: undefined!,
-                    prev: undefined!
+                    prev: undefined!,
+                    container,
+                    order: Number.MAX_SAFE_INTEGER  // sort after real `_X_`s at an equal `tS`
                 });
             }
         }
@@ -73,7 +72,15 @@ function getXInOuts(
         // 'large enough', where large enough is based on the maximum value that
         // the tangent magnitude of a curve can attain (no need to resort to 
         // compensated intervals)
-        xs.sort((xA, xB) => xA.x.ri.tS - xB.x.ri.tS);
+        xs.sort((xA, xB) => {
+            const res = xA.x.ri.tS - xB.x.ri.tS;
+            if (res !== 0) { return res; }
+
+            // Tie-break by the same `order` used in `compareXs` so this sort and
+            // the loop-ordering sort in `setIntersectionNextAndPrevs` agree on
+            // the relative order of coincident points.
+            return xA.order - xB.order;
+        });
 
         const ins: In[] = [];
         const outs: Out[] = [];
@@ -81,23 +88,17 @@ function getXInOuts(
         /** true if the prevX was a proper X, false if it was a SideX */
         let prevWasX: boolean | undefined = undefined;
         for (const x of xs) {
-            if (x.side !== undefined) {
+            if (x.isSide) {
                 // it is a sideX
                 if (prevWasX === true) {
-                    const p = toP(x.ps, x.x.ri.t);
-                    outs.push(makeInOut(
-                        +1, p, prevX!, container, x.side, x.sideX!
-                    ));
+                    outs.push(makeInOut(+1, prevX!, container));
                     (prevX as Mutable<SideX>).out = outs[outs.length-1];
                 }
                 prevWasX = false;
             } else {
                 // it is a proper X
                 if (prevWasX === false) {
-                    const p = toP(prevX!.ps, prevX!.x.ri.t);
-                    ins.push(makeInOut(
-                        -1, p, x, container, prevX!.side!, prevX!.sideX!
-                    ));
+                    ins.push(makeInOut(-1, x, container));
                     (x as Mutable<SideX>).in_ = ins[ins.length-1];
                 }
                 prevWasX = true;
@@ -116,20 +117,14 @@ function getXInOuts(
  */
 function makeInOut<D extends 1 | -1>(
         dir: D,
-        p: number[],
         _x_: _X_,
-        container: Container,
-        side: number,
-        sideX: X): D extends -1 ? In : Out {
+        container: Container): D extends -1 ? In : Out {
 
     const inOut: InOut = {
         idx: undefined!,  // will be set later
         dir,
-        p,
         _x_,
         container,
-        side,
-        sideX,
         children: new Set(),
         windingNum: 0,
         orientation: 0,
