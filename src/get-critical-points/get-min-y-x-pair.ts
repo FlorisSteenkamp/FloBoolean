@@ -13,7 +13,7 @@ import { getLoopMinY } from "../shape/get-min-y.js";
  * @param loop 
  */
 function getMinYXpair(
-        loop: Loop): [_X_,_X_] {
+        loop: Loop): _X_ {
 
     const minY = getLoopMinY(loop);
     const { curve, y } = minY;
@@ -31,11 +31,13 @@ function getMinYXpair(
             kind: 0,
             p,
         },
-        curve
+        curve,
+        next: undefined!, // will be set later
+        prev: undefined!, // ...
     }
 
     // duplicate the object so that they are not the same object
-    return [_x_, {..._x_}];
+    return _x_;
 }
 
 

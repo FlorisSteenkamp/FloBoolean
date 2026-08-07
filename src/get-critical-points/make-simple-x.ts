@@ -19,7 +19,7 @@ function makeSimpleX(
     const ri = createRootExact(t);
     const p = toP(ps, t);
 
-    return { x: { ri, p, kind }, curve };
+    return { x: { ri, p, kind }, curve, next: undefined!, prev: undefined! };
 }
 
 

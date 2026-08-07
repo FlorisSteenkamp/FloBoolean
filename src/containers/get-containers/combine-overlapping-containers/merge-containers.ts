@@ -26,6 +26,7 @@ function mergeContainers(
 
     return {
         box: [[minLeft,minTop], [maxRight,maxBottom]],
+        bigBox: undefined!,  // will be set later
         xs,
         inOuts: undefined!
     };

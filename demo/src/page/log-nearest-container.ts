@@ -1,17 +1,9 @@
 declare const _debug_: Debug; 
-
-import { Debug } from '../../../src/debug/debug.js';
-import { Container, containerIsBasic } from '../../../src/containers/container.js';
-import { squaredDistanceBetween } from 'flo-vector2d';
-
-
-function getClosestSquareDistanceToRect(rect: number[][], p: number[]) {
-    const tl = rect[0];
-    const br = rect[1];
-    const ps = [tl, br];
-
-    return Math.min(...ps.map(p_ => squaredDistanceBetween(p,p_)));
-}
+import type { Debug } from '../../../src/debug/debug.js';
+import type { Container } from '../../../src/containers/container.js';
+import { containerIsBasic } from '../../../src/containers/container-is-basic.js';
+import { getClosestDistanceToRect } from './get-closest-distance-to-rect.js';
+import { drawContainer } from '../../../src/debug/draw-elem/draw-container.js';
 
 
 function logNearestContainer(g: SVGGElement, p: number[], showDelay = 1000) {
@@ -19,17 +11,17 @@ function logNearestContainer(g: SVGGElement, p: number[], showDelay = 1000) {
     let bestDistance = Infinity;
 
     for (const container of _debug_.elems.container) {
-        const dSquared = getClosestSquareDistanceToRect(container.box, p);
+        const d = getClosestDistanceToRect(container.box, p);
         
-        if (dSquared < bestDistance) {
+        if (d < bestDistance) {
             bestContainer = container;
-            bestDistance = dSquared;
+            bestDistance = d;
         }
     }
 
     console.log(`isBasic: ${containerIsBasic(bestContainer!)}`);
     
-    _debug_.fs.drawElem.container(/*_debug_.generated.*/g, bestContainer!, '', showDelay);
+    drawContainer(/*_debug_.generated.*/g, bestContainer!, '', showDelay, true);
     console.log(bestContainer!);
     for (const x of bestContainer!.xs) {
         //console.log('x', x.curve.ps.toString())

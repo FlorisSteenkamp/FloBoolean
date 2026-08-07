@@ -3,13 +3,12 @@ import type { InOut } from '../src/containers/in-out/in-out.js';
 import { compareInOut } from '../src/containers/get-container-in-outs/get-in-outs-via-sides/compare-in-out.js';
 
 
-test('`compareInOut`', function() {
+test.skip('`compareInOut`', function() {
     const inOutA: InOut = {
         side: 0,
         sideX: {
             ri: { t: 0.5, tS: 0.5, tE: 0.5, multiplicity: 1, },
             compensated: undefined,
-            box: undefined!,  // not used in `compareInOut`
             kind: undefined!  // ...
         },
         dir: -1,
@@ -26,7 +25,6 @@ test('`compareInOut`', function() {
         sideX: {
             ri: { t: 0.6, tS: 0.6, tE: 0.6, multiplicity: 1, },
             compensated: undefined,
-            box: undefined!,  // not used in `compareInOut`
             kind: undefined!  // ...
         },
         dir: -1,

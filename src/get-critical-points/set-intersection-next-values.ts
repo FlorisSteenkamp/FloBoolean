@@ -8,24 +8,20 @@ import type { Mutable } from "../utils/mutable.js";
  *
  * @param xPairs
  */
-function setIntersectionNextValues(
-        xPairs: [_X_, _X_][]) {
+function setIntersectionNextAndPrevs(
+        xPairs: _X_[][]) {
 
     const xsByLoop: Map<Loop, _X_[]> = new Map();
     for (const xPair of xPairs) {
         for (const x_ of xPair) {
-            const loop = x_.curve.loop;
-            const xs_ = xsByLoop.get(loop) || [];
-            if (!xs_.length) { 
-                xsByLoop.set(loop, xs_); 
-            }
-            xs_.push(x_);
+            const { loop } = x_.curve;
+            xsByLoop.getOrInsert(loop, [])
+                .push(x_)
         }
     }
 
-    for (const item of xsByLoop) {
-        const xs = item[1];
-        if (!xs || !xs.length) { continue; }
+    for (const xs of xsByLoop.values()) {
+        if (xs === undefined || xs.length === 0) { continue; }
 
         xs.sort((xA, xB) => {
             let r = xA.curve.idx - xB.curve.idx;
@@ -39,11 +35,26 @@ function setIntersectionNextValues(
 
         const len = xs.length;
         for (let i=0; i<len; i++) {
-            (xs[i] as Mutable<_X_>).next = xs[(i+1)%len];
-            (xs[i] as Mutable<_X_>).prev = xs[(i-1+len)%len];
+            const container = xs[i].container;
+
+            // Skip over intersections that stay in the same container so that
+            // `next`/`prev` always move to an intersection in a different
+            // container (falls back to `xs[i]` itself if all share it).
+            let ni = (i + 1)%len;
+            while (ni !== i && xs[ni].container === container) {
+                ni = (ni + 1)%len;
+            }
+
+            let pi = (i - 1 + len)%len;
+            while (pi !== i && xs[pi].container === container) {
+                pi = (pi - 1 + len)%len;
+            }
+
+            (xs[i] as Mutable<_X_>).next = xs[ni];
+            (xs[i] as Mutable<_X_>).prev = xs[pi];
         }
     }
 }
 
 
-export { setIntersectionNextValues }
+export { setIntersectionNextAndPrevs }

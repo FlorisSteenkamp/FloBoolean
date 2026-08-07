@@ -1,7 +1,7 @@
 import type { Container } from "../../container.js";
 import type { Graph } from '../../../graph/get-connected-components.js';
 import { sweepLine } from "../../../sweep-line/sweep-line.js";
-import { areContainersIntersecting } from "./are-containers-intersecting.js";
+import { areContainersIntersecting, enlargeBox, CONTAINER_MERGE_ENLARGE_FRAC } from "./are-containers-intersecting.js";
 import { addEdge, getConnectedComponents } from "../../../graph/get-connected-components.js";
 import { mergeContainers } from "./merge-containers.js";
 
@@ -25,8 +25,8 @@ function combineOverlappingContainers(
          */
         const rs = sweepLine(
             containers, 
-            container => container.box[0][0], 
-            container => container.box[1][0], 
+            container => enlargeBox(container.box, CONTAINER_MERGE_ENLARGE_FRAC)[0][0], 
+            container => enlargeBox(container.box, CONTAINER_MERGE_ENLARGE_FRAC)[1][0], 
             areContainersIntersecting
         );
 
@@ -45,6 +45,8 @@ function combineOverlappingContainers(
             mergeContainers
         );
     }
+
+    // aaa
 
     return containers;
 }

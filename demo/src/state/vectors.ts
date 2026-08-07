@@ -16,6 +16,10 @@ const vectorsBoolean = [
 const vectors = [
     // 'AA',
     // "play3",
+    'complex3',
+    'koldat-again',
+    'complex',
+    'complex2',
     'multi-level-reversed-orientation',
     'multi-level-reversed-orientation2',
     'quad-blob',
@@ -53,8 +57,7 @@ const vectors = [
     'holy-poly',
     'f',
     'split-shape-lines',
-    'tiny-min-y-loop',
-    'complex'
+    'tiny-min-y-loop'
 ];
 
 

@@ -8,17 +8,17 @@ import { getTs } from './get-ts.js';
 import { toP } from "../../../utils/to-p.js";
 
 
-type SideX = { 
+interface SideX extends _X_ { 
     side: number; 
     sideX: X;
+    ps: number[][];
 }
-type WithRI = _X_ & Partial<SideX>;
 
 
 /**
- * * **warning** modifies container.xs[i].in_
- * 
  * @param container 
+ * @param curve
+ * @param xs_ all `_X_`s of the given curve and given container
  */
 function getXInOuts(
         container: Container) {
@@ -43,17 +43,14 @@ function getXInOuts(
 
         const { ps } = curve;
 
-        // @ts-ignore
-        const xs: (WithRI & { ps: number[][] })[] = xs_.slice();//.map(v => ({ ...v, ps }));
+        const xs: SideX[] = xs_.slice() as SideX[];
         for (let x of xs) {
             x.ps = ps;
         }
 
 
-        // console.log(xs.length);
-
         for (let i=0; i<sides.length; i++) {
-            const xs_ = getTs(ps, sides[i]);
+            const xs_ = getTs(ps, sides[i], [0,1], [0,1]);
 
             for (const { psX, sideX } of xs_) {
                 xs.push({
@@ -62,6 +59,8 @@ function getXInOuts(
                     side: i, 
                     sideX,
                     curve: undefined!, // unused
+                    next: undefined!,
+                    prev: undefined!
                 });
             }
         }
@@ -78,7 +77,7 @@ function getXInOuts(
 
         const ins: In[] = [];
         const outs: Out[] = [];
-        let prevX: (WithRI & { ps: number[][]; }) | undefined = undefined;
+        let prevX: SideX | undefined = undefined;
         /** true if the prevX was a proper X, false if it was a SideX */
         let prevWasX: boolean | undefined = undefined;
         for (const x of xs) {
@@ -89,7 +88,7 @@ function getXInOuts(
                     outs.push(makeInOut(
                         +1, p, prevX!, container, x.side, x.sideX!
                     ));
-                    (prevX as Mutable<WithRI>).out = outs[outs.length-1];
+                    (prevX as Mutable<SideX>).out = outs[outs.length-1];
                 }
                 prevWasX = false;
             } else {
@@ -99,7 +98,7 @@ function getXInOuts(
                     ins.push(makeInOut(
                         -1, p, x, container, prevX!.side!, prevX!.sideX!
                     ));
-                    (x as Mutable<WithRI>).in_ = ins[ins.length-1];
+                    (x as Mutable<SideX>).in_ = ins[ins.length-1];
                 }
                 prevWasX = true;
             }

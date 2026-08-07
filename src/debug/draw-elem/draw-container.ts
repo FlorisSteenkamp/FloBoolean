@@ -2,8 +2,14 @@ import { drawFs } from 'flo-draw';
 import { Container } from '../../containers/container.js';
 
 
-function drawContainer(g: SVGGElement, container: Container, classes?: string, delay = 0) {
-    const rect = container.box;
+function drawContainer(
+        g: SVGGElement,
+        container: Container,
+        classes?: string,
+        delay = 0,
+        drawBigBox = false) {
+
+    const { box, bigBox } = container;
     const xs = container.xs;
     const scale = 2**(Math.round(Math.log2(container.box[1][0] - container.box[0][0])))*(2**-1);
 
@@ -29,10 +35,14 @@ function drawContainer(g: SVGGElement, container: Container, classes?: string, d
     }
 
     // container rect
-    const $outline = drawFs.rect(g, rect, 'thin2 blue nofill', delay);
+    const $outline = drawFs.rect(g, box, 'thin2 blue nofill', delay);
+    const $bigbox = drawBigBox
+        ? drawFs.rect(g, bigBox, 'thin2 red nofill', delay)
+        : [];
 
     return [
         ...$outline,
+        ...$bigbox,
         ...$circles,
         ...$texts
     ];

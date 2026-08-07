@@ -2,7 +2,7 @@ import type { BezierPiece } from "flo-bezier3";
 import type { In, Out } from "../containers/in-out/in-out.js";
 import { mid } from 'flo-poly';
 import { closestPointOnBezierCertified } from "flo-bezier3";
-import { containerIsBasic } from "../containers/container.js";
+import { containerIsBasic } from "../containers/container-is-basic.js";
 
 
 function getBeziersToNextContainer(

@@ -8,10 +8,10 @@ const { abs } = Math;
 
 function getExcessiveCurvatures(
         expMax: number,
-        loops: Loop[]): [_X_,_X_][] {
+        loops: Loop[]): [_X_][] {
 
     /** all one-sided Xs from */
-    const xs: [_X_,_X_][] = [];
+    const xs: [_X_][] = [];
     // return xs;
 
     // Get interface points
@@ -29,7 +29,7 @@ function getExcessiveCurvatures(
                 if (k > 10_000_000*2**-expMax) {
                     xs.push([
                         makeSimpleX(t,curve,7),  // excessive curvature
-                        makeSimpleX(t,curve,7),  // excessive curvature
+                        // makeSimpleX(t,curve,7),  // excessive curvature
                     ]);
                 }
             }

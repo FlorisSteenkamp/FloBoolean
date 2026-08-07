@@ -14,15 +14,15 @@ function connectContainerInOuts(
             if (inOut.dir === -1) { continue; }
 
             const out = inOut as Mutable<Out>;
-            let _x_ = out._x_;
+            let { _x_ } = out;
             // move to next 'in' _X_
-            while (true) {
+            // while (true) {
                 _x_ = _x_.next!;
-                if (_x_.in_ !== undefined) { 
-                    break;
-                }
-            }
-            out.nextOrPrev = _x_.in_;
+            //     if (_x_.in_ !== undefined) { 
+            //         break;
+            //     }
+            // }
+            out.nextOrPrev = _x_.in_!;
             out.idx = out.nextOrPrev!.idx;
         }
     }
@@ -32,7 +32,7 @@ function connectContainerInOuts(
             if (inOut.dir === +1) { continue; }
 
             const in_ = inOut as Mutable<In>;
-            let _x_ = in_._x_;
+            let { _x_ } = in_;
             // move to prev 'out' _X_
             while (true) {
                 _x_ = _x_.prev!;

@@ -66,7 +66,7 @@ function enableDebugForBooleanOp(
         fs: {
             ...debug?.fs,
             drawElem: {
-                ...debug?.fs.drawElem,
+                ...debug?.fs?.drawElem,
                 ...drawElemFunctions
             }
         }

@@ -18,7 +18,7 @@ const defaultTransientState: TransientState = {
 }
 
 
-const defaultToDraw: { [T in keyof DebugElems]: boolean } = {
+const defaultToDraw: { [T in keyof (DebugElems & { _x_: any })]: boolean } = {
     loopPre              : false,
     loopsPre             : false,
     loops                : true,
@@ -30,6 +30,7 @@ const defaultToDraw: { [T in keyof DebugElems]: boolean } = {
     loop                 : true,
     intersection         : false,
     container            : false,
+    _x_                  : false
 }
 
 

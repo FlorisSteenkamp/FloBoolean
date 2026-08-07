@@ -49,7 +49,7 @@ function simplifyPaths(
 
     const {
         inclMicroCorners = true,
-        minLoopArea = (2**expMax * 2**(-12))**2,
+        minLoopArea = (2**(expMax - 16))**2,
         forceOrientationNegative = false,
         booleanOp = "OR"
     } = options;

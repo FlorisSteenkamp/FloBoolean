@@ -3,9 +3,9 @@ import type { _X_ } from "../../../get-critical-points/-x-.js";
 import type { X } from "../../../get-critical-points/x.js";
 import { eEstimate } from "big-float-ts";
 import { roots, refineK1, rootIntervalToExp } from "flo-poly";
+import { memoize } from 'flo-memoize';
 import { evalDeCasteljauDd, getCoeffsBezBez, getIntervalBoxDd } from "flo-bezier3";
 import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting.js";
-import { toP } from '../../../utils/to-p.js';
 
 
 /**
@@ -20,24 +20,25 @@ import { toP } from '../../../utils/to-p.js';
  */
 function getTs(
         ps: number[][], 
-        side: number[][]): { psX: X, sideX: X }[] {
+        side: number[][],
+        tsPs: number[],
+        tsSide: number[]): { psX: X, sideX: X }[] {
 
-    const xs0Side = getRootsAndCoeffs(ps, side);
-    if (xs0Side === undefined) { return []; }
-    let { ris: risSide, getPExact: getPExactSide } = xs0Side;
+    const xsSide = getRootsAndCoeffs(ps, side, tsSide);
+    if (xsSide === undefined) { return []; }
+    let { ris: risSide, getPExact: getPExactSide } = xsSide;
+    const getPExactSide_ = memoize(getPExactSide);
 
-    const getPExactSide_ = once(getPExactSide);
-
-    const xs0Ps = getRootsAndCoeffs(side, ps);
-    if (xs0Ps === undefined) { return []; }
-    let { ris: risPs, getPExact: getPExactPs } = xs0Ps;
-
-    const getPExactPs_ = once(getPExactPs);
+    const xsPs = getRootsAndCoeffs(side, ps, tsPs);
+    if (xsPs === undefined) { return []; }
+    let { ris: risPs, getPExact: getPExactPs } = xsPs;
+    const getPExactPs_ = memoize(getPExactPs);
 
     
     //---- Make sure no boxesPs overlap. 
-    // If any two boxes do operlap we cannot match the t value of a ps box to 
-    // that of a side box, else we can definitively match them.
+    // If any two boxes do operlap we cannot match the `t` value of a `ps` box
+    // to that of a side box, else we can definitively match them.
+    //
     // Note: multiplicity > 1 intersections will result in an infinite loop. 
     // It is assumed (as a precondition) the code is such that a multiple 
     // intersection is not possible here
@@ -76,7 +77,8 @@ function getTs(
  */
 function getRootsAndCoeffs(
         ps1: number[][], 
-        ps2: number[][]): { 
+        ps2: number[][],
+        ts: number[]): { 
             ris: RootIntervalExp[]; 
             getPExact: () => number[][]; } | undefined {
             
@@ -84,21 +86,11 @@ function getRootsAndCoeffs(
     if (r === undefined) { return undefined; }
     const { coeffs: pDd, errBound: pDd_, getPExact } = r;
     
-    const ris = roots(pDd, 0, 1, pDd_, getPExact);
+    const ris = roots(pDd, ts[0], ts[1], pDd_, getPExact);
 
     if (ris === undefined || ris.length === 0) { return undefined; }
 
     return { ris: ris.map(rootIntervalToExp), getPExact };
-}
-
-
-/**
- * Returns a memoized version of the given zero-argument function so that it is
- * evaluated at most once (lazy loaded).
- */
-function once<T>(fn: () => T): () => T {
-    let v: T | undefined = undefined;
-    return () => (v = v ?? fn());
 }
 
 
@@ -111,11 +103,11 @@ function once<T>(fn: () => T): () => T {
  * not possible here.
  */
 function deoverlapBoxes(
-        curve: number[][],
+        ps: number[][],
         ris: RootIntervalExp[],
         getPExact: () => number[][]): { ris: RootIntervalExp[]; boxes: number[][][][]; compensated: number } {
 
-    const boxes = ris.map(ri => getIntervalBoxDd(curve, [ri.tS, ri.tE]));
+    const boxes = ris.map(ri => getIntervalBoxDd(ps, [ri.tS, ri.tE]));
 
     let overlap = false;
     for (let i=0; i<ris.length && !overlap; i++) {
@@ -126,7 +118,9 @@ function deoverlapBoxes(
             }
         }
     }
-    if (!overlap) { return { ris, boxes, compensated: 0 }; }
+    if (!overlap) {
+        return { ris, boxes, compensated: 0 };
+    }
 
     ris = ris.flatMap(ri => refineK1(
         { t: ri.tS[1], tS: ri.tS[1], tE: ri.tE[1], multiplicity: ri.multiplicity },
@@ -171,14 +165,6 @@ function rootIntervalToDouble(
         tS, tE, 
         multiplicity: ri.multiplicity
     };
-}
-
-
-/**
- * Converts a box with expansion coordinates into one with double coordinates.
- */
-function boxExpToBox(boxExp: number[][][]): number[][] {
-    return boxExp.map(p => p.map(eEstimate));
 }
 
 

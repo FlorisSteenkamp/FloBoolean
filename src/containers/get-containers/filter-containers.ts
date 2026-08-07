@@ -11,6 +11,7 @@ import type { Container } from "../container.js";
 function filterContainers(containers: Container[]) {
     const containers_ = containers.filter(container => {
         const xs = container.xs;
+        // TODO
         if (container.xs.length === 2) {
             const _x_ = xs[0];
             if (_x_.x.kind === 1 && _x_.x.ri.multiplicity%2 === 0) {

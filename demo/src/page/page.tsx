@@ -1,7 +1,8 @@
 import * as React from 'react';
 import type { StateControl } from '../state-control/state-control.js';
 import type { ToDraw } from '../state/to-draw.js';
-import type { BooleanOp, ClickFor, PageState } from '../state/page-state.js';
+import type { BooleanOp, PageState } from '../state/page-state.js';
+import type { ClickFor } from '../state/click-for.js';
 import { useState, useRef, useEffect } from 'react';
 import { Checkbox } from '../components/simple-checkbox.js';
 import { vectors } from '../state/vectors.js';
@@ -192,6 +193,7 @@ function Page(props: Props) {
                         container: { text: 'container' },
                         loopPost: { text: 'loop' },
                         loopsPost: { text: 'loops' },
+                        _x_: { text: '_x_' },
                     }}
                     value={pageState.clickFor}
                     onChanged={onClickForChanged}
@@ -239,7 +241,7 @@ function Page(props: Props) {
                             x="0px" 
                             y="0px"
                             viewBox={toViewBoxStr(pageState.viewbox)}
-                            style={{ position: 'absolute', top: 0, left: 0, width: '1024px', height: '1024px' }}
+                            style={{ userSelect: 'none', position: 'absolute', top: 0, left: 0, width: '1024px', height: '1024px' }}
                             onMouseDown={onMouseDown(stateControl, ref)}
                             onMouseUp={onMouseUp(stateControl, ref)}
                             onMouseMove={onMouseMove(stateControl, ref, refX, refY)}

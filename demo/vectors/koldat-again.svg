@@ -1,0 +1,19 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+>
+    <!--
+        Minimal reproduction of the `completeLoop` infinite loop that occurs at
+        a large debugging container size (CONTAINER_SIZE_MULTIPLIER_FOR_DEBUGGING
+        = 2**32) but not at 2**30. Three tiny near-collinear sub-paths around
+        (305, 81) produce two containers whose oversized boxes merge, yielding a
+        2-container cycle (out #9 -> #11 -> #9 -> ...) that never returns to the
+        origin out.
+    -->
+    <path
+        class="shape"
+        d="M 305.315 81.785 C 305.072 81.620, 304.800 81.418, 304.572 81.270 Z
+           M 304.572 81.270 C 304.462 81.200, 304.513 81.232, 304.572 81.270 Z
+           M 304.404 81.163 C 301.657 79.482, 302.988 80.234, 304.404 81.163 Z"
+    />
+</svg>

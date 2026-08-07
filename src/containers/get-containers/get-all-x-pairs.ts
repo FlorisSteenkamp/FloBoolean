@@ -13,10 +13,11 @@ import { getTurnarounds } from './get-turnarounds.js';
  */
 function getAllXPairs(
         loops: Loop[],
-        minYXPairs: [_X_,_X_][],
-        expMax: number) {
+        minYXPairs: _X_[],
+        expMax: number): _X_[][] {
 
-    const xs1 = loops.map((_,idx) => minYXPairs[idx]);
+    // const xs1 = loops.map((_,idx) => [minYXPairs[idx], { ...minYXPairs[idx] }] as [_X_,_X_]);
+    const xs1 = loops.map((_,idx) => [minYXPairs[idx]] as [_X_]);
     const xs2 = getIntersections(loops, expMax);
     const xs3 = getSelfIntersections(loops);
     const xs4 = getInterfaceIntersections(loops);

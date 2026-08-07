@@ -2,8 +2,7 @@ import type { _X_ } from './-x-.js';
 import type { Loop } from '../shape/loop.js';
 import { bezierSelfIntersection } from 'flo-bezier3';
 import { toP } from '../utils/to-p.js';
-
-const eps = Number.EPSILON;
+import { eps } from 'flo-poly';
 
 
 /**
@@ -29,6 +28,7 @@ function getSelfIntersections(
             // FUTURE - fix box - must combine 2 boxes and bezierSelfIntersection must return intervals
             const ts0 = ts[0];
             const ts1 = ts[1];
+            // TODO eps
             const t0S = ts0 - eps;
             const t0E = ts0 + eps;
             const t1S = ts1 - eps;
@@ -37,9 +37,8 @@ function getSelfIntersections(
             const p = toP(ps, ts0);
 
             xs.push([
-                // FUTURE - multiplicity relevant??
-                { x: { ri: { t: t0S, tS: t0S, tE: t0E, multiplicity: 1 }, p, kind }, curve },
-                { x: { ri: { t: t1S, tS: t1S, tE: t1E, multiplicity: 1 }, p, kind }, curve }
+                { x: { ri: { t: t0S, tS: t0S, tE: t0E, multiplicity: 1 }, p, kind }, curve, next: undefined!, prev: undefined! },
+                { x: { ri: { t: t1S, tS: t1S, tE: t1E, multiplicity: 1 }, p, kind }, curve, next: undefined!, prev: undefined! }
             ]);
         }
     }

@@ -38,7 +38,7 @@ function fixBeziers(
         doSendToGrid = true) {
             
     /** The actual control point grid spacing */
-    const gridSpacing = 2**expMax * 2**(-maxBitLength);
+    const gridSpacing = 2**(expMax - maxBitLength);
 
     const sendToGrid_ = doSendToGrid
         ? sendToGrid(expMax, maxBitLength)

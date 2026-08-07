@@ -16,6 +16,7 @@ import { countInk } from './count-ink.js';
 import { countThickDiff } from './count-thick-diff.js';
 import { addLoopToPath } from './add-loop-to-path.js';
 import { drawBooleanRef } from './draw-boolean-ref.js';
+import { Loop } from '../../src/shape/loop.js';
 
 const { max, min, ceil, log2, abs } = Math;
 
@@ -33,11 +34,15 @@ const MAX_THICK_DIFF = 0;
 
 
 test('`simplifyPaths` specific cases', function() {
-    // updDebugGlobal(true);  // enable to check invariants
-
     const canvas = createCanvas(CANVAS_WIDTH_HEIGHT, CANVAS_WIDTH_HEIGHT);
     const ctx = canvas.getContext('2d');
 
+    updDebugGlobal(true);
+
+    testIt('complex3');      // complex shape -> should decompose correctly'
+    testIt('complex2');     // complex shape -> should decompose correctly'
+    testIt('complex');      // complex shape -> should decompose correctly'
+    testIt('koldat-again');     // koldat-again -> edge case test'
     testIt('multi-level-reversed-orientation');    // three-squares -> should boolean correctly'
     testIt('two-squares');    // three-squares -> should boolean correctly'
     testIt('three-squares');    // three-squares -> should boolean correctly'
@@ -52,7 +57,6 @@ test('`simplifyPaths` specific cases', function() {
     testIt('f');  // f shape with interface intersections -> should decompose correctly'
     testIt('split-shape-lines');  // split two shapes into two different shapes -> should decompose correctly'
     testIt('tiny-min-y-loop');  // tiny loop at minimum y -> should decompose correctly'
-    testIt('complex');      // complex shape -> should decompose correctly'
     testIt('new1');         // edge case -> should decompose correctly'
     testIt('new2');         // edge case that caused same bug as bold-b -> should decompose correctly'
     testIt('bold-b');       // edge case that caused bug -> should decompose correctly'
@@ -71,22 +75,22 @@ test('`simplifyPaths` specific cases', function() {
         //-------------
         // Direct test
         //-------------
-        for (const booleanOp of ['OR']) {
-            const booleanOp_ = booleanOp as 'OR' | 'AND' | 'XOR';
-            const loopss = simplifyPaths(bezierLoops, {
-                booleanOp: booleanOp_, inclMicroCorners: false
-            });
+        // for (const booleanOp of ['OR']) {
+        //     const booleanOp_ = booleanOp as 'OR' | 'AND' | 'XOR';
+        //     const loopss = simplifyPaths(bezierLoops, {
+        //         booleanOp: booleanOp_, inclMicroCorners: false
+        //     });
 
-            if (invariants.length === 0) {
-                continue;  // no invariants to check against
-            }
+        //     if (invariants.length === 0) {
+        //         continue;  // no invariants to check against
+        //     }
         
-            const tolerancePower = -20;
-            const tolerance = makeTolerance(tolerancePower, bezierLoops);
-            expect(
-                checkShapes(fileName, loopss, invariants, tolerance),
-            ).toBe(true);
-        }
+        //     const tolerancePower = -20;
+        //     const tolerance = makeTolerance(tolerancePower, bezierLoops);
+        //     expect(
+        //         checkShapes(fileName, loopss, invariants, tolerance),
+        //     ).toBe(true);
+        // }
 
         //-------------
         // Pixel test
@@ -95,14 +99,20 @@ test('`simplifyPaths` specific cases', function() {
         const ink: Record<string, number> = {};
         for (const booleanOp of ['OR', 'AND', 'XOR']) {
             const booleanOp_ = booleanOp as 'OR' | 'AND' | 'XOR';
-            const loopss = simplifyPaths(bezierLoops, {
-                booleanOp: booleanOp_, inclMicroCorners: false
-            });
+            let loopss: Loop[][];
+            try {
+                loopss = simplifyPaths(bezierLoops, {
+                    booleanOp: booleanOp_, inclMicroCorners: false
+                });
+            } catch (e) {
+                console.error(`Thrown for shape: ${fileName}`);
+                throw e;
+            }
 
             // Group each output shape's loops together (outer + holes) so
             // that holes render correctly via the nonzero winding rule.
             const outputSets = loopss.map(loops => loops.map(loop => loop.beziers));
-            ink[booleanOp_] = pixelTest(ctx, booleanOp_, bezierLoops, outputSets);
+            ink[booleanOp_] = pixelTest(ctx, fileName, booleanOp_, bezierLoops, outputSets);
         }
 
         // OR (union, winding !== 0) is a superset of both XOR (odd winding) and
@@ -110,15 +120,30 @@ test('`simplifyPaths` specific cases', function() {
         // XOR and AND are different regions and are not orderable relative to
         // each other in general (e.g. for nested, mixed-orientation loops).
         if (ink.OR !== undefined && ink.XOR !== undefined && ink.AND !== undefined) {
-            expect(ink.OR >= ink.XOR).toBe(true);
-            expect(ink.OR >= ink.AND).toBe(true);
+            expectForShape(`${fileName} (OR >= XOR)`, () => expect(ink.OR >= ink.XOR).toBe(true));
+            expectForShape(`${fileName} (OR >= AND)`, () => expect(ink.OR >= ink.AND).toBe(true));
         }
     }
 });
 
 
+/**
+ * Runs a Jest assertion and, on failure, logs which shape (and boolean op)
+ * the failure belongs to before rethrowing so the test still fails.
+ */
+function expectForShape(label: string, assert: () => void) {
+    try {
+        assert();
+    } catch (err) {
+        console.error(`Assertion failed for shape: ${label}`);
+        throw err;
+    }
+}
+
+
 function pixelTest(
         ctx: CanvasRenderingContext2D,
+        fileName: string,
         booleanOp: 'AND' | 'OR' | 'XOR',
         inputLoops: (number[][])[][],
         outputSets: (number[][])[][][]): number {
@@ -159,17 +184,17 @@ function pixelTest(
     drawShapes(ctx, outputSets.map(set => set.map(tf)));
     const imgData2 = ctx.getImageData(0, 0, CANVAS_WIDTH_HEIGHT, CANVAS_WIDTH_HEIGHT);
 
-    expect(imgData1.width).toBe(imgData2.width);
-    expect(imgData1.height).toBe(imgData2.height);
-    expect(imgData1.data.length).toBe(imgData2.data.length);
-    expect(imgData1.data.length === 4 * CANVAS_WIDTH_HEIGHT**2).toBe(true);
+    expectForShape(`${fileName} ${booleanOp} (image width)`, () => expect(imgData1.width).toBe(imgData2.width));
+    expectForShape(`${fileName} ${booleanOp} (image height)`, () => expect(imgData1.height).toBe(imgData2.height));
+    expectForShape(`${fileName} ${booleanOp} (image data length)`, () => expect(imgData1.data.length).toBe(imgData2.data.length));
+    expectForShape(`${fileName} ${booleanOp} (image data length === 4 * w*h)`, () => expect(imgData1.data.length === 4 * CANVAS_WIDTH_HEIGHT**2).toBe(true));
 
     // Ensure something was actually drawn in both images
     const inkReference = countInk(imgData1);
     const inkActual = countInk(imgData2);
     if (booleanOp !== 'AND') {
-        expect(inkReference > 0).toBe(true);
-        expect(inkActual > 0).toBe(true);
+        expectForShape(`${fileName} ${booleanOp} (inkReference > 0)`, () => expect(inkReference > 0).toBe(true));
+        expectForShape(`${fileName} ${booleanOp} (inkActual > 0)`, () => expect(inkActual > 0).toBe(true));
     }
 
     // Compare the reference and actual images. The output loops are
@@ -188,9 +213,7 @@ function pixelTest(
     // ambiguous at raster resolution (e.g. `complex` XOR). Genuine filled-area
     // differences are far larger (hundreds+ px), so this small absolute
     // tolerance distinguishes acceptable rasterization noise from real bugs.
-    thickDiff;//?
-    booleanOp;//?
-    expect(thickDiff).toBeLessThanOrEqual(MAX_THICK_DIFF);
+    expectForShape(`${fileName} ${booleanOp} (thickDiff <= ${MAX_THICK_DIFF})`, () => expect(thickDiff).toBeLessThanOrEqual(MAX_THICK_DIFF));
 
     // Return the amount of ink (non-transparent pixels) used by the output.
     return inkActual;

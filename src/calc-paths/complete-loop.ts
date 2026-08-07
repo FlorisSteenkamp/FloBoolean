@@ -33,7 +33,21 @@ function completeLoop(
     let additionalBezier: number[][] | undefined;
 
     const outs: Out[] = [];  // For debugging only
+    let guard = 0;  // TEMP debug guard
     do {
+        if (++guard > 50_000) {
+            const cycle = outs.slice(-6);
+            const tail = cycle.map(o => o.idx).join(' -> ');
+            const distinct = new Set(cycle.map(o => o.container));
+            const boxes = cycle
+                .map(o => `#${o.idx}: box=${JSON.stringify(o.container.box)}`)
+                .join('\n  ');
+            throw new Error(
+                `completeLoop infinite loop. origOut.idx=${origOut.idx}, ` +
+                `origOut.orientation=${origOut.orientation}, last outs: ${tail}\n` +
+                `distinct containers among cycle outs: ${distinct.size}\n  ${boxes}`
+            );
+        }
         outs.push(outToUse);  // for debugging only
 
         takenOuts.add(outToUse);
