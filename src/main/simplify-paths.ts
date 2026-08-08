@@ -12,11 +12,16 @@ import { normalizeLoops } from '../shape/normalize/normalize-loop.js';
 import { getMaxCoordinate } from '../shape/normalize/get-max-coordinate.js';
 import { addDebugInfo2 } from './add-debug-info-2.js';
 import { loopFromOut } from './loop-from-out.js';
-// import { removeAllMicroCorners } from './remove-micro-corners.js';
 import { getMinYXpair } from '../get-critical-points/get-min-y-x-pair.js';
 import { filterLoopsByMinAllowedArea } from './filter-loops-by-min-area.js';
 import { completePaths } from './complete-paths.js';
+import { timeFunctionCalls } from '../utils/time-function-call.js';
 import { reverseShapeOrientation } from '../shape/reverse-shape-orientation.js';
+
+import { getAllXPairs } from '../containers/get-containers/get-all-x-pairs.js';
+import { combineOverlappingContainers } from '../containers/get-containers/combine-overlapping-containers/combine-overlapping-containers.js';
+import { assignBigBoxesToContainers } from '../containers/get-containers/assign-big-boxes-to-containers.js';
+import { orderInOuts } from '../containers/order-in-outs.js';
 
 
 const { ceil, log2 } = Math;
@@ -45,10 +50,9 @@ function simplifyPaths(
     // TODO - remove bitlength requirements??
 
     const { minYXPairs, loops, expMax } = prepLoops(bezierLoops);
-    const containers = getContainers(loops, minYXPairs, expMax);
+    getContainers(loops, minYXPairs, expMax);
 
     const {
-        // inclMicroCorners = true,
         minLoopArea = (2**(expMax - 16))**2,
         forceOrientationNegative = false,
         booleanOp = "OR"
@@ -63,39 +67,52 @@ function simplifyPaths(
     //----------------------------------------
     // Create loops for all `outSets`
     //----------------------------------------
-    const loopss = outSets.map(outSet => {
-        const outerLoopOrientation = outSet[0].out.orientation;
 
-        return outSet.map(({ out, depth }, idx) => 
-            loopFromOut(out, outerLoopOrientation, idx, depth, forceOrientationNegative)
-        );
-    });
+    // const minAreaFilter = filterLoopsByMinAllowedArea(minLoopArea);
+    const minAreaFilter = timeFunctionCalls(filterLoopsByMinAllowedArea(minLoopArea));
 
-    const loopss_ = filterLoopsByMinAllowedArea(minLoopArea, loopss);
+    const loopss = minAreaFilter(
+        outSets.map(outSet => {
+            const outerLoopOrientation = outSet[0].out.orientation;
+
+            return outSet.map(({ out, depth }, idx) => 
+                loopFromOut(out, outerLoopOrientation, idx, depth, forceOrientationNegative)
+            );
+        })
+    );
     
-    //-------------------------------------
-    // Remove "micro corners" if requested
-    //-------------------------------------
-    // const _loopss_ = inclMicroCorners
-    //     ? loopss_
-    //     : removeAllMicroCorners(loopss_, containers);
+    addDebugInfo2(loopss);  // adds debug info used within __tests__ (and the demo)
 
-    // addDebugInfo2(_loopss_);  // adds debug info used within __tests__ (and the demo)
-    addDebugInfo2(loopss_);  // adds debug info used within __tests__ (and the demo)
-
-    console.log(structuredClone(getContainers.getStats()));
+    // console.log(structuredClone(getContainers.getStats()));
     // console.log(structuredClone(normalizeLoops.getStats()));
     // console.log(structuredClone(completePaths.getStats()));
-    getContainers.resetStats();
-    normalizeLoops.resetStats();
-    completePaths.resetStats();
+    // console.log(structuredClone(minAreaFilter.getStats()));
+    // getContainers.resetStats();
+    // normalizeLoops.resetStats();
+    // completePaths.resetStats();
+    // minAreaFilter.resetStats();
 
     // normalizeLoops -> 1.3 ms
-    // getContainers  -> 51.1 ms
+    // getContainers  -> 51.1 ms  (improve)
     // completePaths  -> 0.5 ms
+    // minAreaFilter  -> 1.1 ms
 
-    // return _loopss_;
-    return loopss_;
+    // `getContainers`
+    // console.log(structuredClone(getAllXPairs.getStats()));
+    // console.log(structuredClone(combineOverlappingContainers.getStats()));
+    // console.log(structuredClone(assignBigBoxesToContainers.getStats()));
+    // console.log(structuredClone(orderInOuts.getStats()));
+    // getAllXPairs.resetStats();
+    // combineOverlappingContainers.resetStats();
+    // assignBigBoxesToContainers.resetStats();
+    orderInOuts.resetStats();
+
+    // getAllXPairs -> 11.9 ms  (improve)
+    // combineOverlappingContainers -> 1.8 ms  (improve)
+    // assignBigBoxesToContainers -> 0.4 ms
+    // orderInOuts -> 36.2 ms  (improve)
+
+    return loopss;
 }
 
 

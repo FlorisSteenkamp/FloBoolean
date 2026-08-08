@@ -11,7 +11,6 @@ interface Props<T extends string = any> {
 
 function SimpleSelect_FromObj<T extends string>(props: Props<T>) {
     const { styles, options, onChanged } = props;
-    const idStr = Math.random().toString();
 
     function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
         if (!onChanged) { return; } 

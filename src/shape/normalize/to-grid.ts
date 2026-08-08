@@ -1,5 +1,7 @@
 import { reduceSignificand } from "big-float-ts";
 
+const { floor, log2, abs } = Math;
+
 
 /**
  * Sends a onto a fixed-spacing grid with 2**significantFigures divisions. Each
@@ -14,7 +16,7 @@ function toGrid(
         expMax: number,
         significantFigures: number): number {
 
-    const expA = Math.floor(Math.log2(Math.abs(a)));
+    const expA = floor(log2(abs(a)));
     const expDif = expMax - expA;
     const newSig = significantFigures - expDif + 1;
     

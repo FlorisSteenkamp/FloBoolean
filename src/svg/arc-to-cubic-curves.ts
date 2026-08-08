@@ -2,6 +2,8 @@
 // TODO - a work in progress - currently using a different (less accurate?) 
 // function.
 
+const { sin, cos, PI } = Math;
+
 
 /** 
  * @hidden
@@ -38,8 +40,8 @@ function rotate(
         y: number, 
         angleRad: number): { x: number, y: number } {
 
-    const X = x * Math.cos(angleRad) - y * Math.sin(angleRad);
-    const Y = x * Math.sin(angleRad) + y * Math.cos(angleRad);
+    const X = x * cos(angleRad) - y * sin(angleRad);
+    const Y = x * sin(angleRad) + y * cos(angleRad);
     return {x: X, y: Y};
 }
 
@@ -48,7 +50,7 @@ function rotate(
  * @param degrees 
  */
 function degToRad(degrees: number) {
-    return (Math.PI * degrees) / 180;
+    return (PI * degrees) / 180;
 }
 
 

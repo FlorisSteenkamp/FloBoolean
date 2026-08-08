@@ -20,6 +20,8 @@ import { onMouseDown } from './on-mouse-down.js';
 import { drawElements } from './draw-elements.js';
 import { lazyLoadDeduced } from './lazy-load-deduced.js';
 
+const { min } = Math;
+
 
 const toDrawCheckboxStyles = { 
     div: {
@@ -78,7 +80,7 @@ function Page(props: Props) {
         const [vx, vy] = pageState.viewbox[0];
         const vw = pageState.viewbox[1][0] - vx;
         const vh = pageState.viewbox[1][1] - vy;
-        const scale = Math.min(W / vw, W / vh);
+        const scale = min(W / vw, W / vh);
         const offX = (W - vw * scale) / 2;
         const offY = (W - vh * scale) / 2;
         const pxLoops = loops.map(loop => loop.map(bez => bez.map(

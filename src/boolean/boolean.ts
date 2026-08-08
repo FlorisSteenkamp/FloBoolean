@@ -35,7 +35,6 @@ function boolean(
 
     const simplifyOptions: SimplifyOptions = {
         booleanOp,
-        // inclMicroCorners: false,
         minLoopArea
     };
 

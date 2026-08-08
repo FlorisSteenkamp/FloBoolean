@@ -3,11 +3,8 @@ import type { Debug } from '../debug/debug.js';
 import type { BezierPiece } from 'flo-bezier3';
 import type { In, Out } from '../containers/in-out/in-out.js';
 import type { Loop } from '../shape/loop.js';
-// import { closestPointOnBezierCertified } from 'flo-bezier3';
-// import { mid } from 'flo-poly';
 import { getNextExit } from './get-next-exit.js';
 import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
-// import { bezierPieceToBezier } from './bezier-piece-to-bezier.js';
 
 
 /** 
@@ -30,9 +27,7 @@ function completeLoop(
 
     // Move immediately to the outgoing start of the loop
     let outToUse: Out = origOut;
-    // let additionalBezier: number[][] | undefined;
 
-    // const outs: Out[] = [];  // For debugging only
     // let guard = 0;  // TEMP debug guard
     do {
         // if (++guard > 50_000) {  // TODO - remove guard eventually
@@ -48,7 +43,6 @@ function completeLoop(
         //         `distinct containers among cycle outs: ${distinct.size}\n  ${boxes}`
         //     );
         // }
-        // outs.push(outToUse);  // for debugging only
 
         takenOuts.add(outToUse);
         // Every curve threaded through this loop belongs to this component, so
@@ -63,43 +57,14 @@ function completeLoop(
 
         bezierPieces.push(...beziersToNextContainer);
 
-        // const nextExit = getNextExit(
         outToUse = getNextExit(
             nextIn!, origOut,
             additionalOutsToCheck, takenOuts
         );
 
-        // ({ outToUse, additionalBezier } = nextExit);
-        // outToUse = nextExit;
-
-
-        // if (additionalBezier !== undefined) {
-        //     const lastBezPiece = bezierPieces[bezierPieces.length - 1];
-        //     const lastBez = bezierPieceToBezier(lastBezPiece);
-        //     const t = mid(closestPointOnBezierCertified(lastBez, additionalBezier[0])[0].ri);
-        //     const inBez_: BezierPiece = { ps: lastBez, ts: [0,t] };
-        //     bezierPieces.pop();
-        //     bezierPieces.push(inBez_);
-        //     bezierPieces.push({ ps: additionalBezier, ts: [0,1] });
-        // }
     } while (outToUse !== origOut);
 
-    // if (typeof _debug_ !== 'undefined' && !!_debug_.verbose) { logIos(outs); }
-
     return { bezierPieces, additionalOutsToCheck };
-}
-
-
-/** For debugging only */
-function logIos(ios: Out[]) {
-    const strs: string[] = [];
-    const params: string[] = [];
-    for (let io of ios) {
-        params.push(io.dir === 1 ? "color: blue;" : "color: red");
-        strs.push(`%c${io.idx}`);
-    }
-
-    // console.log('Taken ios: ' + strs.join(' '), ...params);
 }
 
 

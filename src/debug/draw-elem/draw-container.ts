@@ -1,6 +1,8 @@
 import { drawFs } from 'flo-draw';
 import { Container } from '../../containers/container.js';
 
+const { round, log2 } = Math;
+
 
 function drawContainer(
         g: SVGGElement,
@@ -11,7 +13,7 @@ function drawContainer(
 
     const { box, bigBox } = container;
     const xs = container.xs;
-    const scale = 2**(Math.round(Math.log2(container.box[1][0] - container.box[0][0])))*(2**-1);
+    const scale = 2**(round(log2(container.box[1][0] - container.box[0][0])))*(2**-1);
 
     // intersections
     const $circles: SVGCircleElement[] = [];

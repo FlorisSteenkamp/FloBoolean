@@ -3,6 +3,9 @@
 // arc (easily approximated by a cubic bezier) and apply transformations as 
 // required
 
+const { abs, sqrt, asin, sin, cos, tan, PI } = Math;
+
+
 /** 
  * @hidden
  * Get an array of corresponding cubic bezier curve parameters for given arc 
@@ -44,7 +47,7 @@ function arcToCubicCurves(
         let h = (x * x) / (r1 * r1) + (y * y) / (r2 * r2);
 
         if (h > 1) {
-            h = Math.sqrt(h);
+            h = sqrt(h);
             r1 = h * r1;
             r2 = h * r2;
         }
@@ -56,52 +59,52 @@ function arcToCubicCurves(
         const left = r1Pow * r2Pow - r1Pow * y * y - r2Pow * x * x;
         const right = r1Pow * y * y + r2Pow * x * x;
 
-        const k = sign * Math.sqrt(Math.abs(left/right));
+        const k = sign * sqrt(abs(left/right));
 
         cx = k * r1 * y / r2 + (x1 + x2) / 2;
         cy = k * -r2 * x / r1 + (y1 + y2) / 2;
 
-        f1 = Math.asin( Number(((y1 - cy) / r2).toFixed(9)) );
-        f2 = Math.asin( Number(((y2 - cy) / r2).toFixed(9)) );
+        f1 = asin( Number(((y1 - cy) / r2).toFixed(9)) );
+        f2 = asin( Number(((y2 - cy) / r2).toFixed(9)) );
 
         if (x1 < cx) {
-            f1 = Math.PI - f1;
+            f1 = PI - f1;
         }
         if (x2 < cx) {
-            f2 = Math.PI - f2;
+            f2 = PI - f2;
         }
 
         if (f1 < 0) {
-            f1 = Math.PI * 2 + f1;
+            f1 = PI * 2 + f1;
         }
         if (f2 < 0) {
-            f2 = Math.PI * 2 + f2;
+            f2 = PI * 2 + f2;
         }
 
         if (sweepFlag && f1 > f2) {
-            f1 = f1 - Math.PI * 2;
+            f1 = f1 - PI * 2;
         }
         if (!sweepFlag && f2 > f1) {
-            f2 = f2 - Math.PI * 2;
+            f2 = f2 - PI * 2;
         }
       }
 
       let df = f2 - f1;
 
-      if (Math.abs(df) > (Math.PI * 120 / 180)) {
+      if (abs(df) > (PI * 120 / 180)) {
         const f2old = f2;
         const x2old = x2;
         const y2old = y2;
 
         if (sweepFlag && f2 > f1) {
-            f2 = f1 + (Math.PI * 120 / 180) * (1);
+            f2 = f1 + (PI * 120 / 180) * (1);
         }
         else {
-            f2 = f1 + (Math.PI * 120 / 180) * (-1);
+            f2 = f1 + (PI * 120 / 180) * (-1);
         }
 
-        x2 = cx + r1 * Math.cos(f2);
-        y2 = cy + r2 * Math.sin(f2);
+        x2 = cx + r1 * cos(f2);
+        y2 = cy + r2 * sin(f2);
         params = arcToCubicCurves(
             x2, y2, x2old, y2old, 
             r1, r2, angle, 0, 
@@ -111,11 +114,11 @@ function arcToCubicCurves(
 
     df = f2 - f1;
 
-    const c1 = Math.cos(f1);
-    const s1 = Math.sin(f1);
-    const c2 = Math.cos(f2);
-    const s2 = Math.sin(f2);
-    const t = Math.tan(df / 4);
+    const c1 = cos(f1);
+    const s1 = sin(f1);
+    const c2 = cos(f2);
+    const s2 = sin(f2);
+    const t = tan(df / 4);
     const hx = 4 / 3 * r1 * t;
     const hy = 4 / 3 * r2 * t;
 
@@ -166,8 +169,8 @@ function rotate(
         y: number, 
         angleRad: number): { x: number, y: number } {
 
-    const X = x * Math.cos(angleRad) - y * Math.sin(angleRad);
-    const Y = x * Math.sin(angleRad) + y * Math.cos(angleRad);
+    const X = x * cos(angleRad) - y * sin(angleRad);
+    const Y = x * sin(angleRad) + y * cos(angleRad);
     
     return {x: X, y: Y};
 }
@@ -178,7 +181,7 @@ function rotate(
  * @param degrees 
  */
 function degToRad(degrees: number) {
-    return (Math.PI * degrees) / 180;
+    return (PI * degrees) / 180;
 }
 
 

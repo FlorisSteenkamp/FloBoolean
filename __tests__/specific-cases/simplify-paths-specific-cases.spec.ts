@@ -78,7 +78,7 @@ test('`simplifyPaths` specific cases', function() {
         // for (const booleanOp of ['OR']) {
         //     const booleanOp_ = booleanOp as 'OR' | 'AND' | 'XOR';
         //     const loopss = simplifyPaths(bezierLoops, {
-        //         booleanOp: booleanOp_, inclMicroCorners: false
+        //         booleanOp: booleanOp_
         //     });
 
         //     if (invariants.length === 0) {
@@ -102,7 +102,7 @@ test('`simplifyPaths` specific cases', function() {
             let loopss: Loop[][];
             try {
                 loopss = simplifyPaths(bezierLoops, {
-                    booleanOp: booleanOp_//, inclMicroCorners: false
+                    booleanOp: booleanOp_
                 });
             } catch (e) {
                 console.error(`Thrown for shape: ${fileName}`);
@@ -198,7 +198,7 @@ function pixelTest(
     }
 
     // Compare the reference and actual images. The output loops are
-    // reconstructed (with recomputed bezier boundaries / micro-corners) so
+    // reconstructed (with recomputed bezier boundaries) so
     // their edges can land up to a pixel away from the raw input-loop edges.
     // We therefore ignore purely 1px-thick boundary differences (anti-aliasing
     // / rasterization) by eroding the per-pixel difference mask: a differing

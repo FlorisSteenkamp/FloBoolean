@@ -1,4 +1,7 @@
 
+const { sin, cos, PI } = Math;
+
+
 const C = 0.551915024494;
 
 
@@ -46,8 +49,8 @@ function rotateDegrees(θ: number) {
 
 
 function rotateRad(θ: number, p: number[]) {
-    const cosθ = Math.cos(θ);
-    const sinθ = Math.sin(θ);
+    const cosθ = cos(θ);
+    const sinθ = sin(θ);
     const M = [
         [cosθ, -sinθ],
         [sinθ,  cosθ]
@@ -68,12 +71,12 @@ function applyMatrix(M: number[][]) {
 
 
 function degToRad(deg: number) {
-    return deg * (Math.PI / 180);
+    return deg * (PI / 180);
 }
 
 
 function radToDeg(deg: number) {
-    return deg * (180 / Math.PI);
+    return deg * (180 / PI);
 }
 
 

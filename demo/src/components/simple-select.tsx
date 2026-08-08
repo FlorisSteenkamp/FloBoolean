@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { useState, useRef, useEffect } from 'react';
 
+const { min, max } = Math;
+
 
 interface Props {
     readonly label?: string;
@@ -51,7 +53,7 @@ function SimpleSelect(props: Props) {
     }, [open, activeIndex]);
 
     function openDropdown() {
-        setActiveIndex(Math.max(0, options.indexOf(value)));
+        setActiveIndex(max(0, options.indexOf(value)));
         setOpen(true);
     }
 
@@ -77,11 +79,11 @@ function SimpleSelect(props: Props) {
         switch (e.key) {
             case 'ArrowDown':
                 e.preventDefault();
-                setActiveIndex(i => Math.min(options.length - 1, i + 1));
+                setActiveIndex(i => min(options.length - 1, i + 1));
                 break;
             case 'ArrowUp':
                 e.preventDefault();
-                setActiveIndex(i => Math.max(0, i - 1));
+                setActiveIndex(i => max(0, i - 1));
                 break;
             case 'Home':
                 e.preventDefault();

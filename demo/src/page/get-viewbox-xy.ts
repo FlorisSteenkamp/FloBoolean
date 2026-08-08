@@ -1,4 +1,7 @@
 
+const { min } = Math;
+
+
 function getViewboxXY(
         svg$: SVGSVGElement,
         viewbox: number[][], 
@@ -17,7 +20,7 @@ function getViewboxXY(
     // letterbox margins on the longer axis. Invert that same mapping so the
     // returned coordinate matches the actual mouse position for non-square
     // viewBoxes too.
-    const scale = Math.min(pixelsW / viewboxW, pixelsH / viewboxH);
+    const scale = min(pixelsW / viewboxW, pixelsH / viewboxH);
     const offsetX = (pixelsW - viewboxW * scale) / 2;
     const offsetY = (pixelsH - viewboxH * scale) / 2;
 

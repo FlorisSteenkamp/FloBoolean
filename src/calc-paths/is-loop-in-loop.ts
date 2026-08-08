@@ -1,9 +1,12 @@
 import { roots } from 'flo-poly';
-import { toPowerBasis, tangent, evalDeCasteljau } from 'flo-bezier3';
+import { toPowerBasis, tangent } from 'flo-bezier3';
 import { toUnitVector, translate } from 'flo-vector2d';
 import { getBoundingBox$ } from '../geometry/get-bounding-box-.js';
 import { getShapeBounds } from './get-shape-bounds.js';
 import { squares } from 'squares-rng';
+import { toP } from '../utils/to-p.js';
+
+const { abs } = Math;
 
 
 // FUTURE - remove delta; probably not necessary
@@ -42,7 +45,7 @@ function isLoopInLoop(
         const idx = squares(i+1000)%loop1.length;
 
         const ps = loop1[idx];
-        const p = evalDeCasteljau(ps, t);
+        const p = toP(ps, t);
 
         const r = f(loop1, loop2, p);
         
@@ -148,13 +151,13 @@ function getAxisAlignedRayLoopIntersections(
         for (let i=0; i<ts_.length; i++) {
             const t = ts_[i];
 
-            if (Math.abs(t) < DELTA || Math.abs(t-1) < DELTA) {
+            if (abs(t) < DELTA || abs(t-1) < DELTA) {
                 // We don't know the exact number of intersections due to
                 // floating point arithmetic. 
                 return undefined;
             }
             
-            const p_ = evalDeCasteljau(translatedPs,t);
+            const p_ = toP(translatedPs,t);
             if (( dirIsDecreasing && p[axis] >= p_[axis]) || 
                 (!dirIsDecreasing && p[axis] <= p_[axis])) {
 
@@ -170,8 +173,8 @@ function getAxisAlignedRayLoopIntersections(
         if (ts.length === 1 || ts.length === 3) {
             for (const t of ts) {
                 const tan = toUnitVector(tangent(ps, t));
-                if (((dir === 'left' || dir === 'right') && Math.abs(tan[1]) < DELTA) ||
-                    ((dir === 'down' || dir === 'up'   ) && Math.abs(tan[0]) < DELTA)) {
+                if (((dir === 'left' || dir === 'right') && abs(tan[1]) < DELTA) ||
+                    ((dir === 'down' || dir === 'up'   ) && abs(tan[0]) < DELTA)) {
                     
                     // We don't know the exact number of intersections due to
                     // floating point arithmetic

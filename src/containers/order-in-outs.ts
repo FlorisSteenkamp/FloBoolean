@@ -2,6 +2,8 @@ import type { Container } from "./container.js";
 import type { Mutable } from "../utils/mutable.js";
 import type { InOut } from "./in-out/in-out.js";
 import { compareInOut } from "./get-container-in-outs/get-in-outs-via-sides/compare-in-out.js";
+import { timeFunctionCalls } from "../utils/time-function-call.js";
+import { getInOutsViaCrossing } from './get-container-in-outs/get-in-outs-via-crossing/get-in-outs-via-crossing.js';
 
 
 /**
@@ -11,15 +13,17 @@ import { compareInOut } from "./get-container-in-outs/get-in-outs-via-sides/comp
  * 
  * @param container
  */
-function orderInOuts(
+const orderInOuts = timeFunctionCalls(function orderInOuts(
         container: Container) {
 
     const inOuts = container.inOuts;
+    // getInOutsViaCrossing
 
-    
+    // console.log(2);
+    // inOuts.sort(compareInOut);
     if (inOuts.length > 2) {
         inOuts.sort(compareInOut);
-        // cyclicOrder(inOuts, cyclicCompareInOut);
+        // console.log(inOuts.length);
     } else {
         // TODO - investigate a simpler method?
         let isTopMost = false;
@@ -40,7 +44,7 @@ function orderInOuts(
 
         prevInOut = inOut;
     }
-}
+});
 
 
 export { orderInOuts }

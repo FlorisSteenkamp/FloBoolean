@@ -15,7 +15,7 @@ import { numberInOuts } from './number-in-outs.js';
 import { MAX_BIT_LENGTH } from '../../main/max-bitlength.js';
 import { orderInOuts } from '../order-in-outs.js';
 import { getAllXPairs } from './get-all-x-pairs.js';
-import { getBigBox } from '../get-big-box.js';
+import { assignBigBoxesToContainers } from './assign-big-boxes-to-containers.js';
 import { timeFunctionCalls } from '../../utils/time-function-call.js';
 
 
@@ -62,10 +62,11 @@ const getContainers = timeFunctionCalls(function getContainers(
         (container as Mutable<Container>).inOuts = getInOutsOfContainer(container);
     }
 
-    assignBigBoxesToContainers(containers, expMax);  // TODO
+    assignBigBoxesToContainers(containers, expMax);
 
     numberInOuts(containers);
     connectContainerInOuts(containers);
+
     containers.forEach(orderInOuts);
 
     // containers = filterContainers(containers);
@@ -76,26 +77,6 @@ const getContainers = timeFunctionCalls(function getContainers(
 
     return containers;
 });
-
-
-function assignBigBoxesToContainers(
-        containers: Container[],
-        expMax: number) {
-
-    for (const container of containers) {
-        const [[minX, minY], [maxX, maxY]] = container.box;
-        const c = [(minX + maxX)/2, (minY + maxY)/2];
-        
-        const rects = [
-            ...container.xs.map(x => x!.next!.container!.box),
-            ...container.xs.map(x => x!.prev!.container!.box),
-        ];
-        
-        const bigBox = getBigBox(expMax, rects, c);
-        
-        (container as Mutable<Container>).bigBox = bigBox;
-    }
-}
 
 
 /**

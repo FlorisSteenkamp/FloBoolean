@@ -1,12 +1,17 @@
 import type { Loop } from '../shape/loop.js';
-import type { Out } from '../containers/in-out/in-out.js';
+import type { In, Out } from '../containers/in-out/in-out.js';
 import type { BezierPiece } from 'flo-bezier3';
 import type { _X_ } from '../get-critical-points/-x-.js';
+import type { Mutable } from '../utils/mutable.js';
 import { createRootInOut } from "./create-root-in-out.js";
 import { getTightestContainingLoop } from '../calc-paths/get-tightest-containing-loop.js';
 import { getOutermostOut } from '../calc-paths/get-outermost-in-and-out.js';
+import { getBeziersToNextContainer } from '../calc-paths/get-beziers-to-next-container.js';
+import { getWindingNumber } from '../shape/get-winding-number.js';
 import { completePath } from '../calc-paths/complete-path.js';
 import { timeFunctionCalls } from '../utils/time-function-call.js';
+
+const { sign } = Math;
 
 
 const completePaths = timeFunctionCalls(function completePaths(

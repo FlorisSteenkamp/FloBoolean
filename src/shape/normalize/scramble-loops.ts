@@ -1,6 +1,8 @@
 import { bitLength } from 'big-float-ts';
 import { toGrid } from './to-grid.js';
 
+const { random } = Math;
+
 
 /**
  * For testing purposes only - not used in the actual algorithm
@@ -24,7 +26,7 @@ function scrambleLoops(
                 let mbl = 0;
                 while (true) {
                     if (++ii > 10) { break; }
-                    c_ = (c + Math.random()) * (1 + ((Math.random()-0.7) * mult));
+                    c_ = (c + random()) * (1 + ((random()-0.7) * mult));
                     c_ = toGrid(c_, expMax, maxBitLength);
                     const bl = bitLength(c_);
                     if (bl > mbl) {

@@ -12,7 +12,6 @@ interface Props {
 
 const Select = memo(function Select(props: Props) {
     const { styles, options, onChanged, value } = props;
-    const idStr = Math.random().toString();
 
     function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
         if (!onChanged) { return; } 

@@ -1,5 +1,7 @@
 import { getShapeBounds } from "../../../src/calc-paths/get-shape-bounds.js";
 
+const { max } = Math;
+
 
 function getViewBoxForShape(bezierLoops: number[][][][]) {
     let minX_ = Infinity;
@@ -18,7 +20,7 @@ function getViewBoxForShape(bezierLoops: number[][][][]) {
     const height = maxY_-minY_;
 
     // The margin around the shape
-    const c = Math.max(width, height) * 0.05;
+    const c = max(width, height) * 0.05;
 
     return [[minX_-c, minY_-c], [maxX_+c, maxY_+c]];
 }
@@ -43,7 +45,7 @@ function getViewBoxForShapes(bezierLoopss: number[][][][][]) {
     const height = maxY_-minY_;
 
     // The margin around the shape
-    const c = Math.max(width, height) * 0.05;
+    const c = max(width, height) * 0.05;
 
     return [[minX_-c, minY_-c], [maxX_+c, maxY_+c]];
 }

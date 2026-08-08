@@ -1,7 +1,6 @@
 import type { StateControl } from '../state-control/state-control.js';
 import type { ClickFor } from '../state/click-for.js';
 import { logNearestContainer } from './log-nearest-container.js';
-// import { logNearestInOut } from './log-nearest-in-out.js';
 import { logNearestX } from './log-nearest-x.js';
 import { logNearestBezierPre, logLooseBb_, logTightBb_, logBHull_ } from './log-bbs.js';
 import { logNearestBezierPost } from './log-nearest-bezier-post.js';
@@ -55,7 +54,6 @@ function onClick(
             tightBoundingBox_ : logTightBb_,
             boundingHull_     : logBHull_,
             // loopset           : logNearestLoopSet,
-            // inOut             : logNearestInOut
             _x_               : logNearestX
         }
 

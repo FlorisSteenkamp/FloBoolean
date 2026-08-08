@@ -1,6 +1,5 @@
 import type { In, InOut, Out } from "../containers/in-out/in-out.js";
 import type { Mutable } from "../utils/mutable.js";
-import { containerIsBasic } from "../containers/container-is-basic.js";
 
 
 /**
@@ -20,9 +19,6 @@ function getNextExit(
         takenOuts,
         additionalOutsToCheck
     );
-
-    // the ordering below also ensures ins comes before outs
-    // orderInOuts(in_.container);
 
     let toCount = 1;
     let next: InOut = in_;
@@ -64,13 +60,6 @@ function getNextExit(
         }
     } while (true)
 
-    // let additionalBezier: number[][] | undefined = undefined;
-    // if (!containerIsBasic(in_.container)) {
-    //     // add a "micro corner"
-    //     additionalBezier = [in_._x_.x.p, outToUse!._x_.x.p];
-    // }
-    
-    // return { outToUse: outToUse!, additionalBezier };
     return outToUse!;
 }
 

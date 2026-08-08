@@ -12,7 +12,6 @@ interface Props<T extends string> {
 
 function ButtonGroup<T extends string>(props: Props<T>) {
     const { options, onChanged, value: selectedValue, styles, label } = props;
-    const idStr = Math.random().toString();
 
     function onClick(key: T) {
         return (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

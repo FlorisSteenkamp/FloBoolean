@@ -8,11 +8,13 @@ import { getSelfIntersections } from '../../get-critical-points/get-self-interse
 import { getInterfaceIntersections } from '../../get-critical-points/get-interface-intersections.js';
 import { getExcessiveCurvatures } from '../../get-critical-points/get-excessive-curvatures.js';
 import { getTurnarounds } from './get-turnarounds.js';
+import { timeFunctionCalls } from '../../utils/time-function-call.js';
+
 
 /**
  * Returns intersections of all types on the given `loops`
  */
-function getAllXPairs(
+const getAllXPairs = timeFunctionCalls(function getAllXPairs(
         loops: Loop[],
         minYXPairs: _X_[],
         expMax: number): _X_[][] {
@@ -26,6 +28,7 @@ function getAllXPairs(
     const xs6 = getTurnarounds(loops);
 
     let xPairs = [xs1, xs2, xs3, xs4, xs5, xs6].flat(1);
+    // let xPairs = [xs1, xs2, xs3, xs5, xs6].flat(1);
 
     // Assign every `_X_` a globally-unique `order` (the first element of each
     // pair gets the lower value, keeping the in-side before the out-side). This
@@ -41,7 +44,7 @@ function getAllXPairs(
     if (typeof _debug_ !== 'undefined') {  _debug_.elems.intersection.push(...xPairs.flat()); }
 
     return xPairs;
-}
+});
 
 
 export { getAllXPairs }

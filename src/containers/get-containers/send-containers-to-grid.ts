@@ -1,6 +1,8 @@
 import type { Container } from "../container.js";
 import { toGrid } from "../../shape/normalize/to-grid.js";
 
+const { log2 } = Math;
+
 
 /**
  * Returns the containers from the given containers by sending their boxes to a
@@ -21,7 +23,7 @@ function sendContainersToGrid(
      * than ⌈sqrt(n)⌉ where n is the number of intersections in a container.
      * Assume n < 100 - this is a (mild) limitation of the algorithm
      */
-    const expContainer = Math.log2(containerDim);
+    const expContainer = log2(containerDim);
     const expContainerAdj = expContainer - 3; // 2**-3 === 1/8 of container
 
     const containers_ = containers.map(container => {

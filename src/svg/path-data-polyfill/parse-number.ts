@@ -127,7 +127,7 @@ function parseNumber(source: Source): number {
     number *= sign;
 
     if (exponent) {
-        number *= Math.pow(10, expsign * exponent);
+        number *= 10**(expsign * exponent);
     }
 
     if (startIndex === ci) {

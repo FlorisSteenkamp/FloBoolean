@@ -4,6 +4,7 @@ import { sweepLine } from "../../../sweep-line/sweep-line.js";
 import { areContainersIntersecting, enlargeBox, CONTAINER_MERGE_ENLARGE_FRAC } from "./are-containers-intersecting.js";
 import { addEdge, getConnectedComponents } from "../../../graph/get-connected-components.js";
 import { mergeContainers } from "./merge-containers.js";
+import { timeFunctionCalls } from "../../../utils/time-function-call.js";
 
 
 /**
@@ -12,7 +13,7 @@ import { mergeContainers } from "./merge-containers.js";
  *
  * @param containers 
  */
-function combineOverlappingContainers(
+const combineOverlappingContainers = timeFunctionCalls(function combineOverlappingContainers(
         containers: Container[]) {
 
     // iterate, combining containers that overlap on each iteration 
@@ -46,10 +47,8 @@ function combineOverlappingContainers(
         );
     }
 
-    // aaa
-
     return containers;
-}
+});
 
 
 export { combineOverlappingContainers }

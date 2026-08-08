@@ -1,12 +1,10 @@
 declare const _debug_: Debug; 
 import type { Debug } from '../../../src/debug/debug.js';
 import type { _X_ } from '../../../src/get-critical-points/-x-.js';
-import { drawFs } from "flo-draw";
-import { containerIsBasic } from '../../../src/containers/container-is-basic.js';
 import { getBeziersToNextX } from '../../../src/containers/get-beziers-to-next-x.js';
 import { bezierPieceToBezier } from '../../../src/calc-paths/bezier-piece-to-bezier.js';
 import { distanceBetween } from 'flo-vector2d';
-import { BezierPiece } from 'flo-bezier3';
+
 
 function logNearestX(g: SVGGElement, pC: number[], showDelay = 1000) {
     let x: _X_;
@@ -27,12 +25,6 @@ function logNearestX(g: SVGGElement, pC: number[], showDelay = 1000) {
 
     console.log(x!);
 
-    // const beziers: BezierPiece[] = [];
-    // let ii = 0;
-    // let initialContainer = x!.container;
-
-    // beziers.push(...getBeziersToNextX(x!, true));
-    // beziers.push(...getBeziersToNextX(x!, false));
 
     for (const bezierPiece of getBeziersToNextX(x!, true)) {
         const ps = bezierPieceToBezier(bezierPiece);

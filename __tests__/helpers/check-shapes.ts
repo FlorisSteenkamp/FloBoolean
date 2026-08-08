@@ -6,6 +6,8 @@ import { getShapeArea } from "../../src/shape/get-shape-area.js";
 import { getShapeBounds } from "../../src/calc-paths/get-shape-bounds.js";
 import { checkInvariants } from './check-invariants.js';
 
+const { abs } = Math;
+
 
 function checkShapes(
         fileName: string,
@@ -18,7 +20,7 @@ function checkShapes(
         return loops.map(loop => {
             // loop.beziers;//?
             let centroid = getShapeCentroid(loop.beziers);
-            let area     = Math.abs(getShapeArea(loop.beziers));
+            let area     = abs(getShapeArea(loop.beziers));
             let bounds   = getShapeBounds(loop.beziers);
 
             return { centroid, area, bounds };

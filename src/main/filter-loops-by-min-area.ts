@@ -6,26 +6,27 @@ const { abs } = Math;
 
 
 function filterLoopsByMinAllowedArea(
-        minLoopArea: number,
-        loopss: Loop[][]) {
+        minLoopArea: number) {
 
-    const loopss_: Loop[][] = [];
-    for (let i=0; i<loopss.length; i++) {
-        const loops = loopss[i];
+    return function (loopss: Loop[][]) {
+        const loopss_: Loop[][] = [];
+        for (let i=0; i<loopss.length; i++) {
+            const loops = loopss[i];
 
-        const loops_ = loops.filter(
-            loop => abs(getShapeArea(loop.beziers)) > minLoopArea
-        );
+            const loops_ = loops.filter(
+                loop => abs(getShapeArea(loop.beziers)) > minLoopArea
+            );
 
-        if (loops_.length) { 
-            loops_.sort((loopA, loopB) => { 
-                return orderLoopAscendingByMinY(loopA.beziers, loopB.beziers) 
-            });
-            loopss_.push(loops_); 
+            if (loops_.length) { 
+                loops_.sort((loopA, loopB) => { 
+                    return orderLoopAscendingByMinY(loopA.beziers, loopB.beziers) 
+                });
+                loopss_.push(loops_); 
+            }
         }
-    }
 
-    return loopss_;
+        return loopss_;
+    }
 }
 
 

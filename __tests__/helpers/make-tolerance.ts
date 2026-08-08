@@ -1,6 +1,8 @@
 import { Tolerance } from "./tolerance.js";
 import { getMaxCoordinate } from "../../src/shape/normalize/get-max-coordinate.js";
 
+const { ceil, log2 } = Math;
+
 
 /**
  * get tolerance values from the given linear tolerance power of 2.
@@ -13,7 +15,7 @@ function makeTolerance(
     let tol = 2**power;
 
     let maxCoordinate = getMaxCoordinate(shapes);
-    let expMax = Math.ceil(Math.log2(maxCoordinate));
+    let expMax = ceil(log2(maxCoordinate));
     let max = 2**expMax;
 
     return {
