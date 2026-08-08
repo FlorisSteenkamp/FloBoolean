@@ -14,10 +14,7 @@ function getNextExit(
         in_: In, 
         origOut: Out,
         additionalOutsToCheck: Out[],
-        takenOuts: Set<Out>): {
-            outToUse: Out;
-            additionalBezier: number[][] | undefined;
-        } {
+        takenOuts: Set<Out>): Out {
 
     const markOutForChecking_ = markInOutForChecking(
         takenOuts,
@@ -67,13 +64,14 @@ function getNextExit(
         }
     } while (true)
 
-    let additionalBezier: number[][] | undefined = undefined;
-    if (!containerIsBasic(in_.container)) {
-        // add a "micro corner"
-        additionalBezier = [in_._x_.x.p, outToUse!._x_.x.p];
-    }
+    // let additionalBezier: number[][] | undefined = undefined;
+    // if (!containerIsBasic(in_.container)) {
+    //     // add a "micro corner"
+    //     additionalBezier = [in_._x_.x.p, outToUse!._x_.x.p];
+    // }
     
-    return { outToUse: outToUse!, additionalBezier };
+    // return { outToUse: outToUse!, additionalBezier };
+    return outToUse!;
 }
 
 

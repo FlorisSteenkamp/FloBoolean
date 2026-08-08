@@ -10,14 +10,13 @@ import { filterContainers } from './filter-containers.js';
 import { combineOverlappingContainers } from './combine-overlapping-containers/combine-overlapping-containers.js';
 import { getContainersFromXPairs } from './get-containers-from-x-pairs.js';
 import { connectContainerInOuts } from './connect-container-in-outs.js';
-import { getInOutsOfContainer } from '../get-container-in-outs/get-in-outs-via-sides/get-in-outs-via-sides.js';
+import { getInOutsOfContainer } from '../get-container-in-outs/get-in-outs-via-sides/get-in-outs-of-container.js';
 import { numberInOuts } from './number-in-outs.js';
 import { MAX_BIT_LENGTH } from '../../main/max-bitlength.js';
 import { orderInOuts } from '../order-in-outs.js';
 import { getAllXPairs } from './get-all-x-pairs.js';
 import { getBigBox } from '../get-big-box.js';
-
-const { min, max } = Math;
+import { timeFunctionCalls } from '../../utils/time-function-call.js';
 
 
 /** 
@@ -25,7 +24,7 @@ const { min, max } = Math;
  * holding critical points.
  */
 const CONTAINER_SIZE_MULTIPLIER = 2**4;
-const CONTAINER_SIZE_MULTIPLIER_FOR_DEBUGGING = 2**36;
+const CONTAINER_SIZE_MULTIPLIER_FOR_DEBUGGING = 2**32;
 
 
 /**
@@ -34,7 +33,7 @@ const CONTAINER_SIZE_MULTIPLIER_FOR_DEBUGGING = 2**36;
  * 
  * @internal
  */
-function getContainers(
+const getContainers = timeFunctionCalls(function getContainers(
         loops: Loop[],
         minYXPairs: _X_[],
         expMax: number) {
@@ -76,7 +75,7 @@ function getContainers(
     if (typeof _debug_ !== 'undefined') { _debug_.elems.container.push(...containers); }
 
     return containers;
-}
+});
 
 
 function assignBigBoxesToContainers(

@@ -6,9 +6,10 @@ import { createRootInOut } from "./create-root-in-out.js";
 import { getTightestContainingLoop } from '../calc-paths/get-tightest-containing-loop.js';
 import { getOutermostOut } from '../calc-paths/get-outermost-in-and-out.js';
 import { completePath } from '../calc-paths/complete-path.js';
+import { timeFunctionCalls } from '../utils/time-function-call.js';
 
 
-function completePaths(
+const completePaths = timeFunctionCalls(function completePaths(
         loops: Loop[],
         minYXPairs: _X_[]) {
 
@@ -85,7 +86,7 @@ function completePaths(
     }
 
     return root;
-}
+});
 
 
 export { completePaths }

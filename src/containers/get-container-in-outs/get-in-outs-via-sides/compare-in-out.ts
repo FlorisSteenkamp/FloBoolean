@@ -3,6 +3,7 @@ import type { _X_ } from "../../../get-critical-points/-x-.js";
 import { iterBeziersToNextX } from '../../get-beziers-to-next-x.js';
 import { toP } from "../../../utils/to-p.js";
 import { getTs } from "./get-ts.js";
+import { memoize } from "flo-memoize";
 
 const { min, max } = Math;
 
@@ -38,10 +39,10 @@ function compareInOut(
     // 1st step: follow the loop outward from `_x_A` (in its `dir`) and find the
     // first `sidesA` edge it crosses, detected via bezier-piece endpoints.
     const forwardA = dirA === 1;
-    const crossingA = firstSideCrossing(_x_A, forwardA, sides);
+    const crossingA = firstSideCrossing(_x_A, sides, forwardA);
     
     const forwardB = dirB === 1;
-    const crossingB = firstSideCrossing(_x_B, forwardB, sides);
+    const crossingB = firstSideCrossing(_x_B, sides, forwardB);
 
     const { side: sideA, t: tA } = crossingA!;
     const { side: sideB, t: tB } = crossingB!;
@@ -78,10 +79,10 @@ function compareInOut(
  * The `sides` are the axis-aligned edges of a box in the standard side order
  * (0 top, 1 left, 2 bottom, 3 right).
  */
-function firstSideCrossing(
+const firstSideCrossing = memoize(function(
         _x_: _X_,
-        forward: boolean,
-        sides: number[][][]): { side: number, p: number[], t: number } | undefined {
+        sides: number[][][],
+        forward: boolean): { side: number, p: number[], t: number } | undefined {
 
     let pS: number[] | undefined = undefined;
 
@@ -112,7 +113,6 @@ function firstSideCrossing(
             const { sideX } = x;
             const { ri } = sideX;
 
-            // const { t } = ris[0];
             const { t } = ri;
             const p = toP(side, t);  // TODO
             best = { side: i, t, p };
@@ -126,7 +126,7 @@ function firstSideCrossing(
     }
 
     return undefined;
-}
+});
 
 
 export { compareInOut }

@@ -2,9 +2,6 @@ import type { Container } from "./container.js";
 import type { Mutable } from "../utils/mutable.js";
 import type { InOut } from "./in-out/in-out.js";
 import { compareInOut } from "./get-container-in-outs/get-in-outs-via-sides/compare-in-out.js";
-import { cyclicCompareInOut } from "./cyclic-compare-in-out.js";
-import { cyclicOrder } from "./cyclic-order.js";
-import { isCyclicOrdered } from "./is-cyclic-ordered.js";
 
 
 /**
@@ -19,11 +16,20 @@ function orderInOuts(
 
     const inOuts = container.inOuts;
 
-    inOuts.sort(compareInOut);
-    // cyclicOrder(inOuts, cyclicCompareInOut);
-
-    // const r = isCyclicOrdered(inOuts, cyclicCompareInOut);
-    // console.log(r);
+    
+    if (inOuts.length > 2) {
+        inOuts.sort(compareInOut);
+        // cyclicOrder(inOuts, cyclicCompareInOut);
+    } else {
+        // TODO - investigate a simpler method?
+        let isTopMost = false;
+        for (let inOut of inOuts) {
+            if (inOut._x_.x.kind === 0) { isTopMost = true; break; }
+        }
+        if (isTopMost) {
+            inOuts.sort(compareInOut);
+        }
+    }
 
     let prevInOut = inOuts[inOuts.length - 1] as Mutable<InOut>;
     for (let i=0; i<inOuts.length; i++) {

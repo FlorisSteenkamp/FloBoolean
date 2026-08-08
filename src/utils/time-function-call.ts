@@ -35,6 +35,7 @@ function timeFunctionCalls<T extends (...args: any[]) => any>(f: T): TimedFuncti
     wrapper.getStats = () => {
         const total = sum(history);
         return {
+            name: f.name,
             totalMs: total,
             count: history.length,
             avg: history.length === 0 ? 0 : total / history.length,

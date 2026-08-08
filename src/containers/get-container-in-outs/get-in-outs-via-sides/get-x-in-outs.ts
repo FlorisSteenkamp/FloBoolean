@@ -1,113 +1,48 @@
 import type { _X_ } from "../../../get-critical-points/-x-.js";
-import type { Curve } from "../../../curve/curve.js";
 import type { In, InOut, Out } from "../../../containers/in-out/in-out.js";
 import type { Container } from "../../container.js";
 import type { Mutable } from "../../../utils/mutable.js";
-import { getTs } from './get-ts.js';
-import { compareXs } from '../../compare-xs.js';
-
-
-interface SideX extends _X_ { 
-    isSide: boolean; 
-    ps: number[][];
-}
 
 
 /**
- * @param container 
- * @param curve
- * @param xs_ all `_X_`s of the given curve and given container
+ * Returns the incoming / outgoing curves (as `In`s / `Out`s) for the given
+ * `_X_`s of a single container.
+ *
+ * The in/out direction is derived directly from each `_X_`'s loop-ordering
+ * properties (`next`/`prev`/`nextBefExit`/`prevBefExit`, set by
+ * `setIntersectionNextAndPrevs`) - no container-side intersections are needed:
+ *
+ * * an `_X_` is an **entry** point (gets an `In`) when it is the first `_X_` of
+ *   its container along the loop, i.e. its loop-backward neighbour is already in
+ *   a different container (`prevBefExit === _x_`, with `prev !== _x_`).
+ * * an `_X_` is an **exit** point (gets an `Out`) when it is the last `_X_` of
+ *   its container along the loop, i.e. its loop-forward neighbour is already in
+ *   a different container (`nextBefExit === _x_`, with `next !== _x_`).
+ *
+ * @param container
  */
 function getXInOuts(
-        container: Container) {
+        container: Container): { ins: In[], outs: Out[] } {
 
-    const [[minX,minY], [maxX,maxY]] = container.box;
+    const ins: In[] = [];
+    const outs: Out[] = [];
 
-    const sides = [
-        [[maxX, minY], [minX, minY]],
-        [[minX, minY], [minX, maxY]],
-        [[minX, maxY], [maxX, maxY]],
-        [[maxX, maxY], [maxX, minY]]
-    ];
-
-    return function (
-            curve: Curve,
-            xs_: _X_[]): { ins: In[], outs: Out[] } {
-
-        // At this point all `xs` belong to the same curve and container.
-
-        // For each of the four sides get the t values closest to the 
-        // intersection t.
-
-        const { ps } = curve;
-
-        const xs: SideX[] = xs_.slice() as SideX[];
-        for (let x of xs) {
-            x.ps = ps;
+    for (const x of container.xs) {
+        // entry point -> `In`
+        if (x.prevBefExit === x && x.prev !== x) {
+            const in_ = makeInOut(-1, x, container);
+            (x as Mutable<_X_>).in_ = in_;
+            ins.push(in_);
         }
-
-
-        for (let i=0; i<sides.length; i++) {
-            const xs_ = getTs(ps, sides[i], [0,1], [0,1]);
-
-            for (const { psX } of xs_) {
-                xs.push({
-                    ps,
-                    x: psX,
-                    isSide: true, 
-                    curve: undefined!, // unused
-                    next: undefined!,
-                    prev: undefined!,
-                    container,
-                    order: Number.MAX_SAFE_INTEGER  // sort after real `_X_`s at an equal `tS`
-                });
-            }
+        // exit point -> `Out`
+        if (x.nextBefExit === x && x.next !== x) {
+            const out = makeInOut(+1, x, container);
+            (x as Mutable<_X_>).out = out;
+            outs.push(out);
         }
-
-
-        //---- resolve in-outs
-
-        
-        // the sort below should always resolve if the container dimension is
-        // 'large enough', where large enough is based on the maximum value that
-        // the tangent magnitude of a curve can attain (no need to resort to 
-        // compensated intervals)
-        xs.sort((xA, xB) => {
-            const res = xA.x.ri.tS - xB.x.ri.tS;
-            if (res !== 0) { return res; }
-
-            // Tie-break by the same `order` used in `compareXs` so this sort and
-            // the loop-ordering sort in `setIntersectionNextAndPrevs` agree on
-            // the relative order of coincident points.
-            return xA.order - xB.order;
-        });
-
-        const ins: In[] = [];
-        const outs: Out[] = [];
-        let prevX: SideX | undefined = undefined;
-        /** true if the prevX was a proper X, false if it was a SideX */
-        let prevWasX: boolean | undefined = undefined;
-        for (const x of xs) {
-            if (x.isSide) {
-                // it is a sideX
-                if (prevWasX === true) {
-                    outs.push(makeInOut(+1, prevX!, container));
-                    (prevX as Mutable<SideX>).out = outs[outs.length-1];
-                }
-                prevWasX = false;
-            } else {
-                // it is a proper X
-                if (prevWasX === false) {
-                    ins.push(makeInOut(-1, x, container));
-                    (x as Mutable<SideX>).in_ = ins[ins.length-1];
-                }
-                prevWasX = true;
-            }
-            prevX = x;
-        }
-
-        return { ins, outs };
     }
+
+    return { ins, outs };
 }
 
 

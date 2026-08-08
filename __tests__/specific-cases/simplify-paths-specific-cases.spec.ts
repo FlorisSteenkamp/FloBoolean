@@ -102,7 +102,7 @@ test('`simplifyPaths` specific cases', function() {
             let loopss: Loop[][];
             try {
                 loopss = simplifyPaths(bezierLoops, {
-                    booleanOp: booleanOp_, inclMicroCorners: false
+                    booleanOp: booleanOp_//, inclMicroCorners: false
                 });
             } catch (e) {
                 console.error(`Thrown for shape: ${fileName}`);

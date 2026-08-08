@@ -7,7 +7,7 @@ interface SimplifyOptions extends BooleanOptions {
      * will be mathematically guaranteed not to intersect but it adds many
      * extremely short lines to the final curve
      */
-    readonly inclMicroCorners?: boolean;
+    // readonly inclMicroCorners?: boolean;
     /**
      * defaults to `false`; if `true` then the returned paths all have a negative
      * (clockwise) orientation for each single outermost loop (within the set of
@@ -20,6 +20,7 @@ interface SimplifyOptions extends BooleanOptions {
      */
     // readonly keepOriginalOrientation?: boolean;
     /**
+     * TODO
      * defaults to `"OR"`
      * 
      * **Not** really a boolean operation, rather a kind of "winding num"

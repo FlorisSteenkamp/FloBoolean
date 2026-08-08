@@ -4,6 +4,7 @@ import type { Mutable } from '../../utils/mutable.js';
 import { fixBeziers } from "./fix-beziers.js";
 import { MAX_BIT_LENGTH } from '../../main/max-bitlength.js';
 import { addDebugInfo1 } from '../../main/add-debug-info-1.js';
+import { timeFunctionCalls } from '../../utils/time-function-call.js';
 
 
 /**
@@ -29,7 +30,7 @@ import { addDebugInfo1 } from '../../main/add-debug-info-1.js';
  * @param maxBitLength
  * @param expMax
  */
-function normalizeLoops(
+const normalizeLoops = timeFunctionCalls(function normalizeLoops(
         bezierLoops: number[][][][],
         expMax: number): number[][][][] {
 
@@ -45,7 +46,7 @@ function normalizeLoops(
     addDebugInfo1(loops);
 
     return loops;
-}
+});
 
 
 export { normalizeLoops }

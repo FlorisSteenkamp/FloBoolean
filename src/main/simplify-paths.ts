@@ -12,12 +12,12 @@ import { normalizeLoops } from '../shape/normalize/normalize-loop.js';
 import { getMaxCoordinate } from '../shape/normalize/get-max-coordinate.js';
 import { addDebugInfo2 } from './add-debug-info-2.js';
 import { loopFromOut } from './loop-from-out.js';
-import { removeAllMicroCorners } from './remove-micro-corners.js';
-import { getInOutsOfContainer } from '../containers/get-container-in-outs/get-in-outs-via-sides/get-in-outs-via-sides.js';
+// import { removeAllMicroCorners } from './remove-micro-corners.js';
 import { getMinYXpair } from '../get-critical-points/get-min-y-x-pair.js';
 import { filterLoopsByMinAllowedArea } from './filter-loops-by-min-area.js';
 import { completePaths } from './complete-paths.js';
 import { reverseShapeOrientation } from '../shape/reverse-shape-orientation.js';
+
 
 const { ceil, log2 } = Math;
 
@@ -48,7 +48,7 @@ function simplifyPaths(
     const containers = getContainers(loops, minYXPairs, expMax);
 
     const {
-        inclMicroCorners = true,
+        // inclMicroCorners = true,
         minLoopArea = (2**(expMax - 16))**2,
         forceOrientationNegative = false,
         booleanOp = "OR"
@@ -76,16 +76,26 @@ function simplifyPaths(
     //-------------------------------------
     // Remove "micro corners" if requested
     //-------------------------------------
-    const _loopss_ = inclMicroCorners
-        ? loopss_
-        : removeAllMicroCorners(loopss_, containers);
+    // const _loopss_ = inclMicroCorners
+    //     ? loopss_
+    //     : removeAllMicroCorners(loopss_, containers);
 
-    addDebugInfo2(_loopss_);  // adds debug info used within __tests__ (and the demo)
+    // addDebugInfo2(_loopss_);  // adds debug info used within __tests__ (and the demo)
+    addDebugInfo2(loopss_);  // adds debug info used within __tests__ (and the demo)
 
-    // console.log(structuredClone(getInOutsOfContainer.getStats()));
-    getInOutsOfContainer.resetStats();
+    console.log(structuredClone(getContainers.getStats()));
+    // console.log(structuredClone(normalizeLoops.getStats()));
+    // console.log(structuredClone(completePaths.getStats()));
+    getContainers.resetStats();
+    normalizeLoops.resetStats();
+    completePaths.resetStats();
 
-    return _loopss_;
+    // normalizeLoops -> 1.3 ms
+    // getContainers  -> 51.1 ms
+    // completePaths  -> 0.5 ms
+
+    // return _loopss_;
+    return loopss_;
 }
 
 
