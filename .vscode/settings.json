@@ -15,6 +15,7 @@
     "javascript.format.semicolons": "insert",
     "search.exclude": {
         "**/*.js": true,
-        "**/*.d.ts": true
+        "**/*.d.ts": true,
+        "**/*.js.map": true
     }
 }

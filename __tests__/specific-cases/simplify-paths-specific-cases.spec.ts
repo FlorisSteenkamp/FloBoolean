@@ -14,7 +14,7 @@ import { getShapesControlPointBox } from './get-shapes-control-point-box.js';
 import { scaleShape } from '../../src/shape/scale-shape.js';
 import { countInk } from './count-ink.js';
 import { countThickDiff } from './count-thick-diff.js';
-import { drawBooleanRef, drawShapesRef } from './draw-boolean-ref.js';
+import { drawBooleanRef, drawShapesRef, countBooleanCoverageDiff } from './draw-boolean-ref.js';
 import { Loop } from '../../src/shape/loop.js';
 
 const { max, min, ceil, log2, abs } = Math;
@@ -30,14 +30,14 @@ const CANVAS_WIDTH_HEIGHT_EXP = log2(CANVAS_WIDTH_HEIGHT);
  * below the magnitude of a genuine filled-area difference.
  */
 const MAX_THICK_DIFF = 0;
-// Raw (non-eroded) per-pixel difference bound. Unlike `thickDiff` (which erodes
-// away thin boundary discrepancies), this counts EVERY differing pixel. Since
-// the reference and actual now share the SAME scanline winding rasterizer
-// (`drawBooleanRef` / `drawShapesRef`), this residual is no longer rasterizer
-// disagreement - it is the genuine ~1px boundary offset between each shape's
-// reconstructed output beziers and its input beziers (all `thick=0`). The worst
-// is `complexish2 XOR` at ~141px; 200 clears it with a margin.
-const MAX_DIFF = 200;
+// Anti-aliased boundary-tolerant difference bound (see `countBooleanCoverageDiff`).
+// A pixel only counts when its supersampled coverage differs by >= 50% between
+// the reference and the actual output, so unavoidable sub-pixel straddle along
+// long near-diagonal edges (which grows with edge length - e.g. `complexish2`
+// hit ~141px under the old raw centre-sample diff) no longer registers, while a
+// genuine filled-area or thin-sliver error still does. All current fixtures are
+// 0; the small bound leaves headroom for near-degenerate self-intersections.
+const MAX_DIFF = 4;
 
 // Flip to `true` to print a per-shape/op `thick` vs `raw` diff table while
 // running the tests (handy for choosing `MAX_THICK_DIFF` / `MAX_DIFF`).
@@ -52,10 +52,11 @@ test('`simplifyPaths` specific cases', function() {
     updDebugGlobal(true);
 
     // testIt('woodland');      // complex shape -> should decompose correctly'
+    testIt('complex6');      // complex shape -> should decompose correctly'
+    testIt('complex4');      // complex shape -> should decompose correctly'
     testIt('complex3');      // complex shape -> should decompose correctly'
     testIt('complex2');     // complex shape -> should decompose correctly'
     testIt('complex');      // complex shape -> should decompose correctly'
-    testIt('complex4');      // complex shape -> should decompose correctly'
     testIt('koldat-again');     // koldat-again -> edge case test'
     testIt('multi-level-reversed-orientation');    // three-squares -> should boolean correctly'
     testIt('two-squares');    // three-squares -> should boolean correctly'
@@ -222,11 +223,14 @@ function pixelTest(
         imgData1, imgData2, CANVAS_WIDTH_HEIGHT, CANVAS_WIDTH_HEIGHT
     );
 
-    // The raw (non-eroded) per-pixel difference: `countThickDiff` with radius 0
-    // erodes nothing, so it counts every differing pixel including thin
-    // boundary / anti-aliasing discrepancies. Bounded by the looser `MAX_DIFF`.
-    const diff = countThickDiff(
-        imgData1, imgData2, CANVAS_WIDTH_HEIGHT, CANVAS_WIDTH_HEIGHT, 0
+    // Boundary-tolerant, anti-aliased difference: supersamples only the pixels
+    // whose centre classification disagrees and counts one only if its covered
+    // fraction differs by >= 50%. This ignores sub-pixel edge straddle (whose raw
+    // count scales with edge length) while still catching real filled-area / thin
+    // errors. Bounded by the tight `MAX_DIFF`.
+    const diff = countBooleanCoverageDiff(
+        inputLoops.map(tf), outputSets.map(set => set.map(tf)),
+        booleanOp, CANVAS_WIDTH_HEIGHT
     );
 
     if (LOG_DIFFS && diff >= LOG_DIFF_MIN) {

@@ -16,6 +16,7 @@ const vectorsBoolean = [
 const vectors = [
     // 'AA',
     // "play3",
+    'complex6',
     'woodland',
     'complex4',
     'complex3',

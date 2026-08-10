@@ -88,7 +88,7 @@ function simplifyPaths(
 
     // console.log(structuredClone(getContainers.getStats()));
     // console.log(structuredClone(normalizeLoops.getStats()));
-    console.log(structuredClone(completePaths.getStats()));
+    // console.log(structuredClone(completePaths.getStats()));
     // console.log(structuredClone(minAreaFilter.getStats()));
     // getContainers.resetStats();
     // normalizeLoops.resetStats();
@@ -105,7 +105,7 @@ function simplifyPaths(
     // console.log(structuredClone(combineOverlappingContainers.getStats()));
     // console.log(structuredClone(assignBigBoxesToContainers.getStats()));
 
-    console.log(structuredClone(orderInOuts.getStats()));
+    // console.log(structuredClone(orderInOuts.getStats()));
 
     // `completePaths`
     // console.log(structuredClone(completeLoop.getStats()));
@@ -122,8 +122,9 @@ function simplifyPaths(
     // getAllXPairs -> 11.9 ms  (improve)
     // combineOverlappingContainers -> 1.8 ms  (improve)
     // assignBigBoxesToContainers -> 0.4 ms
-    // orderInOuts -> 36.2 -> 20.8 ms  (improve)
+    // orderInOuts -> 36.2 -> 20.8 ms -> 6.7  (improve)
 
+    // console.log(loopss);
     return loopss;
 }
 

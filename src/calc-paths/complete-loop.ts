@@ -20,11 +20,13 @@ const completeLoop = timeFunctionCalls(function completeLoop(
         takenLoops: Set<Loop>,
         origOut: Out): {
             bezierPieces: BezierPiece[],
-            additionalOutsToCheck: Out[]
+            additionalOutsToCheck: Out[],
+            loopOuts: Out[]
         } {
 
     const additionalOutsToCheck: Out[] = [];
     const bezierPieces: BezierPiece[] = [];
+    const loopOuts: Out[] = [];
 
     // Move immediately to the outgoing start of the loop
     let outToUse: Out = origOut;
@@ -46,6 +48,7 @@ const completeLoop = timeFunctionCalls(function completeLoop(
         // }
 
         takenOuts.add(outToUse);
+        loopOuts.push(outToUse);
         // Every curve threaded through this loop belongs to this component, so
         // mark its loop as taken to prevent it being re-processed as a separate
         // outermost loop (which would reset already-built child nesting).
@@ -65,7 +68,7 @@ const completeLoop = timeFunctionCalls(function completeLoop(
 
     } while (outToUse !== origOut);
 
-    return { bezierPieces, additionalOutsToCheck };
+    return { bezierPieces, additionalOutsToCheck, loopOuts };
 });
 
 

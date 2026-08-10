@@ -24,7 +24,7 @@ import { getXInOuts } from '../get-container-in-outs/get-in-outs-via-sides/get-x
  * holding critical points.
  */
 const CONTAINER_SIZE_MULTIPLIER = 2**4;
-const CONTAINER_SIZE_MULTIPLIER_FOR_DEBUGGING = 2**4;
+const CONTAINER_SIZE_MULTIPLIER_FOR_DEBUGGING = 2**30;
 
 
 /**
@@ -42,7 +42,7 @@ const getContainers = timeFunctionCalls(function getContainers(
     const gridSpacing = 2**(expMax - MAX_BIT_LENGTH);
     const containerSizeMultiplier = typeof _debug_ === 'undefined'
         ? CONTAINER_SIZE_MULTIPLIER
-        : CONTAINER_SIZE_MULTIPLIER_FOR_DEBUGGING
+        : CONTAINER_SIZE_MULTIPLIER_FOR_DEBUGGING;
     const containerDim = gridSpacing * containerSizeMultiplier;
     //--------------------------------------------------------------------------
 

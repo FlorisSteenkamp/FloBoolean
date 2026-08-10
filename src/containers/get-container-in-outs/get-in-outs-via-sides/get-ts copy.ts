@@ -21,10 +21,9 @@ import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecti
 function getTs(
         ps: number[][], 
         side: number[][],
-        tsPs: number[],
-        tsSide: number[]): { psX: X, sideX: X }[] {
+        tsPs: number[]): { psX: X, sideX: X }[] {
 
-    const xsSide = getRootsAndCoeffs(ps, side, tsSide);
+    const xsSide = getRootsAndCoeffs(ps, side, [0,1]);
     if (xsSide === undefined) { return []; }
     let { ris: risSide, getPExact: getPExactSide } = xsSide;
     const getPExactSide_ = memoize(getPExactSide);

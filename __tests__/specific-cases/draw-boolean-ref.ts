@@ -154,4 +154,105 @@ function computeSignedWinding(loops: (number[][])[][], W: number): Int32Array {
 }
 
 
-export { drawBooleanRef, drawShapesRef }
+/** Supersampling factor per axis used by `countBooleanCoverageDiff`. */
+const COVERAGE_SUPERSAMPLE = 4;
+
+
+/**
+ * Anti-aliased, boundary-tolerant pixel diff between the boolean reference (the
+ * raw input winding) and the actual output (union of the reconstructed output
+ * shapes).
+ *
+ * Each pixel is first classified by its centre sample; only pixels whose centre
+ * classification disagrees are re-examined by S×S supersampling. Such a pixel is
+ * counted only if the covered *fraction* differs by at least `threshold`. A
+ * boundary pixel that is ~half covered in both images - i.e. sub-pixel straddle
+ * between an input curve and its slightly different reconstructed output curve,
+ * whose raw count grows with edge length - has near-equal coverage and is
+ * ignored, while a genuine filled-area or missing-sliver error (≈full vs ≈empty
+ * coverage) is still counted. This lets the diff bound be tightened to catch
+ * real (even thin) geometry errors without tripping on unavoidable rasterization
+ * straddle along long, near-diagonal edges.
+ */
+function countBooleanCoverageDiff(
+        inputLoops: (number[][])[][],
+        outputSets: (number[][])[][][],
+        booleanOp: 'AND' | 'OR' | 'XOR',
+        W: number,
+        S = COVERAGE_SUPERSAMPLE,
+        threshold = 0.5): number {
+
+    const inResult =
+        booleanOp === 'OR'  ? (w: number) => w !== 0
+      : booleanOp === 'XOR' ? (w: number) => w % 2 !== 0
+      :                       (w: number) => abs(w) >= 2;
+
+    const refWinding = computeSignedWinding(inputLoops, W);
+    const actInside = computeInsideUnion(outputSets, W);
+
+    const refSegs: number[][] = [];
+    for (const loop of inputLoops) { flattenLoop(FLATTEN_SEGMENTS, loop, refSegs); }
+    const shapeSegs = outputSets.map(set => {
+        const segs: number[][] = [];
+        for (const loop of set) { flattenLoop(FLATTEN_SEGMENTS, loop, segs); }
+        return segs;
+    });
+
+    const S2 = S * S;
+    let n = 0;
+    for (let y = 0; y < W; y++) {
+        for (let x = 0; x < W; x++) {
+            const p = y * W + x;
+            const rc = inResult(refWinding[p]) ? 1 : 0;
+            const ac = actInside[p];
+            if (rc === ac) { continue; }  // identical at pixel centre -> not a candidate
+
+            let refIn = 0, actIn = 0;
+            for (let sy = 0; sy < S; sy++) {
+                const Y = y + (sy + 0.5) / S;
+                for (let sx = 0; sx < S; sx++) {
+                    const X = x + (sx + 0.5) / S;
+                    if (inResult(windingAt(refSegs, X, Y))) { refIn++; }
+                    for (let si = 0; si < shapeSegs.length; si++) {
+                        if (windingAt(shapeSegs[si], X, Y) !== 0) { actIn++; break; }
+                    }
+                }
+            }
+            if (abs(refIn - actIn) / S2 >= threshold) { n++; }
+        }
+    }
+
+    return n;
+}
+
+
+/** Centre-sample mask: 1 where any output shape has nonzero winding. */
+function computeInsideUnion(shapes: (number[][])[][][], W: number): Uint8Array {
+    const inside = new Uint8Array(W * W);
+    for (const shape of shapes) {
+        const winding = computeSignedWinding(shape, W);
+        for (let p = 0; p < W * W; p++) { if (winding[p] !== 0) { inside[p] = 1; } }
+    }
+    return inside;
+}
+
+
+/**
+ * Signed winding number at an arbitrary point, via a horizontal ray cast toward
+ * -x. Uses the same half-open [yTop, yBot) crossing rule as the scanline
+ * rasterizer so centre samples agree exactly.
+ */
+function windingAt(segs: number[][], X: number, Y: number): number {
+    let w = 0;
+    for (let i = 0; i < segs.length; i++) {
+        const seg = segs[i];
+        const y0 = seg[1], y1 = seg[3];
+        if ((y0 <= Y) === (y1 <= Y)) { continue; }  // segment does not straddle Y
+        const x = seg[0] + ((Y - y0) / (y1 - y0)) * (seg[2] - seg[0]);
+        if (x <= X) { w += y1 > y0 ? 1 : -1; }
+    }
+    return w;
+}
+
+
+export { drawBooleanRef, drawShapesRef, countBooleanCoverageDiff }

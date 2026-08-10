@@ -4,7 +4,7 @@ import type { InOut } from "../../in-out/in-out.js";
 import type { _X_ } from "../../../get-critical-points/-x-.js";
 import { iterBeziersToNextX } from '../../get-beziers-to-next-x.js';
 import { toP } from "../../../utils/to-p.js";
-import { getTs } from "./get-ts copy.js";
+import { getTs } from "./get-ts.js";
 import { memoize } from "flo-memoize";
 
 const { min, max } = Math;
@@ -71,7 +71,6 @@ function compareInOut(
         return res;
     }
 
-    // console.log('aaaa')
     // At this stage they are both in or both out
     // We reverse sort the ins in comparison to the outs
     return dirA === 1 
@@ -140,6 +139,7 @@ const firstSideCrossing = memoize(function firstSideCrossing(
 
     let pS: number[] | undefined = undefined;
 
+    // TODO - we might remove iterBeziersToNextX in the future since we iter only once ever?
     for (const { ps, ts } of iterBeziersToNextX(_x_, forward)) {
         if (pS === undefined) { pS = toP(ps, ts[0]); }
         const pE = toP(ps, ts[1]);
@@ -152,19 +152,12 @@ const firstSideCrossing = memoize(function firstSideCrossing(
              
             // check for possible intersection
             const ts_ = ts[0] < ts[1] ? ts : [ts[1],ts[0]];
-            const xs = getTs(ps, side, ts_, [0,1]);
+            const xs = getTs(ps, side, ts_);
 
-            if (xs.length <= 0) { continue; }
-            const x = xs[0];
-            const { sideX } = x;
-            const { ri } = sideX;
+            if (xs === undefined) { continue; }
+            const x = xs;
+            const { ri, p } = x;
             const { t } = ri;
-            const p = toP(side, t);
-
-            // if (xs === undefined) { continue; }
-            // const x = xs;
-            // const { ri, p } = x;
-            // const { t } = ri;
 
             best = { side: i, t, p };
         }
@@ -195,3 +188,4 @@ const getBigBoxSides = memoize(function(
 
 
 export { compareInOut }
+
