@@ -1,9 +1,9 @@
 declare const _debug_: Debug; 
 import type { Debug } from '../../../src/debug/debug.js';
 import type { _X_ } from '../../../src/get-critical-points/-x-.js';
-import { getBeziersToNextX } from '../../../src/containers/get-beziers-to-next-x.js';
-import { bezierPieceToBezier } from '../../../src/calc-paths/bezier-piece-to-bezier.js';
+import { bezierPieceToBezier } from 'flo-bezier3';
 import { distanceBetween } from 'flo-vector2d';
+import { getBeziersToNextX } from '../../../src/containers/get-beziers-to-next-x.js';
 
 
 function logNearestX(g: SVGGElement, pC: number[], showDelay = 1000) {

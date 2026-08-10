@@ -30,7 +30,7 @@ function getExcessiveCurvatures(
                     const _x_ = makeSimpleX(t,curve,7);  // excessive curvature
                     xs.push([
                         _x_,
-                        { ..._x_, order: 1 }
+                        { ..._x_ }
                     ]);
                 }
             }

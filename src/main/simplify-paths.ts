@@ -22,6 +22,8 @@ import { getAllXPairs } from '../containers/get-containers/get-all-x-pairs.js';
 import { combineOverlappingContainers } from '../containers/get-containers/combine-overlapping-containers/combine-overlapping-containers.js';
 import { assignBigBoxesToContainers } from '../containers/get-containers/assign-big-boxes-to-containers.js';
 import { orderInOuts } from '../containers/order-in-outs.js';
+import { completeLoop } from '../calc-paths/complete-loop.js';
+import { isLoopInLoop } from '../calc-paths/is-loop-in-loop.js';
 
 
 const { ceil, log2 } = Math;
@@ -71,12 +73,13 @@ function simplifyPaths(
     // const minAreaFilter = filterLoopsByMinAllowedArea(minLoopArea);
     const minAreaFilter = timeFunctionCalls(filterLoopsByMinAllowedArea(minLoopArea));
 
+    let loopIdx = 0;
     const loopss = minAreaFilter(
         outSets.map(outSet => {
             const outerLoopOrientation = outSet[0].out.orientation;
 
-            return outSet.map(({ out, depth }, idx) => 
-                loopFromOut(out, outerLoopOrientation, idx, depth, forceOrientationNegative)
+            return outSet.map(({ out, depth }) => 
+                loopFromOut(out, outerLoopOrientation, loopIdx++, depth, forceOrientationNegative)
             );
         })
     );
@@ -85,11 +88,11 @@ function simplifyPaths(
 
     // console.log(structuredClone(getContainers.getStats()));
     // console.log(structuredClone(normalizeLoops.getStats()));
-    // console.log(structuredClone(completePaths.getStats()));
+    console.log(structuredClone(completePaths.getStats()));
     // console.log(structuredClone(minAreaFilter.getStats()));
     // getContainers.resetStats();
     // normalizeLoops.resetStats();
-    // completePaths.resetStats();
+    completePaths.resetStats();
     // minAreaFilter.resetStats();
 
     // normalizeLoops -> 1.3 ms
@@ -101,16 +104,25 @@ function simplifyPaths(
     // console.log(structuredClone(getAllXPairs.getStats()));
     // console.log(structuredClone(combineOverlappingContainers.getStats()));
     // console.log(structuredClone(assignBigBoxesToContainers.getStats()));
-    // console.log(structuredClone(orderInOuts.getStats()));
+
+    console.log(structuredClone(orderInOuts.getStats()));
+
+    // `completePaths`
+    // console.log(structuredClone(completeLoop.getStats()));
+    // console.log(structuredClone(isLoopInLoop.getStats()));
+    
     // getAllXPairs.resetStats();
     // combineOverlappingContainers.resetStats();
     // assignBigBoxesToContainers.resetStats();
     orderInOuts.resetStats();
+    // completeLoop.resetStats();
+
+    // isLoopInLoop.resetStats();
 
     // getAllXPairs -> 11.9 ms  (improve)
     // combineOverlappingContainers -> 1.8 ms  (improve)
     // assignBigBoxesToContainers -> 0.4 ms
-    // orderInOuts -> 36.2 ms  (improve)
+    // orderInOuts -> 36.2 -> 20.8 ms  (improve)
 
     return loopss;
 }

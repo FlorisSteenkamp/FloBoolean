@@ -5,6 +5,7 @@ import { getBoundingBox$ } from '../geometry/get-bounding-box-.js';
 import { getShapeBounds } from './get-shape-bounds.js';
 import { squares } from 'squares-rng';
 import { toP } from '../utils/to-p.js';
+import { timeFunctionCalls } from '../utils/time-function-call.js';
 
 const { abs } = Math;
 
@@ -29,7 +30,7 @@ type Dir =
  * @param loop1
  * @param loop2
  */
-function isLoopInLoop(
+const isLoopInLoop = timeFunctionCalls(function isLoopInLoop(
         loop1: number[][][],
         loop2: number[][][]) {
 
@@ -69,7 +70,7 @@ function isLoopInLoop(
         const count = getAxisAlignedRayLoopIntersections(loop2, p, 'left');
         if (count !== undefined) { return count%2 !== 0; }
     }
-}
+});
 
 
 /**

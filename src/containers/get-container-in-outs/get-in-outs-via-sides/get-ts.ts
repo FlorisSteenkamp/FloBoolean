@@ -6,6 +6,7 @@ import { roots, refineK1, rootIntervalToExp } from "flo-poly";
 import { memoize } from 'flo-memoize';
 import { evalDeCasteljauDd, getCoeffsBezBez, getIntervalBoxDd } from "flo-bezier3";
 import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting.js";
+import { toP } from "../../../utils/to-p.js";
 
 
 /**
@@ -22,53 +23,27 @@ function getTs(
         ps: number[][], 
         side: number[][],
         tsPs: number[],
-        tsSide: number[]): { psX: X, sideX: X }[] {
+        tsSide: number[]) {
 
     const xsSide = getRootsAndCoeffs(ps, side, tsSide);
-    if (xsSide === undefined) { return []; }
-    let { ris: risSide, getPExact: getPExactSide } = xsSide;
-    const getPExactSide_ = memoize(getPExactSide);
+    if (xsSide === undefined) { return undefined; }
 
-    const xsPs = getRootsAndCoeffs(side, ps, tsPs);
-    if (xsPs === undefined) { return []; }
-    let { ris: risPs, getPExact: getPExactPs } = xsPs;
-    const getPExactPs_ = memoize(getPExactPs);
+    let { ris, getPExact } = xsSide;
+    const getPExactSide_ = memoize(getPExact);
 
-    
-    //---- Make sure no boxesPs overlap. 
-    // If any two boxes do operlap we cannot match the `t` value of a `ps` box
-    // to that of a side box, else we can definitively match them.
-    //
-    // Note: multiplicity > 1 intersections will result in an infinite loop. 
-    // It is assumed (as a precondition) the code is such that a multiple 
-    // intersection is not possible here
-    const resPs = deoverlapBoxes(ps, risPs, getPExactPs_);
-    risPs = resPs.ris;
-    const boxesPs = resPs.boxes;
-    const cPs = resPs.compensated;
+    // There can only be one due to geometry
+    const riSide = ris[0];
+    const p = toP(ps, riSide.tS);
+    // const p = evalDeCasteljauDd(ps, riSide.tS).map(c => c[0] + c[1]);
 
-    //---- Make sure no boxesSides overlap - this should be rare as we are 
-    // already roughly once compensated on that (due to small length of the sides).
-    const resSide = deoverlapBoxes(side, risSide, getPExactSide_);
-    risSide = resSide.ris;
-    const boxesSide = resSide.boxes;
-    const cSide = resSide.compensated;
-
-
-    const xPairs: { psX: X, sideX: X }[] = [];
-    for (let i=0; i<risPs.length; i++) {
-        const boxPs = boxesPs[i];
-        for (let j=0; j<risSide.length; j++) {
-            const boxSide = boxesSide[j];
-            if (areBoxesIntersectingDd(true)(boxPs, boxSide)) {
-                const psX   = makeX(ps, cPs, risPs[i], getPExactPs);
-                const sideX = makeX(side, cSide, risSide[j], getPExactSide);
-                xPairs.push({ psX, sideX });
-            }
-        }
-    }
-
-    return xPairs;
+    return {
+        compensated: 0,
+        ri: riSide,
+        riExp: undefined,
+        getPExact,
+        kind: 1,
+        p
+    };
 }
 
 
@@ -79,7 +54,7 @@ function getRootsAndCoeffs(
         ps1: number[][], 
         ps2: number[][],
         ts: number[]): { 
-            ris: RootIntervalExp[]; 
+            ris: RootInterval[]; 
             getPExact: () => number[][]; } | undefined {
             
     const r = getCoeffsBezBez(ps1, ps2);
@@ -90,68 +65,10 @@ function getRootsAndCoeffs(
 
     if (ris === undefined || ris.length === 0) { return undefined; }
 
-    return { ris: ris.map(rootIntervalToExp), getPExact };
+    return { ris, getPExact };
 }
 
 
-/**
- * Refines the given root intervals of `curve` (at most once) so that none of
- * their bounding boxes overlap.
- *
- * Note: multiplicity > 1 intersections will result in an infinite loop. It is
- * assumed (as a precondition) the code is such that a multiple intersection is
- * not possible here.
- */
-function deoverlapBoxes(
-        ps: number[][],
-        ris: RootIntervalExp[],
-        getPExact: () => number[][]): { ris: RootIntervalExp[]; boxes: number[][][][]; compensated: number } {
-
-    const boxes = ris.map(ri => getIntervalBoxDd(ps, [ri.tS, ri.tE]));
-
-    let overlap = false;
-    for (let i=0; i<ris.length && !overlap; i++) {
-        for (let j=i+1; j<ris.length; j++) {
-            if (areBoxesIntersectingDd(true)(boxes[i], boxes[j])) {
-                overlap = true;
-                break;
-            }
-        }
-    }
-    if (!overlap) {
-        return { ris, boxes, compensated: 0 };
-    }
-
-    ris = ris.flatMap(ri => refineK1(
-        { t: ri.tS[1], tS: ri.tS[1], tE: ri.tE[1], multiplicity: ri.multiplicity },
-        getPExact()
-    ));
-
-    return { ris, boxes, compensated: 1 };
-}
-
-
-/**
- * Creates an `X` from the given root interval and bounding box, tracking whether
- * it was compensated (in which case the exact-poly getter is dropped).
- */
-function makeX(
-        ps: number[][],
-        compensated: number,
-        ri: RootIntervalExp,
-        getPExact: () => number[][]): X {
-
-    const p = evalDeCasteljauDd(ps, ri.tS).map(c => c[0] + c[1]);
-
-    return {
-        compensated,
-        ri: rootIntervalToDouble(ri),
-        riExp: compensated ? ri : undefined,
-        getPExact: compensated ? undefined : getPExact,
-        kind: 1,
-        p
-    };
-}
 
 
 function rootIntervalToDouble(

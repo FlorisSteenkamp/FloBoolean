@@ -1,6 +1,7 @@
 import type { StateControl } from '../state-control/state-control.js';
 import type { ClickFor } from '../state/click-for.js';
 import { logNearestContainer } from './log-nearest-container.js';
+import { logNearestMinY } from './log-nearest-min-y.js';
 import { logNearestX } from './log-nearest-x.js';
 import { logNearestBezierPre, logLooseBb_, logTightBb_, logBHull_ } from './log-bbs.js';
 import { logNearestBezierPost } from './log-nearest-bezier-post.js';
@@ -45,7 +46,7 @@ function onClick(
             loopPost          : logNearestLoopPost,
             loopsPost         : logNearestLoopsPost,
 
-            minY: undefined!,
+            minY              : logNearestMinY,
             container         : logNearestContainer,
             // loops: undefined!,
             intersection      : undefined,

@@ -22,7 +22,7 @@ async function lazyLoadDeduced(
 
     upd(state.appState.pageState.deduced!, { pathStrs });
 
-    const { viewbox, timingAll } = await loadDeducedProps(stateControl, pathStrs);
+    const { viewbox, timingAll } = loadDeducedProps(stateControl, pathStrs);
 
     console.log(`All took: ${timingAll.toFixed(0)} milliseconds.`);
 

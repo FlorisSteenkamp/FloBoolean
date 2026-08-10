@@ -193,6 +193,7 @@ function Page(props: Props) {
                         spacer: { text: '•' },
                         bezier: { text: 'bezier' },
                         container: { text: 'container' },
+                        minY: { text: 'min y' },
                         loopPost: { text: 'loop' },
                         loopsPost: { text: 'loops' },
                         _x_: { text: '_x_' },

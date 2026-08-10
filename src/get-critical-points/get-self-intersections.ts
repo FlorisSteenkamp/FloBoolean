@@ -37,8 +37,8 @@ function getSelfIntersections(
             const p = toP(ps, ts0);
 
             xs.push([
-                { x: { ri: { t: t0S, tS: t0S, tE: t0E, multiplicity: 1 }, p, kind }, curve, next: undefined!, prev: undefined!, container: undefined!, order: 0 },
-                { x: { ri: { t: t1S, tS: t1S, tE: t1E, multiplicity: 1 }, p, kind }, curve, next: undefined!, prev: undefined!, container: undefined!, order: 0 }
+                { x: { ri: { t: t0S, tS: t0S, tE: t0E, multiplicity: 1 }, p, kind }, curve, next: undefined!, prev: undefined!, container: undefined! },
+                { x: { ri: { t: t1S, tS: t1S, tE: t1E, multiplicity: 1 }, p, kind }, curve, next: undefined!, prev: undefined!, container: undefined! }
             ]);
         }
     }

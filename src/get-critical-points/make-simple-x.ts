@@ -24,8 +24,7 @@ function makeSimpleX(
         curve,
         next: undefined!,
         prev: undefined!,
-        container: undefined!,
-        order: 0
+        container: undefined!
     };
 }
 

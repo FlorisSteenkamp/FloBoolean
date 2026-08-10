@@ -1,3 +1,5 @@
+declare const _debug_: Debug; 
+import { Debug } from '../../../src/index.js';
 import { StateControl } from '../state-control/state-control.js';
 // import { getPathsFromStr, simplifyPaths, boolean, OR, AND, XOR, Loop } from '../../../src/index.js';
 import { getPathsFromStr, simplifyPaths } from '../../../src/index.js';
@@ -14,7 +16,7 @@ const IS_DEBUG_ON = true;
 // const strToBooleanOp = { AND, OR, XOR, aNOTb }
 
 
-async function loadDeducedProps(
+function loadDeducedProps(
         stateControl: StateControl,
         pathStrs: string[],
         // forBoolean: boolean) {
@@ -48,6 +50,12 @@ async function loadDeducedProps(
     } finally {
         timingAll = performance.now() - timeStart;
     }
+
+    if (typeof _debug_ !== 'undefined') {
+        const { l1, l2, l3 } = _debug_.callCounts;
+        console.log(l1,l2,l3);
+    }
+    
 
     return { viewbox, timingAll };
 }

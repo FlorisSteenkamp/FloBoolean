@@ -23,11 +23,10 @@ function getTurnarounds(
                     },
                     next: undefined!,  // will be set later
                     prev: undefined!,   // ...
-                    container: undefined!,
-                    order: 0
+                    container: undefined!
                 };
 
-                return [_x_, {..._x_, order: 1 }];
+                return [_x_, {..._x_ }];
                 // return [_x_];
             })
         });

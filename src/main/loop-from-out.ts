@@ -1,5 +1,5 @@
 import type { Out } from "../containers/in-out/in-out.js";
-import { bezierPieceToBezier } from "../calc-paths/bezier-piece-to-bezier.js";
+import { bezierPieceToBezier } from "flo-bezier3";
 import { loopFromBeziers } from '../shape/loop-from-beziers.js';
 import { reverseShapeOrientation } from "../shape/reverse-shape-orientation.js";
 

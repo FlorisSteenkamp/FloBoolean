@@ -23,6 +23,11 @@ interface Debug {
     readonly timing: Timing;
     readonly fs: DebugFunctions;
     readonly verbose: boolean;
+    readonly callCounts: {
+        l1: number;
+        l2: number;
+        l3: number;
+    }
 }
 
 
@@ -44,6 +49,11 @@ function enableDebugForBooleanOp(
 
     const debug_: Debug = { 
         ...debug,
+        callCounts: {
+            l1: 0,
+            l2: 0,
+            l3: 0
+        },
         elems: { 
             ...debug?.elems,
             minY: [],

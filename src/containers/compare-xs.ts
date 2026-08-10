@@ -15,9 +15,7 @@ function compareXs(
     if (res !== 0) { return res; }
 
     res = xA.x.ri.tS - xB.x.ri.tS;
-    if (res !== 0) { return res; }
-
-    return xA.order - xB.order;
+    return res;
 }
 
 

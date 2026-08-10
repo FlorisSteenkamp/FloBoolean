@@ -66,6 +66,23 @@ function SimpleSelect(props: Props) {
         if (onChanged && option !== value) { onChanged(option); }
     }
 
+    // Type-ahead: jump the highlight to the next option whose first letter
+    // matches `char`, cycling from the current position (so pressing the same
+    // letter repeatedly steps through all matches).
+    function typeAhead(char: string) {
+        const c = char.toLowerCase();
+        const n = options.length;
+        if (n === 0) { return; }
+        const start = activeIndex >= 0 ? activeIndex : options.indexOf(value);
+        for (let k = 1; k <= n; k++) {
+            const idx = (start + k) % n;
+            if (options[idx].toLowerCase().startsWith(c)) {
+                setActiveIndex(idx);
+                return;
+            }
+        }
+    }
+
     function onButtonKeyDown(e: React.KeyboardEvent<HTMLButtonElement>) {
         if (!open) {
             if (e.key === 'ArrowDown' || e.key === 'ArrowUp' ||
@@ -100,6 +117,13 @@ function SimpleSelect(props: Props) {
                 break;
             case 'Escape':
                 setOpen(false);
+                break;
+            default:
+                // Type-ahead on a single printable character (ignore shortcuts).
+                if (e.key.length === 1 && !e.altKey && !e.ctrlKey && !e.metaKey) {
+                    e.preventDefault();
+                    typeAhead(e.key);
+                }
                 break;
         }
     }

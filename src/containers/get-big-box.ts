@@ -1,5 +1,14 @@
 
-const { abs } = Math;
+const { abs, min } = Math;
+
+
+/**
+ * Fraction of each side's full distance from `p` to keep when shrinking the
+ * "big box" (the value that used to be a hard-coded `0.5` = halve). Smaller
+ * values give a tighter box, `1` keeps the full box, `0` collapses it to `p`.
+ * Adjust this to tune the big box size (e.g. `0.5`, `0.4`, ...).
+ */
+const BIG_BOX_SHRINK_FACTOR = 0.5;
 
 
 /**
@@ -79,10 +88,20 @@ function getBigBox(
         }
     }
 
-    // Halve each side's distance from `p`, keeping `p` fixed as the "center".
+    // Shrink to a square: every side the same distance from `p`, using the
+    // minimum of the four edge distances so no rect ends up strictly inside.
+    // const d = min(px - minX, maxX - px, py - minY, maxY - py);
+    // return [
+    //     [px - d/2, py - d/2],
+    //     [px + d/2, py + d/2],
+    // ];
+
+    // Move each side from `p` towards its blocking edge by `shrinkFactor` of
+    // the full distance, keeping `p` fixed (0.5 = halve, 1 = full box).
+    const f = BIG_BOX_SHRINK_FACTOR;
     return [
-        [(px + minX) / 2, (py + minY) / 2],
-        [(px + maxX) / 2, (py + maxY) / 2],
+        [px + (minX - px)*f, py + (minY - py)*f],
+        [px + (maxX - px)*f, py + (maxY - py)*f],
     ];
 }
 

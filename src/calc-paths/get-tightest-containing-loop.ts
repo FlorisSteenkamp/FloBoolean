@@ -1,7 +1,7 @@
 import type { Out } from "../containers/in-out/in-out.js";
 import type { Loop } from '../shape/loop.js';
 import { isLoopInLoop } from './is-loop-in-loop.js';
-import { bezierPieceToBezier } from './bezier-piece-to-bezier.js';
+import { bezierPieceToBezier } from 'flo-bezier3';
 
 
 /**

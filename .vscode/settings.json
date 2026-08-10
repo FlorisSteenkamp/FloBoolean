@@ -12,5 +12,9 @@
         "\\.tsx?$"
     ],
     "typescript.format.semicolons": "insert",
-    "javascript.format.semicolons": "insert"
+    "javascript.format.semicolons": "insert",
+    "search.exclude": {
+        "**/*.js": true,
+        "**/*.d.ts": true
+    }
 }

@@ -7,6 +7,8 @@ import type { InOut } from "./in-out/in-out.js";
  * All contained intersections are 'far' from the box's sides.
  */
 interface Container {
+    /** unique identifying index (assigned once the final container list is built) */
+    readonly idx?: number;
     /** the box enclosing the intersections */
     readonly box: number[][];
     readonly bigBox: number[][];

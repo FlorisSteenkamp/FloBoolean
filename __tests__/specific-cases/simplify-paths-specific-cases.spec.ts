@@ -14,8 +14,7 @@ import { getShapesControlPointBox } from './get-shapes-control-point-box.js';
 import { scaleShape } from '../../src/shape/scale-shape.js';
 import { countInk } from './count-ink.js';
 import { countThickDiff } from './count-thick-diff.js';
-import { addLoopToPath } from './add-loop-to-path.js';
-import { drawBooleanRef } from './draw-boolean-ref.js';
+import { drawBooleanRef, drawShapesRef } from './draw-boolean-ref.js';
 import { Loop } from '../../src/shape/loop.js';
 
 const { max, min, ceil, log2, abs } = Math;
@@ -31,7 +30,20 @@ const CANVAS_WIDTH_HEIGHT_EXP = log2(CANVAS_WIDTH_HEIGHT);
  * below the magnitude of a genuine filled-area difference.
  */
 const MAX_THICK_DIFF = 0;
+// Raw (non-eroded) per-pixel difference bound. Unlike `thickDiff` (which erodes
+// away thin boundary discrepancies), this counts EVERY differing pixel. Since
+// the reference and actual now share the SAME scanline winding rasterizer
+// (`drawBooleanRef` / `drawShapesRef`), this residual is no longer rasterizer
+// disagreement - it is the genuine ~1px boundary offset between each shape's
+// reconstructed output beziers and its input beziers (all `thick=0`). The worst
+// is `complexish2 XOR` at ~141px; 200 clears it with a margin.
+const MAX_DIFF = 200;
 
+// Flip to `true` to print a per-shape/op `thick` vs `raw` diff table while
+// running the tests (handy for choosing `MAX_THICK_DIFF` / `MAX_DIFF`).
+const LOG_DIFFS = true;
+// Only log rows whose raw diff is at least this, to hide near-zero noise.
+const LOG_DIFF_MIN = 1;
 
 test('`simplifyPaths` specific cases', function() {
     const canvas = createCanvas(CANVAS_WIDTH_HEIGHT, CANVAS_WIDTH_HEIGHT);
@@ -39,9 +51,11 @@ test('`simplifyPaths` specific cases', function() {
 
     updDebugGlobal(true);
 
+    // testIt('woodland');      // complex shape -> should decompose correctly'
     testIt('complex3');      // complex shape -> should decompose correctly'
     testIt('complex2');     // complex shape -> should decompose correctly'
     testIt('complex');      // complex shape -> should decompose correctly'
+    testIt('complex4');      // complex shape -> should decompose correctly'
     testIt('koldat-again');     // koldat-again -> edge case test'
     testIt('multi-level-reversed-orientation');    // three-squares -> should boolean correctly'
     testIt('two-squares');    // three-squares -> should boolean correctly'
@@ -179,9 +193,9 @@ function pixelTest(
     drawBooleanRef(ctx, inputLoops.map(tf), booleanOp);
     const imgData1 = ctx.getImageData(0, 0, CANVAS_WIDTH_HEIGHT, CANVAS_WIDTH_HEIGHT);
 
-    // Actual image: the `simplifyPaths` output. Each output shape's loops
-    // (outer + holes) are drawn in a single path so holes render.
-    drawShapes(ctx, outputSets.map(set => set.map(tf)));
+    // Actual image: the `simplifyPaths` output, rasterized with the SAME
+    // scanline winding rasterizer as the reference so boundary sampling matches.
+    drawShapesRef(ctx, outputSets.map(set => set.map(tf)));
     const imgData2 = ctx.getImageData(0, 0, CANVAS_WIDTH_HEIGHT, CANVAS_WIDTH_HEIGHT);
 
     expectForShape(`${fileName} ${booleanOp} (image width)`, () => expect(imgData1.width).toBe(imgData2.width));
@@ -208,36 +222,27 @@ function pixelTest(
         imgData1, imgData2, CANVAS_WIDTH_HEIGHT, CANVAS_WIDTH_HEIGHT
     );
 
+    // The raw (non-eroded) per-pixel difference: `countThickDiff` with radius 0
+    // erodes nothing, so it counts every differing pixel including thin
+    // boundary / anti-aliasing discrepancies. Bounded by the looser `MAX_DIFF`.
+    const diff = countThickDiff(
+        imgData1, imgData2, CANVAS_WIDTH_HEIGHT, CANVAS_WIDTH_HEIGHT, 0
+    );
+
+    if (LOG_DIFFS && diff >= LOG_DIFF_MIN) {
+        console.log(`DIFF ${fileName.padEnd(28)} ${booleanOp.padEnd(3)}  thick=${String(thickDiff).padStart(5)}  raw=${String(diff).padStart(5)}`);
+    }
+
     // A tiny residual (a handful of px) can survive erosion at near-degenerate
     // self-intersections where the winding parity of a sub-pixel pocket is
     // ambiguous at raster resolution (e.g. `complex` XOR). Genuine filled-area
     // differences are far larger (hundreds+ px), so this small absolute
     // tolerance distinguishes acceptable rasterization noise from real bugs.
     expectForShape(`${fileName} ${booleanOp} (thickDiff <= ${MAX_THICK_DIFF})`, () => expect(thickDiff).toBeLessThanOrEqual(MAX_THICK_DIFF));
+    expectForShape(`${fileName} ${booleanOp} (diff <= ${MAX_DIFF})`, () => expect(diff).toBeLessThanOrEqual(MAX_DIFF));
 
     // Return the amount of ink (non-transparent pixels) used by the output.
     return inkActual;
-}
-
-
-function drawShapes(
-    ctx: CanvasRenderingContext2D,
-    shapes: (number[][])[][][]) {
-
-    ctx.antialias = 'none';
-    ctx.clearRect(0, 0, CANVAS_WIDTH_HEIGHT, CANVAS_WIDTH_HEIGHT);
-    ctx.globalCompositeOperation = 'source-over';
-
-    ctx.fillStyle = 'black';
-    for (const shape of shapes) {
-        // Draw all loops of a shape (outer + holes) in a single path so that
-        // the nonzero winding rule cuts out the holes.
-        ctx.beginPath();
-        for (const loop of shape) {
-            addLoopToPath(ctx, loop);
-        }
-        ctx.fill('nonzero');
-    }
 }
 
 

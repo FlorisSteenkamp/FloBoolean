@@ -22,27 +22,33 @@ import type { Mutable } from "../../../utils/mutable.js";
  * @param container
  */
 function getXInOuts(
-        container: Container): { ins: In[], outs: Out[] } {
+        container: Container) {
 
-    const ins: In[] = [];
-    const outs: Out[] = [];
+    const inOuts: (In | Out)[] = [];
 
     for (const x of container.xs) {
+        if (x.prevBefExit === x || x.nextBefExit === x) {
+        }
+    }
+
+    for (const x of container.xs) {
+        // const dir = x.nextBefExit === x ? +1 : (x.prevBefExit === x ? -1 : 0);
+        // if (dir === 0) { console.log('aaaa'); }
         // entry point -> `In`
         if (x.prevBefExit === x && x.prev !== x) {
             const in_ = makeInOut(-1, x, container);
             (x as Mutable<_X_>).in_ = in_;
-            ins.push(in_);
+            inOuts.push(in_);
         }
         // exit point -> `Out`
         if (x.nextBefExit === x && x.next !== x) {
             const out = makeInOut(+1, x, container);
             (x as Mutable<_X_>).out = out;
-            outs.push(out);
+            inOuts.push(out);
         }
     }
 
-    return { ins, outs };
+    return inOuts;
 }
 
 

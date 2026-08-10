@@ -46,7 +46,10 @@ interface InOut {
     readonly windingNum: number;
     readonly parent: Out;
     readonly children: Set<Out>;
-    readonly bezierPieces: BezierPiece[]; 
+    readonly bezierPieces: BezierPiece[];
+
+    // Order Info - could be moved to a seperate parallel object
+    oSideIdxs?: number[];
 }
 
 

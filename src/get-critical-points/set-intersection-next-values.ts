@@ -1,5 +1,4 @@
 import type { _X_ } from "./-x-.js";
-import type { Loop } from "../shape/loop.js";
 import type { Mutable } from "../utils/mutable.js";
 import { compareXs } from "../containers/compare-xs.js";
 
@@ -15,23 +14,23 @@ import { compareXs } from "../containers/compare-xs.js";
 function setIntersectionNextAndPrevs(
         xPairs: _X_[][]) {
 
-    const xsByLoop: Map<Loop, _X_[]> = new Map();
+    const xsByLoop: _X_[][] = [];
     for (const xPair of xPairs) {
         for (const x_ of xPair) {
-            const { loop } = x_.curve;
-            xsByLoop.getOrInsert(loop, [])
-                .push(x_)
+            const { idx } = x_.curve.loop;
+            (xsByLoop[idx] ??= []).push(x_);
         }
     }
 
-    for (const xs of xsByLoop.values()) {
+    for (const xs of xsByLoop) {
         if (xs === undefined || xs.length === 0) { continue; }
 
         xs.sort(compareXs);
 
         const len = xs.length;
+        const xs_: _X_[] = [];
         for (let i=0; i<len; i++) {
-            const container = xs[i].container;
+            const { container } = xs[i];
 
             // Skip over intersections that stay in the same container so that
             // `next`/`prev` always move to an intersection in a different
@@ -50,15 +49,27 @@ function setIntersectionNextAndPrevs(
             // container changes (the one just before `ni`/`pi`) - falls back to
             // `xs[i]` itself when its immediate neighbour already leaves (or when
             // every intersection shares this container).
-            const nbi = i_ === i ? i : (i_ - 1 + len)%len;
-            const pbi = _i === i ? i : (_i + 1)%len;
+            const bi_ = i_ === i ? i : (i_ - 1 + len)%len;
+            const _bi = _i === i ? i : (_i + 1)%len;
 
             (xs[i] as Mutable<_X_>).next = xs[i_];
             (xs[i] as Mutable<_X_>).prev = xs[_i];
-            (xs[i] as Mutable<_X_>).nextBefExit = xs[nbi];
-            (xs[i] as Mutable<_X_>).prevBefExit = xs[pbi];
+            if (i === bi_) {
+                (xs[i] as Mutable<_X_>).nextBefExit = xs[bi_];
+            }
+            if (i === _bi) {
+                (xs[i] as Mutable<_X_>).prevBefExit = xs[_bi];
+            }
         }
     }
+
+    // for (const xs of xsByLoop) {
+    //     for (const x of xs) {
+    //         if (x.nextBefExit !== undefined && x.prevBefExit !== undefined) {
+    //             console.log('sdfjkldfsw')
+    //         }
+    //     }
+    // }
 }
 
 

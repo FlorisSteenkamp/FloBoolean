@@ -5,6 +5,7 @@ import type { In, Out } from '../containers/in-out/in-out.js';
 import type { Loop } from '../shape/loop.js';
 import { getNextExit } from './get-next-exit.js';
 import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
+import { timeFunctionCalls } from '../utils/time-function-call.js';
 
 
 /** 
@@ -14,7 +15,7 @@ import { getBeziersToNextContainer } from './get-beziers-to-next-container.js';
  * @param takenOuts
  * @param origOut
  */
-function completeLoop(
+const completeLoop = timeFunctionCalls(function completeLoop(
         takenOuts: Set<Out>,
         takenLoops: Set<Loop>,
         origOut: Out): {
@@ -65,7 +66,7 @@ function completeLoop(
     } while (outToUse !== origOut);
 
     return { bezierPieces, additionalOutsToCheck };
-}
+});
 
 
 export { completeLoop }

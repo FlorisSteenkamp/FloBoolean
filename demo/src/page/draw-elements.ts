@@ -1,6 +1,5 @@
 declare const _debug_: Debug; 
-
-import { Debug, IDebugElems } from '../../../src/index.js';
+import { Debug, DebugElems } from '../../../src/index.js';
 import { StateControl } from '../state-control/state-control.js';
 import { ToDraw } from '../state/to-draw.js';
 import { deleteSvgs } from './delete-svgs.js';
@@ -21,7 +20,7 @@ async function drawElements(
 
     const elemss$: SVGElement[][][] = [];
     for (const elemType_ in toDraws) {
-        const elemType = elemType_ as keyof IDebugElems;
+        const elemType = elemType_ as keyof DebugElems;
 
         const toDraw = toDraws[elemType];
 

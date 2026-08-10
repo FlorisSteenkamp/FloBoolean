@@ -10,13 +10,13 @@ import { filterContainers } from './filter-containers.js';
 import { combineOverlappingContainers } from './combine-overlapping-containers/combine-overlapping-containers.js';
 import { getContainersFromXPairs } from './get-containers-from-x-pairs.js';
 import { connectContainerInOuts } from './connect-container-in-outs.js';
-import { getInOutsOfContainer } from '../get-container-in-outs/get-in-outs-via-sides/get-in-outs-of-container.js';
 import { numberInOuts } from './number-in-outs.js';
 import { MAX_BIT_LENGTH } from '../../main/max-bitlength.js';
 import { orderInOuts } from '../order-in-outs.js';
 import { getAllXPairs } from './get-all-x-pairs.js';
 import { assignBigBoxesToContainers } from './assign-big-boxes-to-containers.js';
 import { timeFunctionCalls } from '../../utils/time-function-call.js';
+import { getXInOuts } from '../get-container-in-outs/get-in-outs-via-sides/get-x-in-outs.js';
 
 
 /** 
@@ -24,7 +24,7 @@ import { timeFunctionCalls } from '../../utils/time-function-call.js';
  * holding critical points.
  */
 const CONTAINER_SIZE_MULTIPLIER = 2**4;
-const CONTAINER_SIZE_MULTIPLIER_FOR_DEBUGGING = 2**32;
+const CONTAINER_SIZE_MULTIPLIER_FOR_DEBUGGING = 2**4;
 
 
 /**
@@ -38,28 +38,27 @@ const getContainers = timeFunctionCalls(function getContainers(
         minYXPairs: _X_[],
         expMax: number) {
 
+    //--------------------------------------------------------------------------
     const gridSpacing = 2**(expMax - MAX_BIT_LENGTH);
     const containerSizeMultiplier = typeof _debug_ === 'undefined'
         ? CONTAINER_SIZE_MULTIPLIER
         : CONTAINER_SIZE_MULTIPLIER_FOR_DEBUGGING
     const containerDim = gridSpacing * containerSizeMultiplier;
+    //--------------------------------------------------------------------------
 
     let xPairs = getAllXPairs(loops, minYXPairs, expMax);
 
     let containers: Container[];
     containers = getContainersFromXPairs(xPairs, containerDim);
     containers = combineOverlappingContainers(containers);
-    // containers = filterContainers(containers);  // TODO - put back eventually
     containers = sendContainersToGrid(containers, expMax, containerDim);
 
     assignContainersToXs(containers);
 
-    // remove xs not belonging to a container (caused by `filterContainers`)
-    xPairs = xPairs.filter(x => x[0].container !== undefined);
     setIntersectionNextAndPrevs(xPairs);
 
     for (const container of containers) {
-        (container as Mutable<Container>).inOuts = getInOutsOfContainer(container);
+        (container as Mutable<Container>).inOuts = getXInOuts(container);
     }
 
     assignBigBoxesToContainers(containers, expMax);
@@ -69,7 +68,11 @@ const getContainers = timeFunctionCalls(function getContainers(
 
     containers.forEach(orderInOuts);
 
-    // containers = filterContainers(containers);
+    // containers = filterContainers(containers);  // TODO - investigate
+
+    containers.forEach((container, idx) => {
+        (container as Mutable<Container>).idx = idx;
+    });
 
     // console.log(containers.map(c => c.bigBox));
 

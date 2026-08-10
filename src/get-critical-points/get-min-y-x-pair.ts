@@ -19,7 +19,7 @@ function getMinYXpair(
     const { curve, y } = minY;
 
     if (typeof _debug_ !== 'undefined') {
-        _debug_.elems.minY.push({ curve: minY.curve, p: y.p, t: y.t });
+        _debug_.elems.minY.push({ curve, p: y.p, t: y.t });
     }
     
     const t = clip(y.t, 0, 1);
@@ -34,8 +34,7 @@ function getMinYXpair(
         curve,
         next: undefined!, // will be set later
         prev: undefined!, // ...
-        container: undefined!,
-        order: 0
+        container: undefined!
     }
 
     // duplicate the object so that they are not the same object

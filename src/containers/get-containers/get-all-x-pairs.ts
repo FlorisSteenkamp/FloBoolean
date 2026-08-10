@@ -30,17 +30,6 @@ const getAllXPairs = timeFunctionCalls(function getAllXPairs(
     let xPairs = [xs1, xs2, xs3, xs4, xs5, xs6].flat(1);
     // let xPairs = [xs1, xs2, xs3, xs5, xs6].flat(1);
 
-    // Assign every `_X_` a globally-unique `order` (the first element of each
-    // pair gets the lower value, keeping the in-side before the out-side). This
-    // is the arbitrary distinguisher `compareXs` and the `getXInOuts` sort both
-    // use to agree on the relative order of otherwise-coincident `_X_`s.
-    let order = 0;
-    for (const xPair of xPairs) {
-        for (const x_ of xPair) {
-            (x_ as Mutable<_X_>).order = order++;
-        }
-    }
-
     if (typeof _debug_ !== 'undefined') {  _debug_.elems.intersection.push(...xPairs.flat()); }
 
     return xPairs;
