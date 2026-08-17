@@ -54,7 +54,7 @@ function getCurvesIntersections(
         }
 
         // neither aabbs (axis-aligned bounding boxes) nor hulls can split the curves
-        return curveB.next === curveA 
+        return curveB.next === curveA
             ? getIntersection(curveB, curveA, true)   // B --> A
             : getIntersection(curveA, curveB, true);  // A --> B
     } 
@@ -75,7 +75,10 @@ function getCurvesIntersections(
     possiblyIntersecting = doConvexPolygonsIntersect(bbHullA, bbHullB, true);
     if (!possiblyIntersecting) { return undefined; }
 
-    return getIntersection(curveA, curveB, false);
+    const x = getIntersection(curveA, curveB, false);
+    // console.log(x.length);
+
+    return x;
 }
 
 

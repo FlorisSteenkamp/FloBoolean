@@ -30,15 +30,15 @@ function getOtherTs(
         for (let j=0; j<ts2.length; j++) {
             const box2 = is2[j];
             const box = intersectBoxes(box1,box2);
-            if (box !== undefined) {
-                // FUTURE important - combine boxes to make sense, i.e. combine better
-                // e.g. two odd multiplicity boxes should combine to a single even, etc. etc.
-                const p = toP(ps1, ts1[i].t);
+            if (box === undefined) { continue; }
 
-                const x1: X = { ri: ts1[i], p, kind: 1 };
-                const x2: X = { ri: ts2[j], p, kind: 1 };
-                xPairs.push([x1, x2]);
-            }
+            // FUTURE - combine boxes to make sense, i.e. combine better
+            // e.g. two odd multiplicity boxes should combine to a single even, etc. etc.
+            const p = toP(ps1, ts1[i].t);
+
+            const x1: X = { ri: ts1[i], p, kind: 1 };
+            const x2: X = { ri: ts2[j], p, kind: 1 };
+            xPairs.push([x1, x2]);
         }
     }
 

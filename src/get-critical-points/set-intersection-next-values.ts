@@ -62,14 +62,6 @@ function setIntersectionNextAndPrevs(
             }
         }
     }
-
-    // for (const xs of xsByLoop) {
-    //     for (const x of xs) {
-    //         if (x.nextBefExit !== undefined && x.prevBefExit !== undefined) {
-    //             console.log('sdfjkldfsw')
-    //         }
-    //     }
-    // }
 }
 
 

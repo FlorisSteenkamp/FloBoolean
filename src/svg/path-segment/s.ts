@@ -2,7 +2,6 @@ import { PathState } from "../path-state.js";
 
 
 /**
- * @hidden
  * S and s: (from www.w3.org) 
  * 
  * params: x2 y2 x y
@@ -17,6 +16,8 @@ import { PathState } from "../path-state.js";
  * indicates that relative coordinates will follow. Multiple sets of coordinates 
  * may be specified to draw a polybézier. At the end of the command, the new 
  * current point becomes the final (x,y) coordinate pair used in the polybézier.
+ * 
+ * @internal
  */
 function s(s: PathState): number[][] {
     const p = s.prev2ndCubicControlPoint

@@ -1,6 +1,10 @@
+import { memoize } from 'flo-memoize';
 import { getBounds$ } from '../geometry/get-bounds-.js';
 
 const { min, max } = Math;
+
+
+const getShapeBounds$ = memoize(getShapeBounds);
 
 
 function getShapeBounds(
@@ -22,4 +26,4 @@ function getShapeBounds(
 }
 
 
-export { getShapeBounds }
+export { getShapeBounds, getShapeBounds$ }

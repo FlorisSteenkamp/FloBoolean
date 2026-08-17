@@ -1,13 +1,13 @@
 const { min, max } = Math;
 
 
-function clip(
+function clamp(
         v: number,
         minV: number,
         maxV: number) {
 
-    return min(1, max(0, v));
+    return min(maxV, max(minV, v));
 }
 
 
-export { clip }
+export { clamp }

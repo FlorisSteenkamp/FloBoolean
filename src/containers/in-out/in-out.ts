@@ -53,12 +53,4 @@ interface InOut {
 }
 
 
-const MinY = 0;
-const MinX = 1;
-const MaxY = 2;
-const MaxX = 3;
-
-
 export type { In, Out, InOut }
-export { MinY, MinX, MaxY, MaxX }
-

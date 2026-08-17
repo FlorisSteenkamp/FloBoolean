@@ -9,6 +9,7 @@ import { timeFunctionCalls } from '../utils/time-function-call.js';
 
 
 const completePaths = timeFunctionCalls(function completePaths(
+        expMax: number,
         loops: Loop[],
         minYXPairs: _X_[]) {
 
@@ -23,7 +24,7 @@ const completePaths = timeFunctionCalls(function completePaths(
         if (takenLoops.has(loop)) { continue; }
         takenLoops.add(loop);
 
-        const parent = getTightestContainingLoop(root, loop);
+        const parent = getTightestContainingLoop(expMax, root, loop);
 
         const container = minYXPairs[i].container!;
         const { inOuts } = container;
@@ -49,39 +50,11 @@ const completePaths = timeFunctionCalls(function completePaths(
 
         const initialOut = getOutermostOut(container, parent);
 
-        // const containerIsSimple =
-        //     inOuts.length === 2 &&  // only 2 InOuts
-        //     xs.length === 2;  // only 2 Xs
-
         completePath(
             initialOut,
             takenLoops,
             takenOuts
         );
-
-        // TODO - put back later - woodland is very slow
-        // if (containerIsSimple &&
-        //     initialOut.bezierPieces !== undefined) {
-
-        //     // TODO - can maybe also be done using `BezierPiece`s throughout the code
-        //     //-------------------------------------------------------------------
-        //     // combine first and last bezier so not to have an extraneous bezier
-        //     //-------------------------------------------------------------------
-        //     const { bezierPieces: bps } = initialOut;
-
-        //     const bp1 = bps[bps.length - 1];
-        //     const bp2 = bps[0];
-
-        //     if (bp1.ps === bp2.ps) {
-        //         const bp: BezierPiece = {
-        //             ps: bp1.ps,
-        //             ts: [bp1.ts[0], bp2.ts[1]]
-        //         }
-        //         bps.shift();
-        //         bps.pop();
-        //         bps.unshift(bp);
-        //     }
-        // }
     }
 
     return root;

@@ -1,37 +1,43 @@
-import type { Container } from "../container.js";
-import { toGrid } from "../../shape/normalize/to-grid.js";
+import type { ContainerBasic } from "../container.js";
+import { MAX_BIT_LENGTH } from "../../main/max-bitlength.js";
 
-const { log2 } = Math;
+const { floor, ceil } = Math;
 
 
 /**
  * Returns the containers from the given containers by sending their boxes to a
  * grid with a smaller bitlength.
  * 
+ * The grid spacing equals half the container dimension (`1/2x`). To prevent a
+ * container from collapsing to a point when it falls within a single grid cell,
+ * the box's min corner is rounded down and its max corner is rounded up.
+ * 
  * @param containers 
  * @param expMax 
  * @param containerDim 
  */
 function sendContainersToGrid(
-        containers: Container[],
+        containers: ContainerBasic[],
         expMax: number,
-        containerDim: number) {
+        containerSizeMultiplierExp: number): ContainerBasic[] {
 
-    /** 
-     * The exponent difference between expMax and the distance of critical
-     * points from the sides of the containers. This value cannot be higher
-     * than ⌈sqrt(n)⌉ where n is the number of intersections in a container.
-     * Assume n < 100 - this is a (mild) limitation of the algorithm
-     */
-    const expContainer = log2(containerDim);
-    const expContainerAdj = expContainer - 3; // 2**-3 === 1/8 of container
+    const expGrid = expMax - MAX_BIT_LENGTH;
+    const expContainer = expGrid + containerSizeMultiplierExp;
 
-    const containers_ = containers.map(container => {
-        const box = container.box.map(p => p.map(c => {
-            return toGrid(c, expMax, expMax - expContainerAdj);
-        }));
+    // Grid spacing = 1/2 the container dimension (a power of 2, so snapping via
+    // divide/multiply is exact).
+    const gridSpacing = 2**(expContainer - 1);
 
-        return { ...container, box };
+    const snapDown = (a: number): number => floor(a / gridSpacing) * gridSpacing;
+    const snapUp   = (a: number): number => ceil(a / gridSpacing) * gridSpacing;
+
+    const containers_ = containers.map((container): ContainerBasic => {
+        const { xs, box } = container;
+
+        const [minD, maxD] = box;
+        const box_ = [minD.map(snapDown), maxD.map(snapUp)];
+
+        return { xs, box: box_ };
     });
 
     return containers_;

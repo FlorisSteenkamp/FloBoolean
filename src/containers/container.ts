@@ -3,17 +3,26 @@ import type { InOut } from "./in-out/in-out.js";
 
 
 /**
- * Representation of a a small rectangular box containing close intersections.
- * All contained intersections are 'far' from the box's sides.
+ * Represents a a small rectangular box containing (and thus grouping) intersections.
+ * 
+ * * all contained intersections are 'far' from the box's sides.
  */
-interface Container {
-    /** unique identifying index (assigned once the final container list is built) */
-    readonly idx?: number;
-    /** the box enclosing the intersections */
-    readonly box: number[][];
-    readonly bigBox: number[][];
+interface ContainerBasic {
     /** an array of enclosed intersections */
     readonly xs: _X_[];
+    /** the box enclosing (and thus grouping) the intersections */
+    readonly box: number[][];
+}
+
+
+/**
+ * Represents a a small rectangular box containing (and thus grouping) intersections.
+ * 
+ * * all contained intersections are 'far' from the box's sides.
+ */
+interface Container extends ContainerBasic {
+    /** the box used to order `InOut`s */
+    readonly bigBox: number[][];
     /** 
      * ordered array of incoming / outgoing curves where the order is 
      * anti-clockwise from the top right (minimum y, maximum x) corner
@@ -22,4 +31,4 @@ interface Container {
 }
 
 
-export type { Container }
+export type { ContainerBasic, Container }

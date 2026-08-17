@@ -1,17 +1,17 @@
-import type { RootInterval, RootIntervalExp } from "flo-poly";
+import type { RootInterval } from "flo-poly";
 import type { _X_ } from "../../../get-critical-points/-x-.js";
 import type { X } from "../../../get-critical-points/x.js";
-import { eEstimate } from "big-float-ts";
-import { roots, refineK1, rootIntervalToExp } from "flo-poly";
+import { eps, roots } from "flo-poly";
 import { memoize } from 'flo-memoize';
-import { evalDeCasteljauDd, getCoeffsBezBez, getIntervalBox, getIntervalBoxDd } from "flo-bezier3";
-import { areBoxesIntersectingDd } from "../../../sweep-line/are-boxes-intersecting.js";
+import { getCoeffsBezBez, getIntervalBox } from "flo-bezier3";
 import { toP } from "../../../utils/to-p.js";
+
+const { min, max, abs } = Math;
 
 
 /**
  * Robustly get matching intersections of `ps` (a bezier) that matches those of 
- * `side`. `ps` and `side` can actually be any order 1, 2 or 3 bezier curve.
+ * `side`.
  * 
  * * **precondition** `RootInterval[]` contains no multiple roots
  * 
@@ -22,7 +22,6 @@ import { toP } from "../../../utils/to-p.js";
 function getTs(
         ps: number[][], 
         side: number[][],
-        // tsPs: number[]): { psX: X, sideX: X }[] {
         tsPs: number[]): X | undefined {
 
     const xsPs = getRootsAndCoeffs(side, ps, tsPs);
@@ -41,28 +40,24 @@ function getTs(
     // parameterize by the dominant axis to avoid dividing by a near-zero delta.
     const A = side[0];
     const B = side[side.length - 1];
-    const dx = B[0] - A[0];
-    const dy = B[1] - A[1];
+    const dx = B[0] - A[0];  // exact
+    const dy = B[1] - A[1];  // exact
     const [[minX, minY], [maxX, maxY]] = box;
 
-    let tS: number;
-    let tE: number;
-    if (Math.abs(dx) >= Math.abs(dy)) {
-        const t1 = (minX - A[0]) / dx;
-        const t2 = (maxX - A[0]) / dx;
-        tS = Math.min(t1, t2);
-        tE = Math.max(t1, t2);
-    } else {
-        const t1 = (minY - A[1]) / dy;
-        const t2 = (maxY - A[1]) / dy;
-        tS = Math.min(t1, t2);
-        tE = Math.max(t1, t2);
-    }
+    // Project the box onto the side parameter along the non-degenerate axis
+    // (x for horizontal sides, y for vertical). The sign of the delta `d`
+    // already determines which box extent maps to the smaller `t`, so `min`/
+    // `max` order them; widen slightly by `eps` for tolerance.
+    const horizontal = dy === 0;
+    const a  = horizontal ? A[0] : A[1];
+    const d  = horizontal ? dx   : dy;
+    const lo = horizontal ? minX : minY;
+    const hi = horizontal ? maxX : maxY;
 
-    // Clamp to the side's parameter domain - the enclosed intersection is
-    // guaranteed to lie within, even if the box extends slightly past an end.
-    if (tS < 0) { tS = 0; }
-    if (tE > 1) { tE = 1; }
+    const t1 = (lo - a) / d;
+    const t2 = (hi - a) / d;
+    let tS = min(t1, t2) * (1 - eps);
+    let tE = max(t1, t2) * (1 + eps);
 
     const riSide: RootInterval = {
         multiplicity: 1,
@@ -91,7 +86,8 @@ function getRootsAndCoeffs(
         ps2: number[][],
         ts: number[]): { 
             ris: RootInterval[]; 
-            getPExact: () => number[][]; } | undefined {
+            getPExact: () => number[][];
+        } | undefined {
             
     const r = getCoeffsBezBez(ps1, ps2);
     if (r === undefined) { return undefined; }

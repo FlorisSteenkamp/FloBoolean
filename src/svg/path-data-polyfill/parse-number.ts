@@ -1,14 +1,20 @@
-import { Source } from './source.js';
+import type { Source } from './source.js';
+import { skipOptionalSpaces } from './skip-optional-spaces.js';
+import { skipOptionalSpacesOrDelimiter } from './skip-optional-spaces-or-delimiter.js';
 
 
 /**
- * @hidden
  * Parse a number from an SVG path. This very closely follows genericParseNumber(...) from
  * Source/core/svg/SVGParserUtilities.cpp.
  * Spec: http://www.w3.org/TR/SVG11/single-page.html#paths-PathDataBNF
+ * 
  * @param source 
+ * 
+ * @internal
  */
-function parseNumber(source: Source): number {
+function parseNumber(
+        source: Source): number {
+
     let exponent   = 0;
     let integer    = 0;
     let frac       = 1;
@@ -17,17 +23,17 @@ function parseNumber(source: Source): number {
     let expsign    = 1;
     const startIndex = source._currentIndex;
 
-    source._skipOptionalSpaces();
+    skipOptionalSpaces(source);
 
     let ci = source._currentIndex;
 
     // Read the sign.
     if (ci < source._endIndex && source._string[ci] === "+") {
-        source._currentIndex += 1;
-        ci += 1;
+        source._currentIndex++;
+        ci++;
     } else if (ci < source._endIndex && source._string[ci] === "-") {
-        source._currentIndex += 1;
-        ci += 1;
+        source._currentIndex++;
+        ci++;
         sign = -1;
     }
 
@@ -49,7 +55,7 @@ function parseNumber(source: Source): number {
         source._string[ci] <= "9"
     ) {
         // Advance to first non-digit.
-        source._currentIndex += 1; ci += 1;
+        source._currentIndex++; ci++;
     }
 
     if (ci !== startIntPartIndex) {
@@ -65,8 +71,8 @@ function parseNumber(source: Source): number {
 
     // Read the decimals.
     if (ci < source._endIndex && source._string[ci] === ".") {
-        source._currentIndex += 1;
-        ci += 1;
+        source._currentIndex++;
+        ci++;
 
         if (
             ci >= source._endIndex ||
@@ -82,8 +88,8 @@ function parseNumber(source: Source): number {
             source._string[ci] <= "9"
         ) {
             frac *= 10;
-            decimal += (Number(source._string.charAt(ci))) / frac;
-            source._currentIndex += 1; ci += 1;
+            decimal += (Number(source._string[ci])) / frac;
+            source._currentIndex++; ci++;
         }
     }
 
@@ -94,13 +100,13 @@ function parseNumber(source: Source): number {
         (source._string[ci] === "e" || source._string[ci] === "E") &&
         (source._string[ci + 1] !== "x" && source._string[ci + 1] !== "m")
     ) {
-        source._currentIndex += 1; ci += 1;
+        source._currentIndex++; ci++;
 
         // Read the sign of the exponent.
         if (source._string[ci] === "+") {
-            source._currentIndex += 1; ci += 1;
+            source._currentIndex++; ci++;
         } else if (source._string[ci] === "-") {
-            source._currentIndex += 1; ci += 1;
+            source._currentIndex++; ci++;
             expsign = -1;
         }
 
@@ -119,7 +125,7 @@ function parseNumber(source: Source): number {
         ) {
             exponent *= 10;
             exponent += (Number(source._string[ci]));
-            source._currentIndex += 1; ci += 1;
+            source._currentIndex++; ci++;
         }
     }
 
@@ -130,11 +136,7 @@ function parseNumber(source: Source): number {
         number *= 10**(expsign * exponent);
     }
 
-    if (startIndex === ci) {
-        throw new Error('Internal error: startIndex === source._currentIndex');
-    }
-
-    source._skipOptionalSpacesOrDelimiter();
+    skipOptionalSpacesOrDelimiter(source);
 
     return number;
 }

@@ -13,13 +13,12 @@ import { getBoundingBox$ } from '../geometry/get-bounding-box-.js';
  * @param loops 
  */
 function getIntersections(
-        loops: Loop[], 
-        expMax: number): [_X_,_X_][] {
+        loops: Loop[]): [_X_,_X_][] {
 
     const curves: Curve[] = [];
     for (const loop of loops) {
         for (const curve of loop.curves) {
-            curves.push(curve)
+            curves.push(curve);
         }
     }
 
@@ -31,14 +30,14 @@ function getIntersections(
         getCurvesIntersections
     );
 
-    const xs: [_X_,_X_][] = [];
+    const xPairs: [_X_,_X_][] = [];
     for (const r of rs) {
         for (const xPair of r.u!) {
-            xs.push(xPair);
+            xPairs.push(xPair);
         }
     }
 
-    return xs;
+    return xPairs;
 }
 
 

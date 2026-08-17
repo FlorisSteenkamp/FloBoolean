@@ -16,6 +16,7 @@ import { countInk } from './count-ink.js';
 import { countThickDiff } from './count-thick-diff.js';
 import { drawBooleanRef, drawShapesRef, countBooleanCoverageDiff } from './draw-boolean-ref.js';
 import { Loop } from '../../src/shape/loop.js';
+import { reverseShapeOrientation } from '../../src/shape/reverse-shape-orientation.js';
 
 const { max, min, ceil, log2, abs } = Math;
 
@@ -51,7 +52,8 @@ test('`simplifyPaths` specific cases', function() {
 
     updDebugGlobal(true);
 
-    // testIt('woodland');      // complex shape -> should decompose correctly'
+    testIt('woodland2');      // complex shape -> should decompose correctly'
+    testIt('woodland');      // complex shape -> should decompose correctly'
     testIt('complex6');      // complex shape -> should decompose correctly'
     testIt('complex4');      // complex shape -> should decompose correctly'
     testIt('complex3');      // complex shape -> should decompose correctly'
@@ -86,6 +88,7 @@ test('`simplifyPaths` specific cases', function() {
 
         // console.log(fileName);
         const { bezierLoops, invariants } = getPathFromFile(fileName);
+        // bezierLoops = bezierLoops.map(reverseShapeOrientation);
 
         //-------------
         // Direct test

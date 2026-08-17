@@ -48,13 +48,11 @@ function onClick(
 
             minY              : logNearestMinY,
             container         : logNearestContainer,
-            // loops: undefined!,
             intersection      : undefined,
             
             looseBoundingBox_ : logLooseBb_,
             tightBoundingBox_ : logTightBb_,
             boundingHull_     : logBHull_,
-            // loopset           : logNearestLoopSet,
             _x_               : logNearestX
         }
 

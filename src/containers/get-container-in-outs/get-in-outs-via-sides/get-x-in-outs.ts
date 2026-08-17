@@ -1,6 +1,6 @@
 import type { _X_ } from "../../../get-critical-points/-x-.js";
 import type { In, InOut, Out } from "../../../containers/in-out/in-out.js";
-import type { Container } from "../../container.js";
+import type { Container, ContainerBasic } from "../../container.js";
 import type { Mutable } from "../../../utils/mutable.js";
 
 
@@ -22,7 +22,7 @@ import type { Mutable } from "../../../utils/mutable.js";
  * @param container
  */
 function getXInOuts(
-        container: Container) {
+        container: ContainerBasic) {
 
     const inOuts: (In | Out)[] = [];
 
@@ -59,13 +59,13 @@ function getXInOuts(
 function makeInOut<D extends 1 | -1>(
         dir: D,
         _x_: _X_,
-        container: Container): D extends -1 ? In : Out {
+        container: ContainerBasic): D extends -1 ? In : Out {
 
     const inOut: InOut = {
         idx: undefined!,  // will be set later
         dir,
         _x_,
-        container,
+        container: container as Container,
         children: new Set(),
         windingNum: 0,
         orientation: 0,

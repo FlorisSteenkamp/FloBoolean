@@ -1,11 +1,11 @@
-import type { Container } from "../../container.js";
+import type { ContainerBasic } from "../../container.js";
 import type { _X_ } from "../../../get-critical-points/-x-.js";
 
 const { min, max } = Math;
 
 
 function mergeContainers(
-        containers: Container[]): Container {
+        containers: ContainerBasic[]): ContainerBasic {
 
     let minLeft = Infinity;
     let minTop = Infinity;
@@ -24,12 +24,9 @@ function mergeContainers(
         xs.push(...container.xs);
     }
 
-    return {
-        box: [[minLeft,minTop], [maxRight,maxBottom]],
-        bigBox: undefined!,  // will be set later
-        xs,
-        inOuts: undefined!
-    };
+    const box = [[minLeft,minTop], [maxRight,maxBottom]];
+
+    return { xs, box };
 }
 
 

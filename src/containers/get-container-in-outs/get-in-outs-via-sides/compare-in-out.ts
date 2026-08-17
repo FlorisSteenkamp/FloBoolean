@@ -2,12 +2,10 @@ declare const _debug_: Debug;
 import type { Debug } from '../../../debug/debug.js';
 import type { InOut } from "../../in-out/in-out.js";
 import type { _X_ } from "../../../get-critical-points/-x-.js";
-import { iterBeziersToNextX } from '../../get-beziers-to-next-x.js';
-import { toP } from "../../../utils/to-p.js";
-import { getTs } from "./get-ts.js";
 import { memoize } from "flo-memoize";
-
-const { min, max } = Math;
+import { getInOutSide } from './get-in-out-side.js';
+import { firstSideCrossing } from './first-side-crossing.js';
+import { RootInterval } from 'flo-poly';
 
 
 /**
@@ -55,15 +53,18 @@ function compareInOut(
 
     if (typeof _debug_ !== 'undefined') { _debug_.callCounts.l2++; }
 
-    const { side: sideA, t: tA } = crossingA!;
-    const { side: sideB, t: tB } = crossingB!;
+    const { side: sideA, ri: riA } = crossingA!;
+    const { side: sideB, ri: riB } = crossingB!;
 
     res = sideA - sideB;
     if (res !== 0) { return res; }
 
-    res = tA - tB;
+    res = doRisOverlap(riA, riB) ? 0 : (riA.tS < riB.tS ? -1 : 1);
+
     if (res !== 0) { return res; }
 
+    if (typeof _debug_ !== 'undefined') { _debug_.callCounts.l3++; }
+    
     // TODO - add compensation here as was done with the older version of this funcition
 
     res = dirA - dirB;
@@ -79,98 +80,12 @@ function compareInOut(
 }
 
 
-function getInOutSide(
-        inOut: InOut,
-        _x_: _X_,
-        sides: number[][][],
-        forward: boolean): number[] {
+function doRisOverlap(
+        riA: RootInterval,
+        riB: RootInterval): boolean {
 
-    let pS: number[] | undefined = undefined;
-
-    for (const { ps, ts } of iterBeziersToNextX(_x_, forward)) {
-        if (pS === undefined) { pS = toP(ps, ts[0]); }
-        const pE = toP(ps, ts[1]);
-
-        const [xS, yS] = pS;
-        const [xE, yE] = pE;
-
-        // Nearest crossing (smallest parameter along `a` -> `b`) among the sides.
-        let bestSideIdxs: number[] = [];
-        for (let i=0; i<sides.length; i++) {
-            const side = sides[i];
-            const [[X, Y]] = side;
-            if (!((i%2 === 0 && min(yS,yE) <= Y && Y <= max(yS,yE)) ||   // top & bottom
-                  (i%2 === 1 && min(xS,xE) <= X && X <= max(xS,xE)))) {  // left & right
-
-                continue;
-            }
-
-            bestSideIdxs.push(i);
-        }
-
-        if (bestSideIdxs.length > 0) {
-            inOut.oSideIdxs = bestSideIdxs;
-            return bestSideIdxs;
-        }
-
-        pS = pE;
-    }
-
-    return undefined!;  // shouldn't be possible
+    return (riA.tS <= riB.tE && riB.tS <= riA.tE);
 }
-
-
-/**
- * Follows the loop's beziers outward from `_x_` (via `iterBeziersToNextX`) and
- * returns the first `side` (index into `sides`) whose segment is crossed by a
- * bezier piece's endpoint segment, together with the crossing point `p`, or
- * `undefined` if no crossing occurs before the next intersection.
- *
- * The `sides` are the axis-aligned edges of a box in the standard side order
- * (0 top, 1 left, 2 bottom, 3 right).
- */
-const firstSideCrossing = memoize(function firstSideCrossing(
-        _x_: _X_,
-        sides: number[][][],
-        forward: boolean,
-        sideIdxs: number[]): { side: number, p: number[], t: number } | undefined {
-
-    if (typeof _debug_ !== 'undefined') { _debug_.callCounts.l3++; }
-
-    let pS: number[] | undefined = undefined;
-
-    // TODO - we might remove iterBeziersToNextX in the future since we iter only once ever?
-    for (const { ps, ts } of iterBeziersToNextX(_x_, forward)) {
-        if (pS === undefined) { pS = toP(ps, ts[0]); }
-        const pE = toP(ps, ts[1]);
-
-        // Nearest crossing (smallest parameter along `a` -> `b`) among the sides.
-        let best: { side: number; t: number; p: number[] } | undefined = undefined;
-        for (let j=0; j<sideIdxs.length; j++) {
-            const i = sideIdxs[j];
-            const side = sides[i];
-             
-            // check for possible intersection
-            const ts_ = ts[0] < ts[1] ? ts : [ts[1],ts[0]];
-            const xs = getTs(ps, side, ts_);
-
-            if (xs === undefined) { continue; }
-            const x = xs;
-            const { ri, p } = x;
-            const { t } = ri;
-
-            best = { side: i, t, p };
-        }
-
-        if (best !== undefined) {
-            return best;
-        }
-
-        pS = pE;
-    }
-
-    return undefined;
-});
 
 
 const getBigBoxSides = memoize(function(

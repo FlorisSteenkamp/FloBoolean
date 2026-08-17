@@ -18,7 +18,7 @@ function loopFromBeziers(
     if (beziers.length === 0) { return loop; }
 
     let prev: Curve | undefined = undefined;
-    
+
     let j = 0;
     for (let i=0; i<beziers.length; i++) {
 
@@ -50,25 +50,27 @@ function loopFromBeziers(
 }
 
 
-function isPoint(ps: number[][]): boolean {
-    if (ps.length === 2) {
-        return (
-            ps[0][0] === ps[1][0] && ps[0][1] === ps[1][1]    // p[0] === p[1]
-        );
-    }
+function isPoint(
+        ps: number[][]): boolean {
 
-    if (ps.length === 3) {
-        return (
-            ps[0][0] === ps[1][0] && ps[0][1] === ps[1][1] && // p[0] === p[1]
-            ps[1][1] === ps[2][1] && ps[1][1] === ps[2][1]    // p[1] === p[2]
-        );
-    }
+    if (ps.length <= 1) { return true; }
 
-    return (
-        ps[0][0] === ps[1][0] && ps[0][1] === ps[1][1] && // p[0] === p[1]
-        ps[1][1] === ps[2][1] && ps[1][1] === ps[2][1] && // p[1] === p[2]
-        ps[2][1] === ps[3][1] && ps[2][1] === ps[3][1]    // p[2] === p[3]
-    );
+    const p0 = ps[0];
+    const p1 = ps[1];
+
+    const p01Same = p0[0] === p1[0] && p0[1] === p1[1];
+
+    if (ps.length === 2) { return p01Same; }
+
+    const p2 = ps[2];
+    const p12Same = p1[0] === p2[0] && p1[1] === p2[1];
+
+    if (ps.length === 3) { return p01Same && p12Same; }
+
+    const p3 = ps[3];
+    const p23Same = p2[0] === p3[0] && p2[1] === p3[1];
+
+    return p01Same && p12Same && p23Same;
 }
 
 

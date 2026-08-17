@@ -1,12 +1,11 @@
 declare const _debug_: Debug; 
 import type { Debug } from '../../debug/debug.js';
-import type { Container } from "../container.js";
+import type { Container, ContainerBasic } from "../container.js";
 import type { Mutable } from '../../utils/mutable.js';
 import type { _X_ } from '../../get-critical-points/-x-.js';
 import type { Loop } from "../../shape/loop.js";
 import { setIntersectionNextAndPrevs } from "../../get-critical-points/set-intersection-next-values.js";
 import { sendContainersToGrid } from './send-containers-to-grid.js';
-import { filterContainers } from './filter-containers.js';
 import { combineOverlappingContainers } from './combine-overlapping-containers/combine-overlapping-containers.js';
 import { getContainersFromXPairs } from './get-containers-from-x-pairs.js';
 import { connectContainerInOuts } from './connect-container-in-outs.js';
@@ -23,8 +22,8 @@ import { getXInOuts } from '../get-container-in-outs/get-in-outs-via-sides/get-x
  * A size multiplier (based on the max value of the tangent) for the containers
  * holding critical points.
  */
-const CONTAINER_SIZE_MULTIPLIER = 2**4;
-const CONTAINER_SIZE_MULTIPLIER_FOR_DEBUGGING = 2**30;
+const CONTAINER_SIZE_MULTIPLIER_EXP = 4;
+const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 30;
 
 
 /**
@@ -39,19 +38,18 @@ const getContainers = timeFunctionCalls(function getContainers(
         expMax: number) {
 
     //--------------------------------------------------------------------------
-    const gridSpacing = 2**(expMax - MAX_BIT_LENGTH);
-    const containerSizeMultiplier = typeof _debug_ === 'undefined'
-        ? CONTAINER_SIZE_MULTIPLIER
-        : CONTAINER_SIZE_MULTIPLIER_FOR_DEBUGGING;
-    const containerDim = gridSpacing * containerSizeMultiplier;
+    const containerSizeMultiplierExp = typeof _debug_ === 'undefined'
+        ? CONTAINER_SIZE_MULTIPLIER_EXP
+        : CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING;
+    const expGrid = expMax - MAX_BIT_LENGTH;
+    const containerDim = 2**(expGrid + containerSizeMultiplierExp);
     //--------------------------------------------------------------------------
 
     let xPairs = getAllXPairs(loops, minYXPairs, expMax);
 
-    let containers: Container[];
-    containers = getContainersFromXPairs(xPairs, containerDim);
+    let containers = getContainersFromXPairs(xPairs, containerDim);
     containers = combineOverlappingContainers(containers);
-    containers = sendContainersToGrid(containers, expMax, containerDim);
+    containers = sendContainersToGrid(containers, expMax, containerSizeMultiplierExp);
 
     assignContainersToXs(containers);
 
@@ -61,22 +59,14 @@ const getContainers = timeFunctionCalls(function getContainers(
         (container as Mutable<Container>).inOuts = getXInOuts(container);
     }
 
-    assignBigBoxesToContainers(containers, expMax);
+    const containers_ = assignBigBoxesToContainers(containers, expMax);
 
-    numberInOuts(containers);
-    connectContainerInOuts(containers);
+    numberInOuts(containers_);
+    connectContainerInOuts(containers_);
 
-    containers.forEach(orderInOuts);
+    containers_.forEach(orderInOuts);
 
-    // containers = filterContainers(containers);  // TODO - investigate
-
-    containers.forEach((container, idx) => {
-        (container as Mutable<Container>).idx = idx;
-    });
-
-    // console.log(containers.map(c => c.bigBox));
-
-    if (typeof _debug_ !== 'undefined') { _debug_.elems.container.push(...containers); }
+    if (typeof _debug_ !== 'undefined') { _debug_.elems.container.push(...containers_); }
 
     return containers;
 });
@@ -86,11 +76,11 @@ const getContainers = timeFunctionCalls(function getContainers(
  * ssign a container to each `_X_` within all containers
  */
 function assignContainersToXs(
-        containers: Container[]) {
+        containers: ContainerBasic[]) {
 
     for (const container of containers) {
         for (const x of container.xs) {
-            (x as Mutable<_X_>).container = container;
+            (x as Mutable<_X_>).container = container as Container;
         }
     }
 }

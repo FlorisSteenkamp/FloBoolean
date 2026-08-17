@@ -15,6 +15,7 @@ function compareXs(
     if (res !== 0) { return res; }
 
     res = xA.x.ri.tS - xB.x.ri.tS;
+    // res = xA.x.ri.t - xB.x.ri.t;
     return res;
 }
 

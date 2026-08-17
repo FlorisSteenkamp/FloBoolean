@@ -4,20 +4,20 @@
  * 
  * @param closed set to `true` if the rectangle's edges should be taken into
  * account, `false` otherwise
- * @param rect given as `[[xMin,yMin],[xMax,yMax]]`
+ * @param rect given as `{ minX, minY, maxX, maxY }`
  * @param p 
  */
 function isPointInsideRect(
         closed: boolean,
-        rect: number[][],
+        rect: { minX: number, minY: number, maxX: number, maxY: number },
         p: number[]) {
 
-    const [[xMin,yMin],[xMax,yMax]] = rect;
+    const { minX, minY, maxX, maxY } = rect;
     const [x,y] = p;
 
     return closed
-        ? (x >= xMin && x <= xMax && y >= yMin && y <= yMax)
-        : (x > xMin && x < xMax && y > yMin && y < yMax);
+        ? (x >= minX && x <= maxX && y >= minY && y <= maxY)
+        : (x > minX && x < maxX && y > minY && y < maxY);
 }
 
 

@@ -24,17 +24,16 @@ function loopFromOut(
     if (_beziers === undefined) { return loopFromBeziers([], loopIdx); }
 
     const { orientation } = out;
+
     const desiredOuterOrientation = forceOrientationNegative
-        ? -1
-        : outerLoopOrientation;
+        ? -1 : outerLoopOrientation;
+
     // Even nesting levels (outer, island, ...) share the outer orientation;
     // odd levels (holes, ...) get the opposite so nonzero fill carves them out.
-    const desiredOrientation = depth % 2 === 0
-        ? desiredOuterOrientation
-        : -desiredOuterOrientation;
-    const hasDesiredOrientation = desiredOrientation * orientation > 0;
+    const desiredOrientation =
+        (depth%2 === 0 ? 1 : -1)*desiredOuterOrientation;
 
-    const beziers = hasDesiredOrientation
+    const beziers = desiredOrientation*orientation > 0
         ? _beziers
         : reverseShapeOrientation(_beziers);
 

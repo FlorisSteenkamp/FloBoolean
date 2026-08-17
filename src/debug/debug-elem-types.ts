@@ -1,15 +1,10 @@
 import type { _X_ } from "../get-critical-points/-x-.js";
 import type { Container } from "../containers/container.js";
 import type { Loop } from "../shape/loop.js";
-import { Curve } from "../curve/curve.js";
 
 
 interface DebugElems {
-    readonly minY: {
-        curve: Curve;
-        readonly t: number;
-        readonly p: number[];
-    };
+    readonly minY: _X_;
     readonly loop: Loop;
     readonly loopPre: number[][][];
     readonly loops: Loop[],

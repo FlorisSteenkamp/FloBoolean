@@ -29,10 +29,3 @@ function getCentroidOfWeightedPoints(
 
 
 export { getCentroidOfWeightedPoints }
-
-
-// Quokka tests
-
-// const ps = [[1,1], [2,2],[3,3]];
-// const weights = [1,1,2];
-// getCentroidOfWeightedPoints(ps, weights);//?

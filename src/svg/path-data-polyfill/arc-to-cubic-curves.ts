@@ -1,30 +1,29 @@
-
-// FUTURE - use better function for arcToCubicCurves, e.g. start with a circular
-// arc (easily approximated by a cubic bezier) and apply transformations as 
-// required
+import { rotate } from 'flo-vector2d';
+import { clamp } from '../../utils/clamp.js';
 
 const { abs, sqrt, asin, sin, cos, tan, PI } = Math;
 
 
 /** 
- * @hidden
  * Get an array of corresponding cubic bezier curve parameters for given arc 
  * curve paramters.
+ * 
+ * @internal
  */
 function arcToCubicCurves(
-        x1: number, 
-        y1: number, 
-        x2: number, 
-        y2: number, 
-        r1: number, 
-        r2: number, 
-        angle: number, 
-        largeArcFlag: number, 
-        sweepFlag: number, 
-        _recursive: number[]): number[][] {
+        x1: number,
+        y1: number,
+        x2: number,
+        y2: number,
+        r1: number,
+        r2: number,
+        angle: number,
+        largeArcFlag: number,
+        sweepFlag: number,
+        _recursive?: number[]): number[][] {
 
       
-    const angleRad = degToRad(angle);
+    const θ = degToRad(angle);
     let params: number[][] = [];
     let f1, f2, cx, cy;
 
@@ -34,17 +33,16 @@ function arcToCubicCurves(
         cx = _recursive[2];
         cy = _recursive[3];
     } else {
-        const p1 = rotate(x1, y1, -angleRad);
-        x1 = p1.x;
-        y1 = p1.y;
+        const sin_θ = sin(-θ);
+        const cos_θ = cos(-θ);
+        const rotate_θ = rotate(sin_θ, cos_θ);
 
-        const p2 = rotate(x2, y2, -angleRad);
-        x2 = p2.x;
-        y2 = p2.y;
+        [x1,y1] = rotate_θ([x1, y1]);
+        [x2,y2] = rotate_θ([x2, y2]);
 
-        const x = (x1 - x2) / 2;
-        const y = (y1 - y2) / 2;
-        let h = (x * x) / (r1 * r1) + (y * y) / (r2 * r2);
+        const x = (x1 - x2)/2;
+        const y = (y1 - y2)/2;
+        let h = (x*x)/(r1 * r1) + (y*y)/(r2 * r2);
 
         if (h > 1) {
             h = sqrt(h);
@@ -53,40 +51,28 @@ function arcToCubicCurves(
         }
 
         const sign = largeArcFlag === sweepFlag ? -1 : +1;
-        const r1Pow = r1 * r1;
-        const r2Pow = r2 * r2;
+        const r1Pow = r1*r1;
+        const r2Pow = r2*r2;
 
-        const left = r1Pow * r2Pow - r1Pow * y * y - r2Pow * x * x;
-        const right = r1Pow * y * y + r2Pow * x * x;
+        const left = r1Pow*r2Pow - r1Pow*y*y - r2Pow*x*x;
+        const right = r1Pow*y*y + r2Pow*x*x;
 
-        const k = sign * sqrt(abs(left/right));
+        const k = sign*sqrt(abs(left/right));
 
-        cx = k * r1 * y / r2 + (x1 + x2) / 2;
-        cy = k * -r2 * x / r1 + (y1 + y2) / 2;
+        cx = k*r1*y/r2 + (x1 + x2)/2;
+        cy = k*-r2*x/r1 + (y1 + y2)/2;
 
-        f1 = asin( Number(((y1 - cy) / r2).toFixed(9)) );
-        f2 = asin( Number(((y2 - cy) / r2).toFixed(9)) );
+        f1 = asin( clamp((y1 - cy)/r2, -1, 1) );
+        f2 = asin( clamp((y2 - cy)/r2, -1, 1) );
 
-        if (x1 < cx) {
-            f1 = PI - f1;
-        }
-        if (x2 < cx) {
-            f2 = PI - f2;
-        }
+        if (x1 < cx) { f1 = PI - f1; }
+        if (x2 < cx) { f2 = PI - f2; }
 
-        if (f1 < 0) {
-            f1 = PI * 2 + f1;
-        }
-        if (f2 < 0) {
-            f2 = PI * 2 + f2;
-        }
+        if (f1 < 0) { f1 = PI*2 + f1; }
+        if (f2 < 0) { f2 = PI*2 + f2; }
 
-        if (sweepFlag && f1 > f2) {
-            f1 = f1 - PI * 2;
-        }
-        if (!sweepFlag && f2 > f1) {
-            f2 = f2 - PI * 2;
-        }
+        if (sweepFlag && f1 > f2) { f1 = f1 - PI*2; }
+        if (!sweepFlag && f2 > f1) { f2 = f2 - PI*2; }
       }
 
       let df = f2 - f1;
@@ -96,15 +82,11 @@ function arcToCubicCurves(
         const x2old = x2;
         const y2old = y2;
 
-        if (sweepFlag && f2 > f1) {
-            f2 = f1 + (PI * 120 / 180) * (1);
-        }
-        else {
-            f2 = f1 + (PI * 120 / 180) * (-1);
-        }
+        f2 = f1 + (sweepFlag && f2 > f1 ? 1 : -1) * PI*120/180;
 
         x2 = cx + r1 * cos(f2);
         y2 = cy + r2 * sin(f2);
+
         params = arcToCubicCurves(
             x2, y2, x2old, y2old, 
             r1, r2, angle, 0, 
@@ -131,54 +113,41 @@ function arcToCubicCurves(
     m2[1] = 2 * m1[1] - m2[1];
 
     if (_recursive) {
-        //return [m2, m3, m4].concat(params);
         return [m2, m3, m4, ...params];
-    } else {
-        //params = [m2, m3, m4].concat(params).join().split(",");
-        const params2: number[] = [].concat(m2, m3, m4, ...params);
-
-        const curves: number[][] = [];
-        let curveParams: number[] = [];
-
-        params2.forEach(function(param: number, i: number) {
-            if (i % 2) {
-                curveParams.push(rotate(params2[i - 1], params2[i], angleRad).y);
-            } else {
-                curveParams.push(rotate(params2[i], params2[i + 1], angleRad).x);
-            }
-
-            if (curveParams.length === 6) {
-                curves.push(curveParams);
-                curveParams = [];
-            }
-        });
-
-        return curves;
     }
+
+    const params2: number[] = [m2, m3, m4, ...params].flat();
+
+    const curves: number[][] = [];
+    let curveParams: number[] = [];
+
+    const sinθ = sin(θ);
+    const cosθ = cos(θ);
+    const rotateθ = rotate(sinθ, cosθ);
+
+    params2.forEach(function(param: number, i: number) {
+        if (i % 2) {
+            const p = rotateθ([params2[i - 1], params2[i]]);
+            curveParams.push(p[1]);
+        } else {
+            const p = rotateθ([params2[i], params2[i + 1]]);
+            curveParams.push(p[0]);
+        }
+
+        if (curveParams.length === 6) {
+            curves.push(curveParams);
+            curveParams = [];
+        }
+    });
+
+    return curves;
 }
 
 
 /**
- * @hidden
- * @param x 
- * @param y 
- * @param angleRad 
- */
-function rotate(
-        x: number, 
-        y: number, 
-        angleRad: number): { x: number, y: number } {
-
-    const X = x * cos(angleRad) - y * sin(angleRad);
-    const Y = x * sin(angleRad) + y * cos(angleRad);
-    
-    return {x: X, y: Y};
-}
-
-
-/**
- * @hidden
  * @param degrees 
+ * 
+ * @internal
  */
 function degToRad(degrees: number) {
     return (PI * degrees) / 180;

@@ -3,6 +3,7 @@ import type { _X_ } from "./-x-.js";
 import { getEndpointIntersections, bezierBezierIntersectionBoundless } from "flo-bezier3";
 import { getOtherTs } from './get-other-t.js';
 import { toP } from "../utils/to-p.js";
+import { timeFunctionCalls } from '../utils/time-function-call.js';
 
 
 /**
@@ -12,7 +13,7 @@ import { toP } from "../utils/to-p.js";
  * @param expMax 
  * @param isANextB is curveB the next curve after curveA, i.e. is A's next B
  */
-function getIntersection(
+const getIntersection = timeFunctionCalls(function getIntersection(
         curveA: Curve, 
         curveB: Curve, 
         isANextB: boolean): [_X_,_X_][] {
@@ -45,8 +46,8 @@ function getIntersection(
     }
     if (ris2.length === 0) { return []; }
 
-    const xPairs = getOtherTs(ps1, ps2, ris2);
-    if (xPairs === undefined || xPairs.length === 0) { return []; }
+    const xPairs = getOtherTs(ps1, ps2, ris2) || [];
+
     for (const xPair of xPairs) {
         const x1: _X_ = { x: xPair[0], curve: curveA, next: undefined!, prev: undefined!, container: undefined! };
         const x2: _X_ = { x: xPair[1], curve: curveB, next: undefined!, prev: undefined!, container: undefined! };
@@ -54,7 +55,7 @@ function getIntersection(
     }
 
     return xs;
-}
+});
 
 
 export { getIntersection }

@@ -1,6 +1,8 @@
+import type { RootInterval } from 'flo-poly';
+import type { X } from '../get-critical-points/x.js';
 import { roots } from 'flo-poly';
-import { getIntervalBox, toPowerBasis_1stDerivativeDd } from 'flo-bezier3';
 import { toP } from '../utils/to-p.js';
+import { toPowerBasis_1stDerivative_46_O } from './to-power-basis-1st-derivative-dd-46-o.js';
 
 
 /**
@@ -13,32 +15,27 @@ import { toP } from '../utils/to-p.js';
  * @doc mdx
  */
  function getBezierMinY(
-        ps: number[][]) {
+        ps: number[][]): X {
 
     const pS = ps[0];
     const pE = ps[ps.length-1];
 
-    let minY: { t: number; p: number[]; };
-    if (pS[1] < pE[1]) {
-        minY = { t: 0, p: pS };
-    } else {
-        minY = { t: 1, p: pE };
-    }
+    let minY: X = pS[1] < pE[1]
+        ? { ri: { t: 0, tS: 0, tE: 0, multiplicity: 1 }, p: pS, kind: 0 }
+        : { ri: { t: 1, tS: 1, tE: 1, multiplicity: 1 }, p: pE, kind: 0 };
 
     if (ps.length === 2) { return minY; }  // It's a line
 
-    const [,dy] = toPowerBasis_1stDerivativeDd(ps);
-    const rootsY = roots(dy,0,1) || [];
+    const [,dy] = toPowerBasis_1stDerivative_46_O(ps);
+    const ris = roots(dy,0,1) || [];
 
     // Test points
-    for (let i=0; i<rootsY.length; i++) {
-        const { tS, tE, t } = rootsY[i];
-        const ts = [tS, tE];
-        const box = getIntervalBox(ps, ts);  // TODO
+    for (let i=0; i<ris.length; i++) {
+        const ri = ris[i];
+        const p = toP(ps, ri.t);
 
-        if (box[0][1] < minY.p[1]) { 
-            const p = toP(ps, t);
-            minY = { t, p };
+        if (p[1] < minY.p[1]) {
+            minY = { ri, p, kind: 0 };
         }
     }
 

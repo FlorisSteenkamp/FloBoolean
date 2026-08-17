@@ -1,18 +1,14 @@
 
-/** @hidden */
-class PathState {
-    initialPoint: number[] | undefined = undefined;    
+/** @internal */
+interface PathState {
+    initialPoint: number[] | undefined;
     p: number[];
-    vals: number[] | undefined = undefined;
+    vals: number[] | undefined;
 
     // Used in conjunction with "S", "s"
-    prev2ndCubicControlPoint: number[] | undefined = undefined;
+    prev2ndCubicControlPoint: number[] | undefined;
     // Used in conjunction with "T", "t"
-    prev2ndQuadraticControlPoint: number[] | undefined = undefined;
-
-    constructor() {
-        this.p = [0,0];
-    }
+    prev2ndQuadraticControlPoint: number[] | undefined;
 }
 
 

@@ -7,12 +7,14 @@ function sendToGrid(
         expMax: number,
         maxBitLength: number) {
 
-    return (p: number[]) => {
-        const x = toGrid(p[0], expMax, maxBitLength);
-        const y = toGrid(p[1], expMax, maxBitLength);
+    const toGrid_ = toGrid(expMax, maxBitLength);
+
+    return function(p: number[]) {
+        const x = toGrid_(p[0]);
+        const y = toGrid_(p[1]);
 
         if (x === p[0] && y === p[1]) {
-            return p;  // keep point's identity
+            return p;  // keep point's identity if possible
         }
 
         return [x,y];

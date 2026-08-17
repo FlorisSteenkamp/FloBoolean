@@ -6,7 +6,7 @@ type TimedFunction<T extends (...args: any[]) => any> =
         getStats: () => {
             count: number;
             totalMs: number;
-            avg: number;
+            // avg: number;
             // history: number[];
         };
 
@@ -38,7 +38,7 @@ function timeFunctionCalls<T extends (...args: any[]) => any>(f: T): TimedFuncti
             name: f.name,
             totalMs: total,
             count: history.length,
-            avg: history.length === 0 ? 0 : total / history.length,
+            // avg: history.length === 0 ? 0 : total / history.length,
             // history: history
         };
     };

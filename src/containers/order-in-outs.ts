@@ -15,22 +15,19 @@ import { timeFunctionCalls } from "../utils/time-function-call.js";
 const orderInOuts = timeFunctionCalls(function orderInOuts(
         container: Container) {
 
-    const inOuts = container.inOuts;
+    const { inOuts, xs } = container;
     // getInOutsViaCrossing
 
-    // console.log(2);
-    // inOuts.sort(compareInOut);
     if (inOuts.length > 2) {
         inOuts.sort(compareInOut);
-        // console.log(inOuts.length);
     } else {
-        // TODO - investigate a simpler method?
-        let isTopMost = false;
-        for (let inOut of inOuts) {
-            if (inOut._x_.x.kind === 0) { isTopMost = true; break; }
-        }
-        if (isTopMost) {
-            inOuts.sort(compareInOut);
+        // if `inOuts` length <= 2 we only need a cyclic sort UNLESS it contains
+        // a `minY` (type 0) `_X_` in which case we need a total order
+        for (let _x_ of xs) {
+            if (_x_.x.kind === 0) {
+                inOuts.sort(compareInOut);
+                break;
+            }
         }
     }
 

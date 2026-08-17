@@ -6,32 +6,31 @@ import { makeSimpleX } from "./make-simple-x.js";
 const { abs } = Math;
 
 
+const MAX_CURVATURE_AT_EXP_MAX_0 = 10_000_000;
+
+
 function getExcessiveCurvatures(
         expMax: number,
-        loops: Loop[]): [_X_,_X_][] {
+        loops: Loop[]): [_X_][] {
 
-    /** all one-sided Xs from */
-    const xs: [_X_,_X_][] = [];
-    // return xs;
+    const xs: [_X_][] = [];
 
-    // Get interface points
+    const maxCurvature = MAX_CURVATURE_AT_EXP_MAX_0*(2**-expMax);
+
+    // Get points of extreme curvature
     for (const loop of loops) {
         for (const curve of loop.curves) {
-            const ps = curve.ps;
+            const { ps } = curve;
 
             const extrema = getCurvatureExtrema(ps);
 
             const { minima, maxima } = extrema;
-            const minmaxs = [0,1,...minima, ...maxima];
+            const minmaxs = [0, 1, ...minima, ...maxima];
             for (let t of minmaxs) {
-                //const k = eeCurvature(ps,[t]);
                 const k = abs(curvature(ps, t));
-                if (k > 10_000_000*2**-expMax) {  // TODO - check curvature max
-                    const _x_ = makeSimpleX(t,curve,7);  // excessive curvature
-                    xs.push([
-                        _x_,
-                        { ..._x_ }
-                    ]);
+                if (k > maxCurvature) {
+                    const _x_ = makeSimpleX(t, curve, 7);  // excessive curvature
+                    xs.push([_x_,]);
                 }
             }
         }

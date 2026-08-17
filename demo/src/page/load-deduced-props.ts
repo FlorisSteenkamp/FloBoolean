@@ -34,7 +34,7 @@ function loadDeducedProps(
         // const loopss = forBoolean
         //     ? boolean(bezierLoopss, op)
         //     : simplifyPaths(bezierLoopss[0], undefined, { orientationPositive: true });
-        const NUM_LOOPS = 1;  // for better benchmarking TODO
+        const NUM_LOOPS = 1;  // for better benchmarking
         for (let i=0; i<NUM_LOOPS; i++) {
             const loopss = simplifyPaths(
                 bezierLoopss[0], {
@@ -50,12 +50,6 @@ function loadDeducedProps(
     } finally {
         timingAll = performance.now() - timeStart;
     }
-
-    if (typeof _debug_ !== 'undefined') {
-        const { l1, l2, l3 } = _debug_.callCounts;
-        // console.log(l1,l2,l3);
-    }
-    
 
     return { viewbox, timingAll };
 }

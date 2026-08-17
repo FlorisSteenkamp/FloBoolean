@@ -1,4 +1,4 @@
-import type { Container } from "../../container.js";
+import type { Container, ContainerBasic } from "../../container.js";
 import { areBoxesIntersecting } from "../../../geometry/are-boxes-intersecting.js";
 
 
@@ -21,7 +21,10 @@ function enlargeBox(box: number[][], frac: number): number[][] {
 }
 
 
-function areContainersIntersecting(container1: Container, container2: Container) {
+function areContainersIntersecting(
+        container1: ContainerBasic,
+        container2: ContainerBasic) {
+
     return areBoxesIntersecting(
         true,
         enlargeBox(container1.box, CONTAINER_MERGE_ENLARGE_FRAC),

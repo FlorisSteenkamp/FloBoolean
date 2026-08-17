@@ -17,6 +17,7 @@ const vectors = [
     // 'AA',
     // "play3",
     'complex6',
+    'woodland2',
     'woodland',
     'complex4',
     'complex3',

@@ -22,7 +22,6 @@ interface _X_ {
     readonly prevBefExit?: _X_;
     readonly in_?: In | undefined;
     readonly out?: Out | undefined;
-    readonly order?: number;
 }
 
 

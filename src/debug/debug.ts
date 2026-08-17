@@ -27,6 +27,10 @@ interface Debug {
         l1: number;
         l2: number;
         l3: number;
+        lil1: number;
+        lil2: number;
+        lil3: number;
+        lil4: number;
     }
 }
 
@@ -52,7 +56,11 @@ function enableDebugForBooleanOp(
         callCounts: {
             l1: 0,
             l2: 0,
-            l3: 0
+            l3: 0,
+            lil1: 0,
+            lil2: 0,
+            lil3: 0,
+            lil4: 0
         },
         elems: { 
             ...debug?.elems,

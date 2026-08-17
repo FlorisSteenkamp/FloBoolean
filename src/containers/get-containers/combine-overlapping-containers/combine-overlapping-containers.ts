@@ -1,4 +1,4 @@
-import type { Container } from "../../container.js";
+import type { Container, ContainerBasic } from "../../container.js";
 import type { Graph } from '../../../graph/get-connected-components.js';
 import { sweepLine } from "../../../sweep-line/sweep-line.js";
 import { areContainersIntersecting, enlargeBox, CONTAINER_MERGE_ENLARGE_FRAC } from "./are-containers-intersecting.js";
@@ -14,7 +14,7 @@ import { timeFunctionCalls } from "../../../utils/time-function-call.js";
  * @param containers 
  */
 const combineOverlappingContainers = timeFunctionCalls(function combineOverlappingContainers(
-        containers: Container[]) {
+        containers: ContainerBasic[]): ContainerBasic[] {
 
     // iterate, combining containers that overlap on each iteration 
     while (true) {
@@ -36,15 +36,14 @@ const combineOverlappingContainers = timeFunctionCalls(function combineOverlappi
 
         // Create a graph of containers, where each container is a vertex and
         // each intersection is an edge
-        const graph: Graph<Container> = new Map(containers.map(c => [c, []]));
+        const graph: Graph<ContainerBasic> = new Map(containers.map(c => [c, []]));
         for (let i=0; i<rs.length; i++) {
             const r = rs[i];
             addEdge(graph, [r.a, r.b]);
         }
 
-        containers = getConnectedComponents(graph).map(
-            mergeContainers
-        );
+        containers = getConnectedComponents(graph)
+        .map(mergeContainers);
     }
 
     return containers;

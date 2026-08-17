@@ -26,8 +26,7 @@
         "flo-gauss-quadrature": "^2.1.4",
         "flo-memoize": "^2.0.1",
         "flo-poly": "^8.1.4",
-        "flo-vector2d": "^4.0.6",
-        "squares-rng": "^2.0.4"
+        "flo-vector2d": "^4.0.6"
     },
     "devDependencies": {
         "@jest/globals": "^30.4.1",
@@ -48,7 +47,8 @@
         "typescript": "^6.0.3",
         "webpack": "^5.109.2",
         "webpack-bundle-analyzer": "^5.3.1",
-        "webpack-cli": "^7.2.2"
+        "webpack-cli": "^7.2.2",
+        "squares-rng": "^2.0.4"
     },
     "scripts": {
         "build": "npm run build-browser && npm run build-node",

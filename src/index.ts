@@ -22,7 +22,7 @@ export { getTotalShapeCurvature } from './shape/get-total-shape-curvature.js';
 export { getWindingNumber } from './shape/get-winding-number.js';
 export { getCentroidOfWeightedPoints } from './shape/get-centroid-of-weighted-points.js';
 export { getShapeBounds } from './calc-paths/get-shape-bounds.js';
-export { isLoopInLoop } from './calc-paths/is-loop-in-loop.js';
+export { isLoopInLoop } from './is-loop-in-loop/is-loop-in-loop.js';
 export { simplifyPaths } from './main/simplify-paths.js';
 export { boolean } from './boolean/boolean.js';
 export { mapDeep } from './utils/map-deep.js';
