@@ -3,9 +3,13 @@ import type { Debug } from '../../../debug/debug.js';
 import type { InOut } from "../../in-out/in-out.js";
 import type { _X_ } from "../../../get-critical-points/-x-.js";
 import { memoize } from "flo-memoize";
+import { ddCompare, ddDiffDd } from 'double-double';
 import { getInOutSide } from './get-in-out-side.js';
-import { firstSideCrossing } from './first-side-crossing.js';
-import { RootInterval } from 'flo-poly';
+import { getFirstSideCrossing$ } from './get-first-side-crossing.js';
+import { refineK1, RootInterval, RootIntervalExp } from 'flo-poly';
+import { getSideRiExp } from './get-ts.js';
+
+const qdq = ddDiffDd;
 
 
 /**
@@ -29,7 +33,7 @@ function compareInOut(
     const { _x_: _x_A, dir: dirA, idx: idxA, container } = inOutA;
     const { _x_: _x_B, dir: dirB, idx: idxB } = inOutB;
 
-    const sides = getBigBoxSides(container.bigBox);
+    const sides = getBigBoxSides$(container.bigBox);
 
     // 1st step: follow the loop outward from `_x_A` (in its `dir`) and find the
     // first `sidesA` edge it crosses, detected via bezier-piece endpoints.
@@ -48,29 +52,47 @@ function compareInOut(
         }
     }
 
-    const crossingA = firstSideCrossing(_x_A, sides, forwardA, sidesA);
-    const crossingB = firstSideCrossing(_x_B, sides, forwardB, sidesB);
+    const crossingA = getFirstSideCrossing$(_x_A, sides, forwardA, sidesA);
+    const crossingB = getFirstSideCrossing$(_x_B, sides, forwardB, sidesB);
 
     if (typeof _debug_ !== 'undefined') { _debug_.callCounts.l2++; }
 
-    const { side: sideA, ri: riA } = crossingA!;
-    const { side: sideB, ri: riB } = crossingB!;
+    const { sideIdx: sideIdxA, riSide: riA } = crossingA!;
+    const { sideIdx: sideIdxB, riSide: riB } = crossingB!;
 
-    res = sideA - sideB;
+    res = sideIdxA - sideIdxB;
     if (res !== 0) { return res; }
 
     res = doRisOverlap(riA, riB) ? 0 : (riA.tS < riB.tS ? -1 : 1);
-
     if (res !== 0) { return res; }
 
     if (typeof _debug_ !== 'undefined') { _debug_.callCounts.l3++; }
     
-    // TODO - add compensation here as was done with the older version of this funcition
+    //--------------------------------------------------------------------------
+    // Cannot discern yet, compensate once
+    //--------------------------------------------------------------------------
+    const { xPs: xPsA, ps: psA } = crossingA!;
+    const { xPs: xPsB, ps: psB } = crossingB!;
 
-    res = dirA - dirB;
+    const { ri: riPsA, getPExact: getPExactPsA$ } = xPsA;
+    const { ri: riPsB, getPExact: getPExactPsB$ } = xPsB;
+
+    const riExpPsA = refineK1$(riPsA, getPExactPsA$!())[0];  // there can only be 1
+    const riExpPsB = refineK1$(riPsB, getPExactPsB$!())[0];  // ...
+
+    const riSideA = getSideRiExp(psA, sides[sideIdxA], riExpPsA);
+    const riSideB = getSideRiExp(psB, sides[sideIdxB], riExpPsB);
+    
+    res = ddDoRisOverlap(riSideA, riSideB)
+        ? 0 : ddCompare(riSideA.tS, riSideB.tS);
     if (res !== 0) {
         return res;
     }
+    //--------------------------------------------------------------------------
+
+
+    res = dirA - dirB;
+    if (res !== 0) { return res; }
 
     // At this stage they are both in or both out
     // We reverse sort the ins in comparison to the outs
@@ -88,7 +110,19 @@ function doRisOverlap(
 }
 
 
-const getBigBoxSides = memoize(function(
+function ddDoRisOverlap(
+        riA: RootIntervalExp,
+        riB: RootIntervalExp): boolean {
+
+    return ddCompare(riA.tS, riB.tE) <= 0 &&
+        ddCompare(riB.tS, riA.tE) <= 0;
+}
+
+
+const refineK1$ = memoize(refineK1); 
+
+
+const getBigBoxSides$ = memoize(function(
         bigBox: number[][]) {
 
     const [[minX,minY], [maxX,maxY]] = bigBox;

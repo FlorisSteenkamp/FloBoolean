@@ -12,7 +12,6 @@ import { normalizeLoops } from '../shape/normalize/normalize-loop.js';
 import { getMaxCoordinate } from '../shape/normalize/get-max-coordinate.js';
 import { addDebugInfo2 } from './add-debug-info-2.js';
 import { loopFromOut } from './loop-from-out.js';
-import { getMinYXpair } from '../get-critical-points/get-min-y-x-pair.js';
 import { filterLoopsByMinAllowedArea } from './filter-loops-by-min-area.js';
 import { completePaths } from './complete-paths.js';
 import { timeFunctionCalls } from '../utils/time-function-call.js';
@@ -26,6 +25,7 @@ import { orderInOuts } from '../containers/order-in-outs.js';
 import { completeLoop } from '../calc-paths/complete-loop.js';
 import { getAxisAlignedRayLoopIntersections, _isLoopInLoop } from '../is-loop-in-loop/is-loop-in-loop.js';
 import { getAllXPairs, getExcessiveCurvatures_, getInterfaceIntersections_, getIntersections_, getSelfIntersections_, getTurnarounds_ } from '../containers/get-containers/get-all-x-pairs.js';
+import { getLoopMinY } from '../shape/get-min-y.js';
 
 
 const { ceil, log2 } = Math;
@@ -74,7 +74,8 @@ function simplifyPaths(
 
 
     //==========================================================================
-    const minYXPairs = loops.map(getMinYXpair);
+    const minYXPairs = loops.map(getLoopMinY);
+    if (typeof _debug_ !== 'undefined') { minYXPairs.forEach(_x_ => _debug_.elems.minY.push(_x_)); }
     getContainers(loops, minYXPairs, expMax);
 
     const root = completePaths(expMax, loops, minYXPairs);

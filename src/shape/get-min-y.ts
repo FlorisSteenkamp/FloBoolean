@@ -1,15 +1,15 @@
 import type { Loop } from './loop.js';
 import type { X } from '../get-critical-points/x.js';
-import type { Curve } from '../curve/curve.js';
 import { getBezierMinY } from '../bezier/get-bezier-min-y.js';
 import { getControlPointBox } from 'flo-bezier3';
+import { _X_ } from '../get-critical-points/-x-.js';
 
 
 /** 
  *
  */
 function getLoopMinY(
-        loop: Loop): { curve: Curve; y: X; } {
+        loop: Loop): _X_ {
 
     const { curves } = loop;
 
@@ -41,7 +41,13 @@ function getLoopMinY(
         }
     }
 
-    return { curve: bestCurve, y: bestY }; 
+    return {
+        x: bestY,
+        curve: bestCurve,
+        next: undefined!,      // will be set later
+        prev: undefined!,      // ...
+        container: undefined!  // ...
+    }; 
 }
 
 

@@ -17,7 +17,7 @@ function getSelfIntersections(
         for (const curve of loop.curves) {
             const ps = curve.ps;
             const ts = bezierSelfIntersection(ps);
-            // if (ts === undefined) { continue; }  // there is no self-intersection
+
             if (ts.length === 0) { continue; }
 
             // if a cusp (or extremely close to it)
@@ -25,20 +25,25 @@ function getSelfIntersections(
                 ? 3/*cusp*/
                 : 2/*self-intersection*/;
                 
-            // FUTURE - fix box - must combine 2 boxes and bezierSelfIntersection must return intervals
             const ts0 = ts[0];
             const ts1 = ts[1];
-            // TODO eps
-            const t0S = ts0 - eps;
-            const t0E = ts0 + eps;
-            const t1S = ts1 - eps;
-            const t1E = ts1 + eps;
+
+            const t0S = ts0 - 4*eps;
+            const t0E = ts0 + 4*eps;
+            const t1S = ts1 - 4*eps;
+            const t1E = ts1 + 4*eps;
 
             const p = toP(ps, ts0);
 
+            const ri0 = { t: t0S, tS: t0S, tE: t0E, multiplicity: 1 };
+            const ri1 = { t: t1S, tS: t1S, tE: t1E, multiplicity: 1 };
+
+            const x0 = { ri: ri0, p, kind };
+            const x1 = { ri: ri1, p, kind };
+
             xs.push([
-                { x: { ri: { t: t0S, tS: t0S, tE: t0E, multiplicity: 1 }, p, kind }, curve, next: undefined!, prev: undefined!, container: undefined! },
-                { x: { ri: { t: t1S, tS: t1S, tE: t1E, multiplicity: 1 }, p, kind }, curve, next: undefined!, prev: undefined!, container: undefined! }
+                { x: x0, curve, next: undefined!, prev: undefined!, container: undefined! },
+                { x: x1, curve, next: undefined!, prev: undefined!, container: undefined! }
             ]);
         }
     }

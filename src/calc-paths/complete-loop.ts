@@ -26,6 +26,9 @@ const completeLoop = timeFunctionCalls(function completeLoop(
     const bezierPieces: BezierPiece[] = [];
     const loopOuts: Out[] = [];
 
+    // Out in blue, In in red - e.g. 3->3->5->5
+    const path: string[] = [];  // TODO - temp - remove
+
     // Move immediately to the outgoing start of the loop
     let outToUse: Out = origOut;
 
@@ -39,6 +42,9 @@ const completeLoop = timeFunctionCalls(function completeLoop(
 
         const nextIn = outToUse.nextOrPrev as In;
 
+        path.push(`\x1b[34m${outToUse.idx}\x1b[0m`);  // Out (blue)
+        path.push(`\x1b[31m${nextIn.idx}\x1b[0m`);     // In (red)
+
         const beziersToNextContainer = 
             getBeziersToNextContainer(outToUse, nextIn);
 
@@ -50,6 +56,8 @@ const completeLoop = timeFunctionCalls(function completeLoop(
         );
 
     } while (outToUse !== origOut);
+
+    console.log(path.join('->'));
 
     return { bezierPieces, additionalOutsToCheck, loopOuts };
 });

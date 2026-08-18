@@ -1,9 +1,7 @@
-declare const _debug_: Debug; 
-import type { Debug } from '../../../debug/debug.js';
 import type { _X_ } from "../../../get-critical-points/-x-.js";
 import { memoize } from "flo-memoize";
 import { getTs } from "./get-ts.js";
-import { RootInterval } from 'flo-poly';
+import { SideCrossing } from './side-crossing.js';
 
 
 /**
@@ -15,11 +13,11 @@ import { RootInterval } from 'flo-poly';
  * The `sides` are the axis-aligned edges of a box in the standard side order
  * (0 top, 1 left, 2 bottom, 3 right).
  */
-const firstSideCrossing = memoize(function firstSideCrossing(
+const getFirstSideCrossing$ = memoize(function(
         _x_: _X_,
         sides: number[][][],
         forward: boolean,
-        sideIdxs: number[]): { side: number, p: number[], ri: RootInterval } | undefined {
+        sideIdxs: number[]): SideCrossing | undefined {
 
     // We only ever need the first bezier piece from `_x_` up to its adjacent
     // `_X_`, so compute that single piece directly rather than iterating.
@@ -32,27 +30,25 @@ const firstSideCrossing = memoize(function firstSideCrossing(
         (forward ? tS < endX.x.ri.tS : tS > endX.x.ri.tS);
     const tE = runsToEnd ? endX.x.ri.tS : pieceEndT;
 
-    const ps = curveS.ps;
-    const ts = [tS, tE];
+    const { ps } = curveS;
 
     // Nearest crossing (smallest parameter along `a` -> `b`) among the sides.
-    let best: { side: number; ri: RootInterval; p: number[] } | undefined = undefined;
+    let best: SideCrossing | undefined = undefined;
     for (let j=0; j<sideIdxs.length; j++) {
-        const i = sideIdxs[j];
-        const side = sides[i];
+        const sideIdx = sideIdxs[j];
+        const side = sides[sideIdx];
 
         // check for possible intersection
-        const ts_ = ts[0] < ts[1] ? ts : [ts[1],ts[0]];
-        const xs = getTs(ps, side, ts_);
+        const ts_ = tS < tE ? [tS,tE] : [tE,tS];
+        const sideCrossing = getTs(ps, side, ts_, sideIdx);
 
-        if (xs === undefined) { continue; }
-        const { ri, p } = xs;
+        if (sideCrossing === undefined) { continue; }
 
-        best = { side: i, ri, p };
+        best = sideCrossing;
     }
 
     return best;
 });
 
 
-export { firstSideCrossing }
+export { getFirstSideCrossing$ }
