@@ -52,6 +52,13 @@ test('`simplifyPaths` specific cases', function() {
 
     updDebugGlobal(true);
 
+    testIt('confuse1');
+    // testIt('two-squares');    // two-squares -> should boolean correctly'
+    // testIt('three-squares');    // three-squares -> should boolean correctly'
+    // testIt('snuggle-1');   // snuggle-1 -> should decompose correctly (and snuggly)'
+    // testIt('multi-level-reversed-orientation');    // three-squares -> should boolean correctly'
+    // testIt('few-xs-at-min-y');  // multiple intersections at minimum y value -> should decompose correctly'
+    // testIt('multiple-xs-at-min-y');  // multiple intersections at minimum y value -> should decompose correctly'
     // testIt('woodland2');      // complex shape -> should decompose correctly'
     // testIt('woodland');      // complex shape -> should decompose correctly'
     // testIt('complex6');      // complex shape -> should decompose correctly'
@@ -60,12 +67,7 @@ test('`simplifyPaths` specific cases', function() {
     // testIt('complex2');     // complex shape -> should decompose correctly'
     // testIt('complex');      // complex shape -> should decompose correctly'
     // testIt('koldat-again');     // koldat-again -> edge case test'
-    // testIt('multi-level-reversed-orientation');    // three-squares -> should boolean correctly'
-    // testIt('two-squares');    // three-squares -> should boolean correctly'
-    testIt('three-squares');    // three-squares -> should boolean correctly'
     // testIt('square');           // simple square -> should decompose correctly (no decompisition)'
-    // testIt('few-xs-at-min-y');  // multiple intersections at minimum y value -> should decompose correctly'
-    // testIt('multiple-xs-at-min-y');  // multiple intersections at minimum y value -> should decompose correctly'
     // testIt('complexish');  // somewhat complex shape -> should decompose correctly'
     // testIt('B');           // B shape with quad beziers -> should decompose correctly'
     // testIt('same-k-family-lines');  // shape with overlapping beziers (lines) in same k family -> should decompose correctly'
@@ -81,7 +83,6 @@ test('`simplifyPaths` specific cases', function() {
     // testIt('koldat52');     // koldat52 -> edge case test where `takenLoops` is important to be kept'
     // testIt('complexish2');  // complexish2 -> should decompose correctly'
     // testIt('complexish3');  // complexish3 -> should decompose correctly'
-    // testIt('snuggle-1');   // snuggle-1 -> should decompose correctly (and snuggly)'
 
     function testIt(
             fileName: string) {
@@ -94,14 +95,15 @@ test('`simplifyPaths` specific cases', function() {
         // Direct test
         //-------------
         for (const booleanOp of ['OR']) {
-            const booleanOp_ = booleanOp as 'OR' | 'AND' | 'XOR';
-            const loopss = simplifyPaths(bezierLoops, {
-                booleanOp: booleanOp_
-            });
-
             if (invariants.length === 0) {
                 continue;  // no invariants to check against
             }
+
+            const booleanOp_ = booleanOp as 'OR' | 'AND' | 'XOR';
+
+            const loopss = simplifyPaths(bezierLoops, {
+                booleanOp: booleanOp_
+            });
         
             const tolerancePower = -20;
             const tolerance = makeTolerance(tolerancePower, bezierLoops);

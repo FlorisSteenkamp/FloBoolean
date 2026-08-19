@@ -15,6 +15,7 @@ import { loopFromOut } from './loop-from-out.js';
 import { filterLoopsByMinAllowedArea } from './filter-loops-by-min-area.js';
 import { completePaths } from './complete-paths.js';
 import { timeFunctionCalls } from '../utils/time-function-call.js';
+import { rerunForXor } from './rerun-for-xor.js';
 import { reverseShapeOrientation } from '../shape/reverse-shape-orientation.js';
 
 // import { getAllXPairs, getIntersections_, getSelfIntersections_, getInterfaceIntersections_, getExcessiveCurvatures_, getTurnarounds_ } from '../containers/get-containers/get-all-x-pairs.js';
@@ -26,6 +27,7 @@ import { completeLoop } from '../calc-paths/complete-loop.js';
 import { getAxisAlignedRayLoopIntersections, _isLoopInLoop } from '../is-loop-in-loop/is-loop-in-loop.js';
 import { getAllXPairs, getExcessiveCurvatures_, getInterfaceIntersections_, getIntersections_, getSelfIntersections_, getTurnarounds_ } from '../containers/get-containers/get-all-x-pairs.js';
 import { getLoopMinY } from '../shape/get-min-y.js';
+import { _X_ } from '../get-critical-points/-x-.js';
 
 
 const { ceil, log2 } = Math;
@@ -90,7 +92,7 @@ function simplifyPaths(
     // Create loops for all `outSets`
     //----------------------------------------
     let loopIdx = 0;
-    const loopss = minAreaFilter(
+    const _loopss = minAreaFilter(
         outSets.map(outSet => {
             const outerLoopOrientation = outSet[0].out.orientation;
 
@@ -100,6 +102,14 @@ function simplifyPaths(
         })
     );
     
+
+    let loopss: Loop[][];
+    // if (booleanOp === 'XOR') {
+    //     loopss = rerunForXor(expMax, forceOrientationNegative, minLoopArea, _loopss);
+    // } else {
+        loopss = _loopss;
+    // }
+
     addDebugInfo2(loopss);  // adds debug info used within __tests__ (and the demo)
 
     // TODO - somehehere - reconnect minY

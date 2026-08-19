@@ -22,7 +22,8 @@ function getNextExit(
 
     let toCount = 1;
     let next: InOut = in_;
-    let outToUse: Out | undefined;
+    let outToUse: Out | undefined = undefined;
+    let curOrientation = origOut.orientation;
     do {
         next = origOut.orientation === +1
             ? next.nextAround
@@ -30,7 +31,13 @@ function getNextExit(
 
         if (next === in_) { break; }
 
+        const _toCount = toCount;
+
         toCount = toCount - next.dir;
+
+        if (toCount === 1) {
+            curOrientation *= -1;
+        }
 
         if (next.dir === -1) { continue; }
         const out = next as Out;
@@ -45,9 +52,11 @@ function getNextExit(
             }
         } else {
             // else we are rotating on the outside of the loop
-            if (toCount === 0) {
+            if (_toCount === 1 && toCount === 0) {
                 markOutForChecking_(out, origOut.orientation, origOut.parent);
-            } else if (toCount === -1) {
+                // // take the LAST exit where count hits zero (was: first)
+                // outToUse = out;
+            } else if (_toCount === 0 && toCount === -1) {
                 markOutForChecking_(out, -origOut.orientation, origOut.parent);
             }
         }

@@ -36,12 +36,20 @@ function loadDeducedProps(
         //     : simplifyPaths(bezierLoopss[0], undefined, { orientationPositive: true });
         const NUM_LOOPS = 1;  // for better benchmarking
         for (let i=0; i<NUM_LOOPS; i++) {
-            const loopss = simplifyPaths(
+            let loopss = simplifyPaths(
                 bezierLoopss[0], {
                     // orientationPositive: true,
                     booleanOp 
                 }
             );
+            // updDebugGlobal(IS_DEBUG_ON);  // clears `_debug_.elems`
+            // const ls2 = loopss.map(ls => ls.map(l => l.beziers));
+            // loopss = simplifyPaths(
+            //     ls2[0], {
+            //         // orientationPositive: true,
+            //         booleanOp 
+            //     }
+            // );
 
             stateControl.transientState.bezierLoopss = loopss;
         }

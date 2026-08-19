@@ -29,7 +29,7 @@ function getOutermostOut(
         : lastInOut) as Mutable<Out>;
 
     const orientation = lastInOut.dir;
-    const windingNum = parent.windingNum! + orientation!;
+    const windingNum = parent.windingNum + orientation;
 
     for (const inOut of [firstInOut, lastInOut]) {
         inOut.orientation = orientation;

@@ -3,13 +3,11 @@ import type { Debug } from '../../../debug/debug.js';
 import type { InOut } from "../../in-out/in-out.js";
 import type { _X_ } from "../../../get-critical-points/-x-.js";
 import { memoize } from "flo-memoize";
-import { ddCompare, ddDiffDd } from 'double-double';
+import { ddCompare } from 'double-double';
 import { getInOutSide } from './get-in-out-side.js';
 import { getFirstSideCrossing$ } from './get-first-side-crossing.js';
 import { refineK1, RootInterval, RootIntervalExp } from 'flo-poly';
 import { getSideRiExp } from './get-ts.js';
-
-const qdq = ddDiffDd;
 
 
 /**

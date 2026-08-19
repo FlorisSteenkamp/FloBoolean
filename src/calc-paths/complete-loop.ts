@@ -42,7 +42,7 @@ const completeLoop = timeFunctionCalls(function completeLoop(
 
         const nextIn = outToUse.nextOrPrev as In;
 
-        path.push(`\x1b[34m${outToUse.idx}\x1b[0m`);  // Out (blue)
+        path.push(`\x1b[34m${outToUse.idx}\x1b[0m`);   // Out (blue)
         path.push(`\x1b[31m${nextIn.idx}\x1b[0m`);     // In (red)
 
         const beziersToNextContainer = 
@@ -51,13 +51,13 @@ const completeLoop = timeFunctionCalls(function completeLoop(
         bezierPieces.push(...beziersToNextContainer);
 
         outToUse = getNextExit(
-            nextIn!, origOut,
+            nextIn, origOut,
             additionalOutsToCheck, takenOuts
         );
 
     } while (outToUse !== origOut);
 
-    console.log(path.join('->'));
+    // console.log(path.join(' → '));
 
     return { bezierPieces, additionalOutsToCheck, loopOuts };
 });

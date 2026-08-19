@@ -29,6 +29,7 @@ function drawContainer(
 
     // text showing intersection ordering
     const $texts: SVGTextElement[] = [];
+    const placed: number[][] = [];  // label anchor points already used
     const inOuts = container.inOuts;
     for (let i=0; i<inOuts.length; i++) {
         const inOut = inOuts[i];
@@ -38,7 +39,14 @@ function drawContainer(
         const color = inOut.dir === -1 ? 'red' : 'blue';
         const size = scale*(1 + (0.5*i));
         if (inOut.idx !== undefined) {
-            $texts.push(...drawFs.text(g, p, inOut.idx!.toString(), scale/2, `thin5 ${color}`, delay));
+            // If a label already sits at ~this point (e.g. the paired in & out),
+            // stack this one lower so they don't render on top of each other.
+            const overlaps = placed.filter(q =>
+                Math.hypot(q[0] - p[0], q[1] - p[1]) < scale/4
+            ).length;
+            placed.push(p);
+            const tp = overlaps === 0 ? [p[0] + scale/3, p[1]] : [p[0] + scale/3, p[1] + overlaps*(scale/2)];
+            $texts.push(...drawFs.text(g, tp, inOut.idx!.toString(), scale/2, `thin5 ${color}`, delay));
         }
         $circles.push(...drawFs.dot(g, p, size/8, `thin5 nofill ${color}`, delay)); 
     }
