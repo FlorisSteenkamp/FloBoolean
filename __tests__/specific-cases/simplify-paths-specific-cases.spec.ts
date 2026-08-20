@@ -17,6 +17,8 @@ import { countThickDiff } from './count-thick-diff.js';
 import { drawBooleanRef, drawShapesRef, countBooleanCoverageDiff } from './draw-boolean-ref.js';
 import { Loop } from '../../src/shape/loop.js';
 import { reverseShapeOrientation } from '../../src/shape/reverse-shape-orientation.js';
+import { loopToStringifyable } from '../../src/debug/to-stringifyable.js';
+import { mapmap } from '../../src/utils/map-map.js';
 
 const { max, min, ceil, log2, abs } = Math;
 
@@ -52,37 +54,37 @@ test('`simplifyPaths` specific cases', function() {
 
     updDebugGlobal(true);
 
+    testIt('complexish');  // somewhat complex shape -> should decompose correctly'
     testIt('confuse1');
-    // testIt('two-squares');    // two-squares -> should boolean correctly'
-    // testIt('three-squares');    // three-squares -> should boolean correctly'
-    // testIt('snuggle-1');   // snuggle-1 -> should decompose correctly (and snuggly)'
-    // testIt('multi-level-reversed-orientation');    // three-squares -> should boolean correctly'
-    // testIt('few-xs-at-min-y');  // multiple intersections at minimum y value -> should decompose correctly'
-    // testIt('multiple-xs-at-min-y');  // multiple intersections at minimum y value -> should decompose correctly'
-    // testIt('woodland2');      // complex shape -> should decompose correctly'
-    // testIt('woodland');      // complex shape -> should decompose correctly'
-    // testIt('complex6');      // complex shape -> should decompose correctly'
-    // testIt('complex4');      // complex shape -> should decompose correctly'
-    // testIt('complex3');      // complex shape -> should decompose correctly'
-    // testIt('complex2');     // complex shape -> should decompose correctly'
-    // testIt('complex');      // complex shape -> should decompose correctly'
-    // testIt('koldat-again');     // koldat-again -> edge case test'
-    // testIt('square');           // simple square -> should decompose correctly (no decompisition)'
-    // testIt('complexish');  // somewhat complex shape -> should decompose correctly'
-    // testIt('B');           // B shape with quad beziers -> should decompose correctly'
-    // testIt('same-k-family-lines');  // shape with overlapping beziers (lines) in same k family -> should decompose correctly'
-    // testIt('multi-level-reversed-orientation');  // shape with multiple levels of both way oriented loops -> should decompose correctly'
-    // testIt('holy-poly');  // polygon with 3 simple holes -> should decompose correctly'
-    // testIt('f');  // f shape with interface intersections -> should decompose correctly'
-    // testIt('split-shape-lines');  // split two shapes into two different shapes -> should decompose correctly'
-    // testIt('tiny-min-y-loop');  // tiny loop at minimum y -> should decompose correctly'
-    // testIt('new1');         // edge case -> should decompose correctly'
-    // testIt('new2');         // edge case that caused same bug as bold-b -> should decompose correctly'
-    // testIt('bold-b');       // edge case that caused bug -> should decompose correctly'
-    // testIt('koldat51');     // koldat51 -> edge case test'
-    // testIt('koldat52');     // koldat52 -> edge case test where `takenLoops` is important to be kept'
-    // testIt('complexish2');  // complexish2 -> should decompose correctly'
-    // testIt('complexish3');  // complexish3 -> should decompose correctly'
+    testIt('two-squares');    // two-squares -> should boolean correctly'
+    testIt('three-squares');    // three-squares -> should boolean correctly'
+    testIt('snuggle-1');   // snuggle-1 -> should decompose correctly (and snuggly)'
+    testIt('multi-level-reversed-orientation');    // three-squares -> should boolean correctly'
+    testIt('few-xs-at-min-y');  // multiple intersections at minimum y value -> should decompose correctly'
+    testIt('multiple-xs-at-min-y');  // multiple intersections at minimum y value -> should decompose correctly'
+    testIt('woodland2');      // complex shape -> should decompose correctly'
+    testIt('woodland');      // complex shape -> should decompose correctly'
+    testIt('complex6');      // complex shape -> should decompose correctly'
+    testIt('complex4');      // complex shape -> should decompose correctly'
+    testIt('complex3');      // complex shape -> should decompose correctly'
+    testIt('complex2');     // complex shape -> should decompose correctly'
+    testIt('complex');      // complex shape -> should decompose correctly'
+    testIt('koldat-again');     // koldat-again -> edge case test'
+    testIt('square');           // simple square -> should decompose correctly (no decompisition)'
+    testIt('B');           // B shape with quad beziers -> should decompose correctly'
+    testIt('same-k-family-lines');  // shape with overlapping beziers (lines) in same k family -> should decompose correctly'
+    testIt('multi-level-reversed-orientation');  // shape with multiple levels of both way oriented loops -> should decompose correctly'
+    testIt('holy-poly');  // polygon with 3 simple holes -> should decompose correctly'
+    testIt('f');  // f shape with interface intersections -> should decompose correctly'
+    testIt('split-shape-lines');  // split two shapes into two different shapes -> should decompose correctly'
+    testIt('tiny-min-y-loop');  // tiny loop at minimum y -> should decompose correctly'
+    testIt('new1');         // edge case -> should decompose correctly'
+    testIt('new2');         // edge case that caused same bug as bold-b -> should decompose correctly'
+    testIt('bold-b');       // edge case that caused bug -> should decompose correctly'
+    testIt('koldat51');     // koldat51 -> edge case test'
+    testIt('koldat52');     // koldat52 -> edge case test where `takenLoops` is important to be kept'
+    testIt('complexish2');  // complexish2 -> should decompose correctly'
+    testIt('complexish3');  // complexish3 -> should decompose correctly'
 
     function testIt(
             fileName: string) {
@@ -104,6 +106,9 @@ test('`simplifyPaths` specific cases', function() {
             const loopss = simplifyPaths(bezierLoops, {
                 booleanOp: booleanOp_
             });
+            // const sLoopss = mapmap(loopss, loopToStringifyable);
+            // sLoopss[0].length;//?
+            // sLoopss[0][2];//?
         
             const tolerancePower = -20;
             const tolerance = makeTolerance(tolerancePower, bezierLoops);

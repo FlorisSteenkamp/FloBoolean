@@ -1,6 +1,5 @@
-import type { RootInterval } from 'flo-poly';
 import type { X } from '../get-critical-points/x.js';
-import { roots } from 'flo-poly';
+import { createRootExact, roots } from 'flo-poly';
 import { toP } from '../utils/to-p.js';
 import { toPowerBasis_1stDerivative_46_O } from './to-power-basis-1st-derivative-dd-46-o.js';
 
@@ -21,10 +20,20 @@ import { toPowerBasis_1stDerivative_46_O } from './to-power-basis-1st-derivative
     const pE = ps[ps.length-1];
 
     let minY: X = pS[1] < pE[1]
-        ? { ri: { t: 0, tS: 0, tE: 0, multiplicity: 1 }, p: pS, kind: 0 }
-        : { ri: { t: 1, tS: 1, tE: 1, multiplicity: 1 }, p: pE, kind: 0 };
+        ? { ri: createRootExact(0), p: pS, kind: 0 }
+        : { ri: createRootExact(1), p: pE, kind: 0 };
 
-    if (ps.length === 2) { return minY; }  // It's a line
+    if (ps.length === 2) {
+        // It's a line
+
+        if (pS[1] === pE[1]) {
+            // so that forward and reverse bezier have the same minY point
+            const p = [(pS[0] + pE[0])/2, (pS[1] + pE[1])/2];
+            return { ri: createRootExact(0.5), p, kind: 0 };
+        }
+
+        return minY;
+    }
 
     const [,dy] = toPowerBasis_1stDerivative_46_O(ps);
     const ris = roots(dy,0,1) || [];

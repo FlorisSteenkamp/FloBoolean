@@ -1,5 +1,6 @@
 import { test, expect } from '@jest/globals';
 import type { InOut } from '../src/containers/in-out/in-out.js';
+import { createRootExact } from 'flo-poly';
 import { compareInOut } from '../src/containers/get-container-in-outs/get-in-outs-via-sides/compare-in-out.js';
 
 
@@ -7,7 +8,7 @@ test.skip('`compareInOut`', function() {
     const inOutA: InOut = {
         side: 0,
         sideX: {
-            ri: { t: 0.5, tS: 0.5, tE: 0.5, multiplicity: 1, },
+            ri: createRootExact(0.5),
             compensated: undefined,
             kind: undefined!  // ...
         },
@@ -23,7 +24,7 @@ test.skip('`compareInOut`', function() {
     const inOutB: InOut = {
         side: 0,
         sideX: {
-            ri: { t: 0.6, tS: 0.6, tE: 0.6, multiplicity: 1, },
+            ri: createRootExact(0.6),
             compensated: undefined,
             kind: undefined!  // ...
         },

@@ -41,7 +41,7 @@ function rerunForXor(
     const root = completePaths(expMax, loops, minYXPairs);
 
     const outSets = splitLoopTrees(root)
-        .map(getLoopsFromTree('XOR'))
+        .map(getLoopsFromTree('OR'))
         .filter(v => v.length !== 0);
 
     for (const outSet of outSets) {

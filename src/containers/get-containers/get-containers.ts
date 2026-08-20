@@ -23,7 +23,7 @@ import { getXInOuts } from '../get-container-in-outs/get-in-outs-via-sides/get-x
  * holding critical points.
  */
 const CONTAINER_SIZE_MULTIPLIER_EXP = 4;
-const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 40;
+const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 30;
 
 
 /**
