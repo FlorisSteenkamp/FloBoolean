@@ -1,4 +1,5 @@
 import type { X } from '../get-critical-points/x.js';
+import type { Curve } from '../curve/curve.js';
 import { createRootExact, roots } from 'flo-poly';
 import { toP } from '../utils/to-p.js';
 import { toPowerBasis_1stDerivative_46_O } from './to-power-basis-1st-derivative-dd-46-o.js';
@@ -14,14 +15,15 @@ import { toPowerBasis_1stDerivative_46_O } from './to-power-basis-1st-derivative
  * @doc mdx
  */
  function getBezierMinY(
-        ps: number[][]): X {
+        curve: Curve): X {
 
+    const { ps } = curve;
     const pS = ps[0];
     const pE = ps[ps.length-1];
 
     let minY: X = pS[1] < pE[1]
-        ? { ri: createRootExact(0), p: pS, kind: 0 }
-        : { ri: createRootExact(1), p: pE, kind: 0 };
+        ? { ri: createRootExact(0), p: pS, kind: 0, curve }
+        : { ri: createRootExact(1), p: pE, kind: 0, curve };
 
     if (ps.length === 2) {
         // It's a line
@@ -29,7 +31,7 @@ import { toPowerBasis_1stDerivative_46_O } from './to-power-basis-1st-derivative
         if (pS[1] === pE[1]) {
             // so that forward and reverse bezier have the same minY point
             const p = [(pS[0] + pE[0])/2, (pS[1] + pE[1])/2];
-            return { ri: createRootExact(0.5), p, kind: 0 };
+            return { ri: createRootExact(0.5), p, kind: 0, curve };
         }
 
         return minY;
@@ -44,7 +46,7 @@ import { toPowerBasis_1stDerivative_46_O } from './to-power-basis-1st-derivative
         const p = toP(ps, ri.t);
 
         if (p[1] < minY.p[1]) {
-            minY = { ri, p, kind: 0 };
+            minY = { ri, p, kind: 0, curve };
         }
     }
 

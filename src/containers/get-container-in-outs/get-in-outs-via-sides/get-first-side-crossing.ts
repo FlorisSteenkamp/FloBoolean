@@ -21,12 +21,12 @@ const getFirstSideCrossing$ = memoize(function(
 
     // We only ever need the first bezier piece from `_x_` up to its adjacent
     // `_X_`, so compute that single piece directly rather than iterating.
-    const curveS = _x_.curve;
+    const curveS = _x_.x.curve;
     const tS = _x_.x.ri.tS;
     const endX = forward ? _x_.next! : _x_.prev!;
     const pieceEndT = forward ? 1 : 0;
     const runsToEnd =
-        curveS === endX.curve &&
+        curveS === endX.x.curve &&
         (forward ? tS < endX.x.ri.tS : tS > endX.x.ri.tS);
     const tE = runsToEnd ? endX.x.ri.tS : pieceEndT;
 
@@ -40,7 +40,7 @@ const getFirstSideCrossing$ = memoize(function(
 
         // check for possible intersection
         const ts_ = tS < tE ? [tS,tE] : [tE,tS];
-        const sideCrossing = getTs(ps, side, ts_, sideIdx);
+        const sideCrossing = getTs(curveS, side, ts_, sideIdx);
 
         if (sideCrossing === undefined) { continue; }
 

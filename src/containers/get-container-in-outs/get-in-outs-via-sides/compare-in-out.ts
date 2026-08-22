@@ -1,6 +1,6 @@
 declare const _debug_: Debug; 
 import type { Debug } from '../../../debug/debug.js';
-import type { InOut } from "../../in-out/in-out.js";
+import type { In, Out } from "../../in-out/in-out.js";
 import type { _X_ } from "../../../get-critical-points/-x-.js";
 import { memoize } from "flo-memoize";
 import { ddCompare } from 'double-double';
@@ -23,8 +23,8 @@ import { getSideRiExp } from './get-ts.js';
  * @param inOutB 
  */
 function compareInOut(
-        inOutA: InOut,
-        inOutB: InOut): number {
+        inOutA: In|Out,
+        inOutB: In|Out): number {
 
     let res: number;
 

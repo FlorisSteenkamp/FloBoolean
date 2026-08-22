@@ -1,9 +1,9 @@
 import type { Container } from '../../containers/container.js';
-import type { InOut } from '../../containers/in-out/in-out.js';
+import type { In, Out } from '../../containers/in-out/in-out.js';
 import { drawFs } from 'flo-draw';
 import { iterBeziersToNextX } from '../../containers/get-beziers-to-next-x.js';
 import { toP } from '../../utils/to-p.js';
-import { getTs } from '../../containers/get-container-in-outs/get-in-outs-via-sides/get-ts copy.js';
+import { getTs } from '../../containers/get-container-in-outs/get-in-outs-via-sides/get-ts.js';
 
 const { round, log2 } = Math;
 
@@ -90,20 +90,39 @@ function getBoxSides(box: number[][]): number[][][] {
  * intersection in the `inOut`'s direction, or `undefined` if none is found.
  */
 function getInOutBoxCrossing(
-        inOut: InOut,
+        inOut: In|Out,
         box: number[][]): number[] | undefined {
 
     const forward = inOut.dir === 1;
     const sides = getBoxSides(box);
 
-    for (const { ps, ts } of iterBeziersToNextX(inOut._x_, forward)) {
+    for (const { curve, ts } of iterBeziersToNextX(inOut._x_, forward)) {
+        const startT = ts[0];  // param at the piece's start (nearest the intersection)
         const ts_ = ts[0] < ts[1] ? ts : [ts[1], ts[0]];
-        for (const side of sides) {
-            const xs = getTs(ps, side, ts_);
-            if (xs.length > 0) {
-                return toP(side, xs[0].sideX.ri.t);
+
+        let best: number[] | undefined = undefined;
+        let bestDist = Infinity;
+        for (let i=0; i<sides.length; i++) {
+            const side = sides[i];
+            const sideCrossing = getTs(curve, side, ts_, i);
+            if (sideCrossing === undefined) { continue; }
+
+            // `getTs` finds crossings with the side's infinite line; keep only
+            // those actually on the segment (side param within [0,1]).
+            const tSide = sideCrossing.riSide.t;
+            if (tSide < -1e-6 || tSide > 1 + 1e-6) { continue; }
+
+            // Among segment crossings, take the one nearest the piece start,
+            // i.e. the edge the loop exits through first.
+            const tCurve = sideCrossing.xPs.ri.t;
+            const dist = Math.abs(tCurve - startT);
+            if (dist < bestDist) {
+                bestDist = dist;
+                best = toP(sideCrossing.ps, tCurve);
             }
         }
+
+        if (best !== undefined) { return best; }
     }
 
     return undefined;

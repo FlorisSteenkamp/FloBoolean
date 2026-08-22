@@ -231,8 +231,8 @@ function Page(props: Props) {
                     />
                 </div>
             </div>
-            <span ref={refX} style={{ userSelect: 'none', position: 'fixed', bottom: '13px', left: '10px', zIndex: 1 }} />
-            <span ref={refY} style={{ userSelect: 'none', position: 'fixed', bottom: '13px', left: '80px', zIndex: 1 }} />
+            <span id="x-coord" ref={refX} style={{ userSelect: 'none', position: 'fixed', bottom: '13px', left: '10px', zIndex: 1 }} />
+            <span id="y-coord" ref={refY} style={{ userSelect: 'none', position: 'fixed', bottom: '13px', left: '80px', zIndex: 1 }} />
             <div style={{ flex: 1, overflow: 'auto', minHeight: 0 }}>
                 {pathStrs !== undefined && 
                     <div style={{ position: 'relative', width: '1024px', height: '1024px' }}>

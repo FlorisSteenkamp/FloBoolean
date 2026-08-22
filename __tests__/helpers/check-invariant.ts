@@ -24,11 +24,6 @@ function checkInvariant(
     if (abs(centroid[0] - centroid_[0]) > tolerance.centroid ||
         abs(centroid[1] - centroid_[1]) > tolerance.centroid) {
 
-        // centroid;//?
-        // centroid_;//?
-        // tolerance
-        // centroid[0] - centroid_[0];//?
-        // centroid[1] - centroid_[1];//?
         throw new Error(
             `${fileName}: Centroid not within tolerance. Calc: ${JSON.stringify(centroid_)}, required: ${JSON.stringify(centroid)}, ` + `\n` +
             `delta x,y: ${centroid[0] - centroid_[0]}, ${centroid[1] - centroid_[1]}`
@@ -43,12 +38,6 @@ function checkInvariant(
         abs(bounds.minY - bounds_.minY) > tolerance.bounds ||
         abs(bounds.maxX - bounds_.maxX) > tolerance.bounds ||
         abs(bounds.maxY - bounds_.maxY) > tolerance.bounds) {
-
-        minXDelta;//?
-        minYDelta;//?
-        maxXDelta;//?
-        maxYDelta;//?
-        tolerance.bounds;//?
 
         throw new Error(
             `${fileName}: Bounds not within tolerance.`

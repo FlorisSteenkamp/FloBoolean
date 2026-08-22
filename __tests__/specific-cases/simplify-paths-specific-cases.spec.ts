@@ -54,10 +54,11 @@ test('`simplifyPaths` specific cases', function() {
 
     updDebugGlobal(true);
 
+    testIt('three-squares');    // three-squares -> should boolean correctly'
+    testIt('four-squares');    // four-squares -> should boolean correctly'
     testIt('complexish');  // somewhat complex shape -> should decompose correctly'
     testIt('confuse1');
     testIt('two-squares');    // two-squares -> should boolean correctly'
-    testIt('three-squares');    // three-squares -> should boolean correctly'
     testIt('snuggle-1');   // snuggle-1 -> should decompose correctly (and snuggly)'
     testIt('multi-level-reversed-orientation');    // three-squares -> should boolean correctly'
     testIt('few-xs-at-min-y');  // multiple intersections at minimum y value -> should decompose correctly'
@@ -107,8 +108,8 @@ test('`simplifyPaths` specific cases', function() {
                 booleanOp: booleanOp_
             });
             // const sLoopss = mapmap(loopss, loopToStringifyable);
-            // sLoopss[0].length;//?
-            // sLoopss[0][2];//?
+            // sLoopss[0].length;
+            // sLoopss[0][2];
         
             const tolerancePower = -20;
             const tolerance = makeTolerance(tolerancePower, bezierLoops);

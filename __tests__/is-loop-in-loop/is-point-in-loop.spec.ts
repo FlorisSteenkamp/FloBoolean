@@ -392,7 +392,6 @@ test('`isPointInLoop`', function() {
         ].map(ps => ({ ps, ts: [0,1] }));
         // the point that is actually used in the test by the algorithm
         const p = [9.960653086576645, 10.039192701052766 + δ/2];
-        // p;//?
         const r = isPointInLoop(5, p, loop5);
         expect(r).toBe(true);
     }

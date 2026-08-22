@@ -11,7 +11,7 @@ function compareXs(
         xA: _X_,
         xB: _X_) {
 
-    let res = xA.curve.idx - xB.curve.idx;
+    let res = xA.x.curve.idx - xB.x.curve.idx;
     if (res !== 0) { return res; }
 
     res = xA.x.ri.tS - xB.x.ri.tS;

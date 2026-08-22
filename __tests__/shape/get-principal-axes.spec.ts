@@ -1,5 +1,5 @@
 import { test, expect } from '@jest/globals';
-import { degToRad, radToDeg } from '../src/svg/circle-to-cubic-beziers.js';
+import { degToRad, radToDeg } from '../../src/svg/circle-to-cubic-beziers.js';
 import { dot, rotate } from "flo-vector2d";
 import { ddGetShapeCentroid, getShapeCentroid } from '../src/loop/get-loop-centroid.js';
 import { getPrincipalAxes, ddGetPrincipalAxes } from '../src/loop/get-principal-axes.js';
@@ -33,7 +33,7 @@ test('getPrincipalAxes', function() {
     //         [ [ -16, 42.261744966443075 ], [ 0, -236.73825503355692 ] ]
     //     ];
 
-    //     const C = ddGetShapeCentroid(pss);//?
+    //     const C = ddGetShapeCentroid(pss);
     //     expect(C[0]).toStrictEqual([0,0]);
     //     expect(C[1][1]).toBeCloseTo(1.2207982574133265e-13, 13);
 
@@ -53,37 +53,29 @@ test('getPrincipalAxes', function() {
     //         const { eigenValues: eigenValues_, eigenVectors: [v1_,v2_] } = principalAxes_;
     //         const θ0r = atan2(v1[1], v1[0]);
     //         const θ1r = atan2(v2[1], v2[0]);
-    //         // v1;//?
-    //         // v2;//?
-    //         const dotProd = dot(v1,v2);//?
+    //         const dotProd = dot(v1,v2);
     //         expect(dotProd).toStrictEqual(0.0625);
 
     //         const θ0r_ = atan2(v1_[1], v1_[0]);
     //         const θ1r_ = atan2(v2_[1], v2_[0]);
-    //         const dotProd_ = dot(v1_,v2_);//?
+    //         const dotProd_ = dot(v1_,v2_);
     //         expect(dotProd_).toStrictEqual(-0.0625);
-
-    //         v1; //?
-    //         v1_;//?
-    //         v2; //?
-    //         v2_;//?
 
     //         expect(v1[0]).toBeCloseTo(-8728725.83586225, 13);
     //         expect(v1[1]).toBeCloseTo(-49503064.1413533, 13);
     //         expect(v1_[0]).toBeCloseTo(-8728725.83586225, 7);
     //         expect(v1_[1]).toBeCloseTo(-49503064.1413533, 6);
 
-    //         eigenValues;//?
     //         expect(eigenValues[0]).toBeCloseTo(419840, 7);
     //         expect(eigenValues[1]).toBeCloseTo(51462014.013422854, 7);
 
-    //         // const [θ1d,θ2d] = [θ0r,θ1r].map(radToDeg);//?
-    //         // const [θ1d_,θ2d_] = [θ0r_,θ1r_].map(radToDeg);//?
+    //         // const [θ1d,θ2d] = [θ0r,θ1r].map(radToDeg);
+    //         // const [θ1d_,θ2d_] = [θ0r_,θ1r_].map(radToDeg);
 
-    //         const θ0d = (radToDeg(θ0r) + 180)%180;//?
-    //         const θ1d = (radToDeg(θ1r) + 180)%180;//?
-    //         const θ0d_ = (radToDeg(θ0r_) + 180)%180;//?
-    //         const θ1d_ = (radToDeg(θ1r_) + 180)%180;//?
+    //         const θ0d = (radToDeg(θ0r) + 180)%180;
+    //         const θ1d = (radToDeg(θ1r) + 180)%180;
+    //         const θ0d_ = (radToDeg(θ0r_) + 180)%180;
+    //         const θ1d_ = (radToDeg(θ1r_) + 180)%180;
 
     //         expect(θ0d).toBeCloseTo(80, 12);
     //         expect(θ1d).toBeCloseTo(170, 12);
@@ -91,7 +83,7 @@ test('getPrincipalAxes', function() {
     //         expect(θ1d_).toBeCloseTo(170, 12);
             
     //         // oblongness measure
-    //         sqrt(eigenValues[1])/sqrt(eigenValues[0]);//?
+    //         sqrt(eigenValues[1])/sqrt(eigenValues[0]);
     //     }
     // }
 

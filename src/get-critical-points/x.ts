@@ -1,5 +1,6 @@
 import type { RootInterval } from 'flo-poly';
 import type { RootIntervalExp } from 'flo-poly';
+import type { Curve } from '../curve/curve.js';
 
 
 /** 
@@ -10,6 +11,9 @@ import type { RootIntervalExp } from 'flo-poly';
  * as from the point of view of each curve.
  */
 interface X {
+    /** The Curve on the shape boundary this point belong to. */
+    readonly curve: Curve;
+
     /** 
      * The root interval guaranteed to contain the correct `t` value in the 
      * form `{ tS, tE, multiplicity }`, where `tS` and `tE` are the start and

@@ -54,7 +54,7 @@ function getLoopsFromTree(
 
             // Winding number of the face just outside this loop (0 if this is
             // the outermost loop of the shape).
-            const parentWinding = tree.parent?.windingNum ?? 0;
+            const parentWinding = tree.parent.windingNum;
 
             // Include this loop iff result membership flips across it.
             const isSelected =

@@ -1,31 +1,26 @@
 import type { Loop } from "../../shape/loop.js";
-import type { _X_ } from "../../get-critical-points/-x-.js";
+import type { X } from "../../get-critical-points/x.js";
 import { getBezierTurnarounds } from "../../bezier/get-bezier-turnarounds.js";
 import { toP } from "../../utils/to-p.js";
 
 
 function getTurnarounds(
-        loops: Loop[]): [_X_][] {
+        loops: Loop[]): [X][] {
 
-    const turnarounds: [_X_][] = [];
+    const turnarounds: [X][] = [];
     for (let loop of loops) {
         for (let curve of loop.curves) {
             const { ps } = curve;
 
             const xPairs = getBezierTurnarounds(ps)
-            .map((ri): [_X_] => {
+            .map((ri): [X] => {
                 const { t } = ri;
                 const p = toP(ps, t);
 
-                const _x_: _X_ = {
-                    curve,
-                    x: { p, ri, kind: 8 },
-                    next: undefined!,      // will be set later
-                    prev: undefined!,      // ...
-                    container: undefined!  // ...
-                };
+                // `next`, `prev`, `container` will be set later
+                const x: X = { p, ri, kind: 8, curve };
 
-                return [_x_];
+                return [x];
             });
 
             turnarounds.push(...xPairs);

@@ -1,6 +1,6 @@
 import { test, expect } from '@jest/globals';
-import { getTotalShapeCurvature } from "../src/shape/get-total-shape-curvature.js";
-import { reverseShapeOrientation } from "../src/shape/reverse-shape-orientation.js";
+import { getTotalShapeCurvature } from "../../src/shape/get-total-shape-curvature.js";
+import { reverseShapeOrientation } from "../../src/shape/reverse-shape-orientation.js";
 
 const { PI } = Math;
 

@@ -1,62 +1,55 @@
-import { ddAddDd, ddDiffDd } from "double-double";
+import { memoize } from "flo-memoize";
 import type { Loop } from "./loop.js";
-import { toPowerBasis, toPowerBasis_1stDerivative, toPowerBasis_1stDerivativeDd, toPowerBasisDd } from "flo-bezier3";
-import { multiply, add, negate, Horner, integrate, ddMultiply, ddNegate, ddIntegrate, ddAdd, ddHorner } from 'flo-poly';
 
 
 /** 
- * Returns the area of the given shape.
+ * Returns the signed winding number weighted area of the given shape.
+ * 
+ * * also useful for finding the orientation of loops
  * 
  * * see e.g. https://mathinsight.org/greens_theorem_find_area
  * 
  * @param shape the shape given as a closed loop of bezier curves
  */
-function getShapeArea(
-        shape: (number[][])[]) {
+const getShapeArea$ = memoize(function(
+        shape: number[][][]): number {
 
-    let totalArea = 0;
+    let twiceArea = 0;
     for (const ps of shape) {
-        const [x,y] = toPowerBasis(ps);
-        const [dx,dy] = toPowerBasis_1stDerivative(ps);
-
-        const xdy = multiply(x, dy);
-        const ydx = negate(multiply(y, dx));
-
-        const poly = integrate(add(xdy, ydx), 0);
-        const area = Horner(poly, 1);
-
-        totalArea += area;
+        // weights are ∫₀¹ (Bᵢ Bⱼ' − Bᵢ' Bⱼ) dt over the Bernstein basis
+        switch (ps.length) {
+            case 2:  // line
+                twiceArea += cross(ps, 0, 1);
+                break;
+            case 3:  // quadratic
+                twiceArea +=
+                    (2*cross(ps, 0, 1) +
+                       cross(ps, 0, 2) +
+                     2*cross(ps, 1, 2)) / 3;
+                break;
+            case 4:  // cubic
+                twiceArea +=
+                    (6*cross(ps, 0, 1) +
+                     3*cross(ps, 0, 2) +
+                       cross(ps, 0, 3) +
+                     3*cross(ps, 1, 2) +
+                     3*cross(ps, 1, 3) +
+                     6*cross(ps, 2, 3)) / 10;
+                break;
+        }
     }
 
-    return totalArea / 2;
-}
+    return twiceArea/2;
+});
 
 
-/** 
- * Returns the area of the given shape.
- * 
- * * see e.g. https://mathinsight.org/greens_theorem_find_area
- * 
- * @param shape the shape given as a closed loop of bezier curves
- */
-function ddGetShapeArea(
-        shape: (number[][])[]) {
+// `x_i·y_j - x_j·y_i` for control points `i`,`j` of a piece
+function cross(
+        ps: number[][],
+        i: number,
+        j: number) {
 
-    let totalArea = [0,0];
-    for (const ps of shape) {
-        const [x,y] = toPowerBasisDd(ps);
-        const [dx,dy] = toPowerBasis_1stDerivativeDd(ps);
-
-        const xdy = ddMultiply(x, dy);
-        const ydx = ddNegate(ddMultiply(y, dx));
-
-        const poly = ddIntegrate(ddAdd(xdy, ydx), [0,0]);
-        const area = ddHorner(poly, 1);
-
-        totalArea = ddAddDd(totalArea, area);
-    }
-
-    return [totalArea[0]/2, totalArea[1]/2];
+    return ps[i][0]*ps[j][1] - ps[j][0]*ps[i][1];
 }
 
 
@@ -67,8 +60,41 @@ function ddGetShapeArea(
  * * see e.g. https://mathinsight.org/greens_theorem_find_area
  */
 function getLoopArea(loop: Loop) {
-    return getShapeArea(loop.beziers);
+    return getShapeArea$(loop.beziers);
 }
 
 
-export { getLoopArea, getShapeArea, ddGetShapeArea }
+export { getLoopArea, getShapeArea$ }
+
+
+
+// import { toPowerBasis, toPowerBasis_1stDerivative } from "flo-bezier3";
+// import { multiply, add, negate, Horner, integrate } from 'flo-poly';
+/** 
+ * THIS FUNCTION WAS REPLACED BY A MORE ACCURATE ONE
+ * 
+ * Returns the area of the given shape.
+ * 
+ * * see e.g. https://mathinsight.org/greens_theorem_find_area
+ * 
+ * @param shape the shape given as a closed loop of bezier curves
+ */
+// function getShapeArea(
+//         shape: (number[][])[]) {
+
+//     let totalArea = 0;
+//     for (const ps of shape) {
+//         const [x,y] = toPowerBasis(ps);
+//         const [dx,dy] = toPowerBasis_1stDerivative(ps);
+
+//         const xdy = multiply(x, dy);
+//         const ydx = negate(multiply(y, dx));
+
+//         const poly = integrate(add(xdy, ydx), 0);
+//         const area = Horner(poly, 1);
+
+//         totalArea += area;
+//     }
+
+//     return totalArea / 2;
+// }

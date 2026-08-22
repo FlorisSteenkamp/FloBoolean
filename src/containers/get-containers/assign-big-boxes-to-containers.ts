@@ -13,13 +13,13 @@ const assignBigBoxesToContainers = timeFunctionCalls(function assignBigBoxesToCo
         const [[minX, minY], [maxX, maxY]] = container.box;
         const c = [(minX + maxX)/2, (minY + maxY)/2];
         
-        const rects = [
-            ...container.xs.map(x => x.next.container.box),
-            ...container.xs.map(x => x.prev.container.box),
+        const boxes = [
+            ...container.xs.map(_x_ => _x_.next.container.box),
+            ...container.xs.map(_x_ => _x_.prev.container.box),
         ];
-        
-        const bigBox = getBigBox(expMax, rects, c);
-        
+
+        const bigBox = getBigBox(expMax, boxes, c);
+
         (container as Mutable<Container>).bigBox = bigBox;
     }
 

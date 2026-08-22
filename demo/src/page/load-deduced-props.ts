@@ -39,7 +39,8 @@ function loadDeducedProps(
             let loopss = simplifyPaths(
                 bezierLoopss[0], {
                     // orientationPositive: true,
-                    booleanOp 
+                    booleanOp,
+                    // minLoopArea: 0
                 }
             );
             // updDebugGlobal(IS_DEBUG_ON);  // clears `_debug_.elems`

@@ -1,6 +1,6 @@
 import type { Container } from '../container.js';
 import type { Mutable } from '../../utils/mutable.js';
-import type { InOut } from '../in-out/in-out.js';
+import type { In, Out } from '../in-out/in-out.js';
 
 
 /**
@@ -14,7 +14,7 @@ function numberInOuts(
     let ioIdx = 0;
     for (const container of containers) {
         for (const inOut of container.inOuts) {
-            (inOut as Mutable<InOut>).idx = ++ioIdx;
+            (inOut as Mutable<In|Out>).idx = ++ioIdx;
         }
     }
 }

@@ -11,25 +11,19 @@ function connectContainerInOuts(
 
     for (const container of containers) {
         for (const inOut of container.inOuts) {
-            if (inOut.dir === -1) { continue; }
-
-            const out = inOut as Mutable<Out>;
-            let { _x_ } = out;
-            _x_ = _x_.next!;
-            out.nextOrPrev = _x_.in_!;
-            out.idx = out.nextOrPrev!.idx;
-        }
-    }
-
-    for (const container of containers) {
-        for (const inOut of container.inOuts) {
-            if (inOut.dir === +1) { continue; }
-
-            const in_ = inOut as Mutable<In>;
-            let { _x_ } = in_;
-            _x_ = _x_.prev!;
-            in_.nextOrPrev = _x_.out!;
-            in_.idx = in_.nextOrPrev!.idx;
+            if (inOut.dir === +1) {
+                const out = inOut as Mutable<Out>;
+                let { _x_ } = out;
+                _x_ = _x_.next!;
+                out.next = _x_.in_!;
+                out.idx = out.next!.idx;
+            } else {
+                const in_ = inOut as Mutable<In>;
+                let { _x_ } = in_;
+                _x_ = _x_.prev!;
+                in_.prev = _x_.out!;
+                in_.idx = in_.prev!.idx;
+            }
         }
     }
 }

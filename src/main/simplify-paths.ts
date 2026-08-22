@@ -3,7 +3,7 @@ import type { Debug, Timing } from '../debug/debug.js';
 import type { Mutable } from '../utils/mutable.js';
 import type { Loop } from '../shape/loop.js';
 import type { SimplifyOptions } from './simplify-options.js';
-import { orderLoopAscendingByMinY } from '../calc-paths/order-loop-ascending-by-min-y.js';
+import { compareLoopByMinY } from '../calc-paths/order-loop-ascending-by-min-y.js';
 import { splitLoopTrees } from '../calc-paths/split-loop-trees.js';
 import { getLoopsFromTree } from '../calc-paths/get-loops-from-tree.js';
 import { getContainers } from '../containers/get-containers/get-containers.js';
@@ -12,11 +12,10 @@ import { normalizeLoops } from '../shape/normalize/normalize-loop.js';
 import { getMaxCoordinate } from '../shape/normalize/get-max-coordinate.js';
 import { addDebugInfo2 } from './add-debug-info-2.js';
 import { loopFromOut } from './loop-from-out.js';
-import { filterLoopsByMinAllowedArea } from './filter-loops-by-min-area.js';
+import { filterLoopsByMinAllowedArea } from './filter-loops-by-min-allowed-area.js';
 import { completePaths } from './complete-paths.js';
 import { timeFunctionCalls } from '../utils/time-function-call.js';
-import { rerunForXor } from './rerun-for-xor.js';
-import { reverseShapeOrientation } from '../shape/reverse-shape-orientation.js';
+// import { rerunForXor } from './rerun-for-xor.js';
 
 // import { getAllXPairs, getIntersections_, getSelfIntersections_, getInterfaceIntersections_, getExcessiveCurvatures_, getTurnarounds_ } from '../containers/get-containers/get-all-x-pairs.js';
 import { getIntersection } from '../get-critical-points/get-intersection.js';
@@ -28,9 +27,24 @@ import { getAxisAlignedRayLoopIntersections, _isLoopInLoop } from '../is-loop-in
 import { getAllXPairs, getExcessiveCurvatures_, getInterfaceIntersections_, getIntersections_, getSelfIntersections_, getTurnarounds_ } from '../containers/get-containers/get-all-x-pairs.js';
 import { getLoopMinY } from '../shape/get-min-y.js';
 import { _X_ } from '../get-critical-points/-x-.js';
+import { BezierPiece, bezierPieceToBezier } from 'flo-bezier3';
+import { reverseShapeOrientation } from '../shape/reverse-shape-orientation.js';
+import { mapmap } from '../utils/map-map.js';
+import { getJordanTurningNumber } from '../shape/get-jordan-turning-number.js';
+import { containerHasMinY } from '../containers/container-has-min-y.js';
+import { getShapeArea$ } from '../shape/get-shape-area.js';
+import { MAX_BIT_LENGTH } from './max-bitlength.js';
 
 
 const { ceil, log2 } = Math;
+
+
+/** 
+ * A size multiplier (based on the max value of the tangent) for the containers
+ * holding critical points.
+ */
+const CONTAINER_SIZE_MULTIPLIER_EXP = 4;
+const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 30;
 
 
 /**
@@ -49,7 +63,7 @@ const { ceil, log2 } = Math;
  * @param loops an array of possibly intersecting paths
  */
 function simplifyPaths(
-        bezierLoops: (number[][])[][],
+        bezierLoops: ((number[][])[])[],
         options: SimplifyOptions = {}): Loop[][] {
 
     //==========================================================================
@@ -68,8 +82,20 @@ function simplifyPaths(
         booleanOp = "OR"
     } = options;
 
-    bezierLoops = normalizeLoops(bezierLoops, expMax)
-        .sort(orderLoopAscendingByMinY);
+    //--------------------------------------------------------------------------
+    const containerSizeMultiplierExp = typeof _debug_ === 'undefined'
+        ? CONTAINER_SIZE_MULTIPLIER_EXP
+        : CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING;
+    const expGrid = expMax - MAX_BIT_LENGTH;
+    const expContainer = expGrid + containerSizeMultiplierExp;
+    //--------------------------------------------------------------------------
+
+    // const preMinLoopArea = (2**(expContainer + 6))**2;  //  an entire loop mustn't fit inside a container
+    bezierLoops =
+        normalizeLoops(bezierLoops, expMax)
+        // cannot work: getShapeArea$ is the signed, winding number weighted area, not the actual area
+        // .filter(loop => abs(getShapeArea$(loop)) > preMinLoopArea)
+        .sort(compareLoopByMinY);
 
     const loops = bezierLoops.map(loopFromBeziers);
     //==========================================================================
@@ -78,41 +104,83 @@ function simplifyPaths(
     //==========================================================================
     const minYXPairs = loops.map(getLoopMinY);
     if (typeof _debug_ !== 'undefined') { minYXPairs.forEach(_x_ => _debug_.elems.minY.push(_x_)); }
-    getContainers(loops, minYXPairs, expMax);
 
-    const root = completePaths(expMax, loops, minYXPairs);
+    const containers = getContainers(loops, minYXPairs, expMax, expContainer);
+    const minYContainers = containers.filter(containerHasMinY);
 
-    const outSets = splitLoopTrees(root)
+    const root = completePaths(expMax, minYContainers);
+
+    const outs = splitLoopTrees(root);
+
+    const outSets = outs
         .map(getLoopsFromTree(booleanOp))
         .filter(v => v.length !== 0);
-
-    const minAreaFilter = timeFunctionCalls(filterLoopsByMinAllowedArea(minLoopArea));
 
     //----------------------------------------
     // Create loops for all `outSets`
     //----------------------------------------
-    let loopIdx = 0;
-    const _loopss = minAreaFilter(
-        outSets.map(outSet => {
-            const outerLoopOrientation = outSet[0].out.orientation;
+    const __loopss = outSets.map(outSet => {
+        const outerLoopOrientation = outSet[0].out.orientation;
 
-            return outSet.map(({ out, depth }) => 
-                loopFromOut(out, outerLoopOrientation, loopIdx++, depth, forceOrientationNegative)
+        return outSet.map(({ out, depth }) => {
+            return loopFromOut(out, outerLoopOrientation, depth);
+        });
+    });
+
+
+    //-----------------
+    // Post processing
+    //-----------------
+
+    const _loopss = __loopss.map(loops => {
+        return loops.map(bezierPieces => {
+            const beziers = bezierPieces.map(bezierPieceToBezier);
+
+            return beziers;
+        });
+    });
+
+
+    const loopss = _loopss.map(
+        (_loops, i) => {
+            const outerOrientation = getJordanTurningNumber(_loops[0]);
+
+            const shouldReverse = outerOrientation !== -1 && forceOrientationNegative;
+
+            return _loops.map(_loop =>
+                shouldReverse ? reverseShapeOrientation(_loop) : _loop
             );
-        })
+        }
     );
-    
 
-    let loopss: Loop[][];
-    // if (booleanOp === 'XOR') {
-    //     loopss = rerunForXor(expMax, forceOrientationNegative, minLoopArea, _loopss);
-    // } else {
-        loopss = _loopss;
-    // }
 
-    addDebugInfo2(loopss);  // adds debug info used within __tests__ (and the demo)
+    const minAreaFilter = timeFunctionCalls(filterLoopsByMinAllowedArea(minLoopArea));
 
-    // TODO - somehehere - reconnect minY
+    const loopss_ = minAreaFilter(loopss)
+    // TODO might be used downstream but uneccessary to do here even though it's fast
+        .map(loops => loops.toSorted(compareLoopByMinY));
+
+    let loopIdx = 0;
+    const loopss__ = mapmap(loopss_, l => loopFromBeziers(l, loopIdx++));
+
+    addDebugInfo2(loopss__);  // adds debug info used within __tests__ (and the demo)
+
+    if (typeof _debug_ !== 'undefined') {
+        const { l1, l2, l3, lil1, lil2, lil3, lil4 } = _debug_.callCounts;
+        // console.log(lil1, lil2, lil3, lil4);
+        // console.log(l1,l2,l3);
+    }
+
+    return loopss__;
+}
+
+
+export { simplifyPaths }
+
+
+
+
+// TODO - somehehere - reconnect minY
 
     // console.log(structuredClone(getContainers.getStats()));
     // console.log(structuredClone(normalizeLoops.getStats()));
@@ -176,16 +244,3 @@ function simplifyPaths(
     // getTurnarounds -> 0.5 ms
 
     // console.log(loopss);
-
-    if (typeof _debug_ !== 'undefined') {
-        const { l1, l2, l3, lil1, lil2, lil3, lil4 } = _debug_.callCounts;
-        // console.log(lil1, lil2, lil3, lil4);
-        // console.log(l1,l2,l3);
-    }
-
-
-    return loopss;
-}
-
-
-export { simplifyPaths }

@@ -1,5 +1,5 @@
 import type { _X_ } from "../get-critical-points/-x-.js";
-import type { InOut } from "./in-out/in-out.js";
+import type { In, Out } from "./in-out/in-out.js";
 
 
 /**
@@ -27,7 +27,7 @@ interface Container extends ContainerBasic {
      * ordered array of incoming / outgoing curves where the order is 
      * anti-clockwise from the top right (minimum y, maximum x) corner
      */
-    readonly inOuts: InOut[];
+    readonly inOuts: (In|Out)[];
 }
 
 

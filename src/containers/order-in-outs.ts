@@ -1,8 +1,9 @@
 import type { Container } from "./container.js";
 import type { Mutable } from "../utils/mutable.js";
-import type { InOut } from "./in-out/in-out.js";
+import type { In, Out } from "./in-out/in-out.js";
 import { compareInOut } from "./get-container-in-outs/get-in-outs-via-sides/compare-in-out.js";
 import { timeFunctionCalls } from "../utils/time-function-call.js";
+import { containerHasMinY } from './container-has-min-y.js';
 
 
 /**
@@ -16,24 +17,17 @@ const orderInOuts = timeFunctionCalls(function orderInOuts(
         container: Container) {
 
     const { inOuts, xs } = container;
-    // getInOutsViaCrossing
+    // getInOutsViaCrossing  // FUTURE
 
-    if (inOuts.length > 2) {
+    // if `inOuts` length <= 2 we only need a cyclic sort UNLESS it contains
+    // a `minY` (type 0) `_X_` in which case we need a total order
+    if (inOuts.length > 2 || containerHasMinY(container)) {
         inOuts.sort(compareInOut);
-    } else {
-        // if `inOuts` length <= 2 we only need a cyclic sort UNLESS it contains
-        // a `minY` (type 0) `_X_` in which case we need a total order
-        for (let _x_ of xs) {
-            if (_x_.x.kind === 0) {
-                inOuts.sort(compareInOut);
-                break;
-            }
-        }
     }
 
-    let prevInOut = inOuts[inOuts.length - 1] as Mutable<InOut>;
+    let prevInOut = inOuts[inOuts.length - 1] as Mutable<In|Out>;
     for (let i=0; i<inOuts.length; i++) {
-        const inOut = inOuts[i] as Mutable<InOut>;
+        const inOut = inOuts[i] as Mutable<In|Out>;
 
         inOut.prevAround = prevInOut;
         prevInOut.nextAround = inOut;

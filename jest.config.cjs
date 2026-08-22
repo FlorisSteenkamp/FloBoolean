@@ -10,6 +10,7 @@ const esModules = [
 module.exports = {
     moduleFileExtensions: ['ts', 'js'],
     resolver: "jest-ts-webcompat-resolver",
+    setupFilesAfterEnv: ['<rootDir>/__tests__/helpers/jest.setup.ts'],
     testEnvironment: 'node',
     // testEnvironment: 'jsdom',
     verbose: false,  // show a per-file summary instead of each individual test

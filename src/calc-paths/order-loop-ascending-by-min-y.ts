@@ -8,15 +8,15 @@ import { getBounds$ } from "../geometry/get-bounds-.js";
  * @param loopA 
  * @param loopB 
  */
-function orderLoopAscendingByMinY(
-        loopA: number[][][], 
-        loopB: number[][][]) {
+function compareLoopByMinY(
+        loopA: (number[][])[], 
+        loopB: (number[][])[]) {
 
     return getMinY(loopA) - getMinY(loopB);
 }
 
 
-function getMinY(pss: number[][][]) {    
+function getMinY(pss: number[][][]) {
     let minY = Infinity;
     for (const ps of pss) {
         const y = getBounds$(ps).box[0][1];
@@ -27,4 +27,4 @@ function getMinY(pss: number[][][]) {
 }
 
 
-export { orderLoopAscendingByMinY }
+export { compareLoopByMinY }

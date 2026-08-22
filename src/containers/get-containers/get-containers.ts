@@ -2,8 +2,10 @@ declare const _debug_: Debug;
 import type { Debug } from '../../debug/debug.js';
 import type { Container, ContainerBasic } from "../container.js";
 import type { Mutable } from '../../utils/mutable.js';
+import type { X } from '../../get-critical-points/x.js';
 import type { _X_ } from '../../get-critical-points/-x-.js';
 import type { Loop } from "../../shape/loop.js";
+import type { In, Out } from '../in-out/in-out.js';
 import { setIntersectionNextAndPrevs } from "../../get-critical-points/set-intersection-next-values.js";
 import { sendContainersToGrid } from './send-containers-to-grid.js';
 import { combineOverlappingContainers } from './combine-overlapping-containers/combine-overlapping-containers.js';
@@ -15,15 +17,6 @@ import { orderInOuts } from '../order-in-outs.js';
 import { getAllXPairs } from './get-all-x-pairs.js';
 import { assignBigBoxesToContainers } from './assign-big-boxes-to-containers.js';
 import { timeFunctionCalls } from '../../utils/time-function-call.js';
-import { getXInOuts } from '../get-container-in-outs/get-in-outs-via-sides/get-x-in-outs.js';
-
-
-/** 
- * A size multiplier (based on the max value of the tangent) for the containers
- * holding critical points.
- */
-const CONTAINER_SIZE_MULTIPLIER_EXP = 4;
-const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 30;
 
 
 /**
@@ -34,29 +27,40 @@ const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 30;
  */
 const getContainers = timeFunctionCalls(function getContainers(
         loops: Loop[],
-        minYXPairs: _X_[],
-        expMax: number) {
-
-    //--------------------------------------------------------------------------
-    const containerSizeMultiplierExp = typeof _debug_ === 'undefined'
-        ? CONTAINER_SIZE_MULTIPLIER_EXP
-        : CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING;
-    const expGrid = expMax - MAX_BIT_LENGTH;
-    const containerDim = 2**(expGrid + containerSizeMultiplierExp);
-    //--------------------------------------------------------------------------
+        minYXPairs: X[],
+        expMax: number,
+        expContainer: number): Container[] {
 
     let xPairs = getAllXPairs(loops, minYXPairs, expMax);
 
-    let containers = getContainersFromXPairs(xPairs, containerDim);
+    const _x_Pairs: _X_[][] = xPairs.map(
+        xPair => xPair.map(x => {
+            return {
+                x,
+                // connections to be added later
+                container: undefined!,
+                next: undefined!,
+                prev: undefined!,
+            }
+    }));
+
+    let containers = getContainersFromXPairs(_x_Pairs, expContainer);
     containers = combineOverlappingContainers(containers);
-    containers = sendContainersToGrid(containers, expMax, containerSizeMultiplierExp);
+    containers = sendContainersToGrid(containers, expContainer);
 
     assignContainersToXs(containers);
 
-    setIntersectionNextAndPrevs(xPairs);
+    setIntersectionNextAndPrevs(_x_Pairs);
 
     for (const container of containers) {
-        (container as Mutable<Container>).inOuts = getXInOuts(container);
+        const inOuts: (In|Out)[] = [];
+
+        for (const x of container.xs) {
+            if (x.in_) { inOuts.push(x.in_); }
+            if (x.out) { inOuts.push(x.out); }
+        }
+
+        (container as Mutable<Container>).inOuts = inOuts;
     }
 
     const containers_ = assignBigBoxesToContainers(containers, expMax);
@@ -68,7 +72,7 @@ const getContainers = timeFunctionCalls(function getContainers(
 
     if (typeof _debug_ !== 'undefined') { _debug_.elems.container.push(...containers_); }
 
-    return containers;
+    return containers as Container[];
 });
 
 

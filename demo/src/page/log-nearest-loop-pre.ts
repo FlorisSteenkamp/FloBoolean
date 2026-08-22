@@ -3,7 +3,7 @@ declare const _debug_: Debug;
 import { squaredDistanceBetween } from 'flo-vector2d';
 import { drawFs } from 'flo-draw';
 import { Debug } from '../../../src/debug/debug.js';
-import { getShapeArea, Loop, loopFromBeziers, getShapeCentroid, getWindingNumber } from '../../../src/index.js';
+import { getShapeArea, Loop, loopFromBeziers, getShapeCentroid, getTurningNumber } from '../../../src/index.js';
 
 
 
@@ -38,7 +38,7 @@ function logNearestLoopPre(
         }
     }
 
-    console.log(`winding number: ${getWindingNumber(bestLoop.beziers)}, area: ${getShapeArea(bestLoop!.beziers)}`);
+    console.log(`turning number: ${getTurningNumber(bestLoop.beziers)}, area: ${getShapeArea(bestLoop!.beziers)}`);
     for (const curve of bestLoop!.curves) {
         drawFs.bezier(g, curve.ps, 'thin20 red nofill', showDelay);
     }

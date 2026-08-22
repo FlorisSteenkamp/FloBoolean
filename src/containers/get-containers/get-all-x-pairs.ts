@@ -1,7 +1,7 @@
 declare const _debug_: Debug; 
 import type { Debug } from '../../debug/debug.js';
 import type { Loop } from "../../shape/loop.js";
-import type { _X_ } from "../../get-critical-points/-x-.js";
+import type { X } from "../../get-critical-points/x.js";
 import { getIntersections } from "../../get-critical-points/get-intersections.js";
 import { getSelfIntersections } from '../../get-critical-points/get-self-intersections.js';
 import { getInterfaceIntersections } from '../../get-critical-points/get-interface-intersections.js';
@@ -22,13 +22,14 @@ const getTurnarounds_ = timeFunctionCalls(getTurnarounds);
  */
 const getAllXPairs = timeFunctionCalls(function getAllXPairs(
         loops: Loop[],
-        minYXPairs: _X_[],
-        expMax: number): _X_[][] {
+        minYXPairs: X[],
+        expMax: number): ([X, X] | [X])[] {
 
     // const xs1 = loops.map((_,idx) => [minYXPairs[idx], { ...minYXPairs[idx] }] as [_X_,_X_]);
-    const xs1 = loops.map((_,idx) => [minYXPairs[idx]] as [_X_]);
+    const xs1 = loops.map((_,idx) => [minYXPairs[idx]] as [X]);
     const xs2 = getIntersections_(loops);
     const xs3 = getSelfIntersections_(loops);
+    
     const xs4 = getInterfaceIntersections_(loops);
     const xs5 = getExcessiveCurvatures_(expMax, loops);
     const xs6 = getTurnarounds_(loops);

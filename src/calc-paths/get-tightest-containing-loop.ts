@@ -1,6 +1,7 @@
 import type { Out } from "../containers/in-out/in-out.js";
 import type { Loop } from '../shape/loop.js';
 import { _isLoopInLoop } from '../is-loop-in-loop/is-loop-in-loop.js';
+import { bezierPiecesFromOut$ } from "../main/bezier-pieces-from-out.js";
 
 
 /**
@@ -35,7 +36,8 @@ function getTightestContainingLoop(
     function f(parent: Out) {
         const { beziers } = loop;
 
-        if (_isLoopInLoop(expMax, beziers, parent.bezierPieces)) {
+        const bezierPieces = bezierPiecesFromOut$(parent);
+        if (_isLoopInLoop(expMax, beziers, bezierPieces)) {
             containingLoop = parent;
 
             for (const child of parent.children!) {

@@ -6,7 +6,7 @@ import type { Loop } from '../shape/loop.js';
 // the imports below is used in the test cases - see code below
 import { getShapeCentroid } from '../shape/get-shape-centroid.js';
 import { getShapeBounds } from '../calc-paths/get-shape-bounds.js';
-import { getShapeArea } from '../shape/get-shape-area.js';
+import { getShapeArea$ } from '../shape/get-shape-area.js';
 
 
 function addDebugInfo2(loopss: Loop[][]) {

@@ -1,5 +1,5 @@
 import type { Container } from '../containers/container.js';
-import type { InOut, Out } from '../containers/in-out/in-out.js';
+import type { In, Out } from '../containers/in-out/in-out.js';
 import type { Mutable } from '../utils/mutable.js';
 
 
@@ -18,25 +18,28 @@ import type { Mutable } from '../utils/mutable.js';
  */
 function getOutermostOut(
         container: Container,
-        parent: Out): Mutable<Out> {
+        parent: Out): Out {
 
     const inOuts = container.inOuts;
-    const firstInOut: Mutable<InOut> = inOuts[0];
-    const lastInOut: Mutable<InOut> = inOuts[inOuts.length-1];
+    const firstInOut = inOuts[0];
+    const lastInOut = inOuts[inOuts.length-1];
 
-    const initialOut: Out = (firstInOut.dir === 1
+    const initialOut = firstInOut.dir === 1
         ? firstInOut
-        : lastInOut) as Mutable<Out>;
+        : lastInOut;
 
     const orientation = lastInOut.dir;
     const windingNum = parent.windingNum + orientation;
 
-    for (const inOut of [firstInOut, lastInOut]) {
-        inOut.orientation = orientation;
-        inOut.parent = parent;
-        inOut.windingNum = windingNum;
-        inOut.children = new Set();
-    }
+    //---------------
+    // Mutate
+    //---------------
+    const inOut_ = initialOut as Mutable<In|Out>;
+    inOut_.orientation = orientation;
+    inOut_.parent = parent;
+    inOut_.windingNum = windingNum;
+    inOut_.children = new Set();
+    //---------------
 
     return initialOut as Out;
 }

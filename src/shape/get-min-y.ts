@@ -2,14 +2,13 @@ import type { Loop } from './loop.js';
 import type { X } from '../get-critical-points/x.js';
 import { getBezierMinY } from '../bezier/get-bezier-min-y.js';
 import { getControlPointBox } from 'flo-bezier3';
-import { _X_ } from '../get-critical-points/-x-.js';
 
 
 /** 
  *
  */
 function getLoopMinY(
-        loop: Loop): _X_ {
+        loop: Loop): X {
 
     const { curves } = loop;
 
@@ -28,7 +27,7 @@ function getLoopMinY(
         // so far, so skip the (expensive) exact min-y computation.
         if (boxTop > bestMinY) { continue; }
 
-        const minY = getBezierMinY(ps);
+        const minY = getBezierMinY(curve);
         const v = minY.p[1];
 
         if (bestY === undefined ||
@@ -41,13 +40,7 @@ function getLoopMinY(
         }
     }
 
-    return {
-        x: bestY,
-        curve: bestCurve,
-        next: undefined!,      // will be set later
-        prev: undefined!,      // ...
-        container: undefined!  // ...
-    }; 
+    return bestY;
 }
 
 

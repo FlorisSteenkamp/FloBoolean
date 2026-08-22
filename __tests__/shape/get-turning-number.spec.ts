@@ -1,8 +1,8 @@
 import { test, expect } from '@jest/globals';
-import { getWindingNumber } from "../../src/shape/get-winding-number.js";
+import { getTurningNumber } from "../../src/shape/get-turning-number.js";
 
 
-test('getWindingNumber', function() {
+test('getTurningNumber', function() {
     {
         const ps = [
             [
@@ -67,13 +67,13 @@ test('getWindingNumber', function() {
             ]
         ];
 
-        const r = getWindingNumber(ps);
+        const r = getTurningNumber(ps);
 
-        // this self-intersecting shape has a net winding number of 0 (can be -0)
+        // this self-intersecting shape has a net turning number of 0 (can be -0)
         expect(r === 0).toBe(true);
     }
     {
-        // a shape that circles the origin twice has a winding number of 2
+        // a shape that circles the origin twice has a turning number of 2
         const ps = [
             [[10, 0], [8.66, 5]],
             [[8.66, 5], [5, 8.66]],
@@ -101,7 +101,7 @@ test('getWindingNumber', function() {
             [[8.66, -5], [10, 0]]
         ];
 
-        const r = getWindingNumber(ps);
+        const r = getTurningNumber(ps);
 
         expect(r).toBe(2);
     }

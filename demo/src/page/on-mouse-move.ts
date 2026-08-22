@@ -25,9 +25,9 @@ function onMouseMove(
             getViewboxXY(svg$, pageState.viewbox, pixelsX, pixelsY);
 
         const spanX = refX.current;
-        if (spanX) { spanX.innerHTML = viewboxX.toFixed(2); }
+        if (spanX) { spanX.innerHTML = viewboxX.toFixed(3); }
         const spanY = refY.current;
-        if (spanY) { spanY.innerHTML = viewboxY.toFixed(2); }
+        if (spanY) { spanY.innerHTML = viewboxY.toFixed(3); }
 
         if (!zoomState.mouseIsDown) { return; }
 

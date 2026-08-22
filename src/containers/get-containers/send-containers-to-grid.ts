@@ -18,11 +18,7 @@ const { floor, ceil } = Math;
  */
 function sendContainersToGrid(
         containers: ContainerBasic[],
-        expMax: number,
-        containerSizeMultiplierExp: number): ContainerBasic[] {
-
-    const expGrid = expMax - MAX_BIT_LENGTH;
-    const expContainer = expGrid + containerSizeMultiplierExp;
+        expContainer: number): ContainerBasic[] {
 
     // Grid spacing = 1/2 the container dimension (a power of 2, so snapping via
     // divide/multiply is exact).

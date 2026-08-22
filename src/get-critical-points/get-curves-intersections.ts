@@ -1,4 +1,4 @@
-import type { _X_ } from './-x-.js';
+import type { X } from './x.js';
 import type { Curve } from "../curve/curve.js";
 import { orient2d } from 'big-float-ts';
 import { createRootExact, mid } from 'flo-poly';
@@ -21,7 +21,7 @@ import { areBoxesIntersecting } from '../geometry/are-boxes-intersecting.js';
  */
 function getCurvesIntersections(
         curveA: Curve, 
-        curveB: Curve): [_X_,_X_][] | undefined {
+        curveB: Curve): [X,X][] | undefined {
 
     const psA = curveA.ps;
     const psB = curveB.ps;
@@ -95,7 +95,7 @@ function getCurvesIntersections(
  */
 function checkEndpoints(
         curveA: Curve, 
-        curveB: Curve): [_X_,_X_][] | undefined {
+        curveB: Curve): [X,X][] | undefined {
 
     if (curveB.next === curveA) {
         if (curveA.next === curveB) {
@@ -118,11 +118,11 @@ function checkEndpoints(
         // in same k-family joined end to end, e.g. ---A--->|---B---> in which
         // case ...)
 
-        const xPairs = getOtherTs(psA, psB, [createRootExact(1)]);
+        const xPairs = getOtherTs(curveA, curveB, [createRootExact(1)]);
         if (xPairs === undefined || xPairs.length === 0) { return undefined; }
         const xPair = xPairs[0];
         return [[
-            { x: xPair[0], curve: curveA, next: undefined!, prev: undefined!, container: undefined! },
+            xPair[0],
             makeSimpleX(1, curveB, 1)
         ]];
     }
@@ -131,7 +131,7 @@ function checkEndpoints(
 
 function getLineLineIntersections(
         curveA: Curve, 
-        curveB: Curve): [_X_,_X_][] | undefined {
+        curveB: Curve): [X,X][] | undefined {
 
     let psA = curveA.ps;
     let psB = curveB.ps;

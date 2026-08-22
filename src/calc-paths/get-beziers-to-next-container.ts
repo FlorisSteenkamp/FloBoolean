@@ -1,19 +1,18 @@
 import type { BezierPiece } from "flo-bezier3";
-import type { In, Out } from "../containers/in-out/in-out.js";
+import type { Out } from "../containers/in-out/in-out.js";
 
 
 function getBeziersToNextContainer(
-        out: Out,
-        nextIn: In): BezierPiece[] {
+        out: Out): BezierPiece[] {
 
     const outX = out._x_!;
-    const inX = nextIn._x_!;
+    const inX = out.next._x_;
 
     //----------------------------
-    const curveS = outX.curve;
+    const curveS = outX.x.curve;
     const tS = outX.x.ri.t;
 
-    const curveE = inX.curve;
+    const curveE = inX.x.curve;
     const tE = inX.x.ri.t;
 
     let curCurve = curveS;

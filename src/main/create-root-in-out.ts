@@ -11,8 +11,8 @@ function createRootInOut(): Out {
         _x_: undefined!,
         container: undefined!,
         orientation: -1,
-        nextOrPrev: undefined!,
-        bezierPieces: undefined!,
+        next: undefined!,
+        path: undefined!,
         nextAround: undefined!,
         prevAround: undefined!
     };

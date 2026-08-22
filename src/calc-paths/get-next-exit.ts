@@ -1,4 +1,4 @@
-import type { In, InOut, Out } from "../containers/in-out/in-out.js";
+import type { In, Out } from "../containers/in-out/in-out.js";
 import type { Mutable } from "../utils/mutable.js";
 
 
@@ -10,50 +10,53 @@ import type { Mutable } from "../utils/mutable.js";
  * @param takenOuts
  */
 function getNextExit(
-        in_: In, 
         origOut: Out,
         additionalOutsToCheck: Out[],
-        takenOuts: Set<Out>): Out {
+        takenOuts: Set<Out>) {
 
     const markOutForChecking_ = markInOutForChecking(
         takenOuts,
         additionalOutsToCheck
     );
 
-    let toCount = 1;
-    let next: InOut = in_;
-    let outToUse: Out | undefined;
-    do {
-        next = origOut.orientation === +1
-            ? next.nextAround
-            : next.prevAround
+    return function(prevOut: Out): Out {
+        let in_ = prevOut.next;
 
-        if (next === in_) { break; }
+        let toCount = 1;
+        let next: In|Out = in_;
+        let outToUse: Out | undefined;
+        do {
+            next = origOut.orientation === +1
+                ? next.nextAround
+                : next.prevAround
 
-        toCount = toCount - next.dir;
+            if (next === in_) { break; }
 
-        if (next.dir === -1) { continue; }
-        const out = next as Out;
+            toCount = toCount - next.dir;
 
-        if (!outToUse) {
-            // we are still rotating on the inside of the loop
-            if (toCount === 0) {
-                outToUse = out;
-            } else if (toCount === 1) {
-                // ...must have the same orientation (see complexish2.svg in tests)
-                markOutForChecking_(out, origOut.orientation, origOut);
+            if (next.dir === -1) { continue; }
+            const out = next as Out;
+
+            if (!outToUse) {
+                // we are still rotating on the inside of the loop
+                if (toCount === 0) {
+                    outToUse = out;
+                } else if (toCount === 1) {
+                    // ...must have the same orientation (see complexish2.svg in tests)
+                    markOutForChecking_(out, origOut.orientation, origOut);
+                }
+            } else {
+                // else we are rotating on the outside of the loop
+                if (toCount === 0) {
+                    markOutForChecking_(out, origOut.orientation, origOut.parent);
+                } else if (toCount === -1) {
+                    markOutForChecking_(out, -origOut.orientation, origOut.parent);
+                }
             }
-        } else {
-            // else we are rotating on the outside of the loop
-            if (toCount === 0) {
-                markOutForChecking_(out, origOut.orientation, origOut.parent);
-            } else if (toCount === -1) {
-                markOutForChecking_(out, -origOut.orientation, origOut.parent);
-            }
-        }
-    } while (true)
+        } while (true)
 
-    return outToUse!;
+        return outToUse!;
+    }
 }
 
 
@@ -72,6 +75,7 @@ function markInOutForChecking(
         out_.orientation = orientation;
         out_.parent = origParent;
         out_.windingNum = origParent.windingNum + out.orientation;
+
         additionalOutsToCheck.push(out);
     }
 }

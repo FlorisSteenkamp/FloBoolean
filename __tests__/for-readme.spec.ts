@@ -67,9 +67,9 @@ test('test for readme - boolean', function() {
         // `loops` consist of a new array of loops being the boolean operation specified, i.e.
         // `"OR"`, `"AND"` or `"XOR"`. (see figs. below)
 
-        loops[0];  //?
-        loops[1];  //?
-        loops[2];  //?
-        loops[3];  //?
+        // loops[0];  //?
+        // loops[1];  //?
+        // loops[2];  //?
+        // loops[3];  //?
     }
 });

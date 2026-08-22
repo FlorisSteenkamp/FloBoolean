@@ -1,5 +1,6 @@
 import type { ContainerBasic } from "../container.js";
-import type { _X_ } from "../../get-critical-points/-x-.js";
+import type { X, } from "../../get-critical-points/x.js";
+import { _X_ } from "../../get-critical-points/-x-.js";
 
 
 /**
@@ -7,7 +8,9 @@ import type { _X_ } from "../../get-critical-points/-x-.js";
  */
 function getContainersFromXPairs(
         xPairs: _X_[][],
-        containerDim: number): ContainerBasic[] {
+        expContainer: number): ContainerBasic[] {
+
+    const containerDim = 2**expContainer;
 
     const containers: ContainerBasic[] = xPairs
     .map(xPair => {

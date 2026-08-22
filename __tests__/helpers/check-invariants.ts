@@ -15,7 +15,6 @@ function checkInvariants(
         throw new Error(`${filename}: loopss lengths differ`);
     }
 
-    // invariantsCalc;//?
     for (let i=0; i<invariantsCalc.length; i++) {
         const invariantCalc = invariantsCalc[i];
         const invariantReq  = invariantsReq[i];

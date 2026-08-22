@@ -4,15 +4,15 @@ const { round, PI: π } = Math;
 
 
 /**
- * Returns the winding number of the given shape.
+ * Returns the turning number of the given shape.
  * 
  * @param shape 
  */
-function getWindingNumber(
+function getTurningNumber(
         shape: (number[][])[]): number {
 
     return round(getTotalShapeCurvature(shape)/(2*π));
 }
 
 
-export { getWindingNumber }
+export { getTurningNumber }

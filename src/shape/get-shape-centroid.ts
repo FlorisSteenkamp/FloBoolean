@@ -1,7 +1,8 @@
 import type { Loop } from "./loop.js";
 import { toPowerBasis, toPowerBasis_1stDerivative, toPowerBasis_1stDerivativeDd, toPowerBasisDd } from "flo-bezier3";
 import { Horner, multiply, integrate, ddIntegrate, ddMultiply, ddHorner, ddDivideByConst } from 'flo-poly';
-import { ddGetShapeArea, getShapeArea } from "./get-shape-area.js";
+import { getShapeArea$ } from "./get-shape-area.js";
+import { ddGetShapeArea } from './dd-get-shape-area.js';
 import { ddAddDd, ddDivDd, ddMultBy2, ddMultDd, doubleDivDouble  } from "double-double";
 
 
@@ -16,7 +17,7 @@ import { ddAddDd, ddDivDd, ddMultBy2, ddMultDd, doubleDivDouble  } from "double-
 function getShapeCentroid(
         shape: number[][][]) {
 
-    const A = getShapeArea(shape);
+    const A = getShapeArea$(shape);
 
     let cx = 0;
     let cy = 0;

@@ -1,6 +1,7 @@
 import type { RootInterval, RootIntervalExp } from "flo-poly";
 import type { _X_ } from "../../../get-critical-points/-x-.js";
 import type { SideCrossing } from "./side-crossing.js";
+import type { Curve } from "../../../curve/curve.js";
 import { ddDiffDouble, ddAddDouble, ddDivDouble, ddMin, ddMax } from 'double-double';
 import { eps, roots, uu } from "flo-poly";
 import { memoize } from 'flo-memoize';
@@ -23,11 +24,12 @@ const { min, max } = Math;
  * @param risSide_ 
  */
 function getTs(
-        ps: number[][], 
+        curve: Curve, 
         side: number[][],
         tsPs: number[],
         sideIdx: number): SideCrossing | undefined {
 
+    const { ps } = curve;
     //--------------------------------------------------------------------------
     const r = getCoeffsBezBez(side, ps);
     if (r === undefined) { return undefined; }
@@ -50,7 +52,8 @@ function getTs(
             ri: riPs,
             getPExact: getPExactPs$,
             kind: 1,
-            p: undefined!  // unused
+            p: undefined!,  // unused
+            curve
         },
         riSide,
         sideIdx,

@@ -1,4 +1,4 @@
-import type { _X_ } from "./-x-.js";
+import type { X } from "./x.js";
 import type { Loop } from "../shape/loop.js";
 import { curvature, getCurvatureExtrema } from "flo-bezier3";
 import { makeSimpleX } from "./make-simple-x.js";
@@ -11,9 +11,9 @@ const MAX_CURVATURE_AT_EXP_MAX_0 = 10_000_000;
 
 function getExcessiveCurvatures(
         expMax: number,
-        loops: Loop[]): [_X_][] {
+        loops: Loop[]): [X][] {
 
-    const xs: [_X_][] = [];
+    const xs: [X][] = [];
 
     const maxCurvature = MAX_CURVATURE_AT_EXP_MAX_0*(2**-expMax);
 

@@ -2,13 +2,17 @@ import type { X } from "./x.js";
 import type { RootInterval } from "flo-poly";
 import { intersectBoxes, bezierBezierIntersectionBoundless, getIntervalBox } from 'flo-bezier3';
 import { toP } from "../utils/to-p.js";
+import { Curve } from "../curve/curve.js";
 
 
 // FUTURE - could this come from flo-bezier3
 function getOtherTs(
-        ps1: number[][], 
-        ps2: number[][],
+        curveA: Curve,
+        curveB: Curve,
         ts2: RootInterval[]): [X,X][] | undefined {
+
+    const { ps: ps1 } = curveA;
+    const { ps: ps2 } = curveB;
 
     if (ts2 === undefined) {
         return undefined;  // infinite number of intersections
@@ -36,8 +40,8 @@ function getOtherTs(
             // e.g. two odd multiplicity boxes should combine to a single even, etc. etc.
             const p = toP(ps1, ts1[i].t);
 
-            const x1: X = { ri: ts1[i], p, kind: 1 };
-            const x2: X = { ri: ts2[j], p, kind: 1 };
+            const x1: X = { ri: ts1[i], p, kind: 1, curve: curveA };
+            const x2: X = { ri: ts2[j], p, kind: 1, curve: curveB };
             xPairs.push([x1, x2]);
         }
     }
