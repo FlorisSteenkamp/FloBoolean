@@ -28,10 +28,10 @@ function compareInOut(
 
     let res: number;
 
-    const { _x_: _x_A, dir: dirA, idx: idxA, container } = inOutA;
+    const { _x_: _x_A, dir: dirA, idx: idxA } = inOutA;
     const { _x_: _x_B, dir: dirB, idx: idxB } = inOutB;
 
-    const sides = getBigBoxSides$(container.bigBox);
+    const sides = getBigBoxSides$(_x_A.container.bigBox);
 
     // 1st step: follow the loop outward from `_x_A` (in its `dir`) and find the
     // first `sidesA` edge it crosses, detected via bezier-piece endpoints.

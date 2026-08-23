@@ -12,11 +12,11 @@ import { combineOverlappingContainers } from './combine-overlapping-containers/c
 import { getContainersFromXPairs } from './get-containers-from-x-pairs.js';
 import { connectContainerInOuts } from './connect-container-in-outs.js';
 import { numberInOuts } from './number-in-outs.js';
-import { MAX_BIT_LENGTH } from '../../main/max-bitlength.js';
 import { orderInOuts } from '../order-in-outs.js';
 import { getAllXPairs } from './get-all-x-pairs.js';
 import { assignBigBoxesToContainers } from './assign-big-boxes-to-containers.js';
 import { timeFunctionCalls } from '../../utils/time-function-call.js';
+import { mapmap } from '../../utils/map-map.js';
 
 
 /**
@@ -26,23 +26,13 @@ import { timeFunctionCalls } from '../../utils/time-function-call.js';
  * @internal
  */
 const getContainers = timeFunctionCalls(function getContainers(
-        loops: Loop[],
-        minYXPairs: X[],
+        xPairs: ([X, X] | [X])[],
         expMax: number,
         expContainer: number): Container[] {
 
-    let xPairs = getAllXPairs(loops, minYXPairs, expMax);
-
-    const _x_Pairs: _X_[][] = xPairs.map(
-        xPair => xPair.map(x => {
-            return {
-                x,
-                // connections to be added later
-                container: undefined!,
-                next: undefined!,
-                prev: undefined!,
-            }
-    }));
+    // `container`/`next`/`prev` are filled in later (assignContainersToXs,
+    // setIntersectionNextAndPrevs)
+    const _x_Pairs = mapmap(xPairs, x => ({ x } as _X_));
 
     let containers = getContainersFromXPairs(_x_Pairs, expContainer);
     containers = combineOverlappingContainers(containers);

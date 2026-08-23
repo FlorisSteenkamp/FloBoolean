@@ -46,7 +46,6 @@ flowchart LR
     Container -->|"inOuts[]"| InOut
 
     InOut -->|"_x_"| XX
-    InOut -->|"container"| Container
     InOut -->|"prevAround / nextAround"| InOut
     InOut -->|"parent"| InOut
     InOut -->|"children Set"| InOut
@@ -89,7 +88,6 @@ Container
 
 In / Out  — dir = -1 (In) / +1 (Out)
   _x_                       ► _X_
-  container                 ► Container
   prevAround / nextAround   ► In | Out    ↺  (around container)
   parent                    ► Out         ↺  (nesting tree)
   children (Set)            ► Out         ↺  (nesting tree)
@@ -175,7 +173,6 @@ carries the arrangement/nesting fields (`orientation`, `windingNum`, `parent`,
 |---------------------------|---------------|-----------|---------|
 | `idx`                     | `number`      | —         | pair id (shared by the In and Out of a crossing) |
 | `_x_`                     | `_X_`         | _X_       | the intersection side this half-edge is at |
-| `container`               | `Container`   | Container | owning container |
 | `prevAround` / `nextAround` | `In\|Out`   | In/Out    | neighbour anti-clockwise around the container boundary |
 | `orientation`             | `number`      | —         | +1 / -1 (only when it represents a loop) |
 | `windingNum`              | `number`      | —         | winding of the face just inside this loop |

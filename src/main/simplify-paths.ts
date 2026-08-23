@@ -44,7 +44,7 @@ const { ceil, log2 } = Math;
  * holding critical points.
  */
 const CONTAINER_SIZE_MULTIPLIER_EXP = 4;
-const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 30;
+const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 40;
 
 
 /**
@@ -105,7 +105,8 @@ function simplifyPaths(
     const minYXPairs = loops.map(getLoopMinY);
     if (typeof _debug_ !== 'undefined') { minYXPairs.forEach(_x_ => _debug_.elems.minY.push(_x_)); }
 
-    const containers = getContainers(loops, minYXPairs, expMax, expContainer);
+    const xPairs = getAllXPairs(loops, minYXPairs, expMax);
+    const containers = getContainers(xPairs, expMax, expContainer);
     const minYContainers = containers.filter(containerHasMinY);
 
     const root = completePaths(expMax, minYContainers);
@@ -128,9 +129,14 @@ function simplifyPaths(
     });
 
 
-    //-----------------
-    // Post processing
-    //-----------------
+    return postProcess(__loopss, forceOrientationNegative, minLoopArea)
+}
+
+
+function postProcess(
+        __loopss: BezierPiece[][][],
+        forceOrientationNegative: boolean,
+        minLoopArea: number) {
 
     const _loopss = __loopss.map(loops => {
         return loops.map(bezierPieces => {
@@ -142,9 +148,8 @@ function simplifyPaths(
 
 
     const loopss = _loopss.map(
-        (_loops, i) => {
+        _loops => {
             const outerOrientation = getJordanTurningNumber(_loops[0]);
-
             const shouldReverse = outerOrientation !== -1 && forceOrientationNegative;
 
             return _loops.map(_loop =>
@@ -157,7 +162,7 @@ function simplifyPaths(
     const minAreaFilter = timeFunctionCalls(filterLoopsByMinAllowedArea(minLoopArea));
 
     const loopss_ = minAreaFilter(loopss)
-    // TODO might be used downstream but uneccessary to do here even though it's fast
+        // TODO might be used downstream but uneccessary to do here even though it's fast
         .map(loops => loops.toSorted(compareLoopByMinY));
 
     let loopIdx = 0;
@@ -165,13 +170,14 @@ function simplifyPaths(
 
     addDebugInfo2(loopss__);  // adds debug info used within __tests__ (and the demo)
 
-    if (typeof _debug_ !== 'undefined') {
-        const { l1, l2, l3, lil1, lil2, lil3, lil4 } = _debug_.callCounts;
+    // if (typeof _debug_ !== 'undefined') {
+    //     const { l1, l2, l3, lil1, lil2, lil3, lil4 } = _debug_.callCounts;
         // console.log(lil1, lil2, lil3, lil4);
         // console.log(l1,l2,l3);
-    }
+    // }
 
     return loopss__;
+    // return loopss_;
 }
 
 

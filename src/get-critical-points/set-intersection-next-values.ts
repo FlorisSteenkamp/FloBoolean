@@ -56,10 +56,10 @@ function setIntersectionNextAndPrevs(
             // An `_X_` is an entry (`In`) / exit (`Out`) of its container exactly
             // when its immediate loop-neighbour is already in a different one.
             if (xs[(i - 1 + len)%len].container !== container) {
-                _x__.in_ = { dir: -1, _x_, container } as In;
+                _x__.in_ = { dir: -1, _x_ } as In;
             }
             if (xs[(i + 1)%len].container !== container) {
-                _x__.out = { dir: +1, _x_, container } as Out;
+                _x__.out = { dir: +1, _x_ } as Out;
             }
         }
     }

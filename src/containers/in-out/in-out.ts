@@ -1,6 +1,4 @@
-import type { BezierPiece } from "flo-bezier3";
 import type { _X_ } from "../../get-critical-points/-x-.js";
-import type { Container } from "../container.js";
 
 
 interface InOutBase {
@@ -11,8 +9,6 @@ interface InOutBase {
     readonly idx: number;
     /** intersection; the actual one, not the "box side" intersection */
     readonly _x_: _X_;
-    /** the `Container` this `InOut` belongs to */
-    readonly container: Container;
 }
 
 
