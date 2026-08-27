@@ -10,41 +10,25 @@ import { getContainers } from '../containers/get-containers/get-containers.js';
 import { loopFromBeziers } from '../shape/loop-from-beziers.js';
 import { normalizeLoops } from '../shape/normalize/normalize-loop.js';
 import { getMaxCoordinate } from '../shape/normalize/get-max-coordinate.js';
-import { addDebugInfo2 } from './add-debug-info-2.js';
 import { loopFromOut } from './loop-from-out.js';
-import { filterLoopsByMinAllowedArea } from './filter-loops-by-min-allowed-area.js';
 import { completePaths } from './complete-paths.js';
-import { timeFunctionCalls } from '../utils/time-function-call.js';
-// import { rerunForXor } from './rerun-for-xor.js';
-
-// import { getAllXPairs, getIntersections_, getSelfIntersections_, getInterfaceIntersections_, getExcessiveCurvatures_, getTurnarounds_ } from '../containers/get-containers/get-all-x-pairs.js';
-import { getIntersection } from '../get-critical-points/get-intersection.js';
-import { combineOverlappingContainers } from '../containers/get-containers/combine-overlapping-containers/combine-overlapping-containers.js';
-import { assignBigBoxesToContainers } from '../containers/get-containers/assign-big-boxes-to-containers.js';
-import { orderInOuts } from '../containers/order-in-outs.js';
-import { completeLoop } from '../calc-paths/complete-loop.js';
-import { getAxisAlignedRayLoopIntersections, _isLoopInLoop } from '../is-loop-in-loop/is-loop-in-loop.js';
-import { getAllXPairs, getExcessiveCurvatures_, getInterfaceIntersections_, getIntersections_, getSelfIntersections_, getTurnarounds_ } from '../containers/get-containers/get-all-x-pairs.js';
+import { _isLoopInLoop } from '../is-loop-in-loop/is-loop-in-loop.js';
+import { getAllXPairs } from '../containers/get-containers/get-all-x-pairs.js';
 import { getLoopMinY } from '../shape/get-min-y.js';
 import { _X_ } from '../get-critical-points/-x-.js';
-import { BezierPiece, bezierPieceToBezier } from 'flo-bezier3';
-import { reverseShapeOrientation } from '../shape/reverse-shape-orientation.js';
-import { mapmap } from '../utils/map-map.js';
-import { getJordanTurningNumber } from '../shape/get-jordan-turning-number.js';
 import { containerHasMinY } from '../containers/container-has-min-y.js';
-import { getShapeArea$ } from '../shape/get-shape-area.js';
 import { MAX_BIT_LENGTH } from './max-bitlength.js';
+import { postProcess } from './post-process.js';
+import { rerun } from './rerun/rerun.js';
 
 
 const { ceil, log2 } = Math;
 
 
 /** 
- * A size multiplier (based on the max value of the tangent) for the containers
- * holding critical points.
+ * A size multiplier for the containers holding critical points.
  */
 const CONTAINER_SIZE_MULTIPLIER_EXP = 4;
-const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 40;
 
 
 /**
@@ -83,11 +67,8 @@ function simplifyPaths(
     } = options;
 
     //--------------------------------------------------------------------------
-    const containerSizeMultiplierExp = typeof _debug_ === 'undefined'
-        ? CONTAINER_SIZE_MULTIPLIER_EXP
-        : CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING;
     const expGrid = expMax - MAX_BIT_LENGTH;
-    const expContainer = expGrid + containerSizeMultiplierExp;
+    const expContainer = expGrid + CONTAINER_SIZE_MULTIPLIER_EXP;
     //--------------------------------------------------------------------------
 
     // const preMinLoopArea = (2**(expContainer + 6))**2;  //  an entire loop mustn't fit inside a container
@@ -106,7 +87,10 @@ function simplifyPaths(
     if (typeof _debug_ !== 'undefined') { minYXPairs.forEach(_x_ => _debug_.elems.minY.push(_x_)); }
 
     const xPairs = getAllXPairs(loops, minYXPairs, expMax);
+
     const containers = getContainers(xPairs, expMax, expContainer);
+    if (typeof _debug_ !== 'undefined') { _debug_.elems.container.push(...containers); }
+
     const minYContainers = containers.filter(containerHasMinY);
 
     const root = completePaths(expMax, minYContainers);
@@ -120,7 +104,8 @@ function simplifyPaths(
     //----------------------------------------
     // Create loops for all `outSets`
     //----------------------------------------
-    const __loopss = outSets.map(outSet => {
+    // TODO
+    const loopss_ = outSets.map(outSet => {
         const outerLoopOrientation = outSet[0].out.orientation;
 
         return outSet.map(({ out, depth }) => {
@@ -129,55 +114,15 @@ function simplifyPaths(
     });
 
 
-    return postProcess(__loopss, forceOrientationNegative, minLoopArea)
-}
+    // Use this for rerun:
+    // return postProcess(
+    //     rerun(expMax, outSets, containers),
+    //     forceOrientationNegative, minLoopArea
+    // );
 
-
-function postProcess(
-        __loopss: BezierPiece[][][],
-        forceOrientationNegative: boolean,
-        minLoopArea: number) {
-
-    const _loopss = __loopss.map(loops => {
-        return loops.map(bezierPieces => {
-            const beziers = bezierPieces.map(bezierPieceToBezier);
-
-            return beziers;
-        });
-    });
-
-
-    const loopss = _loopss.map(
-        _loops => {
-            const outerOrientation = getJordanTurningNumber(_loops[0]);
-            const shouldReverse = outerOrientation !== -1 && forceOrientationNegative;
-
-            return _loops.map(_loop =>
-                shouldReverse ? reverseShapeOrientation(_loop) : _loop
-            );
-        }
-    );
-
-
-    const minAreaFilter = timeFunctionCalls(filterLoopsByMinAllowedArea(minLoopArea));
-
-    const loopss_ = minAreaFilter(loopss)
-        // TODO might be used downstream but uneccessary to do here even though it's fast
-        .map(loops => loops.toSorted(compareLoopByMinY));
-
-    let loopIdx = 0;
-    const loopss__ = mapmap(loopss_, l => loopFromBeziers(l, loopIdx++));
-
-    addDebugInfo2(loopss__);  // adds debug info used within __tests__ (and the demo)
-
-    // if (typeof _debug_ !== 'undefined') {
-    //     const { l1, l2, l3, lil1, lil2, lil3, lil4 } = _debug_.callCounts;
-        // console.log(lil1, lil2, lil3, lil4);
-        // console.log(l1,l2,l3);
-    // }
-
-    return loopss__;
-    // return loopss_;
+    // Use this if no rerun wanted:
+    // console.log(loopss_);
+    return postProcess(loopss_, forceOrientationNegative, minLoopArea);
 }
 
 

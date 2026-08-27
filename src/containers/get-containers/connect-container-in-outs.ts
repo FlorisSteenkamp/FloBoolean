@@ -15,14 +15,14 @@ function connectContainerInOuts(
                 const out = inOut as Mutable<Out>;
                 let { _x_ } = out;
                 _x_ = _x_.next!;
-                out.next = _x_.in_!;
-                out.idx = out.next!.idx;
+                out.twin = _x_.in_!;
+                out.idx = out.twin!.idx;
             } else {
                 const in_ = inOut as Mutable<In>;
                 let { _x_ } = in_;
                 _x_ = _x_.prev!;
-                in_.prev = _x_.out!;
-                in_.idx = in_.prev!.idx;
+                in_.twin = _x_.out!;
+                in_.idx = in_.twin!.idx;
             }
         }
     }

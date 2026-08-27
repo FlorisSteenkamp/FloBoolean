@@ -19,7 +19,7 @@ function logNearestContainer(g: SVGGElement, p: number[], showDelay = 1000) {
     }
 
    
-    drawContainer(/*_debug_.generated.*/g, bestContainer!, '', showDelay, true);
+    drawContainer(g, bestContainer!, '', showDelay, true);
     console.log(bestContainer!);
     for (const x of bestContainer!.xs) {
         //console.log('x', x.curve.ps.toString())

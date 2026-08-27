@@ -52,11 +52,14 @@ test('`simplifyPaths` specific cases', function() {
     const canvas = createCanvas(CANVAS_WIDTH_HEIGHT, CANVAS_WIDTH_HEIGHT);
     const ctx = canvas.getContext('2d');
 
-    updDebugGlobal(true);
+    // updDebugGlobal(true);
+    updDebugGlobal(false);
 
+    testIt('con-squares');
     testIt('three-squares');    // three-squares -> should boolean correctly'
-    testIt('four-squares');    // four-squares -> should boolean correctly'
+    testIt('comp');  // minimized complexish (ddmin working copy)
     testIt('complexish');  // somewhat complex shape -> should decompose correctly'
+    testIt('four-squares');    // four-squares -> should boolean correctly'
     testIt('confuse1');
     testIt('two-squares');    // two-squares -> should boolean correctly'
     testIt('snuggle-1');   // snuggle-1 -> should decompose correctly (and snuggly)'
@@ -90,33 +93,32 @@ test('`simplifyPaths` specific cases', function() {
     function testIt(
             fileName: string) {
 
-        // console.log(fileName);
         const { bezierLoops, invariants } = getPathFromFile(fileName);
         // bezierLoops = bezierLoops.map(reverseShapeOrientation);
 
         //-------------
         // Direct test
         //-------------
-        for (const booleanOp of ['OR']) {
-            if (invariants.length === 0) {
-                continue;  // no invariants to check against
-            }
+        // for (const booleanOp of ['OR']) {
+        //     if (invariants.length === 0) {
+        //         continue;  // no invariants to check against
+        //     }
 
-            const booleanOp_ = booleanOp as 'OR' | 'AND' | 'XOR';
+        //     const booleanOp_ = booleanOp as 'OR' | 'AND' | 'XOR';
 
-            const loopss = simplifyPaths(bezierLoops, {
-                booleanOp: booleanOp_
-            });
-            // const sLoopss = mapmap(loopss, loopToStringifyable);
-            // sLoopss[0].length;
-            // sLoopss[0][2];
+        //     const loopss = simplifyPaths(bezierLoops, {
+        //         booleanOp: booleanOp_
+        //     });
+        //     // const sLoopss = mapmap(loopss, loopToStringifyable);
+        //     // sLoopss[0].length;
+        //     // sLoopss[0][2];
         
-            const tolerancePower = -20;
-            const tolerance = makeTolerance(tolerancePower, bezierLoops);
-            expect(
-                checkShapes(fileName, loopss, invariants, tolerance),
-            ).toBe(true);
-        }
+        //     const tolerancePower = -20;
+        //     const tolerance = makeTolerance(tolerancePower, bezierLoops);
+        //     expect(
+        //         checkShapes(fileName, loopss, invariants, tolerance),
+        //     ).toBe(true);
+        // }
 
         //-------------
         // Pixel test

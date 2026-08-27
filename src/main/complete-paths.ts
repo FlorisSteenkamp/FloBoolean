@@ -20,7 +20,7 @@ const completePaths = timeFunctionCalls(function completePaths(
 
     for (let i=0; i<minYContainers.length; i++) {
         const container = minYContainers[i];
-        const loop = container.xs[0].x.curve.loop;
+        const { loop } = container.xs[0].x.curve;
 
         if (takenLoops.has(loop)) { continue; }
         takenLoops.add(loop);

@@ -43,8 +43,8 @@ function inResult(
 function getLoopsFromTree(
         booleanOp?: 'AND' | 'OR' | 'XOR') {
 
-    return (root: Out): { out: Out; depth: number }[] => {
-        const selected: { out: Out; depth: number }[] = [];
+    return (root: Out): { out: Out; depth: number; windingNum: number; parentWinding: number }[] => {
+        const selected: { out: Out; depth: number; windingNum: number; parentWinding: number }[] = [];
 
         // Each stack entry is a node paired with the number of selected
         // ancestor loops above it within this tree.
@@ -62,7 +62,12 @@ function getLoopsFromTree(
                 inResult(booleanOp, parentWinding);
 
             if (isSelected) {
-                selected.push({ out: tree, depth: ancestorCount });
+                selected.push({
+                    out: tree,
+                    depth: ancestorCount,
+                    windingNum: tree.windingNum,
+                    parentWinding,
+                });
             }
 
             const childAncestorCount =

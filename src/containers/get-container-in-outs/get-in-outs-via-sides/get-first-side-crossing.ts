@@ -17,7 +17,7 @@ const getFirstSideCrossing$ = memoize(function(
         _x_: _X_,
         sides: number[][][],
         forward: boolean,
-        sideIdxs: number[]): SideCrossing | undefined {
+        sideIdxs: number[]): SideCrossing {
 
     // We only ever need the first bezier piece from `_x_` up to its adjacent
     // `_X_`, so compute that single piece directly rather than iterating.
@@ -30,8 +30,6 @@ const getFirstSideCrossing$ = memoize(function(
         (forward ? tS < endX.x.ri.tS : tS > endX.x.ri.tS);
     const tE = runsToEnd ? endX.x.ri.tS : pieceEndT;
 
-    const { ps } = curveS;
-
     // Nearest crossing (smallest parameter along `a` -> `b`) among the sides.
     let best: SideCrossing | undefined = undefined;
     for (let j=0; j<sideIdxs.length; j++) {
@@ -42,12 +40,12 @@ const getFirstSideCrossing$ = memoize(function(
         const ts_ = tS < tE ? [tS,tE] : [tE,tS];
         const sideCrossing = getTs(curveS, side, ts_, sideIdx);
 
-        if (sideCrossing === undefined) { continue; }
-
-        best = sideCrossing;
+        if (sideCrossing !== undefined) {
+            best = sideCrossing;
+        }
     }
 
-    return best;
+    return best!;
 });
 
 

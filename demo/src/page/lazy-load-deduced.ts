@@ -26,7 +26,7 @@ async function lazyLoadDeduced(
 
     console.log(`All took: ${timingAll.toFixed(0)} milliseconds.`);
 
-    const elems$ = drawElements(stateControl, ref, toDraw);
+    drawElements(stateControl, ref, toDraw);
 
     upd(state.appState.pageState, {
         ...(changeViewbox ? { viewbox } : {}),

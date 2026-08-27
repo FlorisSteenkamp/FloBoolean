@@ -23,6 +23,7 @@ const orderInOuts = timeFunctionCalls(function orderInOuts(
     // a `minY` (type 0) `_X_` in which case we need a total order
     if (inOuts.length > 2 || containerHasMinY(container)) {
         inOuts.sort(compareInOut);
+        container.wellOrdered = true;
     }
 
     let prevInOut = inOuts[inOuts.length - 1] as Mutable<In|Out>;

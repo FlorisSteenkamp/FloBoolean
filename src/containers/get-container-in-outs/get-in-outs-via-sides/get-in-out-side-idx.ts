@@ -8,7 +8,7 @@ import { toP } from "../../../utils/to-p.js";
 const { min, max } = Math;
 
 
-function getInOutSide(
+function getInOutSideIdx(
         inOut: In|Out,
         _x_: _X_,
         sides: number[][][],
@@ -26,7 +26,7 @@ function getInOutSide(
         const [xE, yE] = pE;
 
         // Nearest crossing (smallest parameter along `a` -> `b`) among the sides.
-        let bestSideIdxs: number[] = [];
+        let sideIdxs: number[] = [];
         for (let i=0; i<sides.length; i++) {
             const side = sides[i];
             const [[X, Y]] = side;
@@ -36,12 +36,12 @@ function getInOutSide(
                 continue;
             }
 
-            bestSideIdxs.push(i);
+            sideIdxs.push(i);
         }
 
-        if (bestSideIdxs.length > 0) {
-            inOut.oSideIdxs = bestSideIdxs;
-            return bestSideIdxs;
+        if (sideIdxs.length > 0) {
+            inOut.oSideIdxs = sideIdxs;
+            return sideIdxs;
         }
 
         pS = pE;
@@ -51,4 +51,4 @@ function getInOutSide(
 }
 
 
-export { getInOutSide }
+export { getInOutSideIdx }

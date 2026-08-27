@@ -49,11 +49,11 @@ function completePath(
         }
         for (const o of loopOuts) { takenByLoop.add(o); }
 
-        const bezierPieces: BezierPiece[] = [];
-        for (const out of path) {
-            const beziersToNextContainer = getBeziersToNextContainer(out);
-            bezierPieces.push(...beziersToNextContainer);
-        }
+        // const bezierPieces: BezierPiece[] = [];
+        // for (const out of path) {
+        //     const beziersToNextContainer = getBeziersToNextContainer(out);
+        //     bezierPieces.push(...beziersToNextContainer);
+        // }
 
         origOut.path = path;
 

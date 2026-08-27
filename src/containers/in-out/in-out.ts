@@ -1,4 +1,6 @@
+import { RootIntervalExp } from "flo-poly";
 import type { _X_ } from "../../get-critical-points/-x-.js";
+import { SideCrossing } from "../get-container-in-outs/get-in-outs-via-sides/side-crossing.js";
 
 
 interface InOutBase {
@@ -28,10 +30,25 @@ interface InOut extends InOutBase {
     readonly windingNum: number;
     readonly parent: Out;
     readonly children: Set<Out>;
-    readonly path: (In|Out)[];
+    // readonly path: (In|Out)[];
+    readonly path: Out[];
 
-    // Order Info - could be moved to a seperate parallel object
+    //------------
+    // Order Info
+    //------------
+    /** cache */
     oSideIdxs?: number[];
+    oFSC?: SideCrossing;
+    oFSCE?: RootIntervalExp;
+
+    oSideIdx?: number;
+
+    /**
+     * set in `rerun` when the in/out's `dir` was flipped while the underlying
+     * loop direction stayed the same; box-side crossing must then be found by
+     * walking the loop the opposite way.
+     */
+    swapped?: boolean;
 }
 
 
@@ -39,7 +56,9 @@ interface Out extends InOut {
     /** direction at container interface, in (-1) or out (+1) */
     readonly dir: 1;
     /** the next in this Out */
-    readonly next: In;
+    readonly twin: In;
+    /** the paired In of the SAME container (entry to this Out's exit) */
+    twinInside?: In;
 }
 
 
@@ -47,7 +66,9 @@ interface In extends InOut {
     /** direction at container interface, in (-1) or out (+1) */
     readonly dir: -1;
     /** the previous out from this In */
-    readonly prev: Out;
+    readonly twin: Out;
+    /** the paired Out of the SAME container (exit from this In's entry) */
+    twinInside?: Out;
 }
 
 

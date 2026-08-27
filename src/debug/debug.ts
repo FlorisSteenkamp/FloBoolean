@@ -1,5 +1,5 @@
-import type { DebugElems } from './debug-elem-types.js';
-import { drawElemFunctions, TDrawElemFunctions } from './draw-elem/draw-elem.js';
+import type { DebugElems } from './debug-elems.js';
+import { drawElemFunctions, DrawElemFunctions } from './draw-elem/draw-elem.js';
 
 
 type GeneratedElems = { [T in keyof DebugElems]: DebugElems[T][] };
@@ -13,7 +13,7 @@ interface Timing {
 
 
 interface DebugFunctions {
-    readonly drawElem: TDrawElemFunctions,
+    readonly drawElem: DrawElemFunctions,
 }
 
 

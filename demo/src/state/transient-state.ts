@@ -1,4 +1,4 @@
-import type { DebugElems as DebugElems, Loop } from "../../../src/index.js";
+import type { DebugElems, Loop } from "../../../src/index.js";
 
 
 interface TransientState {

@@ -25,9 +25,6 @@ const completeLoop = timeFunctionCalls(function completeLoop(
     const path: Out[] = [];
     const loopOuts: Out[] = [];
 
-    // Out in blue, In in red - e.g. 3->3->5->5
-    // const path: string[] = [];  // TODO - temp - remove
-
     // Move immediately to the outgoing start of the loop
     let outToUse: Out = origOut;
 
@@ -44,16 +41,11 @@ const completeLoop = timeFunctionCalls(function completeLoop(
         // outermost loop (which would reset already-built child nesting).
         takenLoops.add(outToUse._x_.x.curve.loop);
 
-        // path.push(`\x1b[34m${outToUse.idx}\x1b[0m`);   // Out (blue)
-        // path.push(`\x1b[31m${nextIn.idx}\x1b[0m`);     // In (red)
-
         path.push(outToUse);
 
         outToUse = getNextExit_(outToUse);
 
     } while (outToUse !== origOut);
-
-    // console.log(path.join(' → '));
 
     return { path, additionalOutsToCheck, loopOuts };
 });

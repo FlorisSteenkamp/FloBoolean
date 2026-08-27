@@ -1,4 +1,4 @@
-import type { DebugElems } from '../debug-elem-types.js';
+import type { DebugElems } from '../debug-elems.js';
 import { drawFs } from 'flo-draw';
 import { drawMinY } from './draw-min-y.js';
 import { drawLoop } from './draw-loop.js';
@@ -31,4 +31,4 @@ const drawElemFunctions: DrawElemFunctions = {
 }
 
 
-export { drawElemFunctions, DrawElemFunctions as TDrawElemFunctions }
+export { drawElemFunctions, DrawElemFunctions }

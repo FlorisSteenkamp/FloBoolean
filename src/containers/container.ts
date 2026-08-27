@@ -28,6 +28,8 @@ interface Container extends ContainerBasic {
      * anti-clockwise from the top right (minimum y, maximum x) corner
      */
     readonly inOuts: (In|Out)[];
+    readonly idx?: number;
+    wellOrdered?: boolean;
 }
 
 

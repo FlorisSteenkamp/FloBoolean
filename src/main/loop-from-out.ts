@@ -1,6 +1,4 @@
 import type { Out } from "../containers/in-out/in-out.js";
-import { bezierPieceToBezier } from "flo-bezier3";
-import { loopFromBeziers } from '../shape/loop-from-beziers.js';
 import { bezierPiecesFromOut$ } from './bezier-pieces-from-out.js';
 import { reverseBezierPiece } from '../bezier/reverse-bezier-piece.js';
 
@@ -19,8 +17,6 @@ function loopFromOut(
         outerLoopOrientation: number,
         depth: number) {
 
-    const bezierPieces = bezierPiecesFromOut$(out);
-
     const { orientation } = out;
 
     // Even nesting levels (outer, island, ...) share the outer orientation;
@@ -28,6 +24,7 @@ function loopFromOut(
     const desiredOrientation =
         (depth%2 === 0 ? 1 : -1) * outerLoopOrientation;
 
+    const bezierPieces = bezierPiecesFromOut$(out);
     return desiredOrientation*orientation > 0
         ? bezierPieces
         : bezierPieces.map(reverseBezierPiece).toReversed()

@@ -5,7 +5,9 @@ import { getBoundingBox$ } from '../geometry/get-bounding-box-.js';
 import { loopsToSvgPathStr } from '../svg/loops-to-svg-path-str.js';
 
 
-function addDebugInfo1(bezierLoops: number[][][][]) {
+function addDebugInfo1(
+        bezierLoops: number[][][][]) {
+
     if (typeof _debug_ === 'undefined') { return; }
 
     // Modifies the displayed SVG to reflect changes caused by `normalizeLoops`.

@@ -3,7 +3,7 @@ import { AppState } from './app-state.js';
 import { TransientState } from './transient-state.js';
 import { PageState } from './page-state.js';
 import { createEmptyGeneratedSvgs } from './create-empty-generated-svgs.js';
-import { DebugElems } from '../../../src/debug/debug-elem-types.js';
+import { DebugElems } from '../../../src/debug/debug-elems.js';
 import { DeducedState } from './deduced-state.js';
 
 
@@ -18,7 +18,7 @@ const defaultTransientState: TransientState = {
 }
 
 
-const defaultToDraw: { [T in keyof (DebugElems & { _x_: any })]: boolean } = {
+const defaultToDraw: { [T in keyof DebugElems]: boolean } = {
     loopPre              : false,
     loopsPre             : false,
     loops                : true,
@@ -30,7 +30,6 @@ const defaultToDraw: { [T in keyof (DebugElems & { _x_: any })]: boolean } = {
     loop                 : true,
     intersection         : false,
     container            : false,
-    _x_                  : false
 }
 
 

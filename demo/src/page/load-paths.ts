@@ -29,7 +29,6 @@ function getPaths(str: string) {
 async function loadPaths(vectorName: string) {
     // const path = `vectors${forBoolean ? '-boolean' : ''}/${vectorName}.SVG`;
     const path = `vectors/${vectorName}.SVG`;
-    // console.log(`loading ${path}`);
     const str = await (await fetch(path)).text();
     
     return getPaths(str);

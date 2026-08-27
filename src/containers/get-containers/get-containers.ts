@@ -17,6 +17,7 @@ import { getAllXPairs } from './get-all-x-pairs.js';
 import { assignBigBoxesToContainers } from './assign-big-boxes-to-containers.js';
 import { timeFunctionCalls } from '../../utils/time-function-call.js';
 import { mapmap } from '../../utils/map-map.js';
+import { setNextAndPrevAround } from '../set-next-and-prev-around.js';
 
 
 /**
@@ -59,8 +60,7 @@ const getContainers = timeFunctionCalls(function getContainers(
     connectContainerInOuts(containers_);
 
     containers_.forEach(orderInOuts);
-
-    if (typeof _debug_ !== 'undefined') { _debug_.elems.container.push(...containers_); }
+    containers_.forEach(container => setNextAndPrevAround(container.inOuts));
 
     return containers as Container[];
 });

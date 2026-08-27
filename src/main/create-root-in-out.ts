@@ -10,7 +10,7 @@ function createRootInOut(): Out {
         windingNum: 0,
         _x_: undefined!,
         orientation: -1,
-        next: undefined!,
+        twin: undefined!,
         path: undefined!,
         nextAround: undefined!,
         prevAround: undefined!

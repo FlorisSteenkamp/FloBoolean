@@ -20,7 +20,7 @@ function getNextExit(
     );
 
     return function(prevOut: Out): Out {
-        let in_ = prevOut.next;
+        let in_ = prevOut.twin;
 
         let toCount = 1;
         let next: In|Out = in_;

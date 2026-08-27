@@ -2,12 +2,16 @@ declare const _debug_: Debug;
 import type { Debug } from '../../../debug/debug.js';
 import type { In, Out } from "../../in-out/in-out.js";
 import type { _X_ } from "../../../get-critical-points/-x-.js";
+import type { RootIntervalExp } from 'flo-poly';
 import { memoize } from "flo-memoize";
 import { ddCompare } from 'double-double';
-import { getInOutSide } from './get-in-out-side.js';
+import { getInOutSideIdx } from './get-in-out-side-idx.js';
 import { getFirstSideCrossing$ } from './get-first-side-crossing.js';
-import { refineK1, RootInterval, RootIntervalExp } from 'flo-poly';
+import type { SideCrossing } from './side-crossing.js';
+import { refineK1 } from 'flo-poly';
 import { getSideRiExp } from './get-ts.js';
+import { doRisOverlap } from './do-ris-overlap.js';
+import { ddDoRisOverlap } from './dd-do-ris-overlap.js';
 
 
 /**
@@ -28,95 +32,104 @@ function compareInOut(
 
     let res: number;
 
-    const { _x_: _x_A, dir: dirA, idx: idxA } = inOutA;
-    const { _x_: _x_B, dir: dirB, idx: idxB } = inOutB;
+    const { _x_: _x_A, dir: dirA, idx: idxA, swapped: swappedA } = inOutA;
+    const { _x_: _x_B, dir: dirB, idx: idxB, swapped: swappedB } = inOutB;
 
     const sides = getBigBoxSides$(_x_A.container.bigBox);
 
-    // 1st step: follow the loop outward from `_x_A` (in its `dir`) and find the
+    // Follow the loop outward from `_x_A` (in its `dir`) and find the
     // first `sidesA` edge it crosses, detected via bezier-piece endpoints.
-    const forwardA = dirA === 1;
-    const forwardB = dirB === 1;
+    // A `swapped` in/out has its `dir` flipped while the loop direction is
+    // unchanged, so walk the opposite way in that case.
+    const forwardA = (dirA === 1) !== !!swappedA;
+    const forwardB = (dirB === 1) !== !!swappedB;
 
-    const sidesA = inOutA.oSideIdxs ?? getInOutSide(inOutA, _x_A, sides, forwardA);
-    const sidesB = inOutB.oSideIdxs ?? getInOutSide(inOutB, _x_B, sides, forwardB);
+    const sidesA = inOutA.oSideIdxs ?? getInOutSideIdx(inOutA, _x_A, sides, forwardA);
+    const sidesB = inOutB.oSideIdxs ?? getInOutSideIdx(inOutB, _x_B, sides, forwardB);
 
     if (typeof _debug_ !== 'undefined') { _debug_.callCounts.l1++; }
 
     if (sidesA.length === 1 && sidesB.length === 1) {
+        inOutA.oSideIdx = inOutA.oSideIdx ?? sidesA[0];
+        inOutB.oSideIdx = inOutB.oSideIdx ?? sidesB[0];
+
         res = sidesA[0] - sidesB[0];
-        if (res !== 0) {
-            return res;
-        }
+
+        if (res !== 0) { return res; }
     }
 
-    const crossingA = getFirstSideCrossing$(_x_A, sides, forwardA, sidesA);
-    const crossingB = getFirstSideCrossing$(_x_B, sides, forwardB, sidesB);
+    //--------------------------------------------------------------------------
+    // Couldn't compare using sides, compare parameter values at side crossing
+    //--------------------------------------------------------------------------
+    const crossingA = inOutA.oFSC ?? getFirstSideCrossing$(_x_A, sides, forwardA, sidesA);
+    const crossingB = inOutB.oFSC ?? getFirstSideCrossing$(_x_B, sides, forwardB, sidesB);
 
     if (typeof _debug_ !== 'undefined') { _debug_.callCounts.l2++; }
 
-    const { sideIdx: sideIdxA, riSide: riA } = crossingA!;
-    const { sideIdx: sideIdxB, riSide: riB } = crossingB!;
+    const { sideIdx: sideIdxA, riSide: riA } = crossingA;
+    const { sideIdx: sideIdxB, riSide: riB } = crossingB;
 
+    //-------------------------------------------------
+    // Re-check sides due to more accurate calculation
+    //-------------------------------------------------
     res = sideIdxA - sideIdxB;
-    if (res !== 0) { return res; }
+    if (res !== 0) {
+        inOutA.oSideIdx = sideIdxA;
+        inOutB.oSideIdx = sideIdxB;
+
+        return res;
+    }
 
     res = doRisOverlap(riA, riB) ? 0 : (riA.tS < riB.tS ? -1 : 1);
-    if (res !== 0) { return res; }
+    if (res !== 0) {
+        return res;
+    }
 
     if (typeof _debug_ !== 'undefined') { _debug_.callCounts.l3++; }
     
     //--------------------------------------------------------------------------
     // Cannot discern yet, compensate once
     //--------------------------------------------------------------------------
-    const { xPs: xPsA, ps: psA } = crossingA!;
-    const { xPs: xPsB, ps: psB } = crossingB!;
+    const riSideA = inOutA.oFSCE ?? getSideCrossingExp$(crossingA!, sides);
+    const riSideB = inOutB.oFSCE ?? getSideCrossingExp$(crossingB!, sides);
 
-    const { ri: riPsA, getPExact: getPExactPsA$ } = xPsA;
-    const { ri: riPsB, getPExact: getPExactPsB$ } = xPsB;
-
-    const riExpPsA = refineK1$(riPsA, getPExactPsA$!())[0];  // there can only be 1
-    const riExpPsB = refineK1$(riPsB, getPExactPsB$!())[0];  // ...
-
-    const riSideA = getSideRiExp(psA, sides[sideIdxA], riExpPsA);
-    const riSideB = getSideRiExp(psB, sides[sideIdxB], riExpPsB);
-    
     res = ddDoRisOverlap(riSideA, riSideB)
         ? 0 : ddCompare(riSideA.tS, riSideB.tS);
+
     if (res !== 0) {
         return res;
     }
     //--------------------------------------------------------------------------
 
+    //----------------------------------------------------
+    // We reverse sort the ins in comparison to the outs.
+    //----------------------------------------------------
     res = dirA - dirB;
+
     if (res !== 0) { return res; }
 
-    // At this stage they are both in or both out
-    // We reverse sort the ins in comparison to the outs
+    // At this stage they are both in or both out;
+    // `idx` doesn't matter but just so it is a stable sort
     return dirA === 1 
         ? idxA - idxB
         : idxB - idxA;
 }
 
 
-function doRisOverlap(
-        riA: RootInterval,
-        riB: RootInterval): boolean {
-
-    return (riA.tS <= riB.tE && riB.tS <= riA.tE);
-}
-
-
-function ddDoRisOverlap(
-        riA: RootIntervalExp,
-        riB: RootIntervalExp): boolean {
-
-    return ddCompare(riA.tS, riB.tE) <= 0 &&
-        ddCompare(riB.tS, riA.tE) <= 0;
-}
-
-
 const refineK1$ = memoize(refineK1); 
+
+
+const getSideCrossingExp$ = memoize(function(
+        crossing: SideCrossing,
+        sides: number[][][]): RootIntervalExp {
+
+    const { xPs, ps, sideIdx } = crossing;
+    const { ri: riPs, getPExact: getPExact$ } = xPs;
+
+    const riExpPs = refineK1$(riPs, getPExact$!())[0];  // there can only be 1
+
+    return getSideRiExp(ps, sides[sideIdx], riExpPs);
+});
 
 
 const getBigBoxSides$ = memoize(function(

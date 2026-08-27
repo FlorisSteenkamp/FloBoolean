@@ -1,5 +1,5 @@
 export type { Debug, GeneratedElems, Timing, DebugFunctions, } from './debug/debug.js';
-export type { DebugElems } from './debug/debug-elem-types.js';
+export type { DebugElems } from './debug/debug-elems.js';
 export type { Loop } from './shape/loop.js';
 export type { Curve } from './curve/curve.js';
 export type { IntersectionResult } from './sweep-line/sweep-line.js';

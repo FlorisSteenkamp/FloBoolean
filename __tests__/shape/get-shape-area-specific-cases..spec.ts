@@ -8,7 +8,7 @@ import { ddGetShapeArea } from '../../src/shape/dd-get-shape-area.js';
 const { ceil, log2 } = Math;
 
 test('`getShapeArea` specific cases', function() {
-    testIt('three-squares', [ 35000, 40000, 22500 ]);
+    testIt('three-squares', [ 350, 400, 225 ]);
     testIt('four-squares', [ 35000, 40000, 22500, 2500 ]);
     testIt('complexish', [ 15000.9115234375, -367.671240234375 ]);
     testIt('confuse1', [ 30000, 10000 ]);

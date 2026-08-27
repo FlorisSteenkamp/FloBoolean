@@ -75,10 +75,7 @@ function getCurvesIntersections(
     possiblyIntersecting = doConvexPolygonsIntersect(bbHullA, bbHullB, true);
     if (!possiblyIntersecting) { return undefined; }
 
-    const x = getIntersection(curveA, curveB, false);
-    // console.log(x.length);
-
-    return x;
+    return getIntersection(curveA, curveB, false);
 }
 
 

@@ -23,8 +23,7 @@ const toDrawKeyToText: { [P in keyof ToDraw]?: string } = {
     tightBoundingBox_: "tight bbs",
     container: "containers",
     intersection: "intersections",
-    minY: "min y",
-    _x_: "_x_"
+    minY: "min y"
 }
 
 
