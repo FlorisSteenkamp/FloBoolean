@@ -29,7 +29,6 @@ interface Container extends ContainerBasic {
      */
     readonly inOuts: (In|Out)[];
     readonly idx?: number;
-    wellOrdered?: boolean;
 }
 
 

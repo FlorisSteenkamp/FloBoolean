@@ -9,9 +9,9 @@ function rebuildInOut(
         swapped: boolean): RebuiltInOut {
 
     return {
+        idx: inOut.idx,
         _x_: inOut._x_,
         dir,
-        idx: inOut.idx,
         swapped,
         oSideIdxs: inOut.oSideIdxs,
         oFSC: inOut.oFSC,

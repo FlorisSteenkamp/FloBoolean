@@ -21,7 +21,7 @@ import { bezierPiecesFromOut$ } from "../main/bezier-pieces-from-out.js";
 function getTightestContainingLoop(
         expMax: number,
         root: Out, 
-        loop: Loop): Out {
+        beziers: number[][][]): Out {
     
     let containingLoop = root;
     const stack = Array.from(root.children);
@@ -34,8 +34,6 @@ function getTightestContainingLoop(
     return containingLoop!;
 
     function f(parent: Out) {
-        const { beziers } = loop;
-
         const bezierPieces = bezierPiecesFromOut$(parent);
         if (_isLoopInLoop(expMax, beziers, bezierPieces)) {
             containingLoop = parent;

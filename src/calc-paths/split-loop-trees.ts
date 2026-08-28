@@ -2,8 +2,9 @@ import type { Out } from "../containers/in-out/in-out.js";
 
 
 /**
- * Take the forest of trees and return, for each independent shape, its root
- * loop (possibly with holes or shapes with absolute winding number > 1).
+ * Take the forest of trees (the `children` of `root`) and return, for each
+ * independent shape, its root loop (possibly with holes or shapes with
+ * absolute winding number > 1).
  *
  * A shape root is any non-zero-winding node whose parent face has winding 0;
  * a winding-0 node is never itself a shape root - its own non-zero children
@@ -26,7 +27,9 @@ function splitLoopTrees(
             for (const child of tree.children) {
                 // winding-0 children aren't shape roots; their own non-zero
                 // descendants are collected when those children are visited
-                if (child.windingNum !== 0) { loopTrees.push(child); }
+                if (child.windingNum !== 0) {
+                    loopTrees.push(child);
+                }
             }
         }
 

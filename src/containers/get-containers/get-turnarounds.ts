@@ -5,22 +5,23 @@ import { toP } from "../../utils/to-p.js";
 
 
 function getTurnarounds(
-        loops: Loop[]): [X][] {
+        loops: Loop[]): [X, X][] {
 
-    const turnarounds: [X][] = [];
+    const turnarounds: [X,X][] = [];
     for (let loop of loops) {
         for (let curve of loop.curves) {
             const { ps } = curve;
 
             const xPairs = getBezierTurnarounds(ps)
-            .map((ri): [X] => {
+            .map((ri): [X, X] => {
                 const { t } = ri;
                 const p = toP(ps, t);
 
                 // `next`, `prev`, `container` will be set later
-                const x: X = { p, ri, kind: 8, curve };
+                const xA: X = { p, ri, kind: 8, curve };
+                const xB: X = { p, ri, kind: 8, curve };
 
-                return [x];
+                return [xA,xB];
             });
 
             turnarounds.push(...xPairs);

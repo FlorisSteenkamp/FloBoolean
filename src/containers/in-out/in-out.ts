@@ -55,7 +55,7 @@ interface InOut extends InOutBase {
 interface Out extends InOut {
     /** direction at container interface, in (-1) or out (+1) */
     readonly dir: 1;
-    /** the next in this Out */
+    /** the next in from this Out */
     readonly twin: In;
     /** the paired In of the SAME container (entry to this Out's exit) */
     twinInside?: In;

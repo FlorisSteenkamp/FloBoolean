@@ -62,27 +62,6 @@ function setIntersectionNextAndPrevs(
                 _x__.out = { dir: +1, _x_ } as Out;
             }
         }
-
-        // Pair each container's In (entry) with its Out (exit) via `twinInside`:
-        // a maximal run of same-container `xs` opens with an In and closes with
-        // an Out (a lone `_x_` is both), so they are each other's inside-twin.
-        // Start at a run boundary so the opening In is always seen first.
-        // let start = 0;
-        // while (start < len &&
-        //        xs[start].container === xs[(start - 1 + len)%len].container) {
-        //     start++;
-        // }
-        // if (start < len) {  // else the whole loop shares one container: no In/Out
-        //     let curIn: In | undefined;
-        //     for (let n=0; n<len; n++) {
-        //         const { in_, out } = xs[(start + n)%len];
-        //         if (in_) { curIn = in_; }
-        //         if (out) {
-        //             (out as Mutable<Out>).twinInside = curIn;
-        //             (curIn as Mutable<In>).twinInside = out;
-        //         }
-        //     }
-        // }
     }
 }
 

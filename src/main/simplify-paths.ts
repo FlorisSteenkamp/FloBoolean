@@ -11,7 +11,7 @@ import { loopFromBeziers } from '../shape/loop-from-beziers.js';
 import { normalizeLoops } from '../shape/normalize/normalize-loop.js';
 import { getMaxCoordinate } from '../shape/normalize/get-max-coordinate.js';
 import { loopFromOut } from './loop-from-out.js';
-import { completePaths } from './complete-paths.js';
+import { completePaths } from '../calc-paths/complete-paths.js';
 import { _isLoopInLoop } from '../is-loop-in-loop/is-loop-in-loop.js';
 import { getAllXPairs } from '../containers/get-containers/get-all-x-pairs.js';
 import { getLoopMinY } from '../shape/get-min-y.js';
@@ -29,6 +29,7 @@ const { ceil, log2 } = Math;
  * A size multiplier for the containers holding critical points.
  */
 const CONTAINER_SIZE_MULTIPLIER_EXP = 4;
+const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 37;
 
 
 /**
@@ -67,8 +68,11 @@ function simplifyPaths(
     } = options;
 
     //--------------------------------------------------------------------------
+    const containerSizeMultiplierExp = typeof _debug_ === 'undefined'
+        ? CONTAINER_SIZE_MULTIPLIER_EXP
+        : CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING;
     const expGrid = expMax - MAX_BIT_LENGTH;
-    const expContainer = expGrid + CONTAINER_SIZE_MULTIPLIER_EXP;
+    const expContainer = expGrid + containerSizeMultiplierExp;
     //--------------------------------------------------------------------------
 
     // const preMinLoopArea = (2**(expContainer + 6))**2;  //  an entire loop mustn't fit inside a container
@@ -121,7 +125,7 @@ function simplifyPaths(
     // );
 
     // Use this if no rerun wanted:
-    // console.log(loopss_);
+    // console.log(loopss_.length);
     return postProcess(loopss_, forceOrientationNegative, minLoopArea);
 }
 

@@ -173,12 +173,16 @@ const COVERAGE_SUPERSAMPLE = 4;
  * coverage) is still counted. This lets the diff bound be tightened to catch
  * real (even thin) geometry errors without tripping on unavoidable rasterization
  * straddle along long, near-diagonal edges.
+ *
+ * When `supersample` is false the supersampling is skipped and the raw
+ * centre-sample disagreement count is returned instead.
  */
 function countBooleanCoverageDiff(
         inputLoops: (number[][])[][],
         outputSets: (number[][])[][][],
         booleanOp: 'AND' | 'OR' | 'XOR',
         W: number,
+        supersample: boolean,
         S = COVERAGE_SUPERSAMPLE,
         threshold = 0.5): number {
 
@@ -206,6 +210,8 @@ function countBooleanCoverageDiff(
             const rc = inResult(refWinding[p]) ? 1 : 0;
             const ac = actInside[p];
             if (rc === ac) { continue; }  // identical at pixel centre -> not a candidate
+
+            if (!supersample) { n++; continue; }  // raw centre-sample diff
 
             let refIn = 0, actIn = 0;
             for (let sy = 0; sy < S; sy++) {

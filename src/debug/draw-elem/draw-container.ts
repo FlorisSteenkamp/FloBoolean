@@ -8,14 +8,6 @@ import { getTs } from '../../containers/get-container-in-outs/get-in-outs-via-si
 const { round, log2 } = Math;
 
 
-/**
- * The algorithm now always sizes containers at the production multiplier, which
- * makes them sub-pixel (invisible) in the coordinate space. For debugging they
- * are drawn enlarged about their centre so they are visible
- */
-const CONTAINER_DRAW_EXAGGERATION = 2**35;
-
-
 function drawContainer(
         g: SVGGElement,
         container: Container,
@@ -23,10 +15,8 @@ function drawContainer(
         delay = 0,
         drawBigBox = false) {
 
-    const box = enlargeBoxAboutCentre(container.box, CONTAINER_DRAW_EXAGGERATION);
-    // const bigBox = enlargeBoxAboutCentre(container.bigBox, CONTAINER_DRAW_EXAGGERATION);
-    const { bigBox } = container;
-    const scale = 2**(round(log2(box[1][0] - box[0][0])))*(2**-1);
+    const { box, bigBox } = container;
+    const scale = 2**(round(log2(container.box[1][0] - container.box[0][0])))*(2**-1);
 
     // intersections
     const $circles: SVGCircleElement[] = [];
@@ -71,21 +61,6 @@ function drawContainer(
         ...$circles,
         ...$texts
     ];
-}
-
-
-/** Returns `box` scaled about its centre by `factor`. */
-function enlargeBoxAboutCentre(
-        box: number[][],
-        factor: number): number[][] {
-
-    const [[x0, y0], [x1, y1]] = box;
-    const cx = (x0 + x1) / 2;
-    const cy = (y0 + y1) / 2;
-    const hw = ((x1 - x0) / 2) * factor;
-    const hh = ((y1 - y0) / 2) * factor;
-
-    return [[cx - hw, cy - hh], [cx + hw, cy + hh]];
 }
 
 

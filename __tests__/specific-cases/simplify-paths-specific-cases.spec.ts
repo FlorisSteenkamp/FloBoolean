@@ -40,7 +40,7 @@ const MAX_THICK_DIFF = 0;
 // hit ~141px under the old raw centre-sample diff) no longer registers, while a
 // genuine filled-area or thin-sliver error still does. All current fixtures are
 // 0; the small bound leaves headroom for near-degenerate self-intersections.
-const MAX_DIFF = 4;
+const MAX_DIFF = 0;
 
 // Flip to `true` to print a per-shape/op `thick` vs `raw` diff table while
 // running the tests (handy for choosing `MAX_THICK_DIFF` / `MAX_DIFF`).
@@ -243,7 +243,7 @@ function pixelTest(
     // errors. Bounded by the tight `MAX_DIFF`.
     const diff = countBooleanCoverageDiff(
         inputLoops.map(tf), outputSets.map(set => set.map(tf)),
-        booleanOp, CANVAS_WIDTH_HEIGHT
+        booleanOp, CANVAS_WIDTH_HEIGHT, true
     );
 
     if (LOG_DIFFS && diff >= LOG_DIFF_MIN) {

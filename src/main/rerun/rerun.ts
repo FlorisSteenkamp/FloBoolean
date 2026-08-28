@@ -4,7 +4,6 @@ import type { Mutable } from '../../utils/mutable.js';
 import type { _X_ } from '../../get-critical-points/-x-.js';
 import type { In, Out } from '../../containers/in-out/in-out.js';
 import type { Container } from '../../containers/container.js';
-import type { Loop } from '../../shape/loop.js';
 import type { BezierPiece } from 'flo-bezier3';
 import { splitLoopTrees } from '../../calc-paths/split-loop-trees.js';
 import { getLoopsFromTree } from '../../calc-paths/get-loops-from-tree.js';
@@ -20,6 +19,7 @@ import { pathToStr } from '../../debug/path-to-str.js';
 import { getOrCreateRerunContainer } from './get-or-creatre-rerun-container.js';
 import { rebuildInOut } from './rebuild-in-out.js';
 
+const { sign } = Math;
 
 function rerun(
         expMax: number,
@@ -41,16 +41,16 @@ function rerun(
     const containers_: Container[] = [];
     const minYContainers: Container[] = [];
 
-    for (const outSet of outSets) {  // an outer loop with holes
+    for (const outSet of outSets) {   // an outer loop with holes
         // Orientation the outer loop already has; holes must alternate against it.
-        const outerOrientation = Math.sign(outSet[0].windingNum - outSet[0].parentWinding);
+        const outerOrientation = sign(outSet[0].windingNum - outSet[0].parentWinding);
 
         const paths: Out[][] = [];  // TODO For debug only
         for (const { out, depth, windingNum, parentWinding } of outSet) {
             // A hole must wind opposite to its parent (islands opposite to holes,
             // ...); only reverse a loop whose current orientation doesn't already
             // match that depth alternation.
-            const orientation = Math.sign(windingNum - parentWinding);
+            const orientation = sign(windingNum - parentWinding);
             const desiredOrientation = depth % 2 === 0 ? outerOrientation : -outerOrientation;
             const isReversed = orientation !== desiredOrientation;
             const path = isReversed ? out.path.toReversed() : out.path;
@@ -76,27 +76,16 @@ function rerun(
                     isFirstContainer = false;
                 }
             }
-
-            // minYContainers.push(out._x_.container)
         }
     }
 
-    containers_.forEach((container_, idx) => {
-        if (container_.inOuts.length > 2 ||
-            containerHasMinY(container_)
-        ) {
+    containers_.forEach(container_ => {
+        if (container_.inOuts.length > 2 || containerHasMinY(container_)) {
             container_.inOuts.sort(compareInOut);
         }
     });
 
-    // containers_.forEach((container_, idx) => {
-    //     if (containerHasMinY(container_)) {
-    //         minYContainers.push(container_);
-    //     }
-    // });
-    
-
-    console.log(minYContainers)
+    console.log(minYContainers);
 
     containers_.forEach(container_ => setNextAndPrevAround(container_.inOuts));
 
@@ -141,26 +130,27 @@ function completePaths(
         minYContainers: Container[]) {
 
     const root = createRootInOut();
-    // `takenLoops` is important in cases such as in the 'koldat52' vector
-    const takenLoops: Set<Loop> = new Set();
     const takenOuts: Set<Out> = new Set();  // Taken intersections
+    // `takenContainers` is critical in cases such as in the 'koldat52' vector
+    // where a `minY` container is part of multiple loops
+    const takenContainers: Set<Container> = new Set();
 
     for (let i=0; i<minYContainers.length; i++) {
         const container = minYContainers[i];
-        const { loop } = container.xs[0].x.curve;
 
-        if (takenLoops.has(loop)) { continue; }
-        takenLoops.add(loop);
+        if (takenContainers.has(container)) { continue; }
 
-        const parent = getTightestContainingLoop(expMax, root, loop);
+        const { loop } = container.xs[0].x.curve;  // TODO - wrong
+        const { beziers } = loop;
+        const parent = getTightestContainingLoop(expMax, root, beziers);
         // const parent = root;
 
         const initialOut = getOutermostOut(container, parent);
 
         completePath(
             initialOut,
-            takenLoops,
-            takenOuts
+            takenOuts,
+            takenContainers
         );
     }
 
@@ -172,46 +162,26 @@ function completePaths(
  * Completes the path of a disjoint set of loops, i.e. this function is called 
  * for each disjoint set of paths.
  * 
- * @param intersections 
- * @param takenLoops 
- * @param parent 
- * @param loop 
+ * @param initialOut
+ * @param takenOuts
+ * @param takenContainers
  */
 function completePath(
         initialOut: Out,
-        takenLoops: Set<Loop>,
-        takenOuts: Set<Out>): void {
+        takenOuts: Set<Out>,
+        takenContainers: Set<Container>): void {
 
     const outStack: Out[] = [initialOut];
 
-    // A given Out (directed edge) belongs to exactly one output-boundary loop.
-    // A merged (over-large) container can, however, cause the same region to be
-    // traced twice: a short-circuited loop and a fuller loop that detours through
-    // the merge, sharing the same Out objects. The first loop emitted for a set of
-    // Outs is the one designated by the enclosing trace (with correct parent /
-    // winding); any later loop that overlaps it is a redundant duplicate and is
-    // dropped, leaving the winding tree untouched.
-    const takenByLoop = new Set<Out>();
-
     while (outStack.length) {
-        const origOut = outStack.pop()! as Mutable<Out>;
-        takenLoops.add(origOut._x_.x.curve.loop);
+        const origOut = outStack.pop()!;
 
         if (takenOuts.has(origOut)) { continue; }
 
-        origOut.children = new Set();
-        const { path, additionalOutsToCheck, loopOuts } = 
-            completeLoop(takenOuts, takenLoops, origOut);
-
-        // If this loop shares any `Out` with an already-emitted loop it is a
-        // duplicate of that region - discard it (do not emit, do not spawn its
-        // children).
-        if (loopOuts.some(o => takenByLoop.has(o))) {
-            continue;
-        }
-        for (const o of loopOuts) { takenByLoop.add(o); }
-
-        origOut.path = path;
+        (origOut as Mutable<Out>).children = new Set();
+        const additionalOutsToCheck = completeLoop(
+            takenOuts, takenContainers, origOut
+        );
 
         (origOut.parent as Mutable<Out>).children = origOut.parent.children || new Set();
         origOut.parent.children.add(origOut);
@@ -224,22 +194,17 @@ function completePath(
 /** 
  * Completes a loop for a specific intersection point entry curve.
  * 
- * @param expMax
  * @param takenOuts
+ * @param takenContainers
  * @param origOut
  */
 function completeLoop(
         takenOuts: Set<Out>,
-        takenLoops: Set<Loop>,
-        origOut: Out): {
-            path: Out[],
-            additionalOutsToCheck: Out[],
-            loopOuts: Out[]
-        } {
+        takenContainers: Set<Container>,
+        origOut: Out): Out[] {
 
     const additionalOutsToCheck: Out[] = [];
     const path: Out[] = [];
-    const loopOuts: Out[] = [];
 
     // Move immediately to the outgoing start of the loop
     let outToUse: Out = origOut;
@@ -250,12 +215,7 @@ function completeLoop(
 
     do {
         takenOuts.add(outToUse);
-        loopOuts.push(outToUse);
-
-        // Every curve threaded through this loop belongs to this component, so
-        // mark its loop as taken to prevent it being re-processed as a separate
-        // outermost loop (which would reset already-built child nesting).
-        takenLoops.add(outToUse._x_.x.curve.loop);
+        takenContainers.add(outToUse._x_.container);  // TODO - wrong
 
         path.push(outToUse);
 
@@ -263,7 +223,11 @@ function completeLoop(
 
     } while (outToUse !== origOut);
 
-    return { path, additionalOutsToCheck, loopOuts };
+    (origOut as Mutable<Out>).path = path;
+
+    // console.log(pathToStr(Array.from(loopOuts)));
+
+    return additionalOutsToCheck;
 }
 
 
@@ -329,24 +293,25 @@ function markInOutForChecking(
         takenOuts: Set<Out>,
         additionalOutsToCheck: Out[]) {
 
-    return (out: Out,
+    return function(
+            out: Out,
             orientation: number,
-            origParent: Out) => {
+            origParent: Out) {
 
         if (takenOuts.has(out)) { return; }
 
         const out_: Mutable<Out> = out;
 
+        if (out_.orientation !== undefined) {
+            return;  // already assigned - see e.g. complex6.svg (would fail otherwise)
+        }
         out_.orientation = orientation;
         out_.parent = origParent;
-        out_.windingNum = origParent.windingNum + out.orientation;
+        out_.windingNum = origParent.windingNum + out_.orientation;
 
-        additionalOutsToCheck.push(out);
+        additionalOutsToCheck.push(out_);
     }
 }
 
 
-
 export { rerun }
-
-

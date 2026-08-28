@@ -24,9 +24,12 @@ function getOutermostOut(
     const firstInOut = inOuts[0];
     const lastInOut = inOuts[inOuts.length-1];
 
-    const initialOut = firstInOut.dir === 1
+    const initialOut = 
+          firstInOut.dir === 1
         ? firstInOut
-        : lastInOut;
+        : lastInOut.dir === 1
+        ? lastInOut
+        : (() => { throw new Error('`getOutermostOut`: Impossible state reached') })();
 
     const orientation = lastInOut.dir;
     const windingNum = parent.windingNum + orientation;
@@ -34,14 +37,13 @@ function getOutermostOut(
     //---------------
     // Mutate
     //---------------
-    const inOut_ = initialOut as Mutable<In|Out>;
-    inOut_.orientation = orientation;
-    inOut_.parent = parent;
-    inOut_.windingNum = windingNum;
-    inOut_.children = new Set();
+    (initialOut as Mutable<In|Out>).orientation = orientation;
+    (initialOut as Mutable<In|Out>).parent = parent;
+    (initialOut as Mutable<In|Out>).windingNum = windingNum;
+    (initialOut as Mutable<In|Out>).children = new Set();
     //---------------
 
-    return initialOut as Out;
+    return initialOut;
 }
 
 
