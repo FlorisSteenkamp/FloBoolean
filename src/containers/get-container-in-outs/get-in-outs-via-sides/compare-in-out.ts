@@ -47,7 +47,7 @@ function compareInOut(
     const sidesA = inOutA.oSideIdxs ?? getInOutSideIdx(inOutA, _x_A, sides, forwardA);
     const sidesB = inOutB.oSideIdxs ?? getInOutSideIdx(inOutB, _x_B, sides, forwardB);
 
-    if (typeof _debug_ !== 'undefined') { _debug_.callCounts.l1++; }
+    // if (typeof _debug_ !== 'undefined') { _debug_.callCounts.l1++; }
 
     if (sidesA.length === 1 && sidesB.length === 1) {
         inOutA.oSideIdx = inOutA.oSideIdx ?? sidesA[0];
@@ -64,7 +64,7 @@ function compareInOut(
     const crossingA = inOutA.oFSC ?? getFirstSideCrossing$(_x_A, sides, forwardA, sidesA);
     const crossingB = inOutB.oFSC ?? getFirstSideCrossing$(_x_B, sides, forwardB, sidesB);
 
-    if (typeof _debug_ !== 'undefined') { _debug_.callCounts.l2++; }
+    // if (typeof _debug_ !== 'undefined') { _debug_.callCounts.l2++; }
 
     const { sideIdx: sideIdxA, riSide: riA } = crossingA;
     const { sideIdx: sideIdxB, riSide: riB } = crossingB;
@@ -85,7 +85,7 @@ function compareInOut(
         return res;
     }
 
-    if (typeof _debug_ !== 'undefined') { _debug_.callCounts.l3++; }
+    // if (typeof _debug_ !== 'undefined') { _debug_.callCounts.l3++; }
     
     //--------------------------------------------------------------------------
     // Cannot discern yet, compensate once

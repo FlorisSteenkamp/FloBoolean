@@ -16,15 +16,6 @@ interface Debug {
     readonly timing: Timing;
     readonly fs: DebugFunctions;
     readonly verbose: boolean;
-    readonly callCounts: {
-        l1: number;
-        l2: number;
-        l3: number;
-        lil1: number;
-        lil2: number;
-        lil3: number;
-        lil4: number;
-    };
 }
 /**
  * Returns a new debug object by spreading boolean operation debug information

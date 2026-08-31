@@ -31,7 +31,7 @@ const _isLoopInLoop = timeFunctionCalls(function _isLoopInLoop(
         loop1: number[][][],
         bezierPieces: BezierPiece[]): boolean {
 
-    if (typeof _debug_ !== 'undefined') { _debug_.callCounts.lil1++; }
+    // if (typeof _debug_ !== 'undefined') { _debug_.callCounts.lil1++; }
 
     const loop2 = bezierPiecesToBeziers$(bezierPieces);
 
@@ -96,14 +96,14 @@ export const getAxisAlignedRayLoopIntersections = timeFunctionCalls(function get
         bezierPieces: BezierPiece[],
         p: number[]): number | undefined {
 
-    if (typeof _debug_ !== 'undefined') { _debug_.callCounts.lil2++; }
+    // if (typeof _debug_ !== 'undefined') { _debug_.callCounts.lil2++; }
 
     const [X,Y] = p;
     const candidates = getCandidates(bezierPieces, Y);
 
     let count = 0;
     for (let i=0; i<candidates.length; i++) {
-        if (typeof _debug_ !== 'undefined') { _debug_.callCounts.lil3++; }
+        // if (typeof _debug_ !== 'undefined') { _debug_.callCounts.lil3++; }
 
         const piece = candidates[i];
         const { ps, ts } = piece;
@@ -112,7 +112,7 @@ export const getAxisAlignedRayLoopIntersections = timeFunctionCalls(function get
         const minX = getBoundingBox$(ps)[0][0];
         if (minX > X) { continue; }
 
-        if (typeof _debug_ !== 'undefined') { _debug_.callCounts.lil4++; }
+        // if (typeof _debug_ !== 'undefined') { _debug_.callCounts.lil4++; }
 
         //------------------------------------------------------/
         //----------- Count ray crossings on bezier ------------/

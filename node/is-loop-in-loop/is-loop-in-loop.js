@@ -22,9 +22,7 @@ import { toPowerBasisRootsAtExact } from './to-power-basis-root-at.js';
  * @param loop2
  */
 const _isLoopInLoop = timeFunctionCalls(function _isLoopInLoop(expMax, loop1, bezierPieces) {
-    if (typeof _debug_ !== 'undefined') {
-        _debug_.callCounts.lil1++;
-    }
+    // if (typeof _debug_ !== 'undefined') { _debug_.callCounts.lil1++; }
     const loop2 = bezierPiecesToBeziers$(bezierPieces);
     if (isLoopNotInLoop(loop1, loop2)) {
         return false;
@@ -75,16 +73,12 @@ function isPointInLoop(expMax, p, bezierPieces) {
  * @param dir the ray direction
  */
 export const getAxisAlignedRayLoopIntersections = timeFunctionCalls(function getAxisAlignedRayLoopIntersections(expMax, bezierPieces, p) {
-    if (typeof _debug_ !== 'undefined') {
-        _debug_.callCounts.lil2++;
-    }
+    // if (typeof _debug_ !== 'undefined') { _debug_.callCounts.lil2++; }
     const [X, Y] = p;
     const candidates = getCandidates(bezierPieces, Y);
     let count = 0;
     for (let i = 0; i < candidates.length; i++) {
-        if (typeof _debug_ !== 'undefined') {
-            _debug_.callCounts.lil3++;
-        }
+        // if (typeof _debug_ !== 'undefined') { _debug_.callCounts.lil3++; }
         const piece = candidates[i];
         const { ps, ts } = piece;
         // Check if ray origin is to right of bezier bounding box
@@ -92,9 +86,7 @@ export const getAxisAlignedRayLoopIntersections = timeFunctionCalls(function get
         if (minX > X) {
             continue;
         }
-        if (typeof _debug_ !== 'undefined') {
-            _debug_.callCounts.lil4++;
-        }
+        // if (typeof _debug_ !== 'undefined') { _debug_.callCounts.lil4++; }
         //------------------------------------------------------/
         //----------- Count ray crossings on bezier ------------/
         //------------------------------------------------------/

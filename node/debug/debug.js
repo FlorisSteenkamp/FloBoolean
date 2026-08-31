@@ -13,15 +13,15 @@ function enableDebugForBooleanOp(debugOn) {
     const debug = globalThis._debug_;
     const debug_ = {
         ...debug,
-        callCounts: {
-            l1: 0,
-            l2: 0,
-            l3: 0,
-            lil1: 0,
-            lil2: 0,
-            lil3: 0,
-            lil4: 0
-        },
+        // callCounts: {
+        //     l1: 0,
+        //     l2: 0,
+        //     l3: 0,
+        //     lil1: 0,
+        //     lil2: 0,
+        //     lil3: 0,
+        //     lil4: 0
+        // },
         elems: {
             ...debug?.elems,
             minY: [],
