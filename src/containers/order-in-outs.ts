@@ -3,7 +3,7 @@ import type { Mutable } from "../utils/mutable.js";
 import type { In, Out } from "./in-out/in-out.js";
 import { compareInOut } from "./get-container-in-outs/get-in-outs-via-sides/compare-in-out.js";
 import { timeFunctionCalls } from "../utils/time-function-call.js";
-import { containerHasMinY } from './container-has-min-y.js';
+import { xsHasMinY } from "./xs-has-min-y.js";
 
 
 /**
@@ -21,7 +21,7 @@ const orderInOuts = timeFunctionCalls(function orderInOuts(
 
     // if `inOuts` length <= 2 we only need a cyclic sort UNLESS it contains
     // a `minY` (type 0) `_X_` in which case we need a total order
-    if (inOuts.length > 2 || containerHasMinY(container)) {
+    if (inOuts.length > 2 || xsHasMinY(container.xs)) {
         inOuts.sort(compareInOut);
     }
 

@@ -55,6 +55,7 @@ test('`simplifyPaths` specific cases', function() {
     // updDebugGlobal(true);
     updDebugGlobal(false);
 
+    testIt('complex-min');
     testIt('con-squares');
     testIt('three-squares');    // three-squares -> should boolean correctly'
     testIt('comp');  // minimized complexish (ddmin working copy)
@@ -272,3 +273,6 @@ function updDebugGlobal(debugOn: boolean) {
     // console shortcut
     (globalThis as any).d = (globalThis as any)._debug_;
 }
+
+
+// testIt('koldatter2');   // rare case in which all loops get filtered out due to small area

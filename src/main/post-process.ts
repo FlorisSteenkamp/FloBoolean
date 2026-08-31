@@ -1,16 +1,18 @@
 declare const _debug_: Debug; 
 import type { Debug } from '../debug/debug.js';
+import type { BezierPiece } from 'flo-bezier3';
 import { compareLoopByMinY } from '../calc-paths/order-loop-ascending-by-min-y.js';
 import { loopFromBeziers } from '../shape/loop-from-beziers.js';
 import { addDebugInfo2 } from './add-debug-info-2.js';
 import { filterLoopsByMinAllowedArea } from './filter-loops-by-min-allowed-area.js';
 import { timeFunctionCalls } from '../utils/time-function-call.js';
-import { _isLoopInLoop } from '../is-loop-in-loop/is-loop-in-loop.js';
 import { _X_ } from '../get-critical-points/-x-.js';
-import { BezierPiece, bezierPieceToBezier } from 'flo-bezier3';
+import { bezierPieceToBezier, equal } from 'flo-bezier3';
 import { reverseShapeOrientation } from '../shape/reverse-shape-orientation.js';
 import { mapmap } from '../utils/map-map.js';
 import { getJordanTurningNumber } from '../shape/get-jordan-turning-number.js';
+import { combineBezierPieces } from './combine-bezier-pieces.js';
+import { connectEndpoints } from './connect-endpoints.js';
 
 
 function postProcess(
@@ -20,29 +22,27 @@ function postProcess(
 
     const _loopss = __loopss.map(loops => {
         return loops.map(bezierPieces => {
-            const beziers = bezierPieces.map(bezierPieceToBezier);
+            const bezierPieces_ = combineBezierPieces(bezierPieces);
+            const _beziers = bezierPieces_.map(bezierPieceToBezier);
+            const beziers = connectEndpoints(_beziers);
 
             return beziers;
         });
     });
 
 
-    const loopss = _loopss.map(
-        _loops => {
-            const outerOrientation = getJordanTurningNumber(_loops[0]);
-            const shouldReverse = outerOrientation !== -1 && forceOrientationNegative;
-
-            return _loops.map(_loop =>
-                shouldReverse ? reverseShapeOrientation(_loop) : _loop
-            );
-        }
-    );
+    const loopss = forceOrientationNegative
+        ? _loopss.map(_loops =>
+            getJordanTurningNumber(_loops[0]) !== -1
+                ? _loops.map(reverseShapeOrientation)
+                : _loops
+            )
+        : _loopss;
 
 
     const minAreaFilter = timeFunctionCalls(filterLoopsByMinAllowedArea(minLoopArea));
 
     const loopss_ = minAreaFilter(loopss)
-        // TODO might be used downstream but uneccessary to do here even though it's fast
         .map(loops => loops.toSorted(compareLoopByMinY));
 
     let loopIdx = 0;

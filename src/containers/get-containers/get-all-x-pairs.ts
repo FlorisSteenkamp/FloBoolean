@@ -23,10 +23,10 @@ const getTurnarounds_ = timeFunctionCalls(getTurnarounds);
 const getAllXPairs = timeFunctionCalls(function getAllXPairs(
         loops: Loop[],
         minYXPairs: X[],
-        expMax: number): ([X, X] | [X])[] {
+        expMax: number): ([X, X])[] {
 
-    // const xs1 = loops.map((_,idx) => [minYXPairs[idx], { ...minYXPairs[idx] }] as [_X_,_X_]);
-    const xs1 = loops.map((_,idx) => [minYXPairs[idx]] as [X]);
+    const xs1 = loops.map((_,idx) => [minYXPairs[idx], { ...minYXPairs[idx] }] as [X,X]);
+    // const xs1 = loops.map((_,idx) => [minYXPairs[idx]] as [X]);
     const xs2 = getIntersections_(loops);
     const xs3 = getSelfIntersections_(loops);
     

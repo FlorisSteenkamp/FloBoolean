@@ -10,16 +10,15 @@ import { getContainers } from '../containers/get-containers/get-containers.js';
 import { loopFromBeziers } from '../shape/loop-from-beziers.js';
 import { normalizeLoops } from '../shape/normalize/normalize-loop.js';
 import { getMaxCoordinate } from '../shape/normalize/get-max-coordinate.js';
-import { loopFromOut } from './loop-from-out.js';
-import { completePaths } from '../calc-paths/complete-paths.js';
-import { _isLoopInLoop } from '../is-loop-in-loop/is-loop-in-loop.js';
+import { completePaths } from '../calc-paths/complete-paths/complete-paths.js';
 import { getAllXPairs } from '../containers/get-containers/get-all-x-pairs.js';
 import { getLoopMinY } from '../shape/get-min-y.js';
 import { _X_ } from '../get-critical-points/-x-.js';
-import { containerHasMinY } from '../containers/container-has-min-y.js';
+import { xsHasMinY } from '../containers/xs-has-min-y.js';
 import { MAX_BIT_LENGTH } from './max-bitlength.js';
 import { postProcess } from './post-process.js';
 import { rerun } from './rerun/rerun.js';
+import { loopssFromOutsets } from './loopss-from-outsets.js';
 
 
 const { ceil, log2 } = Math;
@@ -29,7 +28,7 @@ const { ceil, log2 } = Math;
  * A size multiplier for the containers holding critical points.
  */
 const CONTAINER_SIZE_MULTIPLIER_EXP = 4;
-const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 37;
+const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 30;
 
 
 /**
@@ -62,6 +61,7 @@ function simplifyPaths(
     const expMax = ceil(log2(getMaxCoordinate(bezierLoops)));
 
     const {
+        // minLoopArea = (2**(expMax - 16))**2,
         minLoopArea = (2**(expMax - 16))**2,
         forceOrientationNegative = false,
         booleanOp = "OR"
@@ -95,7 +95,7 @@ function simplifyPaths(
     const containers = getContainers(xPairs, expMax, expContainer);
     if (typeof _debug_ !== 'undefined') { _debug_.elems.container.push(...containers); }
 
-    const minYContainers = containers.filter(containerHasMinY);
+    const minYContainers = containers.filter(container => xsHasMinY(container.xs));
 
     const root = completePaths(expMax, minYContainers);
 
@@ -108,24 +108,15 @@ function simplifyPaths(
     //----------------------------------------
     // Create loops for all `outSets`
     //----------------------------------------
-    // TODO
-    const loopss_ = outSets.map(outSet => {
-        const outerLoopOrientation = outSet[0].out.orientation;
-
-        return outSet.map(({ out, depth }) => {
-            return loopFromOut(out, outerLoopOrientation, depth);
-        });
-    });
-
+    const loopss_ = loopssFromOutsets(outSets);
 
     // Use this for rerun:
-    // return postProcess(
-    //     rerun(expMax, outSets, containers),
-    //     forceOrientationNegative, minLoopArea
-    // );
+    return postProcess(
+        rerun(expMax, outSets, containers, loopss_),
+        forceOrientationNegative, minLoopArea
+    );
 
     // Use this if no rerun wanted:
-    // console.log(loopss_.length);
     return postProcess(loopss_, forceOrientationNegative, minLoopArea);
 }
 
@@ -134,8 +125,6 @@ export { simplifyPaths }
 
 
 
-
-// TODO - somehehere - reconnect minY
 
     // console.log(structuredClone(getContainers.getStats()));
     // console.log(structuredClone(normalizeLoops.getStats()));

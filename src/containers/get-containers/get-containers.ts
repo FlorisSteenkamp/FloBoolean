@@ -13,7 +13,6 @@ import { getContainersFromXPairs } from './get-containers-from-x-pairs.js';
 import { connectContainerInOuts } from './connect-container-in-outs.js';
 import { numberInOuts } from './number-in-outs.js';
 import { orderInOuts } from '../order-in-outs.js';
-import { getAllXPairs } from './get-all-x-pairs.js';
 import { assignBigBoxesToContainers } from './assign-big-boxes-to-containers.js';
 import { timeFunctionCalls } from '../../utils/time-function-call.js';
 import { mapmap } from '../../utils/map-map.js';
@@ -27,7 +26,7 @@ import { setNextAndPrevAround } from '../set-next-and-prev-around.js';
  * @internal
  */
 const getContainers = timeFunctionCalls(function getContainers(
-        xPairs: ([X, X] | [X])[],
+        xPairs: ([X, X])[],
         expMax: number,
         expContainer: number): Container[] {
 
@@ -52,6 +51,10 @@ const getContainers = timeFunctionCalls(function getContainers(
         }
 
         (container as Mutable<Container>).inOuts = inOuts;
+
+        for (const inOut of inOuts) {
+            (inOut as Mutable<In|Out>).container = (container as Container);
+        }
     }
 
     const containers_ = assignBigBoxesToContainers(containers, expMax);

@@ -12,7 +12,6 @@ const { sign } = Math;
 function getJordanTurningNumber(
         shape: (number[][])[]) {
 
-    // TODO - area could be close to zero
     return sign(getShapeArea$(shape));
 }
 

@@ -9,11 +9,14 @@ function createRootInOut(): Out {
         children: new Set(),
         windingNum: 0,
         _x_: undefined!,
-        orientation: -1,
+        // orientation: -1,
+        orientation: 0,
         twin: undefined!,
         path: undefined!,
         nextAround: undefined!,
-        prevAround: undefined!
+        prevAround: undefined!,
+        loop: undefined!,
+        container: undefined!
     };
 }
 

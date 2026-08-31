@@ -301,4 +301,4 @@ function isLoopInLoop(
 }
 
 
-export { isLoopInLoop, _isLoopInLoop, isPointInLoop }
+export { isLoopInLoop, _isLoopInLoop, isPointInLoop, bezierPiecesToBeziers$ }

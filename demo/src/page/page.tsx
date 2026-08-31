@@ -11,7 +11,7 @@ import { ButtonGroup } from '../components/simple-button-group.js';
 import { SimpleSelect } from '../components/simple-select.js';
 import { SimpleButton } from '../components/simple-button.js';
 import { getPathsFromStr } from '../../../src/index.js';
-import { drawBooleanRef } from '../../../__tests__/specific-cases/draw-boolean-ref.js';
+import { drawBooleanRef } from './winding.js';
 import { onMouseUp } from './on-mouse-up.js';
 import { onClick } from './on-click.js';
 import { toDrawKeyToText } from './to-draw-key-to-text.js';
@@ -54,6 +54,7 @@ function Page(props: Props) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const refX = useRef<HTMLSpanElement>(null);
     const refY = useRef<HTMLSpanElement>(null);
+    const refWinding = useRef<HTMLSpanElement>(null);
     const [showRef, setShowRef] = useState(false);
     // useEffect(function() { lazyLoadDeduced(stateControl, ref, false, forBoolean) }, []); // run only once
     useEffect(function() { lazyLoadDeduced(stateControl, ref, false) }, []); // run only once
@@ -233,6 +234,7 @@ function Page(props: Props) {
             </div>
             <span id="x-coord" ref={refX} style={{ userSelect: 'none', position: 'fixed', bottom: '13px', left: '10px', zIndex: 1 }} />
             <span id="y-coord" ref={refY} style={{ userSelect: 'none', position: 'fixed', bottom: '13px', left: '80px', zIndex: 1 }} />
+            <span id="winding-coord" ref={refWinding} style={{ userSelect: 'none', position: 'fixed', bottom: '13px', left: '150px', zIndex: 1 }} />
             <div style={{ flex: 1, overflow: 'auto', minHeight: 0 }}>
                 {pathStrs !== undefined && 
                     <div style={{ position: 'relative', width: '1024px', height: '1024px' }}>
@@ -247,7 +249,7 @@ function Page(props: Props) {
                             style={{ userSelect: 'none', position: 'absolute', top: 0, left: 0, width: '1024px', height: '1024px' }}
                             onMouseDown={onMouseDown(stateControl, ref)}
                             onMouseUp={onMouseUp(stateControl, ref)}
-                            onMouseMove={onMouseMove(stateControl, ref, refX, refY)}
+                            onMouseMove={onMouseMove(stateControl, ref, refX, refY, refWinding)}
                             onClick={onClick(stateControl, ref)}
                         >
                             <g />

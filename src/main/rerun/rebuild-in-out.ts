@@ -1,12 +1,11 @@
 import type { In, Out } from "../../containers/in-out/in-out.js";
-import type { RebuiltInOut } from "./rebuilt-in-out.js";
 
 
 /** builds a fresh `RebuiltInOut` copying the in/out's order-info caches */
 function rebuildInOut(
         inOut: In|Out,
         dir: -1|1,
-        swapped: boolean): RebuiltInOut {
+        swapped: boolean): In|Out {
 
     return {
         idx: inOut.idx,
@@ -17,6 +16,16 @@ function rebuildInOut(
         oFSC: inOut.oFSC,
         oFSCE: inOut.oFSCE,
         oSideIdx: inOut.oSideIdx,
+        container: undefined!,
+        orientation: undefined!,
+        windingNum: undefined!,
+        children: undefined!,
+        nextAround: undefined!,
+        parent: undefined!,
+        path: undefined!,
+        prevAround: undefined!,
+        twin: undefined!,
+        loop: undefined!
     };
 }
 

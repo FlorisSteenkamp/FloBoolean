@@ -11,9 +11,9 @@ const MAX_CURVATURE_AT_EXP_MAX_0 = 10_000_000;
 
 function getExcessiveCurvatures(
         expMax: number,
-        loops: Loop[]): [X][] {
+        loops: Loop[]): [X,X][] {
 
-    const xs: [X][] = [];
+    const xs: [X,X][] = [];
 
     const maxCurvature = MAX_CURVATURE_AT_EXP_MAX_0*(2**-expMax);
 
@@ -29,8 +29,9 @@ function getExcessiveCurvatures(
             for (let t of minmaxs) {
                 const k = abs(curvature(ps, t));
                 if (k > maxCurvature) {
-                    const _x_ = makeSimpleX(t, curve, 7);  // excessive curvature
-                    xs.push([_x_,]);
+                    const xA = makeSimpleX(t, curve, 7);  // excessive curvature
+                    const xB = makeSimpleX(t, curve, 7);  // ...
+                    xs.push([xA,xB]);
                 }
             }
         }

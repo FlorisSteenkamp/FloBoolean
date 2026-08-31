@@ -1,6 +1,7 @@
-import { RootIntervalExp } from "flo-poly";
+import type { RootIntervalExp } from "flo-poly";
 import type { _X_ } from "../../get-critical-points/-x-.js";
-import { SideCrossing } from "../get-container-in-outs/get-in-outs-via-sides/side-crossing.js";
+import type { SideCrossing } from "../get-container-in-outs/get-in-outs-via-sides/side-crossing.js";
+import { Container } from "../container.js";
 
 
 interface InOutBase {
@@ -30,25 +31,32 @@ interface InOut extends InOutBase {
     readonly windingNum: number;
     readonly parent: Out;
     readonly children: Set<Out>;
-    // readonly path: (In|Out)[];
     readonly path: Out[];
+    readonly container: Container;
 
-    //------------
-    // Order Info
-    //------------
-    /** cache */
+    //-------------
+    // Order infos
+    //-------------
+    /** cache used during `In`/`Out` comparisons */
     oSideIdxs?: number[];
+    /** cache used during `In`/`Out` comparisons */
     oFSC?: SideCrossing;
+    /** cache used during `In`/`Out` comparisons */
     oFSCE?: RootIntervalExp;
-
+    /** cache used during `In`/`Out` comparisons */
     oSideIdx?: number;
 
+    //--------------------
+    // Used in rerun only
+    //--------------------
     /**
      * set in `rerun` when the in/out's `dir` was flipped while the underlying
      * loop direction stayed the same; box-side crossing must then be found by
      * walking the loop the opposite way.
      */
     swapped?: boolean;
+    /** The bezier loop belonging to the `_X_` of this `In`/`Out` */
+    loop: number[][][];
 }
 
 
@@ -57,8 +65,6 @@ interface Out extends InOut {
     readonly dir: 1;
     /** the next in from this Out */
     readonly twin: In;
-    /** the paired In of the SAME container (entry to this Out's exit) */
-    twinInside?: In;
 }
 
 
@@ -67,8 +73,6 @@ interface In extends InOut {
     readonly dir: -1;
     /** the previous out from this In */
     readonly twin: Out;
-    /** the paired Out of the SAME container (exit from this In's entry) */
-    twinInside?: Out;
 }
 
 
