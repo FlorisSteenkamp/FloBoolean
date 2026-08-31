@@ -1,12 +1,7 @@
 import type { Loop } from './loop.js';
+import type { X } from '../get-critical-points/x.js';
 /**
  *
  */
-declare function getLoopMinY(loop: Loop): {
-    curve: import("../index.js").Curve;
-    y: {
-        t: number;
-        p: number[];
-    };
-};
+declare function getLoopMinY(loop: Loop): X;
 export { getLoopMinY };

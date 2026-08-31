@@ -1,35 +1,20 @@
-function mergeContainers(ccs) {
-    const containers = [];
-    for (const cc of ccs) {
-        let minLeft = Number.POSITIVE_INFINITY;
-        let minTop = Number.POSITIVE_INFINITY;
-        let maxRight = Number.NEGATIVE_INFINITY;
-        let maxBottom = Number.NEGATIVE_INFINITY;
-        const xs = [];
-        for (const c of cc) {
-            const [[left, top], [right, bottom]] = c.box;
-            if (left < minLeft) {
-                minLeft = left;
-            }
-            if (top < minTop) {
-                minTop = top;
-            }
-            if (right > maxRight) {
-                maxRight = right;
-            }
-            if (bottom > maxBottom) {
-                maxBottom = bottom;
-            }
-            xs.push(...c.xs);
-        }
-        const container = {
-            box: [[minLeft, minTop], [maxRight, maxBottom]],
-            xs,
-            inOuts: undefined
-        };
-        containers.push(container);
+const { min, max } = Math;
+function mergeContainers(containers) {
+    let minLeft = Infinity;
+    let minTop = Infinity;
+    let maxRight = -Infinity;
+    let maxBottom = -Infinity;
+    const xs = [];
+    for (const container of containers) {
+        const [[left, top], [right, bottom]] = container.box;
+        minLeft = min(minLeft, left);
+        minTop = min(minTop, top);
+        maxRight = max(maxRight, right);
+        maxBottom = max(maxBottom, bottom);
+        xs.push(...container.xs);
     }
-    return containers;
+    const box = [[minLeft, minTop], [maxRight, maxBottom]];
+    return { xs, box };
 }
 export { mergeContainers };
 //# sourceMappingURL=merge-containers.js.map

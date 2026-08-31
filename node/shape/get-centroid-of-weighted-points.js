@@ -22,8 +22,4 @@ function getCentroidOfWeightedPoints(ps, weights) {
     ];
 }
 export { getCentroidOfWeightedPoints };
-// Quokka tests
-// const ps = [[1,1], [2,2],[3,3]];
-// const weights = [1,1,2];
-// getCentroidOfWeightedPoints(ps, weights);//?
 //# sourceMappingURL=get-centroid-of-weighted-points.js.map

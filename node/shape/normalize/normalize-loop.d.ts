@@ -20,8 +20,12 @@
  * @param bezierLoops
  * @param maxBitLength
  * @param expMax
- * @param doScramble
- * @param doSendToGrid
  */
-declare function normalizeLoops(bezierLoops: number[][][][], maxBitLength: number, expMax: number, doScramble?: boolean, doSendToGrid?: boolean): number[][][][];
+declare const normalizeLoops: ((this: unknown, bezierLoops: number[][][][], expMax: number) => number[][][][]) & {
+    getStats: () => {
+        count: number;
+        totalMs: number;
+    };
+    resetStats: () => void;
+};
 export { normalizeLoops };

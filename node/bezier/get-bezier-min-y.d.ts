@@ -1,3 +1,5 @@
+import type { X } from '../get-critical-points/x.js';
+import type { Curve } from '../curve/curve.js';
 /**
  * Returns the minimum y-coordinate (point and `t` value) of the given bezier
  * curve.
@@ -7,8 +9,5 @@
  *
  * @doc mdx
  */
-declare function getBezierMinY(ps: number[][]): {
-    t: number;
-    p: number[];
-};
+declare function getBezierMinY(curve: Curve): X;
 export { getBezierMinY };

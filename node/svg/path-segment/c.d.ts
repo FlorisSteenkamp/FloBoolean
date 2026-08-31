@@ -1,6 +1,5 @@
 import { PathState } from "../path-state.js";
 /**
- * @hidden
  * C and c: (from www.w3.org)
  *
  * params: x1 y1 x2 y2 x y
@@ -14,6 +13,8 @@ import { PathState } from "../path-state.js";
  * be specified to draw a polybézier. At the end of the
  * command, the new current point becomes the final (x,y)
  * coordinate pair used in the polybézier.
+ *
+ * @internal
  */
 declare function c(s: PathState): number[][];
 export { c };

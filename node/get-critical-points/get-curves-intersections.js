@@ -86,13 +86,13 @@ function checkEndpoints(curveA, curveB) {
         // Check if they are in same k family (this *is* necessary for two curves
         // in same k-family joined end to end, e.g. ---A--->|---B---> in which
         // case ...)
-        const xPairs = getOtherTs(psA, psB, [createRootExact(1)]);
+        const xPairs = getOtherTs(curveA, curveB, [createRootExact(1)]);
         if (xPairs === undefined || xPairs.length === 0) {
             return undefined;
         }
         const xPair = xPairs[0];
         return [[
-                { x: xPair[0], curve: curveA },
+                xPair[0],
                 makeSimpleX(1, curveB, 1)
             ]];
     }

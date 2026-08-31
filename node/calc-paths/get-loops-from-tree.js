@@ -45,12 +45,17 @@ function getLoopsFromTree(booleanOp) {
             const [tree, ancestorCount] = stack.pop();
             // Winding number of the face just outside this loop (0 if this is
             // the outermost loop of the shape).
-            const parentWinding = tree.parent?.windingNum ?? 0;
+            const parentWinding = tree.parent.windingNum;
             // Include this loop iff result membership flips across it.
             const isSelected = inResult(booleanOp, tree.windingNum) !==
                 inResult(booleanOp, parentWinding);
             if (isSelected) {
-                selected.push({ out: tree, depth: ancestorCount });
+                selected.push({
+                    out: tree,
+                    depth: ancestorCount,
+                    windingNum: tree.windingNum,
+                    parentWinding,
+                });
             }
             const childAncestorCount = isSelected ? ancestorCount + 1 : ancestorCount;
             for (const child of tree.children) {

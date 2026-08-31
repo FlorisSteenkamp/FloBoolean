@@ -1,6 +1,6 @@
-import { roots } from 'flo-poly';
-import { getIntervalBox, toPowerBasis_1stDerivativeDd } from 'flo-bezier3';
+import { createRootExact, roots } from 'flo-poly';
 import { toP } from '../utils/to-p.js';
+import { toPowerBasis_1stDerivative_46_O } from './to-power-basis-1st-derivative-dd-46-o.js';
 /**
  * Returns the minimum y-coordinate (point and `t` value) of the given bezier
  * curve.
@@ -10,29 +10,30 @@ import { toP } from '../utils/to-p.js';
  *
  * @doc mdx
  */
-function getBezierMinY(ps) {
+function getBezierMinY(curve) {
+    const { ps } = curve;
     const pS = ps[0];
     const pE = ps[ps.length - 1];
-    let minY;
-    if (pS[1] < pE[1]) {
-        minY = { t: 0, p: pS };
-    }
-    else {
-        minY = { t: 1, p: pE };
-    }
+    let minY = pS[1] < pE[1]
+        ? { ri: createRootExact(0), p: pS, kind: 0, curve }
+        : { ri: createRootExact(1), p: pE, kind: 0, curve };
     if (ps.length === 2) {
+        // It's a line
+        if (pS[1] === pE[1]) {
+            // so that forward and reverse bezier have the same minY point
+            const p = [(pS[0] + pE[0]) / 2, (pS[1] + pE[1]) / 2];
+            return { ri: createRootExact(0.5), p, kind: 0, curve };
+        }
         return minY;
-    } // It's a line
-    const [, dy] = toPowerBasis_1stDerivativeDd(ps);
-    const rootsY = roots(dy, 0, 1) || [];
+    }
+    const [, dy] = toPowerBasis_1stDerivative_46_O(ps);
+    const ris = roots(dy, 0, 1) || [];
     // Test points
-    for (let i = 0; i < rootsY.length; i++) {
-        const { tS, tE, t } = rootsY[i];
-        const ts = [tS, tE];
-        const box = getIntervalBox(ps, ts); // TODO
-        if (box[0][1] < minY.p[1]) {
-            const p = toP(ps, t);
-            minY = { t, p };
+    for (let i = 0; i < ris.length; i++) {
+        const ri = ris[i];
+        const p = toP(ps, ri.t);
+        if (p[1] < minY.p[1]) {
+            minY = { ri, p, kind: 0, curve };
         }
     }
     return minY;

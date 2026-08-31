@@ -19,5 +19,7 @@ import type { Out } from "../containers/in-out/in-out.js";
 declare function getLoopsFromTree(booleanOp?: 'AND' | 'OR' | 'XOR'): (root: Out) => {
     out: Out;
     depth: number;
+    windingNum: number;
+    parentWinding: number;
 }[];
 export { getLoopsFromTree };

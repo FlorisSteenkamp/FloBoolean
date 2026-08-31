@@ -1,6 +1,5 @@
 import { PathState } from '../path-state.js';
 /**
- * @hidden
  * V and v: (from www.w3.org)
  *
  * params: y
@@ -10,6 +9,8 @@ import { PathState } from '../path-state.js';
  * indicates that relative coordinates will follow. Multiple y values can be
  * provided (although usually this doesn't make sense). At the end of the
  * command, the new current point becomes (cpx, y) for the final value of y.
+ *
+ * @internal
  */
 declare function v(s: PathState): number[][];
 export { v };

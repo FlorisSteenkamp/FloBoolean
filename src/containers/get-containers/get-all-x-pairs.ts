@@ -29,13 +29,11 @@ const getAllXPairs = timeFunctionCalls(function getAllXPairs(
     // const xs1 = loops.map((_,idx) => [minYXPairs[idx]] as [X]);
     const xs2 = getIntersections_(loops);
     const xs3 = getSelfIntersections_(loops);
-    
     const xs4 = getInterfaceIntersections_(loops);
     const xs5 = getExcessiveCurvatures_(expMax, loops);
     const xs6 = getTurnarounds_(loops);
 
     let xPairs = [xs1, xs2, xs3, xs4, xs5, xs6].flat(1);
-    // let xPairs = [xs1, xs2, xs3, xs5, xs6].flat(1);
 
     if (typeof _debug_ !== 'undefined') {  _debug_.elems.intersection.push(...xPairs.flat()); }
 

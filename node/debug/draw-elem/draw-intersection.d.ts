@@ -1,3 +1,3 @@
-import type { _X_ } from '../../get-critical-points/-x-.js';
-declare function drawIntersection(g: SVGGElement, x: _X_): SVGCircleElement[];
+import type { X } from '../../get-critical-points/x.js';
+declare function drawIntersection(g: SVGGElement, x: X): SVGCircleElement[];
 export { drawIntersection };

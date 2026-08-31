@@ -1,0 +1,1 @@
+{"version":3,"file":"get-jordan-turning-number.js","sourceRoot":"","sources":["../../src/shape/get-jordan-turning-number.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,qBAAqB,CAAC;AAEpD,MAAM,EAAE,IAAI,EAAE,GAAG,IAAI,CAAC;AAGtB;;;;;GAKG;AACH,SAAS,sBAAsB,CACvB,KAAqB;IAEzB,OAAO,IAAI,CAAC,aAAa,CAAC,KAAK,CAAC,CAAC,CAAC;AACtC,CAAC;AAGD,OAAO,EAAE,sBAAsB,EAAE,CAAA"}

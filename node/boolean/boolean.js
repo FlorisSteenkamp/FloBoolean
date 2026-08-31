@@ -26,7 +26,6 @@ function boolean(booleanOp, bezierLoops, options = {}) {
     const { minLoopArea } = options;
     const simplifyOptions = {
         booleanOp,
-        inclMicroCorners: false,
         minLoopArea
     };
     const loopss = simplifyPaths(bezierLoops, simplifyOptions);

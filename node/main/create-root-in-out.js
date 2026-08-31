@@ -5,16 +5,15 @@ function createRootInOut() {
         parent: undefined,
         children: new Set(),
         windingNum: 0,
-        p: undefined,
         _x_: undefined,
-        container: undefined,
-        orientation: -1,
-        side: undefined,
-        nextOrPrev: undefined,
-        bezierPieces: undefined,
+        // orientation: -1,
+        orientation: 0,
+        twin: undefined,
+        path: undefined,
         nextAround: undefined,
         prevAround: undefined,
-        sideX: undefined,
+        loop: undefined,
+        container: undefined
     };
 }
 export { createRootInOut };

@@ -1,10 +1,11 @@
 /**
- * Sends a onto a fixed-spacing grid with 2**significantFigures divisions. Each
- * division is 2**maxExp / 2**significantFigures wide.
+ * Sends `a` onto a fixed-spacing grid with `2**significantBits` divisions.
+ * Each division is `2**(maxExp - significantBits)` wide.
+ *
  * @param a
  * @param expMax log2(max extent of grid in positive and negative directions)
  *
- * @param significantFigures
+ * @param significantBits
  */
-declare function toGrid(a: number, expMax: number, significantFigures: number): number;
+declare function toGrid(expMax: number, significantBits: number): (a: number) => number;
 export { toGrid };

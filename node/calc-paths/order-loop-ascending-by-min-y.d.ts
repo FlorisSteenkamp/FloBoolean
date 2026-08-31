@@ -5,5 +5,5 @@
  * @param loopA
  * @param loopB
  */
-declare function orderLoopAscendingByMinY(loopA: number[][][], loopB: number[][][]): number;
-export { orderLoopAscendingByMinY };
+declare function compareLoopByMinY(loopA: (number[][])[], loopB: (number[][])[]): number;
+export { compareLoopByMinY };

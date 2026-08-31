@@ -10,7 +10,7 @@ function makeSimpleX(t, curve, kind) {
     const { ps } = curve;
     const ri = createRootExact(t);
     const p = toP(ps, t);
-    return { x: { ri, p, kind }, curve };
+    return { ri, p, kind, curve };
 }
 export { makeSimpleX };
 //# sourceMappingURL=make-simple-x.js.map

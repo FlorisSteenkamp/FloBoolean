@@ -1,6 +1,7 @@
-import { bitLength } from 'big-float-ts';
 import { fixBeziers } from "./fix-beziers.js";
-import { toGrid } from './to-grid.js';
+import { MAX_BIT_LENGTH } from '../../main/max-bitlength.js';
+import { addDebugInfo1 } from '../../main/add-debug-info-1.js';
+import { timeFunctionCalls } from '../../utils/time-function-call.js';
 /**
  * Returns new loops from the given loops by aligning the 53-bit double
  * precision coordinates to 46-bit coordinates. This speeds up the algorithm
@@ -23,51 +24,17 @@ import { toGrid } from './to-grid.js';
  * @param bezierLoops
  * @param maxBitLength
  * @param expMax
- * @param doScramble
- * @param doSendToGrid
  */
-function normalizeLoops(bezierLoops, maxBitLength, expMax, doScramble = false, doSendToGrid = true) {
-    const fixBeziers_ = fixBeziers(expMax, maxBitLength, doSendToGrid);
-    let loops = bezierLoops.slice();
-    // just for testing purposes
-    loops = doScramble ? scrambleLoops(loops, maxBitLength, expMax, 1) : loops;
-    loops = loops.map(fixBeziers_);
-    loops = loops.filter(loop => loop.length > 0);
+const normalizeLoops = timeFunctionCalls(function normalizeLoops(bezierLoops, expMax) {
+    const loops = bezierLoops
+        .slice()
+        .map(fixBeziers(expMax, MAX_BIT_LENGTH))
+        .filter(loop => loop.length > 0);
     if (typeof _debug_ !== 'undefined') {
         _debug_.timing.normalize = performance.now() - _debug_.timing.timingStart;
     }
+    addDebugInfo1(loops);
     return loops;
-}
-/** Just for testing purposes - not used in the actual algorithm */
-function scrambleLoops(loops, maxBitLength, expMax, mult = 0.02) {
-    const loops_ = [];
-    for (const loop of loops) {
-        const loop_ = [];
-        for (const bez of loop) {
-            const bez_ = bez.map(v => v.map(c => {
-                let c_ = 0;
-                let ii = 0;
-                let mblc;
-                let mbl = 0;
-                while (true) {
-                    if (++ii > 10) {
-                        break;
-                    }
-                    c_ = (c + Math.random()) * (1 + ((Math.random() - 0.7) * mult));
-                    c_ = toGrid(c_, expMax, maxBitLength);
-                    const bl = bitLength(c_);
-                    if (bl > mbl) {
-                        mbl = bl;
-                        mblc = c_;
-                    }
-                }
-                return mblc;
-            }));
-            loop_.push(bez_);
-        }
-        loops_.push(loop_);
-    }
-    return loops_;
-}
+});
 export { normalizeLoops };
 //# sourceMappingURL=normalize-loop.js.map

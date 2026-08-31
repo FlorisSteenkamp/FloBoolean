@@ -2,7 +2,6 @@ type TimedFunction<T extends (...args: any[]) => any> = ((this: ThisParameterTyp
     getStats: () => {
         count: number;
         totalMs: number;
-        avg: number;
     };
     resetStats: () => void;
 };

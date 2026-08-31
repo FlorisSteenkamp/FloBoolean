@@ -1,7 +1,9 @@
-import type { X } from "../../../get-critical-points/x.js";
+import type { RootIntervalExp } from "flo-poly";
+import type { SideCrossing } from "./side-crossing.js";
+import type { Curve } from "../../../curve/curve.js";
 /**
  * Robustly get matching intersections of `ps` (a bezier) that matches those of
- * `side`. `ps` and `side` can actually be any order 1, 2 or 3 bezier curve.
+ * `side`.
  *
  * * **precondition** `RootInterval[]` contains no multiple roots
  *
@@ -9,8 +11,6 @@ import type { X } from "../../../get-critical-points/x.js";
  * @param side
  * @param risSide_
  */
-declare function getTs(ps: number[][], side: number[][]): {
-    psX: X;
-    sideX: X;
-}[];
-export { getTs };
+declare function getTs(curve: Curve, side: number[][], tsPs: number[], sideIdx: number): SideCrossing | undefined;
+declare function getSideRiExp(ps: number[][], side: number[][], riPs: RootIntervalExp): RootIntervalExp;
+export { getTs, getSideRiExp };

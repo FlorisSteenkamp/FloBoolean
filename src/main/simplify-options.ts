@@ -10,7 +10,6 @@ interface SimplifyOptions extends BooleanOptions {
      */
     readonly forceOrientationNegative?: boolean;
     /**
-     * TODO
      * defaults to `"OR"`
      * 
      * **Not** really a boolean operation, rather a kind of "winding num"

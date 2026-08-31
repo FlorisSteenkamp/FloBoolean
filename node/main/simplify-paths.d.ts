@@ -15,19 +15,5 @@ import type { SimplifyOptions } from './simplify-options.js';
  *
  * @param loops an array of possibly intersecting paths
  */
-declare function simplifyPaths(bezierLoops: (number[][])[][], options?: SimplifyOptions): Loop[][];
-/**
- * * used internally only
- *
- * @param bezierLoops
- * @param maxCoordinate
- * @param options
- *
- * @internal
- */
-declare function prepLoops(bezierLoops: (number[][])[][]): {
-    minYXPairs: [import("../get-critical-points/-x-.js")._X_, import("../get-critical-points/-x-.js")._X_][];
-    loops: Loop[];
-    expMax: number;
-};
-export { simplifyPaths, prepLoops };
+declare function simplifyPaths(bezierLoops: ((number[][])[])[], options?: SimplifyOptions): Loop[][];
+export { simplifyPaths };

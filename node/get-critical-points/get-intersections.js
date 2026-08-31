@@ -7,7 +7,7 @@ import { getBoundingBox$ } from '../geometry/get-bounding-box-.js';
  *
  * @param loops
  */
-function getIntersections(loops, expMax) {
+function getIntersections(loops) {
     const curves = [];
     for (const loop of loops) {
         for (const curve of loop.curves) {
@@ -16,13 +16,13 @@ function getIntersections(loops, expMax) {
     }
     // Filter curves so that we eliminate those that can definitely not intersect
     const rs = sweepLine(curves, curve => getBoundingBox$(curve.ps)[0][0], curve => getBoundingBox$(curve.ps)[1][0], getCurvesIntersections);
-    const xs = [];
+    const xPairs = [];
     for (const r of rs) {
         for (const xPair of r.u) {
-            xs.push(xPair);
+            xPairs.push(xPair);
         }
     }
-    return xs;
+    return xPairs;
 }
 export { getIntersections };
 //# sourceMappingURL=get-intersections.js.map

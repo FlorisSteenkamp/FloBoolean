@@ -1,24 +1,24 @@
-import { completePath } from '../calc-paths/complete-path.js';
-import { getTightestContainingLoop } from '../calc-paths/get-tightest-containing-loop.js';
-import { orderLoopAscendingByMinY } from '../calc-paths/order-loop-ascending-by-min-y.js';
+import { compareLoopByMinY } from '../calc-paths/order-loop-ascending-by-min-y.js';
 import { splitLoopTrees } from '../calc-paths/split-loop-trees.js';
 import { getLoopsFromTree } from '../calc-paths/get-loops-from-tree.js';
 import { getContainers } from '../containers/get-containers/get-containers.js';
-import { getOutermostOut } from '../calc-paths/get-outermost-in-and-out.js';
 import { loopFromBeziers } from '../shape/loop-from-beziers.js';
 import { normalizeLoops } from '../shape/normalize/normalize-loop.js';
 import { getMaxCoordinate } from '../shape/normalize/get-max-coordinate.js';
-import { addDebugInfo1 } from './add-debug-info-1.js';
-import { addDebugInfo2 } from './add-debug-info-2.js';
-import { loopFromOut } from './loop-from-out.js';
-import { createRootInOut } from './create-root-in-out.js';
-import { bezierToBezierPiece } from '../calc-paths/bezier-to-bezier-piece.js';
-import { removeMicroCorners } from './remove-micro-corners.js';
+import { completePaths } from '../calc-paths/complete-paths/complete-paths.js';
+import { getAllXPairs } from '../containers/get-containers/get-all-x-pairs.js';
+import { getLoopMinY } from '../shape/get-min-y.js';
+import { xsHasMinY } from '../containers/xs-has-min-y.js';
 import { MAX_BIT_LENGTH } from './max-bitlength.js';
-import { getInOutsOfContainer } from '../containers/get-container-in-outs/get-in-outs-via-sides/get-in-outs-via-sides.js';
-import { getMinYXpair } from '../get-critical-points/get-min-y-x-pair.js';
-import { filterLoopsByMinAllowedArea } from './filter-loops-by-min-area.js';
-const { abs, max, ceil, log2 } = Math;
+import { postProcess } from './post-process.js';
+import { rerun } from './rerun/rerun.js';
+import { loopssFromOutsets } from './loopss-from-outsets.js';
+const { ceil, log2 } = Math;
+/**
+ * A size multiplier for the containers holding critical points.
+ */
+const CONTAINER_SIZE_MULTIPLIER_EXP = 4;
+const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 30;
 /**
  * Returns the result of simplifying the given bezier loops so that the returned
  * loops is an array of loops.
@@ -35,120 +35,57 @@ const { abs, max, ceil, log2 } = Math;
  * @param loops an array of possibly intersecting paths
  */
 function simplifyPaths(bezierLoops, options = {}) {
-    // bezierLoops = bezierLoops.map(reverseShapeOrientation);  // For quick tests
-    // TODO - remove bitlength requirements??
-    const { minYXPairs, loops, expMax } = prepLoops(bezierLoops);
-    const containers = getContainers(loops, minYXPairs, expMax);
-    const { inclMicroCorners = true, minLoopArea = (2 ** expMax * 2 ** (-12)) ** 2, forceOrientationNegative = false, booleanOp = "OR" } = options;
-    const root = createRootInOut();
-    // `takenLoops` is important in rare cases such as in the 'koldat52' vector
-    const takenLoops = new Set();
-    const takenOuts = new Set(); // Taken intersections
-    for (let i = 0; i < loops.length; i++) {
-        const loop = loops[i];
-        if (takenLoops.has(loop)) {
-            continue;
-        }
-        takenLoops.add(loop);
-        const parent = getTightestContainingLoop(root, loop);
-        const container = minYXPairs[i][0].container;
-        const { inOuts, xs } = container;
-        if (inOuts.length === 0) {
-            continue;
-        }
-        const initialOut = getOutermostOut(container, parent);
-        const containerIsSimple = inOuts.length === 2 && // only 2 InOuts
-            xs.length === 2; // only 2 Xs
-        // TODO - maybe remove this??
-        if (containerIsSimple &&
-            inOuts[0].nextOrPrev === inOuts[1]) {
-            //---------------------------------------------------
-            // It's a Jordan curve: short-circuit `completePath`
-            //---------------------------------------------------
-            initialOut.bezierPieces = loop.beziers.map(bezierToBezierPiece);
-            initialOut.parent.children = initialOut.parent.children || new Set();
-            initialOut.parent.children.add(initialOut);
-            continue;
-        }
-        completePath(initialOut, takenLoops, takenOuts);
-        if (containerIsSimple &&
-            initialOut.bezierPieces !== undefined) {
-            // TODO - can maybe also be done using `BezierPiece`s throughout the code
-            //-------------------------------------------------------------------
-            // combine first and last bezier so not to have an extraneous bezier
-            //-------------------------------------------------------------------
-            const { bezierPieces: bps } = initialOut;
-            const bp1 = bps[bps.length - 1];
-            const bp2 = bps[0];
-            if (bp1.ps === bp2.ps) {
-                const bp = {
-                    ps: bp1.ps,
-                    ts: [bp1.ts[0], bp2.ts[1]]
-                };
-                bps.shift();
-                bps.pop();
-                bps.unshift(bp);
-            }
-        }
+    //==========================================================================
+    // Preamble
+    //==========================================================================
+    if (typeof _debug_ !== 'undefined') {
+        _debug_.timing.timingStart = performance.now();
     }
-    const loopTrees = splitLoopTrees(root);
-    const outSets = loopTrees.map(getLoopsFromTree(booleanOp))
+    /** The exponent, e, such that 2**e >= all bezier coordinate points. */
+    const expMax = ceil(log2(getMaxCoordinate(bezierLoops)));
+    const { 
+    // minLoopArea = (2**(expMax - 16))**2,
+    minLoopArea = (2 ** (expMax - 16)) ** 2, forceOrientationNegative = false, booleanOp = "OR" } = options;
+    //--------------------------------------------------------------------------
+    const containerSizeMultiplierExp = typeof _debug_ === 'undefined'
+        ? CONTAINER_SIZE_MULTIPLIER_EXP
+        : CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING;
+    const expGrid = expMax - MAX_BIT_LENGTH;
+    const expContainer = expGrid + containerSizeMultiplierExp;
+    //--------------------------------------------------------------------------
+    bezierLoops =
+        normalizeLoops(bezierLoops, expMax)
+            .sort(compareLoopByMinY);
+    const loops = bezierLoops.map(loopFromBeziers);
+    //==========================================================================
+    //==========================================================================
+    const minYXPairs = loops.map(getLoopMinY);
+    if (typeof _debug_ !== 'undefined') {
+        minYXPairs.forEach(_x_ => _debug_.elems.minY.push(_x_));
+    }
+    const xPairs = getAllXPairs(loops, minYXPairs, expMax);
+    const containers = getContainers(xPairs, expMax, expContainer);
+    if (typeof _debug_ !== 'undefined') {
+        _debug_.elems.container.push(...containers);
+    }
+    const minYContainers = containers.filter(container => xsHasMinY(container.xs));
+    const root = completePaths(expMax, minYContainers);
+    const outs = splitLoopTrees(root);
+    const outSets = outs
+        .map(getLoopsFromTree(booleanOp))
         .filter(v => v.length !== 0);
     //----------------------------------------
     // Create loops for all `outSets`
     //----------------------------------------
-    const loopss = outSets.map(outSet => {
-        const outerLoopOrientation = outSet[0].out.orientation;
-        return outSet.map(({ out, depth }, idx) => loopFromOut(out, outerLoopOrientation, idx, depth, forceOrientationNegative));
-    });
-    const loopss_ = filterLoopsByMinAllowedArea(minLoopArea, loopss);
-    //-------------------------------------
-    // Remove "micro corners" if requested
-    //-------------------------------------
-    const _loopss_ = inclMicroCorners
-        ? loopss_
-        : loopss_.map(loops => loops.map(loop => {
-            const { beziers } = loop;
-            const lengthTol = max(...containers.map(container => abs(container.box[0][0] - container.box[1][0])), ...containers.map(container => abs(container.box[0][1] - container.box[1][1])));
-            const beziers_ = removeMicroCorners(beziers, lengthTol);
-            return loopFromBeziers(beziers_, loop.idx);
-        }));
-    addDebugInfo2(_loopss_); // adds debug info used within __tests__ (and the demo)
-    // console.log(structuredClone(getInOutsOfContainer.getStats()));
-    getInOutsOfContainer.resetStats();
-    return _loopss_;
+    const loopss_ = loopssFromOutsets(outSets);
+    const loopss__ = postProcess(
+    // Use this for rerun:
+    rerun(expMax, outSets, containers, loopss_), 
+    // Use this if no rerun wanted:
+    // loopss_
+    forceOrientationNegative, minLoopArea);
+    // if (typeof _debug_ !== 'undefined') { logTimings(); }
+    return loopss__;
 }
-/**
- * * used internally only
- *
- * @param bezierLoops
- * @param maxCoordinate
- * @param options
- *
- * @internal
- */
-function prepLoops(bezierLoops) {
-    if (typeof _debug_ !== 'undefined') {
-        _debug_.timing.timingStart = performance.now();
-    }
-    /**
-     * All bezier coordinates will be truncated to this (bit-aligned) bitlength.
-     * Higher bitlengths would increase the running time of the algorithm
-     * considerably.
-     */
-    const maxCoordinate_ = getMaxCoordinate(bezierLoops);
-    /** The exponent, e, such that 2**e >= all bezier coordinate points. */
-    const expMax = ceil(log2(maxCoordinate_));
-    /**
-     * A size (based on the max value of the tangent) for the containers holding
-     * critical points.
-     */
-    bezierLoops = normalizeLoops(bezierLoops, MAX_BIT_LENGTH, expMax, false, true);
-    addDebugInfo1(bezierLoops);
-    bezierLoops.sort(orderLoopAscendingByMinY);
-    const loops = bezierLoops.map((loop, i) => loopFromBeziers(loop, i));
-    const minYXPairs = loops.map(getMinYXpair);
-    return { minYXPairs, loops, expMax };
-}
-export { simplifyPaths, prepLoops };
+export { simplifyPaths };
 //# sourceMappingURL=simplify-paths.js.map

@@ -1,7 +1,3 @@
-import type { Curve } from '../../curve/curve.js';
-declare function drawMinY(g: SVGGElement, pos: {
-    curve: Curve;
-    t: number;
-    p: number[];
-}): SVGElement[];
+import type { X } from '../../get-critical-points/x.js';
+declare function drawMinY(g: SVGGElement, x: X): SVGElement[];
 export { drawMinY };

@@ -22,5 +22,5 @@ import type { BooleanOptions } from './boolean-options.js';
  * * `"XOR"` (exclude) -> winding numbers === 1
  * @param options optional; options
  */
-declare function boolean(booleanOp: 'AND' | 'OR' | 'XOR', bezierLoops: number[][][][], options?: BooleanOptions): (number[][])[][];
+declare function boolean(booleanOp: 'AND' | 'OR' | 'XOR', bezierLoops: number[][][][], options?: BooleanOptions): ((number[][])[])[];
 export { boolean };

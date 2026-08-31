@@ -1,9 +1,8 @@
+import type { Segment } from '../path-segment/segment.js';
 /**
- * @hidden
- * @param string
+ * @param str
+ *
+ * @internal
  */
-declare function parsePathDataString(string: string): {
-    type: string;
-    values: number[];
-}[];
+declare function parsePathDataString(str: string): Segment[];
 export { parsePathDataString };

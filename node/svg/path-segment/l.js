@@ -1,5 +1,4 @@
 /**
- * @hidden
  * L and l: (from www.w3.org)
  *
  * params: x y
@@ -10,6 +9,8 @@
  * will follow. A number of coordinates pairs may be specified to draw a
  * polyline. At the end of the command, the new current point is set to the
  * final set of coordinates provided.
+ *
+ * @internal
  */
 function l(s) {
     const ps = [

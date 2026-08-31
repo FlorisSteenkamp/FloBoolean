@@ -1,26 +1,27 @@
-import { toGrid } from "../../shape/normalize/to-grid.js";
+const { floor, ceil } = Math;
 /**
  * Returns the containers from the given containers by sending their boxes to a
  * grid with a smaller bitlength.
+ *
+ * The grid spacing equals half the container dimension (`1/2x`). To prevent a
+ * container from collapsing to a point when it falls within a single grid cell,
+ * the box's min corner is rounded down and its max corner is rounded up.
  *
  * @param containers
  * @param expMax
  * @param containerDim
  */
-function sendContainersToGrid(containers, expMax, containerDim) {
-    /**
-     * The exponent difference between expMax and the distance of critical
-     * points from the sides of the containers. This value cannot be higher
-     * than ⌈sqrt(n)⌉ where n is the number of intersections in a container.
-     * Assume n < 100 - this is a (mild) limitation of the algorithm
-     */
-    const expContainer = Math.log2(containerDim);
-    const expContainerAdj = expContainer - 3; // 2**-3 === 1/8 of container
-    const containers_ = containers.map(container => {
-        const box = container.box.map(p => p.map(c => {
-            return toGrid(c, expMax, expMax - expContainerAdj);
-        }));
-        return { ...container, box };
+function sendContainersToGrid(containers, expContainer) {
+    // Grid spacing = 1/2 the container dimension (a power of 2, so snapping via
+    // divide/multiply is exact).
+    const gridSpacing = 2 ** (expContainer - 1);
+    const snapDown = (a) => floor(a / gridSpacing) * gridSpacing;
+    const snapUp = (a) => ceil(a / gridSpacing) * gridSpacing;
+    const containers_ = containers.map((container) => {
+        const { xs, box } = container;
+        const [minD, maxD] = box;
+        const box_ = [minD.map(snapDown), maxD.map(snapUp)];
+        return { xs, box: box_ };
     });
     return containers_;
 }

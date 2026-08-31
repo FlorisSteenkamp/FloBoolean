@@ -1,3 +1,5 @@
+declare const _debug_: Debug; 
+import type { Debug } from '../debug/debug.js';
 import { sum } from './sum.js';
 
 
@@ -18,15 +20,21 @@ type TimedFunction<T extends (...args: any[]) => any> =
  * 
  * @param f 
  */
-function timeFunctionCalls<T extends (...args: any[]) => any>(f: T): TimedFunction<T> {
+function timeFunctionCalls<T extends (...args: any[]) => any>(
+        f: T): TimedFunction<T> {
+
     const history: number[] = [];
 
     function wrapper(this: ThisParameterType<T>, ...args: Parameters<T>): ReturnType<T> {
+        if (typeof _debug_ === 'undefined') {
+            return f.apply(this, args);
+        }
+
         const start = performance.now();
-        const result = f.apply(this, args); // Execute original function
+        const result = f.apply(this, args);
         const end = performance.now();
         
-        history.push(end - start); // Track the duration
+        history.push(end - start);
 
         return result;
     };

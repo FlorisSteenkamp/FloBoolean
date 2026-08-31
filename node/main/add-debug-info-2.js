@@ -5,7 +5,6 @@ function addDebugInfo2(loopss) {
     for (const loops of loopss) {
         _debug_.elems.loop.push(...loops);
         _debug_.elems.loops.push(loops);
-        //console.log(loopsToSvgPathStr(loops.map(loop => loop.beziers)));
     }
     if (typeof _debug_ !== 'undefined') {
         _debug_.timing.simplifyPaths =

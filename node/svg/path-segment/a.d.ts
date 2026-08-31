@@ -1,6 +1,5 @@
 import { PathState } from "../path-state.js";
 /**
- * @hidden
  * A and a: (from www.w3.org)
  *
  * params: rx ry x-axis-rotation large-arc-flag sweep-flag x y
@@ -12,6 +11,8 @@ import { PathState } from "../path-state.js";
  * is calculated automatically to satisfy the constraints imposed by the other
  * parameters. large-arc-flag and sweep-flag contribute to the automatic
  * calculations and help determine how the arc is drawn.
+ *
+ * @internal
  */
 declare function a(s: PathState): number[][][];
 export { a };

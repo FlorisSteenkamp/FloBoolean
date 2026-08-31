@@ -6,11 +6,11 @@ import { getBounds$ } from "../geometry/get-bounds-.js";
  * @param loopA
  * @param loopB
  */
-function orderLoopAscendingByMinY(loopA, loopB) {
+function compareLoopByMinY(loopA, loopB) {
     return getMinY(loopA) - getMinY(loopB);
 }
 function getMinY(pss) {
-    let minY = Number.POSITIVE_INFINITY;
+    let minY = Infinity;
     for (const ps of pss) {
         const y = getBounds$(ps).box[0][1];
         if (y < minY) {
@@ -19,5 +19,5 @@ function getMinY(pss) {
     }
     return minY;
 }
-export { orderLoopAscendingByMinY };
+export { compareLoopByMinY };
 //# sourceMappingURL=order-loop-ascending-by-min-y.js.map

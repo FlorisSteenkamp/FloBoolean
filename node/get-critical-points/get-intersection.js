@@ -1,6 +1,7 @@
 import { getEndpointIntersections, bezierBezierIntersectionBoundless } from "flo-bezier3";
 import { getOtherTs } from './get-other-t.js';
 import { toP } from "../utils/to-p.js";
+import { timeFunctionCalls } from '../utils/time-function-call.js';
 /**
  *
  * @param curveA
@@ -8,7 +9,7 @@ import { toP } from "../utils/to-p.js";
  * @param expMax
  * @param isANextB is curveB the next curve after curveA, i.e. is A's next B
  */
-function getIntersection(curveA, curveB, isANextB) {
+const getIntersection = timeFunctionCalls(function getIntersection(curveA, curveB, isANextB) {
     const ps1 = curveA.ps;
     const ps2 = curveB.ps;
     const xs = [];
@@ -18,8 +19,8 @@ function getIntersection(curveA, curveB, isANextB) {
         const xPairs = getEndpointIntersections(ps1, ps2);
         for (const xPair of xPairs) {
             const p = toP(ps1, xPair.ri1.t);
-            const ri1 = { x: { ri: xPair.ri1, kind: 5, p }, curve: curveA }; // exact overlap endpoint
-            const ri2 = { x: { ri: xPair.ri2, kind: 5, p }, curve: curveB }; // exact overlap endpoint
+            const ri1 = { ri: xPair.ri1, kind: 5, p, curve: curveA }; // exact overlap endpoint
+            const ri2 = { ri: xPair.ri2, kind: 5, p, curve: curveB }; // exact overlap endpoint
             xs.push([ri1, ri2]);
         }
         return xs;
@@ -31,16 +32,7 @@ function getIntersection(curveA, curveB, isANextB) {
     if (ris2.length === 0) {
         return [];
     }
-    const xPairs = getOtherTs(ps1, ps2, ris2);
-    if (xPairs === undefined || xPairs.length === 0) {
-        return [];
-    }
-    for (const xPair of xPairs) {
-        const x1 = { x: xPair[0], curve: curveA };
-        const x2 = { x: xPair[1], curve: curveB };
-        xs.push([x1, x2]);
-    }
-    return xs;
-}
+    return getOtherTs(curveA, curveB, ris2) || [];
+});
 export { getIntersection };
 //# sourceMappingURL=get-intersection.js.map

@@ -1,33 +1,17 @@
-function addEdges(graph, edges) {
-    for (let i = 0; i < edges.length; i++) {
-        const edge = edges[i];
-        addEdge(graph, [edge.a, edge.b]);
-    }
-}
 /**
  * Adds an edge to an undirected graph.
  */
 function addEdge(graph, vertices) {
     const [src, dest] = vertices;
-    let srcList = graph.get(src);
-    if (!srcList) {
-        srcList = [];
-        graph.set(src, srcList);
-    }
-    let destList = graph.get(dest);
-    if (!destList) {
-        destList = [];
-        graph.set(dest, destList);
-    }
-    srcList.push(dest);
-    destList.push(src);
+    graph.getOrInsert(src, []).push(dest);
+    graph.getOrInsert(dest, []).push(src);
 }
 function DFSUtil(graph, v, visited, component) {
-    // Mark the current node as visited and print it 
+    // Mark the current node as visited and add it 
     visited.add(v);
     component.push(v);
     // Recur for all the vertices adjacent to this vertex 
-    const list = graph.get(v) ?? [];
+    const list = graph.get(v);
     for (let i = 0; i < list.length; i++) {
         const x = list[i];
         if (!visited.has(x)) {
@@ -36,23 +20,17 @@ function DFSUtil(graph, v, visited, component) {
     }
 }
 /**
- * Returns connected components for the given undirected graph, including
- * isolated vertices from the optional `items` collection.
+ * Returns the connected components for the given undirected graph.
+ *
+ * An isolated vertex (a graph key with an empty adjacency list) is returned as
+ * its own single-vertex component.
  */
-function getConnectedComponents(graph, items) {
+function getConnectedComponents(graph) {
     // Mark all the vertices as not visited 
     const components = [];
     const visited = new Set();
-    const nodes = new Set();
-    for (const node of graph.keys()) {
-        nodes.add(node);
-    }
-    if (items) {
-        for (const item of items) {
-            nodes.add(item);
-        }
-    }
-    for (const node of nodes) {
+    for (const item of graph) {
+        const node = item[0];
         if (!visited.has(node)) {
             // print all reachable vertices from v 
             components.push([]);
@@ -61,5 +39,5 @@ function getConnectedComponents(graph, items) {
     }
     return components;
 }
-export { addEdge, getConnectedComponents, addEdges };
+export { addEdge, getConnectedComponents };
 //# sourceMappingURL=get-connected-components.js.map

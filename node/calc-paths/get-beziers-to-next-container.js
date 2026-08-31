@@ -1,20 +1,13 @@
-import { mid } from 'flo-poly';
-import { closestPointOnBezierCertified } from "flo-bezier3";
-import { containerIsBasic } from "../containers/container.js";
-function getBeziersToNextContainer(out, nextIn) {
+function getBeziersToNextContainer(out) {
     const outX = out._x_;
-    const inX = nextIn._x_;
+    const inX = out.twin._x_;
     //----------------------------
-    const curveS = outX.curve;
-    const tS = outX.x.ri.tS;
-    const curveE = inX.curve;
-    const tE = inX.x.ri.tS;
+    const curveS = outX.x.curve;
+    const tS = outX.x.ri.t;
+    const curveE = inX.x.curve;
+    const tE = inX.x.ri.t;
     let curCurve = curveS;
     let curT = tS;
-    if (!containerIsBasic(out.container)) {
-        // we must clip the outgoing curve
-        curT = mid(closestPointOnBezierCertified(curveS.ps, out.p)[0].ri);
-    }
     const bezierPieces = [];
     while (true) {
         if (curCurve === curveE &&

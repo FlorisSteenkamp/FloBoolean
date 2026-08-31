@@ -1,5 +1,4 @@
 /**
- * @hidden
  * T and t: (from www.w3.org)
  *
  * params: x y
@@ -12,6 +11,8 @@
  * coordinates will follow; t (lowercase) indicates that relative coordinates
  * will follow. At the end of the command, the new current point becomes the
  * final (x,y) coordinate pair used in the polybézier.
+ *
+ * @internal
  */
 function t(s) {
     const p = s.prev2ndQuadraticControlPoint

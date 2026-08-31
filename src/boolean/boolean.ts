@@ -29,7 +29,7 @@ import { simplifyPaths } from '../main/simplify-paths.js';
 function boolean(
         booleanOp: 'AND' | 'OR' | 'XOR',
         bezierLoops: number[][][][],
-        options: BooleanOptions = {}): (number[][])[][] {
+        options: BooleanOptions = {}): ((number[][])[])[] {
 
     const { minLoopArea } = options;
 

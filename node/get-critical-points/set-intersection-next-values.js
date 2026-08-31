@@ -1,42 +1,56 @@
+import { compareXs } from "../containers/compare-xs.js";
 /**
- * Set each intersection on the given original loop's `next` and `prev` value.
+ * Set each intersection on the given original loop's `next`/`prev` (the next/
+ * prev intersection in a *different* container) and emit its `In`/`Out` when it
+ * is an entry/exit of its container - i.e. when its immediate loop-neighbour is
+ * already in a different container (consumed later by `getXInOuts`).
  *
  * @param xPairs
  */
-function setIntersectionNextValues(xPairs) {
-    const xsByLoop = new Map();
+function setIntersectionNextAndPrevs(xPairs) {
+    const xsByLoop = [];
     for (const xPair of xPairs) {
-        for (const x_ of xPair) {
-            const loop = x_.curve.loop;
-            const xs_ = xsByLoop.get(loop) || [];
-            if (!xs_.length) {
-                xsByLoop.set(loop, xs_);
-            }
-            xs_.push(x_);
+        for (const _x_ of xPair) {
+            const { idx } = _x_.x.curve.loop;
+            (xsByLoop[idx] ??= []).push(_x_);
         }
     }
-    for (const item of xsByLoop) {
-        const xs = item[1];
-        if (!xs || !xs.length) {
+    for (const xs of xsByLoop) {
+        if (xs === undefined || xs.length === 0) {
             continue;
         }
-        xs.sort((xA, xB) => {
-            let r = xA.curve.idx - xB.curve.idx;
-            if (r !== 0) {
-                return r;
-            }
-            r = xA.x.ri.tS - xB.x.ri.tS;
-            if (r !== 0) {
-                return r;
-            }
-            return xA.in_ !== undefined ? -1 : +1;
-        });
+        xs.sort(compareXs);
         const len = xs.length;
         for (let i = 0; i < len; i++) {
-            xs[i].next = xs[(i + 1) % len];
-            xs[i].prev = xs[(i - 1 + len) % len];
+            const _x_ = xs[i];
+            const { container } = _x_;
+            // Skip over intersections that stay in the same container so that
+            // `next`/`prev` always move to an intersection in a different
+            // container (falls back to `xs[i]` itself if all share it).
+            let i_ = (i + 1) % len;
+            while (i_ !== i && xs[i_].container === container) {
+                i_ = (i_ + 1) % len;
+            }
+            let _i = (i - 1 + len) % len;
+            while (_i !== i && xs[_i].container === container) {
+                _i = (_i - 1 + len) % len;
+            }
+            //----------------
+            // Mutate
+            //----------------
+            let _x__ = _x_;
+            _x__.next = xs[i_];
+            _x__.prev = xs[_i];
+            // An `_X_` is an entry (`In`) / exit (`Out`) of its container exactly
+            // when its immediate loop-neighbour is already in a different one.
+            if (xs[(i - 1 + len) % len].container !== container) {
+                _x__.in_ = { dir: -1, _x_, loop: _x_.x.curve.loop.beziers };
+            }
+            if (xs[(i + 1) % len].container !== container) {
+                _x__.out = { dir: +1, _x_, loop: _x_.x.curve.loop.beziers };
+            }
         }
     }
 }
-export { setIntersectionNextValues };
+export { setIntersectionNextAndPrevs };
 //# sourceMappingURL=set-intersection-next-values.js.map

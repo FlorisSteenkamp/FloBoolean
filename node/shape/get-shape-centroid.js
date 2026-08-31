@@ -1,6 +1,7 @@
 import { toPowerBasis, toPowerBasis_1stDerivative, toPowerBasis_1stDerivativeDd, toPowerBasisDd } from "flo-bezier3";
 import { Horner, multiply, integrate, ddIntegrate, ddMultiply, ddHorner } from 'flo-poly';
-import { ddGetShapeArea, getShapeArea } from "./get-shape-area.js";
+import { getShapeArea$ } from "./get-shape-area.js";
+import { ddGetShapeArea } from './dd-get-shape-area.js';
 import { ddAddDd, ddDivDd, ddMultBy2, ddMultDd } from "double-double";
 /**
  * Returns the approximate centroid of the given shape.
@@ -11,7 +12,7 @@ import { ddAddDd, ddDivDd, ddMultBy2, ddMultDd } from "double-double";
  * see https://sites.math.washington.edu/~king/coursedir/m324a10/as/centroid-green.pdf
  */
 function getShapeCentroid(shape) {
-    const A = getShapeArea(shape);
+    const A = getShapeArea$(shape);
     let cx = 0;
     let cy = 0;
     for (const ps of shape) {

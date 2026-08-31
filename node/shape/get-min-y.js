@@ -1,33 +1,34 @@
 import { getBezierMinY } from '../bezier/get-bezier-min-y.js';
 import { getControlPointBox } from 'flo-bezier3';
-const { min } = Math;
 /**
  *
  */
 function getLoopMinY(loop) {
     const { curves } = loop;
-    let minYP = Infinity;
-    for (const { ps } of curves) {
-        minYP = min(minYP, getControlPointBox(ps)[0][1]);
-    }
     let bestY = undefined;
     let bestCurve = curves[0];
+    let bestMinY = Infinity;
     for (const curve of curves) {
         const { ps } = curve;
-        if (!ps.some(p => p[1] <= minYP)) {
+        // Lower bound on this curve's min y: the curve lies within its control
+        // point box, so its true min y is >= the box's top (min y).
+        const boxTop = getControlPointBox(ps)[0][1];
+        // Branch-and-bound prune: this curve cannot beat (or tie) the best found
+        // so far, so skip the (expensive) exact min-y computation.
+        if (boxTop > bestMinY) {
             continue;
         }
-        const minY = getBezierMinY(ps);
+        const minY = getBezierMinY(curve);
         const v = minY.p[1];
         if (bestY === undefined ||
-            v < bestY.p[1] ||
-            (v === bestY.p[1] && minY.t > bestY.t)) {
+            v < bestMinY ||
+            (v === bestMinY && minY.ri.t > bestY.ri.t)) {
             bestY = minY;
             bestCurve = curve;
-            minYP = v;
+            bestMinY = v;
         }
     }
-    return { curve: bestCurve, y: bestY };
+    return bestY;
 }
 export { getLoopMinY };
 //# sourceMappingURL=get-min-y.js.map

@@ -2,11 +2,12 @@ import { isSelfOverlapping } from "flo-bezier3";
 import { toGrid } from "./to-grid.js";
 import { fixBezierByPointSpacing } from "./fix-bezier-by-point-spacing.js";
 function sendToGrid(expMax, maxBitLength) {
-    return (p) => {
-        const x = toGrid(p[0], expMax, maxBitLength);
-        const y = toGrid(p[1], expMax, maxBitLength);
+    const toGrid_ = toGrid(expMax, maxBitLength);
+    return function (p) {
+        const x = toGrid_(p[0]);
+        const y = toGrid_(p[1]);
         if (x === p[0] && y === p[1]) {
-            return p; // keep point's identity
+            return p; // keep point's identity if possible
         }
         return [x, y];
     };
@@ -23,7 +24,7 @@ function sendToGridNoop(p) { return p; }
  */
 function fixBeziers(expMax, maxBitLength, doSendToGrid = true) {
     /** The actual control point grid spacing */
-    const gridSpacing = 2 ** expMax * 2 ** (-maxBitLength);
+    const gridSpacing = 2 ** (expMax - maxBitLength);
     const sendToGrid_ = doSendToGrid
         ? sendToGrid(expMax, maxBitLength)
         : sendToGridNoop;

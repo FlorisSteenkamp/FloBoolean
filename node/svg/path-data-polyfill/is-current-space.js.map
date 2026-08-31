@@ -1,0 +1,1 @@
+{"version":3,"file":"is-current-space.js","sourceRoot":"","sources":["../../../src/svg/path-data-polyfill/is-current-space.ts"],"names":[],"mappings":"AAGA,4DAA4D;AAC5D,MAAM,aAAa,GAAG,aAAa,CAAC;AAEpC,SAAS,cAAc,CACf,MAAc;IAElB,OAAO,aAAa,CAAC,IAAI,CAAC,MAAM,CAAC,OAAO,CAAC,MAAM,CAAC,aAAa,CAAC,CAAC,CAAC;AACpE,CAAC;AAGD,OAAO,EAAE,cAAc,EAAE,CAAA"}

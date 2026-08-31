@@ -6,10 +6,13 @@ import { sum } from './sum.js';
 function timeFunctionCalls(f) {
     const history = [];
     function wrapper(...args) {
+        if (typeof _debug_ === 'undefined') {
+            return f.apply(this, args);
+        }
         const start = performance.now();
-        const result = f.apply(this, args); // Execute original function
+        const result = f.apply(this, args);
         const end = performance.now();
-        history.push(end - start); // Track the duration
+        history.push(end - start);
         return result;
     }
     ;
@@ -17,9 +20,10 @@ function timeFunctionCalls(f) {
     wrapper.getStats = () => {
         const total = sum(history);
         return {
+            name: f.name,
             totalMs: total,
             count: history.length,
-            avg: history.length === 0 ? 0 : total / history.length,
+            // avg: history.length === 0 ? 0 : total / history.length,
             // history: history
         };
     };

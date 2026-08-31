@@ -1,7 +1,9 @@
 import { intersectBoxes, bezierBezierIntersectionBoundless, getIntervalBox } from 'flo-bezier3';
 import { toP } from "../utils/to-p.js";
 // FUTURE - could this come from flo-bezier3
-function getOtherTs(ps1, ps2, ts2) {
+function getOtherTs(curveA, curveB, ts2) {
+    const { ps: ps1 } = curveA;
+    const { ps: ps2 } = curveB;
     if (ts2 === undefined) {
         return undefined; // infinite number of intersections
     }
@@ -23,14 +25,15 @@ function getOtherTs(ps1, ps2, ts2) {
         for (let j = 0; j < ts2.length; j++) {
             const box2 = is2[j];
             const box = intersectBoxes(box1, box2);
-            if (box !== undefined) {
-                // FUTURE important - combine boxes to make sense, i.e. combine better
-                // e.g. two odd multiplicity boxes should combine to a single even, etc. etc.
-                const p = toP(ps1, ts1[i].t);
-                const x1 = { ri: ts1[i], p, kind: 1 };
-                const x2 = { ri: ts2[j], p, kind: 1 };
-                xPairs.push([x1, x2]);
+            if (box === undefined) {
+                continue;
             }
+            // FUTURE - combine boxes to make sense, i.e. combine better
+            // e.g. two odd multiplicity boxes should combine to a single even, etc. etc.
+            const p = toP(ps1, ts1[i].t);
+            const x1 = { ri: ts1[i], p, kind: 1, curve: curveA };
+            const x2 = { ri: ts2[j], p, kind: 1, curve: curveB };
+            xPairs.push([x1, x2]);
         }
     }
     return xPairs;

@@ -1,6 +1,6 @@
 import { bezierSelfIntersection } from 'flo-bezier3';
 import { toP } from '../utils/to-p.js';
-const eps = Number.EPSILON;
+import { eps } from 'flo-poly';
 /**
  * @param loops
  */
@@ -10,7 +10,6 @@ function getSelfIntersections(loops) {
         for (const curve of loop.curves) {
             const ps = curve.ps;
             const ts = bezierSelfIntersection(ps);
-            // if (ts === undefined) { continue; }  // there is no self-intersection
             if (ts.length === 0) {
                 continue;
             }
@@ -18,19 +17,18 @@ function getSelfIntersections(loops) {
             const kind = ts[0] === ts[1]
                 ? 3 /*cusp*/
                 : 2 /*self-intersection*/;
-            // FUTURE - fix box - must combine 2 boxes and bezierSelfIntersection must return intervals
             const ts0 = ts[0];
             const ts1 = ts[1];
-            const t0S = ts0 - eps;
-            const t0E = ts0 + eps;
-            const t1S = ts1 - eps;
-            const t1E = ts1 + eps;
+            const t0S = ts0 - 4 * eps;
+            const t0E = ts0 + 4 * eps;
+            const t1S = ts1 - 4 * eps;
+            const t1E = ts1 + 4 * eps;
             const p = toP(ps, ts0);
-            xs.push([
-                // FUTURE - multiplicity relevant??
-                { x: { ri: { t: t0S, tS: t0S, tE: t0E, multiplicity: 1 }, p, kind }, curve },
-                { x: { ri: { t: t1S, tS: t1S, tE: t1E, multiplicity: 1 }, p, kind }, curve }
-            ]);
+            const ri0 = { t: t0S, tS: t0S, tE: t0E, multiplicity: 1 };
+            const ri1 = { t: t1S, tS: t1S, tE: t1E, multiplicity: 1 };
+            const x0 = { ri: ri0, p, kind, curve };
+            const x1 = { ri: ri1, p, kind, curve };
+            xs.push([x0, x1]);
         }
     }
     return xs;

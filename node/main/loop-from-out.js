@@ -1,6 +1,5 @@
-import { bezierPieceToBezier } from "../calc-paths/bezier-piece-to-bezier.js";
-import { loopFromBeziers } from '../shape/loop-from-beziers.js';
-import { reverseShapeOrientation } from "../shape/reverse-shape-orientation.js";
+import { bezierPiecesFromOut$ } from './bezier-pieces-from-out.js';
+import { reverseBezierPiece } from '../bezier/reverse-bezier-piece.js';
 /**
  *
  * @param out
@@ -10,26 +9,15 @@ import { reverseShapeOrientation } from "../shape/reverse-shape-orientation.js";
  * the loop's orientation so that alternating levels (outer, hole, island, ...)
  * are cut in and out correctly by the non-zero winding fill rule
  */
-function loopFromOut(out, outerLoopOrientation, loopIdx, depth, forceOrientationNegative) {
-    const _beziers = out.bezierPieces?.map(bezierPieceToBezier);
-    if (_beziers === undefined) {
-        return loopFromBeziers([], loopIdx);
-    }
+function loopFromOut(out, outerLoopOrientation, depth) {
     const { orientation } = out;
-    const desiredOuterOrientation = forceOrientationNegative
-        ? -1
-        : outerLoopOrientation;
     // Even nesting levels (outer, island, ...) share the outer orientation;
     // odd levels (holes, ...) get the opposite so nonzero fill carves them out.
-    const desiredOrientation = depth % 2 === 0
-        ? desiredOuterOrientation
-        : -desiredOuterOrientation;
-    const hasDesiredOrientation = desiredOrientation * orientation > 0;
-    const beziers = hasDesiredOrientation
-        ? _beziers
-        : reverseShapeOrientation(_beziers);
-    const loop = loopFromBeziers(beziers, loopIdx);
-    return loop;
+    const desiredOrientation = (depth % 2 === 0 ? 1 : -1) * outerLoopOrientation;
+    const bezierPieces = bezierPiecesFromOut$(out);
+    return desiredOrientation * orientation > 0
+        ? bezierPieces
+        : bezierPieces.map(reverseBezierPiece).toReversed();
 }
 export { loopFromOut };
 //# sourceMappingURL=loop-from-out.js.map

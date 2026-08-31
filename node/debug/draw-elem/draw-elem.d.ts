@@ -1,6 +1,6 @@
-import type { DebugElems } from '../debug-elem-types.js';
+import type { DebugElems } from '../debug-elems.js';
 type DrawElemFunctions = {
     [T in keyof DebugElems]: (g: SVGGElement, elem: DebugElems[T], classes?: string, delay?: number) => SVGElement[];
 };
 declare const drawElemFunctions: DrawElemFunctions;
-export { drawElemFunctions, DrawElemFunctions as TDrawElemFunctions };
+export { drawElemFunctions, DrawElemFunctions };

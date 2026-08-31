@@ -1,3 +1,3 @@
-import type { Container } from "../../container.js";
-declare function mergeContainers(ccs: Container[][]): Container[];
+import type { ContainerBasic } from "../../container.js";
+declare function mergeContainers(containers: ContainerBasic[]): ContainerBasic;
 export { mergeContainers };

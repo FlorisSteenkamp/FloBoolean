@@ -1,4 +1,4 @@
-import type { _X_ } from './-x-.js';
+import type { X } from './x.js';
 import type { Loop } from '../shape/loop.js';
 /**
  * Find and return all one-sided intersections on all given loops as a map from
@@ -6,5 +6,5 @@ import type { Loop } from '../shape/loop.js';
  *
  * @param loops
  */
-declare function getIntersections(loops: Loop[], expMax: number): [_X_, _X_][];
+declare function getIntersections(loops: Loop[]): [X, X][];
 export { getIntersections };

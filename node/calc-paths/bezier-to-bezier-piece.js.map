@@ -1,1 +1,0 @@
-{"version":3,"file":"bezier-to-bezier-piece.js","sourceRoot":"","sources":["../../src/calc-paths/bezier-to-bezier-piece.ts"],"names":[],"mappings":"AAIA,SAAS,mBAAmB,CACpB,MAAkB;IAEtB,OAAO;QACH,EAAE,EAAE,MAAM;QACV,EAAE,EAAE,CAAC,CAAC,EAAC,CAAC,CAAC;KACZ,CAAA;AACL,CAAC;AAGD,OAAO,EAAE,mBAAmB,EAAE,CAAA"}

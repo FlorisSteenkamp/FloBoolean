@@ -1,8 +1,9 @@
-declare const _debug_: Debug; 
+declare const _debug_: Debug;
 import type { Debug, Timing } from '../debug/debug.js';
 import type { Mutable } from '../utils/mutable.js';
 import type { Loop } from '../shape/loop.js';
 import type { SimplifyOptions } from './simplify-options.js';
+import type { _X_ } from '../get-critical-points/-x-.js';
 import { compareLoopByMinY } from '../calc-paths/order-loop-ascending-by-min-y.js';
 import { splitLoopTrees } from '../calc-paths/split-loop-trees.js';
 import { getLoopsFromTree } from '../calc-paths/get-loops-from-tree.js';
@@ -13,12 +14,12 @@ import { getMaxCoordinate } from '../shape/normalize/get-max-coordinate.js';
 import { completePaths } from '../calc-paths/complete-paths/complete-paths.js';
 import { getAllXPairs } from '../containers/get-containers/get-all-x-pairs.js';
 import { getLoopMinY } from '../shape/get-min-y.js';
-import { _X_ } from '../get-critical-points/-x-.js';
 import { xsHasMinY } from '../containers/xs-has-min-y.js';
 import { MAX_BIT_LENGTH } from './max-bitlength.js';
 import { postProcess } from './post-process.js';
 import { rerun } from './rerun/rerun.js';
 import { loopssFromOutsets } from './loopss-from-outsets.js';
+import { logTimings } from './log-timings.js';
 
 
 const { ceil, log2 } = Math;
@@ -75,11 +76,8 @@ function simplifyPaths(
     const expContainer = expGrid + containerSizeMultiplierExp;
     //--------------------------------------------------------------------------
 
-    // const preMinLoopArea = (2**(expContainer + 6))**2;  //  an entire loop mustn't fit inside a container
     bezierLoops =
         normalizeLoops(bezierLoops, expMax)
-        // cannot work: getShapeArea$ is the signed, winding number weighted area, not the actual area
-        // .filter(loop => abs(getShapeArea$(loop)) > preMinLoopArea)
         .sort(compareLoopByMinY);
 
     const loops = bezierLoops.map(loopFromBeziers);
@@ -110,81 +108,18 @@ function simplifyPaths(
     //----------------------------------------
     const loopss_ = loopssFromOutsets(outSets);
 
-    // Use this for rerun:
-    return postProcess(
+    const loopss__ = postProcess(
+        // Use this for rerun:
         rerun(expMax, outSets, containers, loopss_),
+        // Use this if no rerun wanted:
+        // loopss_
         forceOrientationNegative, minLoopArea
     );
 
-    // Use this if no rerun wanted:
-    return postProcess(loopss_, forceOrientationNegative, minLoopArea);
+    // if (typeof _debug_ !== 'undefined') { logTimings(); }
+
+    return loopss__;
 }
 
 
 export { simplifyPaths }
-
-
-
-
-    // console.log(structuredClone(getContainers.getStats()));
-    // console.log(structuredClone(normalizeLoops.getStats()));
-    // console.log(structuredClone(completePaths.getStats()));
-    // console.log(structuredClone(minAreaFilter.getStats()));
-    // getContainers.resetStats();
-    // normalizeLoops.resetStats();
-    // completePaths.resetStats();
-    // minAreaFilter.resetStats();
-
-    // normalizeLoops -> 1.3 ms
-    // getContainers  -> 51.1 ms  (improve)
-    // completePaths  -> 0.5 ms
-    // minAreaFilter  -> 1.1 ms
-
-    // `getContainers`
-    // console.log(structuredClone(getAllXPairs.getStats()));
-    // console.log(structuredClone(getIntersection.getStats()));
-    // console.log(structuredClone(getIntersections_.getStats()));
-    // console.log(structuredClone(getSelfIntersections_.getStats()));
-    // console.log(structuredClone(getInterfaceIntersections_.getStats()));
-    // console.log(structuredClone(getExcessiveCurvatures_.getStats()));
-    // console.log(structuredClone(getTurnarounds_.getStats()));
-    // console.log(structuredClone(combineOverlappingContainers.getStats()));
-    // console.log(structuredClone(assignBigBoxesToContainers.getStats()));
-
-    // console.log(structuredClone(orderInOuts.getStats()));
-
-    // `completePaths`
-    // console.log(structuredClone(completeLoop.getStats()));
-
-    // console.log(structuredClone(_isLoopInLoop.getStats()));
-
-    // console.log(getAxisAlignedRayLoopIntersections.getStats());
-    // getAllXPairs.resetStats();
-    // getIntersection.resetStats();
-    // getIntersections_.resetStats();
-    // getSelfIntersections_.resetStats();
-    // getInterfaceIntersections_.resetStats();
-    // getExcessiveCurvatures_.resetStats();
-    // getTurnarounds_.resetStats();
-
-    // combineOverlappingContainers.resetStats();
-    // assignBigBoxesToContainers.resetStats();
-    // orderInOuts.resetStats();
-    // completeLoop.resetStats();
-
-    // _isLoopInLoop.resetStats();
-    // getAxisAlignedRayLoopIntersections.resetStats();
-
-    // getAllXPairs -> 11.9 ms  (improve)
-    // combineOverlappingContainers -> 1.8 ms  (improve)
-    // assignBigBoxesToContainers -> 0.4 ms
-    // orderInOuts -> 36.2 -> 20.8 ms -> 6.7  (improve)
-
-
-    // getIntersections -> 9.9 ms  (improve)
-    // getSelfIntersections -> 0.1 ms
-    // getInterfaceIntersections -> 0.1 ms
-    // getExcessiveCurvatures -> 0.9 ms
-    // getTurnarounds -> 0.5 ms
-
-    // console.log(loopss);

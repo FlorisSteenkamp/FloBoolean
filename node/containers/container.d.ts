@@ -1,27 +1,29 @@
 import type { _X_ } from "../get-critical-points/-x-.js";
-import type { InOut } from "./in-out/in-out.js";
+import type { In, Out } from "./in-out/in-out.js";
 /**
- * Representation of a a small rectangular box containing close intersections.
- * All contained intersections are 'far' from the box's sides.
+ * Represents a a small rectangular box containing (and thus grouping) intersections.
+ *
+ * * all contained intersections are 'far' from the box's sides.
  */
-interface Container {
-    /** the box enclosing the intersections */
-    readonly box: number[][];
+interface ContainerBasic {
     /** an array of enclosed intersections */
     readonly xs: _X_[];
+    /** the box enclosing (and thus grouping) the intersections */
+    readonly box: number[][];
+}
+/**
+ * Represents a a small rectangular box containing (and thus grouping) intersections.
+ *
+ * * all contained intersections are 'far' from the box's sides.
+ */
+interface Container extends ContainerBasic {
+    /** the box used to order `InOut`s */
+    readonly bigBox: number[][];
     /**
      * ordered array of incoming / outgoing curves where the order is
      * anti-clockwise from the top right (minimum y, maximum x) corner
      */
-    readonly inOuts: InOut[];
+    readonly inOuts: (In | Out)[];
+    readonly idx?: number;
 }
-/**
- * Returns `true` if the container contains only 1 interface
- * intersection or contains only 1 general, minY or loop intersection
- * (not cusp, or endpoint overlap), false otherwise.
- *
- * @param container
- */
-declare function containerIsBasic(container: Container): boolean;
-export type { Container };
-export { containerIsBasic };
+export type { ContainerBasic, Container };

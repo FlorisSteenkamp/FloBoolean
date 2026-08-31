@@ -1,5 +1,7 @@
+import { memoize } from 'flo-memoize';
 import { getBounds$ } from '../geometry/get-bounds-.js';
 const { min, max } = Math;
+const getShapeBounds$ = memoize(getShapeBounds);
 function getShapeBounds(pss) {
     const bounds = pss.map(getBounds$);
     return {
@@ -9,5 +11,5 @@ function getShapeBounds(pss) {
         maxY: max(...bounds.map(bound => bound.box[1][1])),
     };
 }
-export { getShapeBounds };
+export { getShapeBounds, getShapeBounds$ };
 //# sourceMappingURL=get-shape-bounds.js.map

@@ -1,19 +1,29 @@
-import { Source } from './source.js';
+import { parseSegment } from './parse-segment.js';
+import { hasMoreData } from './has-more-data.js';
+import { initialCommandIsMoveTo } from './initial-command-is-move-to.js';
+import { skipOptionalSpaces } from './skip-optional-spaces.js';
 /**
- * @hidden
- * @param string
+ * @param str
+ *
+ * @internal
  */
-function parsePathDataString(string) {
-    if (!string.length) {
+function parsePathDataString(str) {
+    if (!str.length) {
         return [];
     }
-    const source = new Source(string);
-    const pathData = [];
-    if (!source.initialCommandIsMoveTo()) {
+    const source = {
+        _string: str,
+        _currentIndex: 0,
+        _endIndex: str.length,
+        _prevCommand: undefined
+    };
+    skipOptionalSpaces(source);
+    if (!initialCommandIsMoveTo(source)) {
         throw new Error('Path must start with m or M');
     }
-    while (source.hasMoreData()) {
-        pathData.push(source.parseSegment());
+    const pathData = [];
+    while (hasMoreData(source)) {
+        pathData.push(parseSegment(source));
     }
     return pathData;
 }

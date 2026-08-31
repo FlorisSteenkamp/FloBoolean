@@ -6,5 +6,11 @@ import type { Container } from "./container.js";
  *
  * @param container
  */
-declare function orderInOuts(container: Container): void;
+declare const orderInOuts: ((this: unknown, container: Container) => void) & {
+    getStats: () => {
+        count: number;
+        totalMs: number;
+    };
+    resetStats: () => void;
+};
 export { orderInOuts };

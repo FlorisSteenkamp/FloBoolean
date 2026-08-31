@@ -1,5 +1,5 @@
-import type { DebugElems } from './debug-elem-types.js';
-import { TDrawElemFunctions } from './draw-elem/draw-elem.js';
+import type { DebugElems } from './debug-elems.js';
+import { DrawElemFunctions } from './draw-elem/draw-elem.js';
 type GeneratedElems = {
     [T in keyof DebugElems]: DebugElems[T][];
 };
@@ -9,13 +9,22 @@ interface Timing {
     readonly simplifyPaths: number;
 }
 interface DebugFunctions {
-    readonly drawElem: TDrawElemFunctions;
+    readonly drawElem: DrawElemFunctions;
 }
 interface Debug {
     readonly elems: GeneratedElems;
     readonly timing: Timing;
     readonly fs: DebugFunctions;
     readonly verbose: boolean;
+    readonly callCounts: {
+        l1: number;
+        l2: number;
+        l3: number;
+        lil1: number;
+        lil2: number;
+        lil3: number;
+        lil4: number;
+    };
 }
 /**
  * Returns a new debug object by spreading boolean operation debug information

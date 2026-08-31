@@ -1,4 +1,3 @@
-import { PathState } from './path-state.js';
 import { z } from './path-segment/z.js';
 import { c } from './path-segment/c.js';
 import { s } from './path-segment/s.js';
@@ -9,7 +8,7 @@ import { q } from './path-segment/q.js';
 import { t } from './path-segment/t.js';
 import { a } from './path-segment/a.js';
 const pathFs = {
-    //a, // elliptical arc
+    // a, // elliptical arc -> handled seperately due to returning multiple beziers
     c, // cubic bezier
     h, // horizontal line
     l, // line
@@ -27,25 +26,31 @@ const pathFs = {
  */
 function getBeziersFromRawPaths(paths) {
     if (paths.length === 0) {
-        return []; // A shape is not described   
+        return [];
     }
-    if (paths[0].type.toLowerCase() !== 'm') {
+    if (paths[0].command.toLowerCase() !== 'm') {
         throw new Error('Invalid SVG - every new path must start with an M or m.');
     }
-    const s = new PathState();
+    const s = {
+        p: [0, 0],
+        initialPoint: undefined,
+        prev2ndCubicControlPoint: undefined,
+        prev2ndQuadraticControlPoint: undefined,
+        vals: undefined
+    };
     const beziersArrays = [];
     let beziers = [];
     let prevType = undefined;
     for (let i = 0; i < paths.length; i++) {
         const pathSeg = paths[i];
-        const type = pathSeg.type.toLowerCase();
+        const segType = pathSeg.command.toLowerCase();
         s.vals = pathSeg.values;
         // If pathSeg was lowercase, it is relative - make absolute
-        if (pathSeg.type === type) {
-            if (type === 'v') {
+        if (pathSeg.command === segType) {
+            if (segType === 'v') {
                 s.vals[0] += s.p[1];
             }
-            else if (type === 'a') {
+            else if (segType === 'a') {
                 s.vals[5] += s.p[0];
                 s.vals[6] += s.p[1];
             }
@@ -55,7 +60,7 @@ function getBeziersFromRawPaths(paths) {
                 }
             }
         }
-        if (type === 'm') {
+        if (segType === 'm') {
             if (beziers.length) {
                 // This is a subpath, close as if the previous command was a 
                 // Z or z.
@@ -67,14 +72,14 @@ function getBeziersFromRawPaths(paths) {
                 beziers = [];
             }
             s.initialPoint = s.p = s.vals;
-            prevType = type;
+            prevType = segType;
             continue;
         }
-        if (type === 'a') {
+        if (segType === 'a') {
             beziers.push(...a(s));
         }
         else {
-            const f = pathFs[type];
+            const f = pathFs[segType];
             if (!f) {
                 throw new Error('Invalid SVG - command not recognized.');
             }
@@ -82,7 +87,7 @@ function getBeziersFromRawPaths(paths) {
             s.p = ps[ps.length - 1]; // Update current point
             beziers.push(ps);
         }
-        prevType = type;
+        prevType = segType;
     }
     if (beziers.length > 0) {
         // This is a subpath, close as if the previous command was a Z or z.
