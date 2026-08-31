@@ -82,7 +82,7 @@ function simplifyPaths(bezierLoops, options = {}) {
     // Use this for rerun:
     rerun(expMax, outSets, containers, loopss_), 
     // Use this if no rerun wanted:
-    // loopss_
+    // loopss_,
     forceOrientationNegative, minLoopArea);
     // if (typeof _debug_ !== 'undefined') { logTimings(); }
     return loopss__;

@@ -1,11 +1,11 @@
 import type { Out } from '../../containers/in-out/in-out.js';
 import type { _X_ } from '../../get-critical-points/-x-.js';
 import type { Container } from '../../containers/container.js';
+import type { Mutable } from '../../utils/mutable.js';
 import { createRootInOut } from "../../main/create-root-in-out.js";
 import { getTightestContainingLoop } from '../get-tightest-containing-loop.js';
 import { timeFunctionCalls } from '../../utils/time-function-call.js';
 import { completePath } from './complete-path.js';
-import { Mutable } from '../../utils/mutable.js';
 
 
 const completePaths = timeFunctionCalls(function completePaths(
@@ -41,6 +41,8 @@ const completePaths = timeFunctionCalls(function completePaths(
         (initialOut as Mutable<Out>).parent = parent;
         (initialOut as Mutable<Out>).orientation = lastInOut.dir;
         (initialOut as Mutable<Out>).windingNum = parent.windingNum + lastInOut.dir;
+        // (initialOut as Mutable<Out>).orientation = lastInOut.dir * (parent.swapped ? -1 : 1);
+        // (initialOut as Mutable<Out>).windingNum = parent.windingNum + (lastInOut.dir * (parent.swapped ? -1 : 1));
         (initialOut as Mutable<Out>).children = new Set();
 
         completePath(

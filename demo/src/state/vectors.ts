@@ -14,8 +14,11 @@ const vectorsBoolean = [
 ];
 
 const vectors = [
+    'sq-in-sq-in-sq-in-sq',
+    'sq-in-sq-in-sq-in-sq-2',
     // 'AA',
     // "play3",
+    'at',
     'complex-min',
     'orient',
     'orient2',
@@ -57,7 +60,6 @@ const vectors = [
     'koldat54',
     'koldat55',
     'koldat56',
-    'sq-in-sq-in-sq-in-sq',
     'p',
     'topmost-no-interface',
     'ring2',

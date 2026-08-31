@@ -24,6 +24,8 @@ const completePaths = timeFunctionCalls(function completePaths(expMax, minYConta
         initialOut.parent = parent;
         initialOut.orientation = lastInOut.dir;
         initialOut.windingNum = parent.windingNum + lastInOut.dir;
+        // (initialOut as Mutable<Out>).orientation = lastInOut.dir * (parent.swapped ? -1 : 1);
+        // (initialOut as Mutable<Out>).windingNum = parent.windingNum + (lastInOut.dir * (parent.swapped ? -1 : 1));
         initialOut.children = new Set();
         completePath(initialOut, takenOuts, takenContainers);
     }

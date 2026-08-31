@@ -19,7 +19,6 @@ import { MAX_BIT_LENGTH } from './max-bitlength.js';
 import { postProcess } from './post-process.js';
 import { rerun } from './rerun/rerun.js';
 import { loopssFromOutsets } from './loopss-from-outsets.js';
-import { logTimings } from './log-timings.js';
 
 
 const { ceil, log2 } = Math;
@@ -112,7 +111,7 @@ function simplifyPaths(
         // Use this for rerun:
         rerun(expMax, outSets, containers, loopss_),
         // Use this if no rerun wanted:
-        // loopss_
+        // loopss_,
         forceOrientationNegative, minLoopArea
     );
 

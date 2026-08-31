@@ -59,6 +59,11 @@ function getLoopsFromTree(booleanOp) {
             }
             const childAncestorCount = isSelected ? ancestorCount + 1 : ancestorCount;
             for (const child of tree.children) {
+                // A non-zero child of a winding-0 node begins an independent
+                // shape (see `splitLoopTrees`); don't re-collect it here.
+                if (tree.windingNum === 0 && child.windingNum !== 0) {
+                    continue;
+                }
                 stack.push([child, childAncestorCount]);
             }
         }

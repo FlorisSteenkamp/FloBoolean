@@ -55,6 +55,9 @@ test('`simplifyPaths` specific cases', function() {
     // updDebugGlobal(true);
     updDebugGlobal(false);
 
+    testIt('at');
+    testIt('sq-in-sq-in-sq-in-sq');
+    testIt('sq-in-sq-in-sq-in-sq-2');
     testIt('complex-min');
     testIt('con-squares');
     testIt('three-squares');    // three-squares -> should boolean correctly'

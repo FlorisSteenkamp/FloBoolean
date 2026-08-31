@@ -130,22 +130,25 @@ export const getAxisAlignedRayLoopIntersections = timeFunctionCalls(function get
         // sub-interval `ts` of that curve (e.g. the partial first/last piece of
         // a run). So only count an endpoint the piece actually reaches:
         // `ts[0] <= 0` for t = 0 and `ts[1] >= 1` for t = 1.
-        if (numRoots0 > 0 && ts[0] <= 0) {
+        // A `BezierPiece` may carry a reversed sub-interval (`ts[0] > ts[1]`)
+        // for a swapped node; ray crossings depend only on the covered point
+        // set, so normalize to an increasing `[tS, tE]`.
+        const tS = Math.min(ts[0], ts[1]);
+        const tE = Math.max(ts[0], ts[1]);
+        if (numRoots0 > 0 && tS <= 0) {
             const up = getCrossingCountAtEndpoints(tPs, 0) > 0;
             const onRaySide = p[0] >= tPs[0][0];
             if (up && onRaySide) {
                 count++;
             }
         }
-        if (numRoots1 > 0 && ts[1] >= 1) {
+        if (numRoots1 > 0 && tE >= 1) {
             const up = getCrossingCountAtEndpoints(tPs, 1) > 0;
             const onRaySide = p[0] >= tPs[tPs.length - 1][0];
             if (up && onRaySide) {
                 count++;
             }
         }
-        const tS = ts[0];
-        const tE = ts[1];
         const tS_ = clamp(tS - 2 * eps, 0, 1); // error in roots (of original X calculation) is max 2 eps
         const tE_ = clamp(tE + 2 * eps, 0, 1); // ...
         // Roots of the coordinate perpendicular to the ray give the parameter
