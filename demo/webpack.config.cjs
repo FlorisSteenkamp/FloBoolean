@@ -24,8 +24,14 @@ module.exports = {
     module: {
         rules: [{
             test: /\.tsx?$/,
-            loader: 'ts-loader',
-            options: { silent: true },
+            loader: 'swc-loader',
+            options: {
+                jsc: {
+                    parser: { syntax: 'typescript', tsx: true },
+                    transform: { react: { runtime: 'automatic' } },
+                    target: 'esnext'
+                }
+            },
             exclude: /node_modules/,
             sideEffects: false
         }]

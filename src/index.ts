@@ -32,5 +32,4 @@ export { translateShape } from './shape/translate-shape.js';
 export { scaleShape } from './shape/scale-shape.js';
 export { rotateShape } from './shape/rotate-shape.js';
 export { getShapeControlPointBox } from './shape/get-shape-control-point-box.js';
-
-
+export { clamp } from './utils/clamp.js';

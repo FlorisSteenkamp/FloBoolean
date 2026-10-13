@@ -4,6 +4,7 @@ import type { Container } from '../../containers/container.js';
 import type { Mutable } from '../../utils/mutable.js';
 import { timeFunctionCalls } from '../../utils/time-function-call.js';
 import { getNextExit } from './get-next-exit.js';
+import { pathToStr } from '../../debug/path-to-str.js';
 
 
 /** 
@@ -39,6 +40,8 @@ const completeLoop = timeFunctionCalls(function completeLoop(
     } while (outToUse !== origOut);
 
     (origOut as Mutable<Out>).path = path;
+
+    // console.log(pathToStr(path));
 
     return additionalOutsToCheck;
 });

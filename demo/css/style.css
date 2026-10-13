@@ -126,6 +126,6 @@ nav ul {
 
 
 /* Add a background color on hover */
-/* .btn-group button:hover {
-		background-color: #3e8e41;
-} */
+.btn-group button:hover {
+    background-color: #77b579;
+}

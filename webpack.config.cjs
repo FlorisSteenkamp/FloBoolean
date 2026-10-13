@@ -24,8 +24,13 @@ const config_Basic = {
     module: {
         rules: [{
             test: /\.tsx?$/,
-            loader: 'ts-loader',
-            options: { silent: true },
+            loader: 'swc-loader',
+            options: {
+                jsc: {
+                    parser: { syntax: 'typescript' },
+                    target: 'esnext'
+                }
+            },
             exclude: /node_modules/,
             sideEffects: false
         }]

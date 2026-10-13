@@ -28,7 +28,7 @@ const { ceil, log2 } = Math;
  * A size multiplier for the containers holding critical points.
  */
 const CONTAINER_SIZE_MULTIPLIER_EXP = 4;
-const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 30;
+const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 4;
 
 
 /**
@@ -109,9 +109,9 @@ function simplifyPaths(
 
     const loopss__ = postProcess(
         // Use this for rerun:
-        rerun(expMax, outSets, containers, loopss_),
+        // rerun(expMax, outSets, containers, loopss_),
         // Use this if no rerun wanted:
-        // loopss_,
+        loopss_,
         forceOrientationNegative, minLoopArea
     );
 

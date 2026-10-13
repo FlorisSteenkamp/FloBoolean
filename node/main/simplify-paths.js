@@ -11,14 +11,13 @@ import { getLoopMinY } from '../shape/get-min-y.js';
 import { xsHasMinY } from '../containers/xs-has-min-y.js';
 import { MAX_BIT_LENGTH } from './max-bitlength.js';
 import { postProcess } from './post-process.js';
-import { rerun } from './rerun/rerun.js';
 import { loopssFromOutsets } from './loopss-from-outsets.js';
 const { ceil, log2 } = Math;
 /**
  * A size multiplier for the containers holding critical points.
  */
 const CONTAINER_SIZE_MULTIPLIER_EXP = 4;
-const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 30;
+const CONTAINER_SIZE_MULTIPLIER_EXP_FOR_DEBUGGING = 4;
 /**
  * Returns the result of simplifying the given bezier loops so that the returned
  * loops is an array of loops.
@@ -80,10 +79,9 @@ function simplifyPaths(bezierLoops, options = {}) {
     const loopss_ = loopssFromOutsets(outSets);
     const loopss__ = postProcess(
     // Use this for rerun:
-    rerun(expMax, outSets, containers, loopss_), 
+    // rerun(expMax, outSets, containers, loopss_),
     // Use this if no rerun wanted:
-    // loopss_,
-    forceOrientationNegative, minLoopArea);
+    loopss_, forceOrientationNegative, minLoopArea);
     // if (typeof _debug_ !== 'undefined') { logTimings(); }
     return loopss__;
 }

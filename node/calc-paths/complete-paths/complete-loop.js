@@ -20,6 +20,7 @@ const completeLoop = timeFunctionCalls(function completeLoop(takenOuts, takenCon
         outToUse = getNextExit_(outToUse);
     } while (outToUse !== origOut);
     origOut.path = path;
+    // console.log(pathToStr(path));
     return additionalOutsToCheck;
 });
 export { completeLoop };

@@ -20,35 +20,34 @@
     },
     "dependencies": {
         "big-float-ts": "^4.0.4",
-        "double-double": "^3.0.4",
-        "flo-bezier3": "^8.0.14",
+        "double-double": "^4.0.0",
+        "flo-bezier3": "^9.0.0",
         "flo-draw": "^2.0.5",
         "flo-gauss-quadrature": "^2.1.4",
         "flo-memoize": "^2.0.1",
-        "flo-poly": "^8.1.4",
+        "flo-poly": "^9.0.0",
         "flo-vector2d": "^4.0.6"
     },
     "devDependencies": {
-        "@jest/globals": "^30.5.0",
-        "@swc/core": "^1.16.1",
+        "@jest/globals": "^30.5.2",
+        "@swc/core": "^1.16.18",
         "@swc/jest": "^0.2.39",
         "@types/jest": "^30.0.0",
-        "@types/node": "^26.4.0",
+        "@types/node": "^26.6.5",
         "c8": "^12.0.0",
         "canvas": "^3.2.3",
         "circular-dependency-plugin": "^5.2.2",
-        "jest": "^30.5.0",
-        "jest-environment-jsdom": "^30.5.0",
+        "jest": "^30.5.2",
+        "jest-environment-jsdom": "^30.5.2",
         "jest-silent-reporter": "^0.6.0",
         "jest-ts-webcompat-resolver": "^1.0.1",
         "rimraf": "^6.1.3",
-        "ts-loader": "^9.6.2",
-        "ts-node": "^10.9.2",
-        "typescript": "^6.0.3",
-        "webpack": "^5.110.2",
-        "webpack-bundle-analyzer": "^5.3.2",
-        "webpack-cli": "^7.2.3",
-        "squares-rng": "^2.0.4"
+        "squares-rng": "^2.0.4",
+        "swc-loader": "^0.2.7",
+        "typescript": "^7.0.2",
+        "webpack": "^5.111.1",
+        "webpack-bundle-analyzer": "^5.4.0",
+        "webpack-cli": "^7.2.3"
     },
     "scripts": {
         "build": "npm run build-browser && npm run build-node",
@@ -60,7 +59,7 @@
     "allowScripts": {
         "canvas@3.2.3": true,
         "@parcel/watcher@2.6.0": true,
-        "@swc/core@1.16.1": true,
-        "unrs-resolver@1.12.2": true
+        "unrs-resolver@1.12.2": true,
+        "@swc/core@1.16.18": true
     }
 }

@@ -14,6 +14,11 @@ const vectorsBoolean = [
 ];
 
 const vectors = [
+    'koldat51-b',
+    'split-shape-lines',
+    'same-k-family-lines',
+    'same-k-family-lines-2',
+    // 'two-circles-1',
     'sq-in-sq-in-sq-in-sq',
     'sq-in-sq-in-sq-in-sq-2',
     // 'AA',
@@ -46,7 +51,6 @@ const vectors = [
     'quad-blob',
     'horight-o',
     'koldat52-over-square-2',
-    'same-k-family-lines-2',
     'koldat52-over-square',
     'few-xs-at-min-y',
     'multiple-xs-at-min-y',
@@ -70,10 +74,8 @@ const vectors = [
     'bold-b',
     'square',
     'B',
-    'same-k-family-lines',
     'holy-poly',
     'f',
-    'split-shape-lines',
     'tiny-min-y-loop'
 ];
 
